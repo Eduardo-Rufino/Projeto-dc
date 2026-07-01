@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "code": "agumon",
+  "name": "Agumon",
+  "stage": "Rookie",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Vacine",
+  "EggType": "Dragon",
+
+  "BaseStats": {
+    "healthPoints": 100,
+    "physicalDamage": 25,
+    "physicalDefense": 15,
+    "specialDamage": 10,
+    "specialDefense": 12,
+    "speed": 20
+  }
+}

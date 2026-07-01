@@ -1,0 +1,19 @@
+{
+  "id": 4,
+  "code": "patamon",
+  "name": "Patamon",
+  "stage": "Rookie",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Light",
+
+  "BaseStats": {
+    "healthPoints": 70,
+    "physicalDamage": 37,
+    "physicalDefense": 12,
+    "specialDamage": 30,
+    "specialDefense": 11,
+    "speed": 21
+  }
+}

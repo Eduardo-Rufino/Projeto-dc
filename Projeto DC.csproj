@@ -1,0 +1,45 @@
+<Project Sdk="Godot.NET.Sdk/4.7.0">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <RootNamespace>ProjetoDC</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Data\Digimon\patamon.json" />
+    <Content Include="Data\Digimon\tentomon.json" />
+    <Content Include="Data\Digimon\gabumon.json" />
+    <Content Include="Data\Digimon\agumon.json" />
+    <Content Include="Data\Evolutions\agumon_evolutions.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Audio\SFX\" />
+    <Folder Include="Assets\Audio\Music\" />
+    <Folder Include="Assets\Fonts\" />
+    <Folder Include="Assets\Sprites\Digimon\" />
+    <Folder Include="Assets\Themes\" />
+    <Folder Include="Data\Passives\" />
+    <Folder Include="Data\Roles\" />
+    <Folder Include="Data\Maps\" />
+    <Folder Include="Data\Itens\" />
+    <Folder Include="Data\Training\" />
+    <Folder Include="Data\Buildings\" />
+    <Folder Include="Data\NPCs\" />
+    <Folder Include="Data\Tournaments\" />
+    <Folder Include="Data\Eggs\" />
+    <Folder Include="Scenes\Battle\" />
+    <Folder Include="Scenes\Exploration\" />
+    <Folder Include="Scenes\Digimon\" />
+    <Folder Include="Scenes\Tournament\" />
+    <Folder Include="Scenes\Common\" />
+    <Folder Include="Scenes\Training\" />
+    <Folder Include="Scenes\UI\" />
+    <Folder Include="Scenes\Main\" />
+    <Folder Include="Saves\" />
+    <Folder Include="Scripts\Utils\" />
+    <Folder Include="Scripts\Core\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".github\copilot-instructions.md" />
+  </ItemGroup>
+</Project>

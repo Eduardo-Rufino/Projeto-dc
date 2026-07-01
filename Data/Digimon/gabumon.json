@@ -1,0 +1,19 @@
+{
+  "id": 2,
+  "code": "gabumon",
+  "name": "Gabumon",
+  "stage": "Rookie",
+  "role": "Ranged",
+  "Element": "Fire",
+  "Attribute": "Data",
+  "EggType": "Beast",
+
+  "BaseStats": {
+    "healthPoints": 75,
+    "physicalDamage": 30,
+    "physicalDefense": 13,
+    "specialDamage": 30,
+    "specialDefense": 11,
+    "speed": 22
+  }
+}

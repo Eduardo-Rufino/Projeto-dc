@@ -1,0 +1,19 @@
+{
+  "id": 3,
+  "code": "tentomon",
+  "name": "Tentomon",
+  "stage": "Rookie",
+  "role": "Ranged",
+  "Element": "Electric",
+  "Attribute": "Vacine",
+  "EggType": "Forest",
+
+  "BaseStats": {
+    "healthPoints": 120,
+    "physicalDamage": 20,
+    "physicalDefense": 20,
+    "specialDamage": 25,
+    "specialDefense": 25,
+    "speed": 15
+  }
+}

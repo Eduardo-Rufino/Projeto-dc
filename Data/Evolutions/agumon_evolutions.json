@@ -1,0 +1,18 @@
+[
+  {
+    "fromDigimonId": 1,
+    "toDigimonId": 2,
+    "requiredLevel": 5,
+    "requiredAgeInDays": 2,
+    "priority": 10,
+    "statMultiplier": 1.3
+  },
+  {
+    "fromDigimonId": 1,
+    "toDigimonId": 3,
+    "requiredLevel": 10,
+    "requiredAgeInDays": 2,
+    "priority": 20,
+    "statMultiplier": 1.6
+  }
+]
