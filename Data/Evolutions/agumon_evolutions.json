@@ -1,7 +1,7 @@
 [
   {
     "fromDigimonId": 1,
-    "toDigimonId": 2,
+    "toDigimonId": 4,
     "requiredLevel": 5,
     "requiredAgeInDays": 2,
     "priority": 10,

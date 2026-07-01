@@ -1,7 +1,9 @@
 
 using Godot;
+using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Systems;
+using ProjetoDC.Scripts.Systems.Results;
 using System.Dynamic;
 
 namespace ProjetoDC.Scripts.Gameplay
@@ -16,14 +18,30 @@ namespace ProjetoDC.Scripts.Gameplay
         public int Experience { get; set; }
         public int ExperienceToNextLevel { get; set; }
         public int AgeInDays { get; private set; }
+        public int CapacityCost { get; private set; }
 
         public BaseStats CurrentStats { get; private set; }
+        public int Stamina { get; internal set; } = 1000;
+
+        private static int GetCapacityCostForStage(DigimonStage stage) => stage switch
+        {
+            DigimonStage.Baby => 1,
+            DigimonStage.InTraining => 2,
+            DigimonStage.Rookie => 3,
+            DigimonStage.Champion => 5,
+            DigimonStage.Ultimate => 7,
+            DigimonStage.Mega => 10,
+            DigimonStage.MegaPlus => 12,
+            DigimonStage.Special => 15,
+            _ => 3,
+        };
 
         public DigimonInstance(DigimonData baseData)
         {
             AgeInDays = 0;
 
             BaseData = baseData;
+            CapacityCost = GetCapacityCostForStage(baseData.Stage);
 
             //inicialização básica
             CurrentStats = new BaseStats
@@ -58,21 +76,16 @@ namespace ProjetoDC.Scripts.Gameplay
             return CurrentHealthPoints <= 0;
         }
 
-        public void TrainAttack(int amount)
+        public void ApplyTrainingResult(TrainingResult result)
         {
-            CurrentStats.PhysicalDamage += amount;
+            CurrentStats.PhysicalDamage += result.PhysicDamageGained;
+            CurrentStats.PhysicalDefense += result.PhysicDefenseGained;
+            CurrentStats.Speed += result.SpeedGained;
+
+            Stamina -= result.StaminaCost;
+            GainExperience(result.ExpGained);
         }
 
-        public void TrainDefense(int amount)
-        {
-            CurrentStats.PhysicalDefense += amount;
-        }
-
-        public void TrainSpeed(int amount)
-        {
-            CurrentStats.Speed += amount;
-        }
-        
         public void GainExperience(int amount)
         {
             Experience += amount;

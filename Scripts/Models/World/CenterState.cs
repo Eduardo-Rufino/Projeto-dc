@@ -58,20 +58,20 @@ namespace ProjetoDC.Scripts.Models.World
 
         public void AddDigimon(DigimonInstance digimon)
         {
-            if(CapacityUsed + 1 > CapacityLimit)
+            if(CapacityUsed + digimon.CapacityCost > CapacityLimit)
             {
                 GD.Print("Não há capacidade suficiente para adicionar o Digimon.");
                 return;
             }
             Digimons.Add(digimon);
-            CapacityUsed++;
+            CapacityUsed += digimon.CapacityCost;
         }
 
         public void RemoveDigimon(DigimonInstance digimon)
         {
             if(Digimons.Remove(digimon))
             {
-                CapacityUsed--;
+                CapacityUsed -= digimon.CapacityCost;
             }
             else
             {

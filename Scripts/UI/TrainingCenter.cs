@@ -19,6 +19,7 @@ namespace ProjetoDC.Scripts.UI
         private Label _speedLabel;
         private Label _enemyHpLabel;
         private Label _expLabel;
+        private Label _ageInDaysLabel;
 
         private Label _currentDayLabel;
         private Label _bitsLabel;
@@ -106,7 +107,10 @@ namespace ProjetoDC.Scripts.UI
             _defenseLabel = GetNodeOrNull<Label>($"{basePath}DefenseLabel");
             _speedLabel = GetNodeOrNull<Label>($"{basePath}SpeedLabel");
             _expLabel = GetNodeOrNull<Label>($"{basePath}ExpLabel");
+            _ageInDaysLabel = GetNodeOrNull<Label>($"{basePath}AgeInDaysLabel");
             _enemyHpLabel = GetNodeOrNull<Label>($"{basePath}EnemyHpLabel");
+            _bitsLabel = GetNodeOrNull<Label>($"{basePath}BitsLabel");
+            _capacityLabel = GetNodeOrNull<Label>($"{basePath}CapacityLabel");
 
             _hpProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}HpProgressBar");
             _expProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}ExpProgressBar");
@@ -117,8 +121,6 @@ namespace ProjetoDC.Scripts.UI
             // caminhos para o bloco de dia/ações (ajuste se seu nó tiver outra hierarquia)
             var dayPath = $"{basePath}HBoxContainer2/";
             _currentDayLabel = GetNodeOrNull<Label>($"{dayPath}CurrentDayLabel");
-            _bitsLabel = GetNodeOrNull<Label>($"{dayPath}BitsLabel");
-            _capacityLabel = GetNodeOrNull<Label>($"{dayPath}CapacityLabel");
             _advanceDayButton = GetNodeOrNull<Button>($"{dayPath}AdvanceDayButton");
 
             var buttonPath = $"{basePath}HBoxContainer/";
@@ -127,15 +129,7 @@ namespace ProjetoDC.Scripts.UI
             _trainSpeedButton = GetNodeOrNull<Button>($"{buttonPath}TrainSpeedButton");
             _battleButton = GetNodeOrNull<Button>($"{buttonPath}BattleButton");
 
-            // Conexão segura de sinais (somente se nós foram encontrados)
-            if (_trainAttackButton != null) _trainAttackButton.Pressed += OnTrainAttackButtonPressed;
-            if (_trainDefenseButton != null) _trainDefenseButton.Pressed += OnTrainDefenseButtonPressed;
-            if (_trainSpeedButton != null) _trainSpeedButton.Pressed += OnTrainSpeedButtonPressed;
-            if (_battleButton != null) _battleButton.Pressed += OnBattleButtonPressed;
-            if (_advanceDayButton != null) _advanceDayButton.Pressed += OnAdvanceDayPressed;
-
-            if (_playerOption != null) _playerOption.ItemSelected += OnPlayerDigimonOptionItemSelected;
-            if (_enemyOption != null) _enemyOption.ItemSelected += OnEnemyDigimonOptionItemSelected;
+            if (_advanceDayButton != null) _advanceDayButton.ButtonUp += OnAdvanceDayPressed;
         }
 
         public void RefreshUI()
@@ -154,39 +148,11 @@ namespace ProjetoDC.Scripts.UI
 
 
 
-            /*
-            // Mostrar bits e capacidade usando Game.Center (se existir)
-            var centerProp = Game.GetType().GetProperty("Center");
-            if (centerProp != null)
-            {
-                var center = centerProp.GetValue(Game.Center);
-                if (center != null)
-                {
-                    // usar reflexão leve para acessar propriedades sem depender de referência direta
-                    var bitsProp = center.GetType().GetProperty("Bits");
-                    var capUsedProp = center.GetType().GetProperty("CapacityUsed");
-                    var capLimitProp = center.GetType().GetProperty("CapacityLimit");
+            if (_bitsLabel != null)
+                _bitsLabel.Text = $"Bits: {Game.Center.Bits}";
 
-                    int bits = bitsProp != null ? (int)bitsProp.GetValue(center) : 0;
-                    int used = capUsedProp != null ? (int)capUsedProp.GetValue(center) : 0;
-                    int limit = capLimitProp != null ? (int)capLimitProp.GetValue(center) : 0;
-
-                    if (_bitsLabel != null) _bitsLabel.Text = $"Bits: {bits}";
-                    if (_capacityLabel != null) _capacityLabel.Text = $"Capacidade: {used}/{limit}";
-                }
-                else
-                {
-                    if (_bitsLabel != null) _bitsLabel.Text = "Bits: N/A";
-                    if (_capacityLabel != null) _capacityLabel.Text = "Capacidade: N/A";
-                }
-            }
-            else
-            {
-                // Game não tem propriedade Center (versão do GameManager antiga)
-                if (_bitsLabel != null) _bitsLabel.Text = "Bits: N/D";
-                if (_capacityLabel != null) _capacityLabel.Text = "Capacidade: N/D";
-            }
-            */
+            if (_capacityLabel != null)
+                _capacityLabel.Text = $"Capacidade: {Game.Center.CapacityUsed}/{Game.Center.CapacityLimit}";
 
             // Atualizar player/enemy se existirem
             var player = Game.PlayerDigimon;
@@ -215,6 +181,9 @@ namespace ProjetoDC.Scripts.UI
                     }
                 }
 
+                if (_ageInDaysLabel != null)
+                    _ageInDaysLabel.Text = $"Age: {player.AgeInDays} days";
+
                 // portrait
                 if (_portrait != null)
                 {
@@ -231,58 +200,29 @@ namespace ProjetoDC.Scripts.UI
 
         private void OnAdvanceDayPressed()
         {
-            // Verificar existência e executar
-            if (Game.World != null)
-            {
-                Game.World.AdvanceDay();
-            }
-            else
-            {
-                GD.PrintErr("Não foi possível avançar o dia: WorldState nulo.");
-            }
-
-            // Avançar dias no PlayerDigimon (se existir)
-            if (Game.PlayerDigimon != null)
-            {
-                Game.PlayerDigimon.AdvanceDays();
-            }
+            Game.AdvanceDay();
 
             RefreshUI();
         }
 
         private void OnTrainAttackButtonPressed()
         {
-            if (Game.PlayerDigimon == null)
-            {
-                GD.PrintErr("PlayerDigimon nulo ao treinar ATK.");
-                return;
-            }
+            Game.TrainPlayer(TrainingType.Attack);
 
-            Game.PlayerDigimon.TrainAttack(1);
             RefreshUI();
         }
 
         private void OnTrainDefenseButtonPressed()
         {
-            if (Game.PlayerDigimon == null)
-            {
-                GD.PrintErr("PlayerDigimon nulo ao treinar DEF.");
-                return;
-            }
+            Game.TrainPlayer(TrainingType.Defense);
 
-            Game.PlayerDigimon.TrainDefense(1);
             RefreshUI();
         }
 
         private void OnTrainSpeedButtonPressed()
         {
-            if (Game.PlayerDigimon == null)
-            {
-                GD.PrintErr("PlayerDigimon nulo ao treinar SPD.");
-                return;
-            }
+            Game.TrainPlayer(TrainingType.Speed);
 
-            Game.PlayerDigimon.TrainSpeed(1);
             RefreshUI();
         }
 
