@@ -1,9 +1,12 @@
 using Godot;
+using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.Systems;
 using ProjetoDC.Scripts.Systems.Center;
+using ProjetoDC.Scripts.Systems.Results;
+using ProjetoDC.Scripts.Systems.Training;
 using System.Linq;
 
 namespace ProjetoDC.Scripts.Managers
@@ -20,6 +23,7 @@ namespace ProjetoDC.Scripts.Managers
         public WorldState World { get; private set; }
         public CenterState Center { get; private set; }
         public CenterService CenterService { get; private set; }
+        public TrainingSystem TrainingSystem { get; private set; }
 
         public override void _Ready()
         {
@@ -28,6 +32,7 @@ namespace ProjetoDC.Scripts.Managers
             World = new WorldState();
             Center = new CenterState();
             CenterService = new CenterService(Center);
+            TrainingSystem = new TrainingSystem();
 
             // Espera DatabaseManager terminar de carregar
             CallDeferred(nameof(InitializeStarterDigimons));
@@ -123,6 +128,27 @@ namespace ProjetoDC.Scripts.Managers
             {
                 digimon.AdvanceDays(days);
             }
+        }
+
+        public TrainingResult TrainPlayer(TrainingType type)
+        {
+            if (PlayerDigimon == null)
+            {
+                return new TrainingResult
+                {
+                    Success = false,
+                    Reason = "PLAYER_DIGIMON_NULL"
+                };
+            }
+
+            var result = TrainingSystem.Execute(PlayerDigimon, type);
+
+            if (!result.Success)
+                return result;
+
+            PlayerDigimon.ApplyTrainingResult(result);
+
+            return result;
         }
     }
 }
