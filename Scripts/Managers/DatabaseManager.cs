@@ -181,7 +181,6 @@ namespace ProjetoDC.Scripts.Managers
             foreach (var evo in evoList)
             {
                 string toName = GetDigimonName(evo.ToDigimonId);
-                GD.Print($"  → Evolui para {toName} (Nível {evo.RequiredLevel})");
             }
             
             return evoList;

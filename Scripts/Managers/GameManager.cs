@@ -3,8 +3,11 @@ using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
-using ProjetoDC.Scripts.Systems;
+using ProjetoDC.Scripts.Save;
+using ProjetoDC.Scripts.Systems.Battle;
 using ProjetoDC.Scripts.Systems.Center;
+using ProjetoDC.Scripts.Systems.Eggs;
+using ProjetoDC.Scripts.Systems.Evolution;
 using ProjetoDC.Scripts.Systems.Results;
 using ProjetoDC.Scripts.Systems.Training;
 using System.Linq;
@@ -20,24 +23,34 @@ namespace ProjetoDC.Scripts.Managers
 
         public BattleSystem BattleSystem { get; private set; }
 
-        public WorldState World { get; private set; }
-        public CenterState Center { get; private set; }
+        public SaveData Save { get; private set; }
         public CenterService CenterService { get; private set; }
         public TrainingSystem TrainingSystem { get; private set; }
+        public EggSystem EggSystem { get; set; }
+
+        public WorldState World => Save.World;
+        public CenterState Center => Save.Center;
 
         public override void _Ready()
         {
             Instance = this;
 
-            World = new WorldState();
-            Center = new CenterState();
-            CenterService = new CenterService(Center);
+            Save = new SaveData();
+            CenterService = new CenterService(Save.Center);
             TrainingSystem = new TrainingSystem();
-
-            // Espera DatabaseManager terminar de carregar
-            CallDeferred(nameof(InitializeStarterDigimons));
+            EggSystem = new EggSystem();
 
             GD.Print("GameManager inicializado!");
+
+            // esperar outros autoloads
+            GetTree().ProcessFrame += OnFirstFrame;
+        }
+
+        private void OnFirstFrame()
+        {
+            GetTree().ProcessFrame -= OnFirstFrame;
+
+            InitializeNewGame();
         }
 
         private void InitializeStarterDigimons()
@@ -50,24 +63,7 @@ namespace ProjetoDC.Scripts.Managers
                 return;
             }
 
-            AddStarterDigimon(1);
-            AddStarterDigimon(2);
-            AddStarterDigimon(3);
-
-            GD.Print($"Centro criado com {Center.Digimons.Count} Digimons.");
-        }
-
-        private void AddStarterDigimon(int id)
-        {
-            var data = DatabaseManager.Instance.GetDigimon(id);
-
-            if (data == null)
-            {
-                GD.PrintErr($"Digimon {id} não encontrado.");
-                return;
-            }
-
-            CenterService.AddDigimon(new DigimonInstance(data));
+            GD.Print($"Centro criado com {Save.Center.Digimons.Count} Digimons.");
         }
 
         public void SetPlayerDigimon(int id)
@@ -122,12 +118,13 @@ namespace ProjetoDC.Scripts.Managers
 
         public void AdvanceDay(int days = 1)
         {
-            World.AdvanceDay(days);
+            Save.World.AdvanceDay(days);
 
-            foreach (var digimon in Center.Digimons)
+            foreach (var digimon in Save.Center.Digimons)
             {
                 digimon.AdvanceDays(days);
-            }
+                TryToEvolve(PlayerDigimon);
+            }            
         }
 
         public TrainingResult TrainPlayer(TrainingType type)
@@ -148,7 +145,36 @@ namespace ProjetoDC.Scripts.Managers
 
             PlayerDigimon.ApplyTrainingResult(result);
 
+            TryToEvolve(PlayerDigimon);
+
             return result;
+        }
+
+        public bool TryToEvolve(DigimonInstance digimon)
+        {
+            if (digimon == null)
+                return false;
+
+            return EvolutionSystem.TryToEvolve(digimon);
+        }
+
+        public void InitializeNewGame()
+        {
+            EggSystem.CreateInitialEgg(CenterService);
+        }
+
+        public void InitializeBattle()
+        {
+            var player = CenterService.GetAllDigimons().FirstOrDefault();
+
+            if (player == null)
+                return;
+
+            PlayerDigimon = player;
+
+            SetEnemyDigimon(2); // por enquanto pode continuar sendo fixo
+
+            RebuildBattle();
         }
     }
 }

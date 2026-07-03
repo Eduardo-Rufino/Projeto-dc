@@ -63,9 +63,12 @@ namespace ProjetoDC.Scripts.UI
             var db = DatabaseManager.Instance;
             if (_playerOption != null && _enemyOption != null)
             {
-                foreach (var digimon in db.GetAllDigimons())
+                foreach (var digimon in Game.CenterService.GetAllDigimons())
                 {
-                    _playerOption.AddItem(digimon.Name, digimon.Id);
+                    _playerOption.AddItem(digimon.BaseData.Name, digimon.BaseData.Id);
+                }
+                foreach(var digimon in DatabaseManager.Instance.GetAllDigimons())
+                {
                     _enemyOption.AddItem(digimon.Name, digimon.Id);
                 }
             }
@@ -81,7 +84,7 @@ namespace ProjetoDC.Scripts.UI
                 // chamamos apenas se existir
                 try
                 {
-                    Game.StartBattle(1, 2);
+                    Game.InitializeBattle();
                 }
                 catch
                 {
@@ -239,8 +242,9 @@ namespace ProjetoDC.Scripts.UI
             switch (result)
             {
                 case BattleResult.PlayerWon:
-                    if (Game.PlayerDigimon != null) Game.PlayerDigimon.GainExperience(540);
                     GD.Print("Você venceu!");
+                    if (Game.PlayerDigimon != null) Game.PlayerDigimon.GainExperience(540);                    
+                    Game.TryToEvolve(Game.PlayerDigimon);
                     break;
                 case BattleResult.EnemyWon:
                     GD.Print("Você perdeu!");

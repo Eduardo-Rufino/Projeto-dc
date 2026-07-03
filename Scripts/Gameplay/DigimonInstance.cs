@@ -2,9 +2,7 @@
 using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Data;
-using ProjetoDC.Scripts.Systems;
 using ProjetoDC.Scripts.Systems.Results;
-using System.Dynamic;
 
 namespace ProjetoDC.Scripts.Gameplay
 {
@@ -91,8 +89,6 @@ namespace ProjetoDC.Scripts.Gameplay
             Experience += amount;
 
             CheckLevelup();
-
-            EvolutionSystem.TryToEvolve(this);
         }       
 
         private void CheckLevelup()
@@ -119,8 +115,6 @@ namespace ProjetoDC.Scripts.Gameplay
             ExperienceToNextLevel = (int)(ExperienceToNextLevel * 1.2f);
 
             GD.Print($"{BaseData.Name} subiu para o nível {Level}");
-
-            EvolutionSystem.TryToEvolve(this);
         }
 
         public void Evolve(DigimonData newForm, float multiplier)
@@ -142,8 +136,6 @@ namespace ProjetoDC.Scripts.Gameplay
         public void AdvanceDays(int days = 1)
         {
             AgeInDays += days;
-
-            EvolutionSystem.TryToEvolve(this);
         }
     }
 }
