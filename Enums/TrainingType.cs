@@ -8,8 +8,11 @@ namespace ProjetoDC.Enums
 {
     public enum TrainingType
     {
+        HealthPoints,
         Attack,
         Defense,
+        SpecialAttack,
+        SpecialDefense,
         Speed
     }
 }

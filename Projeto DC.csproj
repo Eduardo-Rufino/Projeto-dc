@@ -36,6 +36,7 @@
     <Folder Include="Scenes\UI\" />
     <Folder Include="Scenes\Main\" />
     <Folder Include="Saves\" />
+    <Folder Include="Scripts\Systems\Battle\Animations\" />
     <Folder Include="Scripts\Utils\" />
   </ItemGroup>
   <ItemGroup>

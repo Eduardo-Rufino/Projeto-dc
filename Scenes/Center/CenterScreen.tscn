@@ -1,11 +1,23 @@
-[gd_scene format=3 uid="uid://fu0rau8bafy8"]
+[gd_scene format=3 uid="uid://3pckhs66yga1"]
 
-[ext_resource type="Script" uid="uid://bcmmhou3g2obo" path="res://Scripts/UI/TrainingCenter.cs" id="1_pjks0"]
+[ext_resource type="Script" uid="uid://brebmxuq4ayrd" path="res://Scripts/UI/CenterScreen.cs" id="1_1jp0u"]
+[ext_resource type="PackedScene" uid="uid://ckcfwmpa2eysu" path="res://Scenes/Training/TrainingScreen.tscn" id="2_qfqpf"]
+[ext_resource type="PackedScene" uid="uid://o4jewkemibht" path="res://Scenes/Battle/BattleScreen.tscn" id="3_6nuvu"]
+[ext_resource type="Script" uid="uid://capagsrcxrjow" path="res://Scripts/UI/BattleScreen.cs" id="3_vr0xo"]
 
-[node name="TrainingCenter" type="Control" unique_id=301538438]
+[node name="CenterScreen" type="Control" unique_id=301538438]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_pjks0")
+script = ExtResource("1_1jp0u")
+
+[node name="TrainingScreen" parent="." unique_id=571400761 instance=ExtResource("2_qfqpf")]
+visible = false
+layout_mode = 0
+
+[node name="BattleScreen" parent="." unique_id=523994927 instance=ExtResource("3_6nuvu")]
+visible = false
+layout_mode = 1
+script = ExtResource("3_vr0xo")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1171547869]
 layout_mode = 0
@@ -26,7 +38,7 @@ text = "---"
 layout_mode = 2
 text = "Advance Day"
 
-[node name="BitsLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1665747439]
+[node name="BitsLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1451569526]
 layout_mode = 2
 text = "---"
 
@@ -37,20 +49,11 @@ text = "0/0"
 [node name="PlayerDigimonOption" type="OptionButton" parent="MarginContainer/VBoxContainer" unique_id=1094233454]
 layout_mode = 2
 
-[node name="EnemyDigimonOption" type="OptionButton" parent="MarginContainer/VBoxContainer" unique_id=1126603395]
-layout_mode = 2
-
 [node name="Portrait" type="TextureRect" parent="MarginContainer/VBoxContainer" unique_id=1780781963]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 expand_mode = 3
 stretch_mode = 5
-
-[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1977043804]
-layout_mode = 2
-
-[node name="DigimonSprite" type="TextureRect" parent="MarginContainer/VBoxContainer" unique_id=1518780364]
-layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1337625784]
 layout_mode = 2
@@ -72,54 +75,18 @@ text = "0/0"
 layout_mode = 2
 show_percentage = false
 
-[node name="HpLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=41818293]
-layout_mode = 2
-text = "0/0"
-
-[node name="HpProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer" unique_id=1205960977]
-layout_mode = 2
-value = 100.0
-show_percentage = false
-
-[node name="AttackLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1248825624]
-layout_mode = 2
-text = "0"
-
-[node name="DefenseLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=690693565]
-layout_mode = 2
-text = "0"
-
-[node name="SpeedLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1672219668]
-layout_mode = 2
-text = "0"
-
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=229684109]
 layout_mode = 2
 
-[node name="TrainAttackButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1054277845]
+[node name="TrainButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1748437260]
 layout_mode = 2
-text = "Train Attack"
-
-[node name="TrainDefenseButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=492286206]
-layout_mode = 2
-text = "Train Defense"
-
-[node name="TrainSpeedButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1748437260]
-layout_mode = 2
-text = "Train Speed"
+text = "Train"
 
 [node name="BattleButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=520440788]
 layout_mode = 2
 text = "Battle"
 
-[node name="EnemyHpLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=508646556]
-layout_mode = 2
-text = "0"
-
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/AdvanceDayButton" to="." method="OnAdvanceDayButtonPressed"]
 [connection signal="item_selected" from="MarginContainer/VBoxContainer/PlayerDigimonOption" to="." method="OnPlayerDigimonOptionItemSelected"]
-[connection signal="item_selected" from="MarginContainer/VBoxContainer/EnemyDigimonOption" to="." method="OnEnemyDigimonOptionItemSelected"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TrainAttackButton" to="." method="OnTrainAttackButtonPressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TrainDefenseButton" to="." method="OnTrainDefenseButtonPressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TrainSpeedButton" to="." method="OnTrainSpeedButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TrainButton" to="." method="OnTrainButtonPressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/BattleButton" to="." method="OnBattleButtonPressed"]

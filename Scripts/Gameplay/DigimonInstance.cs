@@ -1,11 +1,15 @@
-
 using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Systems.Results;
+using System;
 
 namespace ProjetoDC.Scripts.Gameplay
 {
+    /// <summary>
+    /// Representa uma instância de Digimon em jogo com seus stats atuais, HP, nível e experiência.
+    /// Contém lógica de ganho de experiência, evolução, aplicar resultados de treino e avanço de dias.
+    /// </summary>
     public class DigimonInstance
     {
         public DigimonData BaseData { get; private set; }
@@ -19,7 +23,7 @@ namespace ProjetoDC.Scripts.Gameplay
         public int CapacityCost { get; private set; }
 
         public BaseStats CurrentStats { get; private set; }
-        public int Stamina { get; internal set; } = 1000;
+        public int Stamina { get; internal set; } = 10000;
 
         private static int GetCapacityCostForStage(DigimonStage stage) => stage switch
         {
@@ -34,6 +38,10 @@ namespace ProjetoDC.Scripts.Gameplay
             _ => 3,
         };
 
+        /// <summary>
+        /// Construtor que inicializa a instância com os valores base do <see cref="DigimonData"/>.
+        /// Define stats atuais igual aos base e prepara HP, experiência e custo de capacidade.
+        /// </summary>
         public DigimonInstance(DigimonData baseData)
         {
             AgeInDays = 0;
@@ -41,7 +49,10 @@ namespace ProjetoDC.Scripts.Gameplay
             BaseData = baseData;
             CapacityCost = GetCapacityCostForStage(baseData.Stage);
 
-            //inicialização básica
+            if (baseData == null)
+                throw new Exception("DigimonData não encontrado no Construtor");
+
+            // inicialização básica dos stats
             CurrentStats = new BaseStats
             {
                 HealthPoints = baseData.BaseStats.HealthPoints,
@@ -50,7 +61,6 @@ namespace ProjetoDC.Scripts.Gameplay
                 SpecialDamage = baseData.BaseStats.SpecialDamage,
                 SpecialDefense = baseData.BaseStats.SpecialDefense,
                 Speed = baseData.BaseStats.Speed
-
             };
 
             MaxHealthPoints = CurrentStats.HealthPoints;
@@ -59,8 +69,13 @@ namespace ProjetoDC.Scripts.Gameplay
             Experience = 0;
             ExperienceToNextLevel = 100;
 
+            if (baseData == null)
+                throw new Exception("DigimonData não encontrado no DB");
         }
 
+        /// <summary>
+        /// Subtrai HP do Digimon e garante que não fique abaixo de zero.
+        /// </summary>
         public void TakeDamage(int amount)
         {
             CurrentHealthPoints -= amount;
@@ -69,21 +84,40 @@ namespace ProjetoDC.Scripts.Gameplay
                 CurrentHealthPoints = 0;
         }
 
+        /// <summary>
+        /// Retorna true se o Digimon estiver sem HP (morto).
+        /// </summary>
         public bool IsDead()
         {
             return CurrentHealthPoints <= 0;
         }
 
+        /// <summary>
+        /// Aplica os ganhos resultantes de um treino:
+        /// atualiza stats, HP, reduz stamina e aplica experiência.
+        /// </summary>
         public void ApplyTrainingResult(TrainingResult result)
         {
             CurrentStats.PhysicalDamage += result.PhysicDamageGained;
             CurrentStats.PhysicalDefense += result.PhysicDefenseGained;
             CurrentStats.Speed += result.SpeedGained;
+            CurrentStats.SpecialDamage += result.SpecialDamageGained;
+            CurrentStats.SpecialDefense += result.SpecialDefenseGained;
+
+            if (result.HealthPointsGained != 0)
+            {
+                CurrentStats.HealthPoints += result.HealthPointsGained;
+                MaxHealthPoints = CurrentStats.HealthPoints;
+                CurrentHealthPoints = Math.Min(CurrentHealthPoints + result.HealthPointsGained, MaxHealthPoints);
+            }
 
             Stamina -= result.StaminaCost;
             GainExperience(result.ExpGained);
         }
 
+        /// <summary>
+        /// Adiciona experiência e verifica se houve level up.
+        /// </summary>
         public void GainExperience(int amount)
         {
             Experience += amount;
@@ -91,6 +125,9 @@ namespace ProjetoDC.Scripts.Gameplay
             CheckLevelup();
         }       
 
+        /// <summary>
+        /// Loop que realiza level up enquanto houver experiência suficiente.
+        /// </summary>
         private void CheckLevelup()
         {
             while (Experience >= ExperienceToNextLevel)
@@ -100,6 +137,9 @@ namespace ProjetoDC.Scripts.Gameplay
             }
         }
 
+        /// <summary>
+        /// Incrementa o nível e aplica ganhos fixos de stats, ajustando HP e próxima meta de XP.
+        /// </summary>
         private void LevelUp()
         {
             Level++;
@@ -117,6 +157,10 @@ namespace ProjetoDC.Scripts.Gameplay
             GD.Print($"{BaseData.Name} subiu para o nível {Level}");
         }
 
+        /// <summary>
+        /// Atualiza a forma base (evolução) do Digimon e multiplica os stats existentes
+        /// pelo multiplicador informado, atualizando HP para o máximo.
+        /// </summary>
         public void Evolve(DigimonData newForm, float multiplier)
         {
             BaseData = newForm;
@@ -133,9 +177,17 @@ namespace ProjetoDC.Scripts.Gameplay
             GD.Print($"{newForm.Name} evoluiu! Stats atualizados!");
         }
 
+        /// <summary>
+        /// Avança o contador de idade em dias para o Digimon.
+        /// </summary>
         public void AdvanceDays(int days = 1)
         {
             AgeInDays += days;
+        }
+
+        public void RestoreHealth()
+        {
+            CurrentHealthPoints = MaxHealthPoints;
         }
     }
 }

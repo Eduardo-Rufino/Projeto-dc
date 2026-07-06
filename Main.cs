@@ -15,12 +15,12 @@ public partial class Main : Node
         DatabaseManager.Instance.LoadDigimons();
         DatabaseManager.Instance.LoadEvolutions();
 
-        CallDeferred(nameof(OpenTrainingCenter));
+        CallDeferred(nameof(OpenCenterScreen));
     }
 
-    private void OpenTrainingCenter()
+    private void OpenCenterScreen()
     {
-        GetTree().ChangeSceneToFile("res://Scenes/TrainingCenter.tscn");
+        GetTree().ChangeSceneToFile("res://Scenes/Center/CenterScreen.tscn");
     }
 	
 }

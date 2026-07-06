@@ -1,3 +1,4 @@
+using Godot;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
@@ -22,9 +23,25 @@ namespace ProjetoDC.Scripts.Systems.Eggs
 
         public void CreateInitialEgg(CenterService center)
         {
+            var db = DatabaseManager.Instance;
+
+            if (db == null)
+            {
+                GD.PrintErr("DB não inicializado");
+                return;
+            }
+
+            var digimonData = db.GetDigimon(1);
+
+            if (digimonData == null)
+            {
+                GD.PrintErr("Digimon ID 1 não existe no DB");
+                return;
+            }
+
             var egg = new EggData
             {
-                BaseDigimonId = 1,
+                BaseDigimonId = digimonData.Id,
                 IsReady = true,
             };
 

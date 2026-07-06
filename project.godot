@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Projeto DC"
-run/main_scene="uid://dbqwsokpb7ykh"
+run/main_scene="uid://dnuu3xwu4hsh4"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 

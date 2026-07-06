@@ -7,17 +7,12 @@ using ProjetoDC.Scripts.Systems;
 
 namespace ProjetoDC.Scripts.UI
 {
-    public partial class TrainingCenter : Control
+    public partial class CenterScreen : Control
     {
         private const string PortraitFolder = "res://Assets/Sprites/Digimon/";
 
         private Label _nameLabel;
         private Label _levelLabel;
-        private Label _hpLabel;
-        private Label _attackLabel;
-        private Label _defenseLabel;
-        private Label _speedLabel;
-        private Label _enemyHpLabel;
         private Label _expLabel;
         private Label _ageInDaysLabel;
 
@@ -25,21 +20,21 @@ namespace ProjetoDC.Scripts.UI
         private Label _bitsLabel;
         private Label _capacityLabel;
 
-        private Button _trainAttackButton;
-        private Button _trainDefenseButton;
-        private Button _trainSpeedButton;
+        private Button _trainButton;
         private Button _battleButton;
         private Button _advanceDayButton;
 
         private OptionButton _playerOption;
-        private OptionButton _enemyOption;
 
-        private ProgressBar _hpProgressBar;
         private ProgressBar _expProgressBar;
 
         private TextureRect _portrait;
 
         private GameManager Game => GameManager.Instance;
+
+        private TrainingScreen _trainingScreen;
+        private BattleScreen _battleScreen;
+        private Control _centerPanel;
 
         public override void _Ready()
         {
@@ -59,67 +54,76 @@ namespace ProjetoDC.Scripts.UI
             // carregar nós da UI com segurança
             InitializeUIComponents();
 
+            // <<< ADICIONAR AQUI >>>
+            _trainingScreen = GetNodeOrNull<TrainingScreen>("TrainingScreen");
+            _battleScreen = GetNodeOrNull<BattleScreen>("BattleScreen");
+            _centerPanel = GetNodeOrNull<Control>("MarginContainer");
+
+            if (_trainingScreen == null)
+                GD.PrintErr("TrainingScreen não encontrado na cena!");
+
+            _trainingScreen.BackPressed += OnTrainingBack;
+
+            if (_battleScreen == null)
+                GD.PrintErr("BattleScreen não encontrado na cena!");
+
+            _battleScreen.BackPressed += OnBattleBack;
+            // <<< FIM >>>
+
             // preencher opções
             var db = DatabaseManager.Instance;
-            if (_playerOption != null && _enemyOption != null)
+            if (_playerOption != null)
             {
-                foreach (var digimon in Game.CenterService.GetAllDigimons())
-                {
-                    _playerOption.AddItem(digimon.BaseData.Name, digimon.BaseData.Id);
-                }
-                foreach(var digimon in DatabaseManager.Instance.GetAllDigimons())
-                {
-                    _enemyOption.AddItem(digimon.Name, digimon.Id);
-                }
+                RefreshDigimonList();
             }
             else
             {
                 GD.PrintErr("OptionButtons não encontrados na cena. Verifique caminhos dos nós.");
             }
 
-            // garantir digimons iniciais (comportamento original)
             if (Game.PlayerDigimon == null || Game.EnemyDigimon == null)
             {
-                // StartBattle pode estar ausente em algumas versões do GameManager;
-                // chamamos apenas se existir
                 try
                 {
                     Game.InitializeBattle();
                 }
                 catch
                 {
-                    GD.Print("Game.StartBattle não disponível—verifique GameManager.");
+                    GD.Print("Game.InitializeBattle não disponível.");
                 }
             }
 
             RefreshUI();
-            GD.Print("TrainingCenter iniciado.");
         }
 
         private void InitializeUIComponents()
         {
             var basePath = "MarginContainer/VBoxContainer/";
 
+            _trainingScreen = GetNodeOrNull<TrainingScreen>("TrainingScreen");
+            _battleScreen = GetNodeOrNull<BattleScreen>("BattleScreen");
+
+            if (_trainingScreen == null)
+                GD.PrintErr("TrainingScreen não encontrado!");
+            _centerPanel = GetNode<Control>("MarginContainer");
+
+            if (_battleScreen == null)
+                GD.PrintErr("BattleScreen não encontrado!");
+            _centerPanel = GetNode<Control>("MarginContainer");
+
             // Usar GetNodeOrNull para evitar exceções se caminho estiver incorreto
             _portrait = GetNodeOrNull<TextureRect>($"{basePath}Portrait");
 
             _nameLabel = GetNodeOrNull<Label>($"{basePath}NameLabel");
             _levelLabel = GetNodeOrNull<Label>($"{basePath}LevelLabel");
-            _hpLabel = GetNodeOrNull<Label>($"{basePath}HpLabel");
-            _attackLabel = GetNodeOrNull<Label>($"{basePath}AttackLabel");
-            _defenseLabel = GetNodeOrNull<Label>($"{basePath}DefenseLabel");
-            _speedLabel = GetNodeOrNull<Label>($"{basePath}SpeedLabel");
             _expLabel = GetNodeOrNull<Label>($"{basePath}ExpLabel");
             _ageInDaysLabel = GetNodeOrNull<Label>($"{basePath}AgeInDaysLabel");
-            _enemyHpLabel = GetNodeOrNull<Label>($"{basePath}EnemyHpLabel");
             _bitsLabel = GetNodeOrNull<Label>($"{basePath}BitsLabel");
             _capacityLabel = GetNodeOrNull<Label>($"{basePath}CapacityLabel");
 
-            _hpProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}HpProgressBar");
             _expProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}ExpProgressBar");
 
             _playerOption = GetNodeOrNull<OptionButton>($"{basePath}PlayerDigimonOption");
-            _enemyOption = GetNodeOrNull<OptionButton>($"{basePath}EnemyDigimonOption");
 
             // caminhos para o bloco de dia/ações (ajuste se seu nó tiver outra hierarquia)
             var dayPath = $"{basePath}HBoxContainer2/";
@@ -127,9 +131,7 @@ namespace ProjetoDC.Scripts.UI
             _advanceDayButton = GetNodeOrNull<Button>($"{dayPath}AdvanceDayButton");
 
             var buttonPath = $"{basePath}HBoxContainer/";
-            _trainAttackButton = GetNodeOrNull<Button>($"{buttonPath}TrainAttackButton");
-            _trainDefenseButton = GetNodeOrNull<Button>($"{buttonPath}TrainDefenseButton");
-            _trainSpeedButton = GetNodeOrNull<Button>($"{buttonPath}TrainSpeedButton");
+            _trainButton = GetNodeOrNull<Button>($"{buttonPath}TrainButton");
             _battleButton = GetNodeOrNull<Button>($"{buttonPath}BattleButton");
 
             if (_advanceDayButton != null) _advanceDayButton.ButtonUp += OnAdvanceDayPressed;
@@ -138,10 +140,10 @@ namespace ProjetoDC.Scripts.UI
         public void RefreshUI()
         {
             // Atualizar World / Center visuais
-            if (Game.World != null)
+            if (Game.Save.World != null)
             {
                 if (_currentDayLabel != null)
-                    _currentDayLabel.Text = $"Day: {Game.World.CurrentDay}";
+                    _currentDayLabel.Text = $"Day: {Game.Save.World.CurrentDay}";
             }
             else
             {
@@ -152,10 +154,10 @@ namespace ProjetoDC.Scripts.UI
 
 
             if (_bitsLabel != null)
-                _bitsLabel.Text = $"Bits: {Game.Center.Bits}";
+                _bitsLabel.Text = $"Bits: {Game.Save.Center.Bits}";
 
             if (_capacityLabel != null)
-                _capacityLabel.Text = $"Capacidade: {Game.Center.CapacityUsed}/{Game.Center.CapacityLimit}";
+                _capacityLabel.Text = $"Capacidade: {Game.Save.Center.CapacityUsed}/{Game.Save.Center.CapacityLimit}";
 
             // Atualizar player/enemy se existirem
             var player = Game.PlayerDigimon;
@@ -165,15 +167,6 @@ namespace ProjetoDC.Scripts.UI
             {
                 if (_nameLabel != null) _nameLabel.Text = $"Nome: {player.BaseData.Name}";
                 if (_levelLabel != null) _levelLabel.Text = $"Level: {player.Level}";
-                if (_hpLabel != null) _hpLabel.Text = $"HP: {player.CurrentHealthPoints}/{player.MaxHealthPoints}";
-                if (_hpProgressBar != null)
-                {
-                    _hpProgressBar.MaxValue = player.MaxHealthPoints;
-                    _hpProgressBar.Value = player.CurrentHealthPoints;
-                }
-                if (_attackLabel != null) _attackLabel.Text = $"ATK: {player.CurrentStats.PhysicalDamage}";
-                if (_defenseLabel != null) _defenseLabel.Text = $"DEF: {player.CurrentStats.PhysicalDefense}";
-                if (_speedLabel != null) _speedLabel.Text = $"SPD: {player.CurrentStats.Speed}";
                 if (_expLabel != null)
                 {
                     _expLabel.Text = $"EXP: {player.Experience}/{player.ExperienceToNextLevel}";
@@ -195,9 +188,18 @@ namespace ProjetoDC.Scripts.UI
                 }
             }
 
-            if (enemy != null && _enemyHpLabel != null)
+            GD.Print($"Center Player Hash: {Game.PlayerDigimon.GetHashCode()}");
+            GD.Print($"Center XP: {Game.PlayerDigimon.Experience}");
+        }
+
+        public void RefreshDigimonList()
+        {
+            // Atualizar lista de digimons do player
+            _playerOption.Clear();
+            foreach (var digimon in Game.CenterService.GetAllDigimons())
             {
-                _enemyHpLabel.Text = $"Enemy HP: {enemy.CurrentHealthPoints}";
+                GD.Print("------------------------------------" + digimon.BaseData.Name);
+                _playerOption.AddItem(digimon.BaseData.Name, digimon.BaseData.Id);
             }
         }
 
@@ -208,27 +210,7 @@ namespace ProjetoDC.Scripts.UI
             RefreshUI();
         }
 
-        private void OnTrainAttackButtonPressed()
-        {
-            Game.TrainPlayer(TrainingType.Attack);
-
-            RefreshUI();
-        }
-
-        private void OnTrainDefenseButtonPressed()
-        {
-            Game.TrainPlayer(TrainingType.Defense);
-
-            RefreshUI();
-        }
-
-        private void OnTrainSpeedButtonPressed()
-        {
-            Game.TrainPlayer(TrainingType.Speed);
-
-            RefreshUI();
-        }
-
+        /*
         private void OnBattleButtonPressed()
         {
             if (Game.BattleSystem == null)
@@ -253,6 +235,7 @@ namespace ProjetoDC.Scripts.UI
 
             RefreshUI();
         }
+        */
 
         private void OnPlayerDigimonOptionItemSelected(long index)
         {
@@ -264,14 +247,38 @@ namespace ProjetoDC.Scripts.UI
             }
         }
 
-        private void OnEnemyDigimonOptionItemSelected(long index)
+        private void OnTrainingBack()
         {
-            int id = _enemyOption?.GetItemId((int)index) ?? -1;
-            if (id >= 0)
-            {
-                Game.SetEnemyDigimon(id);
-                RefreshUI();
-            }
+            _trainingScreen.Visible = false;
+            _centerPanel.Visible = true;
+
+            RefreshUI();
+        }
+
+        private void OnBattleBack()
+        {
+            _battleScreen.Visible = false;
+            _centerPanel.Visible = true;
+
+            RefreshUI();
+        }
+
+        private void OnTrainButtonPressed()
+        {
+            _centerPanel.Visible = false;
+            _trainingScreen.Visible = true;
+
+            _trainingScreen.RefreshUI();
+        }
+
+        private void OnBattleButtonPressed()
+        {
+            Game.InitializeBattle();
+
+            _centerPanel.Visible = false;
+            _battleScreen.Visible = true;
+
+            _battleScreen.Init(Game.BattleSystem);
         }
     }
 }
