@@ -1,0 +1,19 @@
+{
+  "id": 29,
+  "code": "koromon",
+  "name": "Koromon",
+  "stage": "InTraining",
+  "role": "Warrior",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Dragon",
+
+  "BaseStats": {
+    "healthPoints": 50,
+    "physicalDamage": 10,
+    "physicalDefense": 8,
+    "specialDamage": 9,
+    "specialDefense": 9,
+    "speed": 10
+  }
+}

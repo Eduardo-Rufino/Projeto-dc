@@ -1,0 +1,19 @@
+{
+  "id": 5,
+  "code": "gaomon",
+  "name": "Gaomon",
+  "stage": "Rookie",
+  "role": "Warrior",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Beast",
+
+  "BaseStats": {
+    "healthPoints": 80,
+    "physicalDamage": 33,
+    "physicalDefense": 15,
+    "specialDamage": 15,
+    "specialDefense": 15,
+    "speed": 20
+  }
+}

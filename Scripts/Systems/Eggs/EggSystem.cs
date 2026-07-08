@@ -31,11 +31,11 @@ namespace ProjetoDC.Scripts.Systems.Eggs
                 return;
             }
 
-            var digimonData = db.GetDigimon(1);
+            var digimonData = db.GetDigimon(25);
 
             if (digimonData == null)
             {
-                GD.PrintErr("Digimon ID 1 não existe no DB");
+                GD.PrintErr("Digimon ID 25 não existe no DB");
                 return;
             }
 

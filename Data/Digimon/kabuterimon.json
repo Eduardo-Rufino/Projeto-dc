@@ -1,0 +1,19 @@
+{
+  "id": 15,
+  "code": "kabuterimon",
+  "name": "Kabuterimon",
+  "stage": "Champion",
+  "role": "Tank",
+  "Element": "Electric",
+  "Attribute": "Vacine",
+  "EggType": "Forest",
+
+  "BaseStats": {
+    "healthPoints": 500,
+    "physicalDamage": 37,
+    "physicalDefense": 43,
+    "specialDamage": 39,
+    "specialDefense": 40,
+    "speed": 25
+  }
+}

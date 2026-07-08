@@ -6,10 +6,53 @@
     <RootNamespace>ProjetoDC</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Data\Digimon\yaamon.json" />
+    <Content Include="Data\Digimon\wanyamon.json" />
+    <Content Include="Data\Digimon\tanemon.json" />
+    <Content Include="Data\Digimon\viximon.json" />
+    <Content Include="Data\Digimon\gummymon.json" />
+    <Content Include="Data\Digimon\gigimon.json" />
+    <Content Include="Data\Digimon\motimon.json" />
+    <Content Include="Data\Digimon\tokomon.json" />
+    <Content Include="Data\Digimon\tsunomon.json" />
+    <Content Include="Data\Digimon\koromon.json" />
+    <Content Include="Data\Digimon\keemon.json" />
+    <Content Include="Data\Digimon\yuramon.json" />
+    <Content Include="Data\Digimon\punimon.json" />
+    <Content Include="Data\Digimon\botamon.json" />
+    <Content Include="Data\Digimon\gaogamon.json" />
+    <Content Include="Data\Digimon\geogreymon.json" />
+    <Content Include="Data\Digimon\garurumon.json" />
+    <Content Include="Data\Digimon\greymon.json" />
+    <Content Include="Data\Digimon\gaomon.json" />
+    <Content Include="Data\Digimon\growlmon.json" />
+    <Content Include="Data\Digimon\sunflowmon.json" />
+    <Content Include="Data\Digimon\wizardmon.json" />
+    <Content Include="Data\Digimon\impmon.json" />
+    <Content Include="Data\Digimon\lalamon.json" />
+    <Content Include="Data\Digimon\angemon.json" />
+    <Content Include="Data\Digimon\gargomon.json" />
+    <Content Include="Data\Digimon\kyubimon.json" />
+    <Content Include="Data\Digimon\togemon.json" />
+    <Content Include="Data\Digimon\renamon.json" />
+    <Content Include="Data\Digimon\agumon_savers.json" />
+    <Content Include="Data\Digimon\kabuterimon.json" />
+    <Content Include="Data\Digimon\terriermon.json" />
+    <Content Include="Data\Digimon\guilmon.json" />
+    <Content Include="Data\Digimon\palmon.json" />
     <Content Include="Data\Digimon\patamon.json" />
     <Content Include="Data\Digimon\tentomon.json" />
     <Content Include="Data\Digimon\gabumon.json" />
     <Content Include="Data\Digimon\agumon.json" />
+    <Content Include="Data\Evolutions\motimon_evolutions.json" />
+    <Content Include="Data\Evolutions\tokomon_evolutions.json" />
+    <Content Include="Data\Evolutions\gigimon_evolutions.json" />
+    <Content Include="Data\Evolutions\tsunomon_evolutions.json" />
+    <Content Include="Data\Evolutions\koromon_evolutions.json" />
+    <Content Include="Data\Evolutions\keemon_evolutions.json" />
+    <Content Include="Data\Evolutions\yuramon_evolutions.json" />
+    <Content Include="Data\Evolutions\punimon_evolutions.json" />
+    <Content Include="Data\Evolutions\botamon_evolutions.json" />
     <Content Include="Data\Evolutions\agumon_evolutions.json" />
   </ItemGroup>
   <ItemGroup>

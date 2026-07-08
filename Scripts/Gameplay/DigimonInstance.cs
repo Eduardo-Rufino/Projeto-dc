@@ -164,6 +164,7 @@ namespace ProjetoDC.Scripts.Gameplay
         public void Evolve(DigimonData newForm, float multiplier)
         {
             BaseData = newForm;
+            CapacityCost = GetCapacityCostForStage(newForm.Stage);
             CurrentStats.PhysicalDamage = (int)(CurrentStats.PhysicalDamage * multiplier);
             CurrentStats.PhysicalDefense = (int)(CurrentStats.PhysicalDefense * multiplier);
             CurrentStats.SpecialDamage = (int)(CurrentStats.SpecialDamage * multiplier);

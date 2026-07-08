@@ -1,0 +1,19 @@
+{
+  "id": 13,
+  "code": "greymon",
+  "name": "Greymon",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Vacine",
+  "EggType": "Dragon",
+
+  "BaseStats": {
+    "healthPoints": 350,
+    "physicalDamage": 55,
+    "physicalDefense": 34,
+    "specialDamage": 26,
+    "specialDefense": 32,
+    "speed": 37
+  }
+}

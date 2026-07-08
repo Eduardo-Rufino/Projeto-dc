@@ -1,0 +1,19 @@
+{
+  "id": 6,
+  "code": "palmon",
+  "name": "Palmon",
+  "stage": "Rookie",
+  "role": "Ranged",
+  "Element": "Earth",
+  "Attribute": "Data",
+  "EggType": "Forest",
+
+  "BaseStats": {
+    "healthPoints": 60,
+    "physicalDamage": 26,
+    "physicalDefense": 13,
+    "specialDamage": 10,
+    "specialDefense": 14,
+    "speed": 23
+  }
+}

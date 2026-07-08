@@ -1,0 +1,19 @@
+{
+  "id": 12,
+  "code": "lalamon",
+  "name": "Lalamon",
+  "stage": "Rookie",
+  "role": "Support",
+  "Element": "Earth",
+  "Attribute": "Data",
+  "EggType": "Forest",
+
+  "BaseStats": {
+    "healthPoints": 48,
+    "physicalDamage": 11,
+    "physicalDefense": 14,
+    "specialDamage": 28,
+    "specialDefense": 13,
+    "speed": 6
+  }
+}

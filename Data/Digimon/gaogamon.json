@@ -1,0 +1,19 @@
+{
+  "id": 23,
+  "code": "gaogamon",
+  "name": "Gaogamon",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Beast",
+
+  "BaseStats": {
+    "healthPoints": 320,
+    "physicalDamage": 58,
+    "physicalDefense": 29,
+    "specialDamage": 31,
+    "specialDefense": 27,
+    "speed": 45
+  }
+}

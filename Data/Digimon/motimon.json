@@ -1,0 +1,19 @@
+{
+  "id": 32,
+  "code": "motimon",
+  "name": "Motimon",
+  "stage": "InTraining",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Dragon",
+
+  "BaseStats": {
+    "healthPoints": 45,
+    "physicalDamage": 12,
+    "physicalDefense": 7,
+    "specialDamage": 9,
+    "specialDefense": 7,
+    "speed": 11
+  }
+}

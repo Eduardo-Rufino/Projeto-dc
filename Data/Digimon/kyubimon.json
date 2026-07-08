@@ -1,0 +1,19 @@
+{
+  "id": 20,
+  "code": "kyubimon",
+  "name": "Kyubimon",
+  "stage": "Champion",
+  "role": "Ranged",
+  "Element": "Fire",
+  "Attribute": "Data",
+  "EggType": "Beast",
+
+  "BaseStats": {
+    "healthPoints": 260,
+    "physicalDamage": 30,
+    "physicalDefense": 28,
+    "specialDamage": 60,
+    "specialDefense": 25,
+    "speed": 42
+  }
+}

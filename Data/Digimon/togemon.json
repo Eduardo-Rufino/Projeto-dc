@@ -1,0 +1,19 @@
+{
+  "id": 17,
+  "code": "togemon",
+  "name": "Togemon",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Earth",
+  "Attribute": "Data",
+  "EggType": "Forest",
+
+  "BaseStats": {
+    "healthPoints": 300,
+    "physicalDamage": 52,
+    "physicalDefense": 36,
+    "specialDamage": 15,
+    "specialDefense": 30,
+    "speed": 40
+  }
+}

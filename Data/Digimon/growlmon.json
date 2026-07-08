@@ -1,0 +1,19 @@
+{
+  "id": 18,
+  "code": "growlmon",
+  "name": "Growlmon",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+
+  "BaseStats": {
+    "healthPoints": 320,
+    "physicalDamage": 59,
+    "physicalDefense": 35,
+    "specialDamage": 30,
+    "specialDefense": 33,
+    "speed": 39
+  }
+}

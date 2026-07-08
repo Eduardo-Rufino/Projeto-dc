@@ -1,0 +1,19 @@
+{
+  "id": 27,
+  "code": "yuramon",
+  "name": "Yuramon",
+  "stage": "Baby",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Forest",
+
+  "BaseStats": {
+    "healthPoints": 15,
+    "physicalDamage": 2,
+    "physicalDefense": 3,
+    "specialDamage": 8,
+    "specialDefense": 2,
+    "speed": 7
+  }
+}

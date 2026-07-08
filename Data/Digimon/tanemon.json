@@ -1,0 +1,19 @@
+{
+  "id": 36,
+  "code": "tanemon",
+  "name": "Tanemon",
+  "stage": "InTraining",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Forest",
+
+  "BaseStats": {
+    "healthPoints": 45,
+    "physicalDamage": 10,
+    "physicalDefense": 9,
+    "specialDamage": 12,
+    "specialDefense": 7,
+    "speed": 10
+  }
+}

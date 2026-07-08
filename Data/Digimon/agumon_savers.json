@@ -1,0 +1,19 @@
+{
+  "id": 11,
+  "code": "agumon_savers",
+  "name": "Agumon (Savers)",
+  "stage": "Rookie",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Vacine",
+  "EggType": "Dragon",
+
+  "BaseStats": {
+    "healthPoints": 90,
+    "physicalDamage": 27,
+    "physicalDefense": 15,
+    "specialDamage": 11,
+    "specialDefense": 12,
+    "speed": 23
+  }
+}

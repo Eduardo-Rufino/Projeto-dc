@@ -82,18 +82,28 @@ namespace ProjetoDC.Scripts.Managers
                 }
 
                 string json = file.GetAsText();
-
-                DigimonData? digimon =
-                    JsonSerializer.Deserialize<DigimonData>(json, JsonOptions);
-
-                if (digimons.ContainsKey(digimon.Id))
+                try
                 {
-                    GD.PrintErr("ID duplicado: " + digimon.Id);
+
+                    DigimonData? digimon =
+                        JsonSerializer.Deserialize<DigimonData>(json, JsonOptions);
+                    if (digimons.ContainsKey(digimon.Id))
+                    {
+                        GD.PrintErr("ID duplicado: " + digimon.Id);
+                    }
+                    else
+                    {
+                        digimons.Add(digimon.Id, digimon);
+                    }
                 }
-                else
+                catch (JsonException ex)
                 {
-                    digimons.Add(digimon.Id, digimon);
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                    fileName = dir.GetNext();
+                    continue;
+
                 }
+                
 
                 fileName = dir.GetNext();
             }

@@ -1,0 +1,19 @@
+{
+  "id": 22,
+  "code": "geogreymon",
+  "name": "Geogreymon",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Vacine",
+  "EggType": "Dragon",
+
+  "BaseStats": {
+    "healthPoints": 335,
+    "physicalDamage": 60,
+    "physicalDefense": 31,
+    "specialDamage": 29,
+    "specialDefense": 29,
+    "speed": 40
+  }
+}

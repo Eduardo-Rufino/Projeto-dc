@@ -1,0 +1,19 @@
+{
+  "id": 37,
+  "code": "wanyamon",
+  "name": "Wanyamon",
+  "stage": "InTraining",
+  "role": "Warrior",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Forest",
+
+  "BaseStats": {
+    "healthPoints": 50,
+    "physicalDamage": 8,
+    "physicalDefense": 10,
+    "specialDamage": 7,
+    "specialDefense": 9,
+    "speed": 10
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": 21,
+  "code": "wizardmon",
+  "name": "Wizardmon",
+  "stage": "Champion",
+  "role": "Ranged",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+
+  "BaseStats": {
+    "healthPoints": 190,
+    "physicalDamage": 25,
+    "physicalDefense": 27,
+    "specialDamage": 72,
+    "specialDefense": 38,
+    "speed": 45
+  }
+}

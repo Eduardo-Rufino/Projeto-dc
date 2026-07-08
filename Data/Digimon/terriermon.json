@@ -1,0 +1,19 @@
+{
+  "id": 8,
+  "code": "terriermon",
+  "name": "Terriermon",
+  "stage": "Rookie",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+
+  "BaseStats": {
+    "healthPoints": 50,
+    "physicalDamage": 12,
+    "physicalDefense": 13,
+    "specialDamage": 24,
+    "specialDefense": 12,
+    "speed": 25
+  }
+}

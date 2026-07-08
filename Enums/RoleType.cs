@@ -12,6 +12,6 @@ namespace ProjetoDC.Enums
         Support,
         Warrior,
         Ranged,
-        Assassin,
+        Assassin
     }
 }
