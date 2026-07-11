@@ -7,6 +7,7 @@
   "Element": "Fire",
   "Attribute": "Vacine",
   "EggType": "Dragon",
+  "AttackType": "Physical",
 
   "BaseStats": {
     "healthPoints": 350,

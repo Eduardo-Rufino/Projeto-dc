@@ -33,6 +33,7 @@ namespace ProjetoDC.Scripts.UI
         private GameManager Game => GameManager.Instance;
 
         private TrainingScreen _trainingScreen;
+        private EnemySelectionScreen _enemySelectionScreen;
         private BattleScreen _battleScreen;
         private Control _centerPanel;
 
@@ -56,6 +57,7 @@ namespace ProjetoDC.Scripts.UI
 
             // <<< ADICIONAR AQUI >>>
             _trainingScreen = GetNodeOrNull<TrainingScreen>("TrainingScreen");
+            _enemySelectionScreen = GetNodeOrNull<EnemySelectionScreen>("EnemySelectionScreen");
             _battleScreen = GetNodeOrNull<BattleScreen>("BattleScreen");
             _centerPanel = GetNodeOrNull<Control>("MarginContainer");
 
@@ -68,6 +70,11 @@ namespace ProjetoDC.Scripts.UI
                 GD.PrintErr("BattleScreen não encontrado na cena!");
 
             _battleScreen.BackPressed += OnBattleBack;
+
+            if (_enemySelectionScreen == null)
+                GD.PrintErr("EnemySelectionScreen não encontrado na cena!");
+
+            _enemySelectionScreen.BackPressed += OnEnemySelectionBack;
             // <<< FIM >>>
 
             // preencher opções
@@ -81,6 +88,7 @@ namespace ProjetoDC.Scripts.UI
                 GD.PrintErr("OptionButtons não encontrados na cena. Verifique caminhos dos nós.");
             }
 
+            /*
             if (Game.PlayerDigimon == null || Game.EnemyDigimon == null)
             {
                 try
@@ -92,6 +100,7 @@ namespace ProjetoDC.Scripts.UI
                     GD.Print("Game.InitializeBattle não disponível.");
                 }
             }
+            */
 
             RefreshUI();
         }
@@ -188,8 +197,11 @@ namespace ProjetoDC.Scripts.UI
                 }
             }
 
-            GD.Print($"Center Player Hash: {Game.PlayerDigimon.GetHashCode()}");
-            GD.Print($"Center XP: {Game.PlayerDigimon.Experience}");
+            if (Game.PlayerDigimon != null)
+            {
+                GD.Print($"Center Player Hash: {Game.PlayerDigimon.GetHashCode()}");
+                GD.Print($"Center XP: {Game.PlayerDigimon.Experience}");
+            }
         }
 
         public void RefreshDigimonList()
@@ -257,7 +269,17 @@ namespace ProjetoDC.Scripts.UI
 
         private void OnBattleBack()
         {
+            _battleScreen.StopBattle();
+
             _battleScreen.Visible = false;
+            _centerPanel.Visible = true;
+
+            RefreshUI();
+        }
+
+        private void OnEnemySelectionBack()
+        {
+            _enemySelectionScreen.Visible = false;
             _centerPanel.Visible = true;
 
             RefreshUI();
@@ -273,12 +295,12 @@ namespace ProjetoDC.Scripts.UI
 
         private void OnBattleButtonPressed()
         {
-            Game.InitializeBattle();
+            Game.GenerateEnemyCandidates();
 
             _centerPanel.Visible = false;
-            _battleScreen.Visible = true;
+            _enemySelectionScreen.Visible = true;
 
-            _battleScreen.Init(Game.BattleSystem);
+            _enemySelectionScreen.RefreshUI();
         }
     }
 }

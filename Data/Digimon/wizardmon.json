@@ -7,6 +7,7 @@
   "Element": "Dark",
   "Attribute": "Virus",
   "EggType": "Dark",
+  "AttackType": "Special",
 
   "BaseStats": {
     "healthPoints": 190,

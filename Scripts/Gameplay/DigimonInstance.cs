@@ -25,18 +25,6 @@ namespace ProjetoDC.Scripts.Gameplay
         public BaseStats CurrentStats { get; private set; }
         public int Stamina { get; internal set; } = 10000;
 
-        private static int GetCapacityCostForStage(DigimonStage stage) => stage switch
-        {
-            DigimonStage.Baby => 1,
-            DigimonStage.InTraining => 2,
-            DigimonStage.Rookie => 3,
-            DigimonStage.Champion => 5,
-            DigimonStage.Ultimate => 7,
-            DigimonStage.Mega => 10,
-            DigimonStage.MegaPlus => 12,
-            DigimonStage.Special => 15,
-            _ => 3,
-        };
 
         /// <summary>
         /// Construtor que inicializa a instância com os valores base do <see cref="DigimonData"/>.
@@ -72,6 +60,18 @@ namespace ProjetoDC.Scripts.Gameplay
             if (baseData == null)
                 throw new Exception("DigimonData não encontrado no DB");
         }
+        private static int GetCapacityCostForStage(DigimonStage stage) => stage switch
+        {
+            DigimonStage.Baby => 1,
+            DigimonStage.InTraining => 2,
+            DigimonStage.Rookie => 3,
+            DigimonStage.Champion => 5,
+            DigimonStage.Ultimate => 7,
+            DigimonStage.Mega => 10,
+            DigimonStage.MegaPlus => 12,
+            DigimonStage.Special => 15,
+            _ => 3,
+        };
 
         /// <summary>
         /// Subtrai HP do Digimon e garante que não fique abaixo de zero.

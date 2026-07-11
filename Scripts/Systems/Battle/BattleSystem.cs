@@ -50,8 +50,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
         /// <returns>Quantidade de dano aplicada.</returns>
         private int Attack(DigimonInstance attacker, DigimonInstance defender)
         {
-            int damage = attacker.CurrentStats.PhysicalDamage
-                - defender.CurrentStats.PhysicalDefense;
+            int damage = CalculateBaseDamage(attacker, defender);
 
             if (damage < 1)
                 damage = 1;
@@ -69,6 +68,25 @@ namespace ProjetoDC.Scripts.Systems.Battle
             OnStateChanged?.Invoke();
 
             return damage;
+        }
+
+        private int CalculateBaseDamage(DigimonInstance attacker, DigimonInstance defender)
+        {
+            int attack;
+            int defense;
+
+            if (attacker.BaseData.AttackType == AttackType.Physical)
+            {
+                attack = attacker.CurrentStats.PhysicalDamage;
+                defense = defender.CurrentStats.PhysicalDefense;
+            }
+            else
+            {
+                attack = attacker.CurrentStats.SpecialDamage;
+                defense = defender.CurrentStats.SpecialDefense;
+            }
+
+            return Math.Max(1, attack - defense);
         }
 
         /// <summary>Ativa o ataque do jogador sobre o inimigo.</summary>
@@ -211,13 +229,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private void OnPlayerVictory()
         {
             GD.Print("PLAYER VENCEU!");
+        }
 
-            _player.GainExperience(500);
-
-            GD.Print($"XP atual: {_player.Experience}");
-
-            GD.Print($"Battle Player Hash: {_player.GetHashCode()}");
-            GD.Print($"Battle XP: {_player.Experience}");
+        public void StopBattle()
+        {
+            _battleEnded = true;
         }
     }
 }

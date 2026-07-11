@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bbgnma0dks5kn"]
+
+[node name="Node2D" type="Control" unique_id=961464645]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1326515988]

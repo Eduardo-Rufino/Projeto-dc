@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://brebmxuq4ayrd" path="res://Scripts/UI/CenterScreen.cs" id="1_1jp0u"]
 [ext_resource type="PackedScene" uid="uid://ckcfwmpa2eysu" path="res://Scenes/Training/TrainingScreen.tscn" id="2_qfqpf"]
 [ext_resource type="PackedScene" uid="uid://o4jewkemibht" path="res://Scenes/Battle/BattleScreen.tscn" id="3_6nuvu"]
-[ext_resource type="Script" uid="uid://capagsrcxrjow" path="res://Scripts/UI/BattleScreen.cs" id="3_vr0xo"]
+[ext_resource type="PackedScene" uid="uid://cmrii5olt4sqp" path="res://Scenes/Battle/EnemySelectionScreen.tscn" id="4_6nuvu"]
 
 [node name="CenterScreen" type="Control" unique_id=301538438]
 layout_mode = 3
@@ -17,7 +17,10 @@ layout_mode = 0
 [node name="BattleScreen" parent="." unique_id=523994927 instance=ExtResource("3_6nuvu")]
 visible = false
 layout_mode = 1
-script = ExtResource("3_vr0xo")
+
+[node name="EnemySelectionScreen" parent="." unique_id=541953092 instance=ExtResource("4_6nuvu")]
+visible = false
+layout_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1171547869]
 layout_mode = 0

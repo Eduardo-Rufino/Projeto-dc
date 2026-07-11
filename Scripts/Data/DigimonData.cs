@@ -52,6 +52,8 @@ namespace ProjetoDC.Scripts.Data
         /// Obtém ou define o tipo de ovo do Digimon.
         /// </summary>
         public EggType EggType { get; set; }
+
+        public AttackType AttackType { get; set; }
         
         /// <summary>
         /// Obtém ou define os stats base do Digimon.

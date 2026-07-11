@@ -9,6 +9,8 @@ namespace ProjetoDC.Scripts.Systems.Battle
     {
         private BattleSystem _battle;
 
+        private bool _running;
+
         public BattleSystem Battle => _battle;
 
         public event Action<BattleResult> BattleFinished;
@@ -18,31 +20,45 @@ namespace ProjetoDC.Scripts.Systems.Battle
             _battle = battle;
         }
 
+        /*
         public async Task ExecuteBattle()
         {
             if (_battle == null)
-            {
-                GD.PrintErr("BattleSystem nulo no controller");
                 return;
-            }
 
-            while (true)
+            _running = true;
+
+            while (_running)
             {
                 var result = _battle.ExecuteTurn();
 
                 await Wait(800);
 
+                if (!_running)
+                    return;
+
                 if (result != BattleResult.Ongoing)
                 {
-                    GD.Print($"Batalha terminou: {result}");
-
                     BattleFinished?.Invoke(result);
-
+                    _running = false;
                     return;
                 }
 
                 await Wait(500);
             }
+        }
+        */
+
+        public void StartBattle()
+        {
+            _running = true;
+            ExecuteNextTurn();
+        }
+
+        public void StopBattle()
+        {
+            _running = false;
+            _battle?.StopBattle();
         }
 
         private async Task Wait(int ms)
@@ -50,6 +66,25 @@ namespace ProjetoDC.Scripts.Systems.Battle
             await ToSignal(
                 GetTree().CreateTimer(ms / 1000.0),
                 SceneTreeTimer.SignalName.Timeout);
+        }
+
+        public async void ExecuteNextTurn()
+        {
+            if (!_running)
+                return;
+
+            var result = _battle.ExecuteTurn();
+
+            if(result != BattleResult.Ongoing)
+            {
+                _running = false;
+                BattleFinished?.Invoke(result);
+                return;
+            }
+
+            await Wait(800);
+
+            ExecuteNextTurn();
         }
     }
 }

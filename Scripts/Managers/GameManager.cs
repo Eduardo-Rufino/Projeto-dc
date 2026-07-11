@@ -1,8 +1,6 @@
 using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Gameplay;
-using ProjetoDC.Scripts.Managers;
-using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.Save;
 using ProjetoDC.Scripts.Systems.Battle;
 using ProjetoDC.Scripts.Systems.Center;
@@ -11,6 +9,7 @@ using ProjetoDC.Scripts.Systems.Evolution;
 using ProjetoDC.Scripts.Systems.Results;
 using ProjetoDC.Scripts.Systems.Training;
 using ProjetoDC.Scripts.UI;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ProjetoDC.Scripts.Managers
@@ -28,6 +27,7 @@ namespace ProjetoDC.Scripts.Managers
 
         /// <summary>Digimon inimigo atual para batalhas.</summary>
         public DigimonInstance EnemyDigimon { get; private set; }
+        public List<DigimonInstance> GeneratedEnemies { get; private set; } = new();
 
         /// <summary>Sistema de batalha ativo quando iniciado.</summary>
         public BattleSystem BattleSystem { get; private set; }
@@ -36,6 +36,7 @@ namespace ProjetoDC.Scripts.Managers
         public CenterService CenterService { get; private set; }
         public TrainingSystem TrainingSystem { get; private set; }
         public EggSystem EggSystem { get; set; }
+        public EnemyGenerator EnemyGenerator { get; set; }
 
         public override void _Ready()
         {
@@ -45,6 +46,7 @@ namespace ProjetoDC.Scripts.Managers
             CenterService = new CenterService(Save.Center);
             TrainingSystem = new TrainingSystem();
             EggSystem = new EggSystem();
+            EnemyGenerator = new EnemyGenerator();
 
             GD.Print("GameManager inicializado!");
 
@@ -211,44 +213,59 @@ namespace ProjetoDC.Scripts.Managers
             EggSystem.CreateInitialEgg(CenterService);
 
             GD.Print($"[DEBUG] Digimons no Center DEPOIS egg: {Save.Center.Digimons.Count}");
+
+            PlayerDigimon = CenterService.GetAllDigimons().FirstOrDefault();
+
+            if (PlayerDigimon != null)
+            {
+                SetPlayerDigimon(PlayerDigimon.BaseData.Id);
+                GD.Print($"Player inicial: {PlayerDigimon.BaseData.Name}");
+            }
         }
 
         /// <summary>
         /// Inicializa batalha selecionando um jogador do Center e um inimigo fixo (temporário).
         /// </summary>
-        public void InitializeBattle()
+        public void InitializeBattle(DigimonInstance enemy)
         {
-            var player = CenterService.GetAllDigimons().FirstOrDefault();
-
-            if (player == null)
-                return;
-
-            PlayerDigimon = player;
-
-            PlayerDigimon.RestoreHealth();
-
-            SetEnemyDigimon(2);
+            EnemyDigimon = enemy;
 
             EnemyDigimon.RestoreHealth();
+
+            RebuildBattle();
         }
 
-        public void ApplyBattleReward(BattleResult result)
+        public void GenerateEnemyCandidates()
         {
             if (PlayerDigimon == null)
                 return;
 
-            if (result == BattleResult.PlayerWon)
-            {
-                GD.Print("Vitória! Aplicando XP");
+            PlayerDigimon.RestoreHealth();
 
-                PlayerDigimon.GainExperience(100);
+            GeneratedEnemies = EnemyGenerator.GenerateEnemies(PlayerDigimon, 4);
+        }
 
-                TryToEvolve(PlayerDigimon);
-            }
-            else if (result == BattleResult.EnemyWon)
+        public void ApplyBattleReward(BattleResult result)
+        {
+            if (PlayerDigimon == null && EnemyDigimon == null)
+                return;
+
+            if (result == BattleResult.EnemyWon)
             {
                 GD.Print("Derrota! Sem recompensa");
+                return;
             }
+
+            var reward = BattleRewardCalculator.Calculate(PlayerDigimon, EnemyDigimon);
+
+            GD.Print($"Vitória! +{reward.Experience} XP | +{reward.Bits} Bits");
+
+            PlayerDigimon.GainExperience(reward.Experience);
+
+            Save.Center.AddBits(reward.Bits);
+
+            TryToEvolve(PlayerDigimon);
+            
         }
     }
 }

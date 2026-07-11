@@ -149,7 +149,7 @@ namespace ProjetoDC.Scripts.UI
         {
             RefreshUI();
 
-            await _controller.ExecuteBattle();
+            _controller.StartBattle();
         }
 
         private void OnBattleFinished(BattleResult result)
@@ -168,6 +168,11 @@ namespace ProjetoDC.Scripts.UI
                     GameManager.Instance.ApplyBattleReward(result);
                     break;
             }
+        }
+
+        public void StopBattle()
+        {
+            _controller.StopBattle();
         }
     }
 }

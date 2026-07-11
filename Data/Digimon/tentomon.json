@@ -7,6 +7,7 @@
   "Element": "Electric",
   "Attribute": "Vacine",
   "EggType": "Forest",
+  "AttackType": "Special",
 
   "BaseStats": {
     "healthPoints": 120,
