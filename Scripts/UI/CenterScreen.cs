@@ -36,6 +36,7 @@ namespace ProjetoDC.Scripts.UI
         private EnemySelectionScreen _enemySelectionScreen;
         private BattleScreen _battleScreen;
         private Control _centerPanel;
+        private DigimonSprite _digimonSprite;
 
         public override void _Ready()
         {
@@ -60,6 +61,16 @@ namespace ProjetoDC.Scripts.UI
             _enemySelectionScreen = GetNodeOrNull<EnemySelectionScreen>("EnemySelectionScreen");
             _battleScreen = GetNodeOrNull<BattleScreen>("BattleScreen");
             _centerPanel = GetNodeOrNull<Control>("MarginContainer");
+            _digimonSprite = GetNodeOrNull<DigimonSprite>("MarginContainer/VBoxContainer/HBoxContainer3/DigimonDisplay/DigimonSprite");
+
+            if (_digimonSprite != null)
+            {
+                _digimonSprite.SetDigimon("agumon");
+            }
+            else
+            {
+                GD.PrintErr("DigimonSprite não encontrado");
+            }
 
             if (_trainingScreen == null)
                 GD.PrintErr("TrainingScreen não encontrado na cena!");
@@ -189,6 +200,11 @@ namespace ProjetoDC.Scripts.UI
                 if (_ageInDaysLabel != null)
                     _ageInDaysLabel.Text = $"Age: {player.AgeInDays} days";
 
+                if (_digimonSprite != null)
+                {
+                    _digimonSprite.SetDigimon(player.BaseData.Code);
+                }
+
                 // portrait
                 if (_portrait != null)
                 {
@@ -201,6 +217,8 @@ namespace ProjetoDC.Scripts.UI
             {
                 GD.Print($"Center Player Hash: {Game.PlayerDigimon.GetHashCode()}");
                 GD.Print($"Center XP: {Game.PlayerDigimon.Experience}");
+                //TODO: Atualizar a lista apenas quando um digimon evoluir, for adicionado ou removido, para evitar refresh desnecessário
+                RefreshDigimonList();
             }
         }
 
@@ -301,6 +319,43 @@ namespace ProjetoDC.Scripts.UI
             _enemySelectionScreen.Visible = true;
 
             _enemySelectionScreen.RefreshUI();
+        }
+
+        private void OnAttackPressed()
+        {
+            _digimonSprite.PlayAttack();
+        }
+
+        private void OnHappyPressed()
+        {
+            _digimonSprite.PlayHappy();
+        }
+
+        private void OnEatPressed()
+        {
+            _digimonSprite.PlayEat();
+        }
+
+        private void OnSleepPressed()
+        {
+            _digimonSprite.PlaySleep();
+        }
+
+        private void OnIdlePressed()
+        {
+            _digimonSprite.PlayIdle();
+        }
+        private void OnAngryPressed()
+        {
+            _digimonSprite.PlayAngry();
+        }
+        private void OnTrainPressed()
+        {
+            _digimonSprite.PlayTrain();
+        }
+        private void OnRefusePressed()
+        {
+            _digimonSprite.PlayRefuse();
         }
     }
 }

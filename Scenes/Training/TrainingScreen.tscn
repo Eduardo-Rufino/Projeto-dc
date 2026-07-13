@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ckcfwmpa2eysu"]
 
 [ext_resource type="Script" uid="uid://baiglcsiaxsna" path="res://Scripts/UI/TrainingScreen.cs" id="1_agswk"]
+[ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="2_476de"]
 
 [node name="TrainingScreen" type="Control" unique_id=571400761]
 layout_mode = 3
@@ -36,11 +37,15 @@ layout_mode = 2
 layout_mode = 2
 text = "0"
 
-[node name="Portrait" type="TextureRect" parent="MarginContainer/VBoxContainer" unique_id=1117543805]
-custom_minimum_size = Vector2(64, 64)
+[node name="HBoxContainer5" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=923589939]
 layout_mode = 2
-expand_mode = 3
-stretch_mode = 5
+
+[node name="DigimonDisplay" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer5" unique_id=700520545]
+custom_minimum_size = Vector2(140, 150)
+layout_mode = 2
+
+[node name="DigimonSprite" parent="MarginContainer/VBoxContainer/HBoxContainer5/DigimonDisplay" unique_id=2065239916 instance=ExtResource("2_476de")]
+position = Vector2(70, 70)
 
 [node name="Separation1" type="Label" parent="MarginContainer/VBoxContainer" unique_id=328927928]
 layout_mode = 2

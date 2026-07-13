@@ -1,5 +1,6 @@
 using Godot;
 using ProjetoDC.Enums;
+using ProjetoDC.Scripts.Gameplay;
 using System;
 using System.Threading.Tasks;
 
@@ -14,6 +15,8 @@ namespace ProjetoDC.Scripts.Systems.Battle
         public BattleSystem Battle => _battle;
 
         public event Action<BattleResult> BattleFinished;
+        public event Action<DigimonInstance> AttackStarted;
+        public event Action<DigimonInstance> DamageReceived;
 
         public void Init(BattleSystem battle)
         {
@@ -68,21 +71,70 @@ namespace ProjetoDC.Scripts.Systems.Battle
                 SceneTreeTimer.SignalName.Timeout);
         }
 
-        public async void ExecuteNextTurn()
+        private async Task PlayerTurn()
+        {
+            AttackStarted?.Invoke(_battle.Player);
+
+            await Wait(500);
+
+            _battle.PlayerAttack();
+
+            DamageReceived?.Invoke(_battle.Enemy);
+
+            await Wait(500);
+        }
+
+        private async Task EnemyTurn()
+        {
+            AttackStarted?.Invoke(_battle.Enemy);
+
+            await Wait(500);
+
+            _battle.EnemyAttack();
+
+            DamageReceived?.Invoke(_battle.Player);
+
+            await Wait(500);
+        }
+
+        private void EndBattle()
+        {
+            _running = false;
+
+            var result = _battle.CheckBattleStatus();
+
+            BattleFinished?.Invoke(result);
+        }
+
+        private async Task ExecuteNextTurn()
         {
             if (!_running)
                 return;
 
-            var result = _battle.ExecuteTurn();
-
-            if(result != BattleResult.Ongoing)
+            if (_battle.PlayerHasTurn())
             {
-                _running = false;
-                BattleFinished?.Invoke(result);
-                return;
-            }
+                await PlayerTurn();
 
-            await Wait(800);
+                if (_battle.CheckBattleStatus() != BattleResult.Ongoing)
+                {
+                    EndBattle();
+                    return;
+                }
+
+                await EnemyTurn();
+            }
+            else
+            {
+                await EnemyTurn();
+
+                if (_battle.CheckBattleStatus() != BattleResult.Ongoing)
+                {
+                    EndBattle();
+                    return;
+                }
+
+                await PlayerTurn();
+            }
 
             ExecuteNextTurn();
         }

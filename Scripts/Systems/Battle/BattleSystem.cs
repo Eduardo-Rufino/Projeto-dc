@@ -159,6 +159,16 @@ namespace ProjetoDC.Scripts.Systems.Battle
             return damage;
         }
 
+        public bool PlayerHasTurn()
+        {
+            return _player.CurrentStats.Speed >= _enemy.CurrentStats.Speed;
+        }
+
+        public BattleResult CheckBattleStatus()
+        {
+            return CheckBattleEnd();
+        }
+
         /// <summary>
         /// Executa um turno completo respeitando a ordem por velocidade.
         /// - Se a batalha já terminou, retorna estado em andamento.

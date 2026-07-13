@@ -2,6 +2,7 @@ using Godot;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;

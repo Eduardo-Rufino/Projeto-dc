@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://o4jewkemibht"]
 
 [ext_resource type="Script" uid="uid://capagsrcxrjow" path="res://Scripts/UI/BattleScreen.cs" id="1_adk3m"]
+[ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="2_3m5pg"]
 
 [node name="BattleScreen" type="Control" unique_id=523994927]
 layout_mode = 3
@@ -19,38 +20,68 @@ offset_bottom = 40.0
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1995883520]
 layout_mode = 2
 
-[node name="PlayerSprite" type="Sprite2D" parent="MarginContainer/VBoxContainer" unique_id=266670387]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1576507832]
+layout_mode = 2
 
-[node name="PlayerNameLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=609264200]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1305427539]
+layout_mode = 2
+
+[node name="PlayerDigimonDisplay" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1362220726]
+layout_mode = 2
+
+[node name="DigimonDisplay" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/PlayerDigimonDisplay" unique_id=322360215]
+custom_minimum_size = Vector2(140, 150)
+layout_mode = 2
+
+[node name="DigimonSprite" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/PlayerDigimonDisplay/DigimonDisplay" unique_id=2065239916 instance=ExtResource("2_3m5pg")]
+position = Vector2(70, 70)
+
+[node name="PlayerNameLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=609264200]
 layout_mode = 2
 text = "---"
 
-[node name="PlayerHpLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=821462748]
+[node name="PlayerHpLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=821462748]
 layout_mode = 2
 text = "0/0"
 
-[node name="PlayerHpProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer" unique_id=1569677466]
+[node name="PlayerHpProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1569677466]
+layout_mode = 2
+value = 100.0
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=526976341]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3" unique_id=1980762336]
+layout_mode = 2
+text = "           "
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=108484207]
+layout_mode = 2
+
+[node name="EnemyDigimonDisplay" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1393511467]
+layout_mode = 2
+
+[node name="DigimonDisplay" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/EnemyDigimonDisplay" unique_id=433677124]
+custom_minimum_size = Vector2(140, 150)
+layout_mode = 2
+
+[node name="DigimonSprite" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/EnemyDigimonDisplay/DigimonDisplay" unique_id=102774354 instance=ExtResource("2_3m5pg")]
+position = Vector2(70, 70)
+
+[node name="EnemyNameLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=687677004]
+layout_mode = 2
+text = "---"
+
+[node name="EnemyHpLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=596760138]
+layout_mode = 2
+text = "0/0"
+
+[node name="EnemyHpProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1553733481]
 layout_mode = 2
 value = 100.0
 
 [node name="Separation" type="Label" parent="MarginContainer/VBoxContainer" unique_id=79170120]
 layout_mode = 2
-text = "------------------X-------------------"
-
-[node name="EnemySprite" type="Sprite2D" parent="MarginContainer/VBoxContainer" unique_id=104279350]
-position = Vector2(0, 116)
-
-[node name="EnemyNameLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=687677004]
-layout_mode = 2
-text = "---"
-
-[node name="EnemyHpLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=596760138]
-layout_mode = 2
-text = "0/0"
-
-[node name="EnemyHpProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer" unique_id=1553733481]
-layout_mode = 2
-value = 100.0
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=186393074]
 layout_mode = 2

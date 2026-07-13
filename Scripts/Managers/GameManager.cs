@@ -9,6 +9,7 @@ using ProjetoDC.Scripts.Systems.Evolution;
 using ProjetoDC.Scripts.Systems.Results;
 using ProjetoDC.Scripts.Systems.Training;
 using ProjetoDC.Scripts.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,6 +29,8 @@ namespace ProjetoDC.Scripts.Managers
         /// <summary>Digimon inimigo atual para batalhas.</summary>
         public DigimonInstance EnemyDigimon { get; private set; }
         public List<DigimonInstance> GeneratedEnemies { get; private set; } = new();
+
+        public event Action DigimonListChanged;
 
         /// <summary>Sistema de batalha ativo quando iniciado.</summary>
         public BattleSystem BattleSystem { get; private set; }

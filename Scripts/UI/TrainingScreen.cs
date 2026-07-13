@@ -37,6 +37,7 @@ namespace ProjetoDC.Scripts.UI
         public event Action BackPressed;
 
         private GameManager Game => GameManager.Instance;
+        private DigimonSprite _digimonSprite;
 
         public override void _Ready()
         {
@@ -51,6 +52,17 @@ namespace ProjetoDC.Scripts.UI
             {
                 GD.PrintErr("DatabaseManager ainda não inicializado!");
                 return;
+            }
+
+            _digimonSprite = GetNodeOrNull<DigimonSprite>("MarginContainer/VBoxContainer/HBoxContainer5/DigimonDisplay/DigimonSprite");
+
+            if (_digimonSprite != null)
+            {
+                _digimonSprite.SetDigimon("agumon");
+            }
+            else
+            {
+                GD.PrintErr("DigimonSprite não encontrado");
             }
 
             // carregar nós da UI com segurança
@@ -102,6 +114,10 @@ namespace ProjetoDC.Scripts.UI
                     }
                 }
 
+                if (_digimonSprite != null)
+                {
+                    _digimonSprite.SetDigimon(player.BaseData.Code);
+                }
 
                 // portrait
                 if (_portrait != null)
@@ -187,6 +203,32 @@ namespace ProjetoDC.Scripts.UI
             }
         }
 
+        //TODO: Aguardar a animação acabar para poder treinar novamente. Atualmente é possivel clicar varias
+        //vezes no mesmo botão ou em botões diferentes e o treino será executado várias vezes, mesmo com a animação
+        //ainda em execução e com apenas uma unica animação de treino o status aumenta varias vezes.
+        private async System.Threading.Tasks.Task ExecuteTraining(TrainingType type)
+        {
+            if (_digimonSprite == null)
+                return;
+
+            // começa animação
+            _digimonSprite.PlayTrain();
+
+            // espera animação acabar
+            await ToSignal(
+                _digimonSprite._sprite,
+                AnimatedSprite2D.SignalName.AnimationFinished
+            );
+
+            // executa o treino
+            Game.TrainPlayer(type);
+
+            RefreshUI();
+
+            // volta para idle
+            _digimonSprite.PlayIdle();
+        }
+
         private void OnAdvanceDayPressed()
         {
             Game.AdvanceDay();
@@ -194,46 +236,34 @@ namespace ProjetoDC.Scripts.UI
             RefreshUI();
         }
 
-        private void OnTrainHealthPointsButtonPressed()
+        private async void OnTrainHealthPointsButtonPressed()
         {
-            Game.TrainPlayer(TrainingType.HealthPoints);
-
-            RefreshUI();
+            await ExecuteTraining(TrainingType.HealthPoints);
         }
 
-        private void OnTrainAttackButtonPressed()
+        private async void OnTrainAttackButtonPressed()
         {
-            Game.TrainPlayer(TrainingType.Attack);
-
-            RefreshUI();
+            await ExecuteTraining(TrainingType.Attack);
         }
 
-        private void OnTrainDefenseButtonPressed()
+        private async void OnTrainDefenseButtonPressed()
         {
-            Game.TrainPlayer(TrainingType.Defense);
-
-            RefreshUI();
+            await ExecuteTraining(TrainingType.Defense);
         }
 
-        private void OnTrainSpecialAttackButtonPressed()
+        private async void OnTrainSpecialAttackButtonPressed()
         {
-            Game.TrainPlayer(TrainingType.SpecialAttack);
-
-            RefreshUI();
+            await ExecuteTraining(TrainingType.SpecialAttack);
         }
 
-        private void OnTrainSpecialDefenseButtonPressed()
+        private async void OnTrainSpecialDefenseButtonPressed()
         {
-            Game.TrainPlayer(TrainingType.SpecialDefense);
-
-            RefreshUI();
+            await ExecuteTraining(TrainingType.SpecialDefense);
         }
 
-        private void OnTrainSpeedButtonPressed()
+        private async void OnTrainSpeedButtonPressed()
         {
-            Game.TrainPlayer(TrainingType.Speed);
-
-            RefreshUI();
+            await ExecuteTraining(TrainingType.Speed);
         }
 
         private void OnBackPressed()

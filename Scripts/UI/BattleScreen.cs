@@ -1,5 +1,6 @@
 using Godot;
 using ProjetoDC.Enums;
+using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Systems.Battle;
 using System;
@@ -19,8 +20,8 @@ namespace ProjetoDC.Scripts.UI
         private ProgressBar _playerHpProgressBar;
         private ProgressBar _enemyHpProgressBar;
 
-        private TextureRect _playerSprite;
-        private TextureRect _enemySprite;
+        private DigimonSprite _playerSprite;
+        private DigimonSprite _enemySprite;
 
         public event Action BackPressed;
 
@@ -45,6 +46,9 @@ namespace ProjetoDC.Scripts.UI
             _controller.Init(_battle);
 
             _controller.BattleFinished += OnBattleFinished;
+
+            _controller.AttackStarted += OnAttackStarted;
+            _controller.DamageReceived += OnDamageReceived;
 
             RefreshUI();
 
@@ -87,11 +91,8 @@ namespace ProjetoDC.Scripts.UI
                 // portrait
                 if (_playerSprite != null)
                 {
-                    string path = $"{SpriteFolder}{player.BaseData.Code}.png";
-                    if (ResourceLoader.Exists(path))
-                        _playerSprite.Texture = GD.Load<Texture2D>(path);
-                    else
-                        _playerSprite.Texture = null;
+                    _playerSprite.SetDigimon(player.BaseData.Code);
+                    _playerSprite.SetFlip(true);
                 }
             }
             if (enemy != null)
@@ -110,12 +111,8 @@ namespace ProjetoDC.Scripts.UI
                 // portrait
                 if (_enemySprite != null)
                 {
-                    string path = $"{SpriteFolder}{enemy.BaseData.Code}.png";
-
-                    if (ResourceLoader.Exists(path))
-                        _enemySprite.Texture = GD.Load<Texture2D>(path);
-                    else
-                        _enemySprite.Texture = null;
+                    _enemySprite.SetDigimon(enemy.BaseData.Code);
+                    _enemySprite.SetFlip(false);
                 }
             }
         }
@@ -125,19 +122,18 @@ namespace ProjetoDC.Scripts.UI
             var basePath = "MarginContainer/VBoxContainer/";
 
             // Nó de sprites
-            _playerSprite = GetNodeOrNull<TextureRect>($"{basePath}PlayerSprite");
-            _enemySprite = GetNodeOrNull<TextureRect>($"{basePath}EnemySprite");
+            _playerSprite = GetNodeOrNull<DigimonSprite>($"{basePath}HBoxContainer/VBoxContainer/PlayerDigimonDisplay/DigimonDisplay/DigimonSprite");
+            _enemySprite = GetNodeOrNull<DigimonSprite>($"{basePath}HBoxContainer/VBoxContainer2/EnemyDigimonDisplay/DigimonDisplay/DigimonSprite");
 
             // Labels principais
-            _playerNameLabel = GetNodeOrNull<Label>($"{basePath}PlayerNameLabel");
-            _enemyNameLabel = GetNodeOrNull<Label>($"{basePath}EnemyNameLabel");
-            _playerHpLabel = GetNodeOrNull<Label>($"{basePath}PlayerHpLabel");
-            _enemyHpLabel = GetNodeOrNull<Label>($"{basePath}EnemyHpLabel");
-
+            _playerNameLabel = GetNodeOrNull<Label>($"{basePath}HBoxContainer/VBoxContainer/PlayerNameLabel");
+            _enemyNameLabel = GetNodeOrNull<Label>($"{basePath}HBoxContainer/VBoxContainer2/EnemyNameLabel");
+            _playerHpLabel = GetNodeOrNull<Label>($"{basePath}HBoxContainer/VBoxContainer/PlayerHpLabel");
+            _enemyHpLabel = GetNodeOrNull<Label>($"{basePath}HBoxContainer/VBoxContainer2/EnemyHpLabel");
 
             // ProgressBars
-            _playerHpProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}PlayerHpProgressBar");
-            _enemyHpProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}EnemyHpProgressBar");
+            _playerHpProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}HBoxContainer/VBoxContainer/PlayerHpProgressBar");
+            _enemyHpProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}HBoxContainer/VBoxContainer2/EnemyHpProgressBar");
         }
 
         private void OnBackPressed()
@@ -152,18 +148,47 @@ namespace ProjetoDC.Scripts.UI
             _controller.StartBattle();
         }
 
+        private void OnAttackStarted(DigimonInstance digimon)
+        {
+            if (digimon == _battle.Player)
+            {
+                _playerSprite.PlayAttack();
+            }
+            else if (digimon == _battle.Enemy)
+            {
+                _enemySprite.PlayAttack();
+            }
+        }
+
+        private void OnDamageReceived(DigimonInstance digimon)
+        {
+            if (digimon == _battle.Player)
+            {
+                _playerSprite.PlayHit();
+            }
+            else if (digimon == _battle.Enemy)
+            {
+                _enemySprite.PlayHit();
+            }
+        }
+
         private void OnBattleFinished(BattleResult result)
         {
             switch (result)
             {
                 case BattleResult.PlayerWon:
-                    GD.Print("Vitória!");
+
+                    _enemySprite.PlayDeath();
+                    _playerSprite.PlayVictory();
 
                     GameManager.Instance.ApplyBattleReward(result);
                     break;
 
+
                 case BattleResult.EnemyWon:
-                    GD.Print("Derrota!");
+
+                    _playerSprite.PlayDeath();
+                    _enemySprite.PlayVictory();
 
                     GameManager.Instance.ApplyBattleReward(result);
                     break;
