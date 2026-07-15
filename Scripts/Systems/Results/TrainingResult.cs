@@ -2,7 +2,7 @@ using ProjetoDC.Scripts.Core.Results;
 
 namespace ProjetoDC.Scripts.Systems.Results
 {
-    public class TrainingResult : SystemResults
+    public class TrainingResult : SystemResult
     {
         public int HealthPointsGained { get; set; }
 

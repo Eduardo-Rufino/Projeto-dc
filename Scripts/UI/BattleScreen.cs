@@ -22,6 +22,7 @@ namespace ProjetoDC.Scripts.UI
 
         private DigimonSprite _playerSprite;
         private DigimonSprite _enemySprite;
+        private BattleResultScreen _battleResultScreen;
 
         public event Action BackPressed;
 
@@ -134,6 +135,18 @@ namespace ProjetoDC.Scripts.UI
             // ProgressBars
             _playerHpProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}HBoxContainer/VBoxContainer/PlayerHpProgressBar");
             _enemyHpProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}HBoxContainer/VBoxContainer2/EnemyHpProgressBar");
+
+            _battleResultScreen = GetNodeOrNull<BattleResultScreen>("BattleResultScreen");
+            GD.Print($"BattleScreen Size: {Size}");
+            GD.Print($"BattleResult Size: {_battleResultScreen.Size}");
+            if (_battleResultScreen != null)
+            {
+                _battleResultScreen.OkPressed += OnBattleResultOkPressed;
+            }
+            else
+            {
+                GD.PrintErr("BattleResultScreen não encontrado!");
+            }
         }
 
         private void OnBackPressed()
@@ -172,7 +185,7 @@ namespace ProjetoDC.Scripts.UI
             }
         }
 
-        private void OnBattleFinished(BattleResult result)
+        private async void OnBattleFinished(BattleResult result)
         {
             switch (result)
             {
@@ -184,7 +197,6 @@ namespace ProjetoDC.Scripts.UI
                     GameManager.Instance.ApplyBattleReward(result);
                     break;
 
-
                 case BattleResult.EnemyWon:
 
                     _playerSprite.PlayDeath();
@@ -193,11 +205,22 @@ namespace ProjetoDC.Scripts.UI
                     GameManager.Instance.ApplyBattleReward(result);
                     break;
             }
+
+            await ToSignal(
+                GetTree().CreateTimer(1.5f),
+                SceneTreeTimer.SignalName.Timeout);
+
+            _battleResultScreen.ShowResult(result);
         }
 
         public void StopBattle()
         {
             _controller.StopBattle();
+        }
+
+        private void OnBattleResultOkPressed()
+        {
+            BackPressed?.Invoke();
         }
     }
 }

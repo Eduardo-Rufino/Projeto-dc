@@ -71,6 +71,17 @@ text = "---"
 layout_mode = 2
 text = "---"
 
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1106345706]
+layout_mode = 2
+
+[node name="HungryLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer4" unique_id=350857516]
+layout_mode = 2
+text = "0/0"
+
+[node name="FeedButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer4" unique_id=1120500862]
+layout_mode = 2
+text = "Feed"
+
 [node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=196098962]
 layout_mode = 2
 text = "0"

@@ -1,4 +1,5 @@
 using Godot;
+using System.Threading.Tasks;
 
 namespace ProjetoDC.Scripts.UI
 {
@@ -99,6 +100,41 @@ namespace ProjetoDC.Scripts.UI
             }
         }
 
+        public async Task PlayTemporary(string animation, int loops = 1)
+        {
+            for (int i = 0; i < loops; i++)
+            {
+                _sprite.Play(animation);
+
+                await ToSignal(_sprite, AnimatedSprite2D.SignalName.AnimationFinished);
+            }
+
+            PlayIdle();
+        }
+
+        public async Task PlayEat(int loops = 2)
+        {
+            for (int i = 0; i < loops; i++)
+            {
+                _sprite.Play("Eat");
+
+                await ToSignal(_sprite, AnimatedSprite2D.SignalName.AnimationFinished);
+            }
+
+            PlayIdle();
+        }
+
+        public async Task PlayRefuse(int loops = 2)
+        {
+            for (int i = 0; i < loops; i++)
+            {
+                _sprite.Play("Refuse");
+                await ToSignal(_sprite, AnimatedSprite2D.SignalName.AnimationFinished);
+            }
+
+            PlayIdle();
+        }
+
         public void SetFlip(bool flipped)
         {
             _sprite.FlipH = flipped;
@@ -114,19 +150,9 @@ namespace ProjetoDC.Scripts.UI
             _sprite.Play("Idle");
         }
 
-        public void PlayEat()
-        {
-            _sprite.Play("Eat");
-        }
-
         public void PlaySleep()
         {
             _sprite.Play("Sleep");
-        }
-
-        public void PlayRefuse()
-        {
-            _sprite.Play("Refuse");
         }
 
         public void PlayHappy()

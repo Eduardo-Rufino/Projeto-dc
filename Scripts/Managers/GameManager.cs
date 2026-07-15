@@ -1,5 +1,6 @@
 using Godot;
 using ProjetoDC.Enums;
+using ProjetoDC.Scripts.Core.Results;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Save;
 using ProjetoDC.Scripts.Systems.Battle;
@@ -164,8 +165,23 @@ namespace ProjetoDC.Scripts.Managers
             foreach (var digimon in Save.Center.Digimons)
             {
                 digimon.AdvanceDays(days);
-                TryToEvolve(PlayerDigimon);
+                TryToEvolve(digimon);
             }            
+        }
+
+        public SystemResult FeedPlayer()
+        {
+            return FeedDigimon(PlayerDigimon);
+        }
+
+        public SystemResult FeedDigimon(DigimonInstance digimon)
+        {
+            if (digimon.Hunger >= digimon.MaxHunger)
+                return SystemResult.Fail("O Digimon não está com fome.");
+
+            digimon.Feed(10);
+
+            return SystemResult.Ok("O Digimon foi alimentado.");
         }
 
         /// <summary>

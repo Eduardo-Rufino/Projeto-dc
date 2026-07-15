@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://capagsrcxrjow" path="res://Scripts/UI/BattleScreen.cs" id="1_adk3m"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="2_3m5pg"]
+[ext_resource type="PackedScene" uid="uid://c5mnilcm2vrfn" path="res://Scenes/Battle/BattleResultScreen.tscn" id="2_sqvdo"]
 
 [node name="BattleScreen" type="Control" unique_id=523994927]
 layout_mode = 3
@@ -11,6 +12,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_adk3m")
+
+[node name="BattleResultScreen" parent="." unique_id=761376058 instance=ExtResource("2_sqvdo")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=767816792]
 layout_mode = 0

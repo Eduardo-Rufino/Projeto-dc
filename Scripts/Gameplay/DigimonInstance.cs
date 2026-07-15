@@ -22,6 +22,10 @@ namespace ProjetoDC.Scripts.Gameplay
         public int AgeInDays { get; private set; }
         public int CapacityCost { get; private set; }
 
+        public int Hunger { get; set; }
+
+        public int MaxHunger => 100;
+
         public BaseStats CurrentStats { get; private set; }
         public int Stamina { get; internal set; } = 10000;
 
@@ -36,6 +40,8 @@ namespace ProjetoDC.Scripts.Gameplay
 
             BaseData = baseData;
             CapacityCost = GetCapacityCostForStage(baseData.Stage);
+
+            Hunger = MaxHunger;
 
             if (baseData == null)
                 throw new Exception("DigimonData não encontrado no Construtor");
@@ -184,6 +190,29 @@ namespace ProjetoDC.Scripts.Gameplay
         public void AdvanceDays(int days = 1)
         {
             AgeInDays += days;
+
+            ConsumeHunger(days);
+        }
+
+        private void ConsumeHunger(int days)
+        {
+            Hunger -= days * 10;
+
+            if (Hunger < 0)
+                Hunger = 0;
+        }
+
+        public bool IsHungry()
+        {
+            return Hunger <= MaxHunger;
+        }
+
+        public void Feed(int amount)
+        {
+            Hunger = Math.Min(MaxHunger, Hunger + amount);
+
+            if (Hunger > MaxHunger)
+                Hunger = MaxHunger;
         }
 
         public void RestoreHealth()

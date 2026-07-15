@@ -4,6 +4,7 @@ using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.Systems;
+using System.Threading.Tasks;
 
 namespace ProjetoDC.Scripts.UI
 {
@@ -13,6 +14,7 @@ namespace ProjetoDC.Scripts.UI
 
         private Label _nameLabel;
         private Label _levelLabel;
+        private Label _hungryLabel;
         private Label _expLabel;
         private Label _ageInDaysLabel;
 
@@ -23,6 +25,7 @@ namespace ProjetoDC.Scripts.UI
         private Button _trainButton;
         private Button _battleButton;
         private Button _advanceDayButton;
+        private Button _feedButton;
 
         private OptionButton _playerOption;
 
@@ -136,6 +139,7 @@ namespace ProjetoDC.Scripts.UI
 
             _nameLabel = GetNodeOrNull<Label>($"{basePath}NameLabel");
             _levelLabel = GetNodeOrNull<Label>($"{basePath}LevelLabel");
+            _hungryLabel = GetNodeOrNull<Label>($"{basePath}HBoxContainer4/HungryLabel");
             _expLabel = GetNodeOrNull<Label>($"{basePath}ExpLabel");
             _ageInDaysLabel = GetNodeOrNull<Label>($"{basePath}AgeInDaysLabel");
             _bitsLabel = GetNodeOrNull<Label>($"{basePath}BitsLabel");
@@ -153,8 +157,10 @@ namespace ProjetoDC.Scripts.UI
             var buttonPath = $"{basePath}HBoxContainer/";
             _trainButton = GetNodeOrNull<Button>($"{buttonPath}TrainButton");
             _battleButton = GetNodeOrNull<Button>($"{buttonPath}BattleButton");
+            _feedButton = GetNodeOrNull<Button>($"{basePath}HBoxContainer4/FeedButton");
 
             if (_advanceDayButton != null) _advanceDayButton.ButtonUp += OnAdvanceDayPressed;
+            if (_feedButton != null) _feedButton.ButtonUp += OnFeedButtonPressed;
         }
 
         public void RefreshUI()
@@ -187,6 +193,7 @@ namespace ProjetoDC.Scripts.UI
             {
                 if (_nameLabel != null) _nameLabel.Text = $"Nome: {player.BaseData.Name}";
                 if (_levelLabel != null) _levelLabel.Text = $"Level: {player.Level}";
+                if (_hungryLabel != null) _hungryLabel.Text = $"Hunger: {player.Hunger}/{player.MaxHunger}";
                 if (_expLabel != null)
                 {
                     _expLabel.Text = $"EXP: {player.Experience}/{player.ExperienceToNextLevel}";
@@ -222,6 +229,13 @@ namespace ProjetoDC.Scripts.UI
             }
         }
 
+        private async Task Wait(float seconds)
+        {
+            await ToSignal(
+                GetTree().CreateTimer(seconds),
+                SceneTreeTimer.SignalName.Timeout);
+        }
+
         public void RefreshDigimonList()
         {
             // Atualizar lista de digimons do player
@@ -240,33 +254,23 @@ namespace ProjetoDC.Scripts.UI
             RefreshUI();
         }
 
-        /*
-        private void OnBattleButtonPressed()
+        private async void OnFeedButtonPressed()
         {
-            if (Game.BattleSystem == null)
+            var result = Game.FeedPlayer();
+
+            if (result.Success)
             {
-                GD.PrintErr("BattleSystem nulo. Certifique-se de que Player e Enemy estão definidos.");
-                return;
+                await _digimonSprite.PlayEat();
+            }
+            else
+            {
+                await _digimonSprite.PlayRefuse();
             }
 
-            var result = Game.BattleSystem.ExecuteTurn();
-
-            switch (result)
-            {
-                case BattleResult.PlayerWon:
-                    GD.Print("Você venceu!");
-                    if (Game.PlayerDigimon != null) Game.PlayerDigimon.GainExperience(540);                    
-                    Game.TryToEvolve(Game.PlayerDigimon);
-                    break;
-                case BattleResult.EnemyWon:
-                    GD.Print("Você perdeu!");
-                    break;
-            }
+            await Wait(1.5f);
 
             RefreshUI();
         }
-        */
-
         private void OnPlayerDigimonOptionItemSelected(long index)
         {
             int id = _playerOption?.GetItemId((int)index) ?? -1;
