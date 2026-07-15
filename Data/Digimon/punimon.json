@@ -1,0 +1,20 @@
+{
+  "id": 26,
+  "code": "punimon",
+  "name": "Punimon",
+  "stage": "Baby",
+  "role": "Warrior",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Beast",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 20,
+    "physicalDamage": 5,
+    "physicalDefense": 5,
+    "specialDamage": 6,
+    "specialDefense": 4,
+    "speed": 7
+  }
+}

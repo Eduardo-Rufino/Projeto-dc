@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bbgnma0dks5kn"]
+
+[ext_resource type="Script" uid="uid://2ybf3qiud0ng" path="res://Scripts/UI/DigimonSprite.cs" id="1_4ppq8"]
+
+[node name="DigimonSprite" type="Node2D" unique_id=2065239916]
+script = ExtResource("1_4ppq8")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=472485612]
+scale = Vector2(3, 3)

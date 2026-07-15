@@ -1,0 +1,20 @@
+{
+  "id": 7,
+  "code": "guilmon",
+  "name": "Guilmon",
+  "stage": "Rookie",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 50,
+    "physicalDamage": 25,
+    "physicalDefense": 15,
+    "specialDamage": 12,
+    "specialDefense": 15,
+    "speed": 20
+  }
+}

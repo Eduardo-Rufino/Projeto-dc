@@ -1,0 +1,20 @@
+{
+  "id": 31,
+  "code": "tokomon",
+  "name": "Tokomon",
+  "stage": "InTraining",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 45,
+    "physicalDamage": 12,
+    "physicalDefense": 7,
+    "specialDamage": 9,
+    "specialDefense": 7,
+    "speed": 11
+  }
+}

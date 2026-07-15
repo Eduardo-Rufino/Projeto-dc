@@ -14,14 +14,13 @@ namespace ProjetoDC.Scripts.Models.World
     {
         public int Bits { get; private set; }
         public int CapacityLimit { get; private set; }
-        public int CapacityUsed { get; private set; }
+        public int CapacityUsed => Digimons.Sum(d => d.CapacityCost);
 
         public List<DigimonInstance> Digimons { get; } = new();
 
         public CenterState() { 
             Bits = 0;
             CapacityLimit = 10;
-            CapacityUsed = 0;
         }
 
         public void AddBits(int amount)
@@ -51,8 +50,6 @@ namespace ProjetoDC.Scripts.Models.World
             {
                 return false;
             }
-
-            CapacityUsed += amount;
             return true;
         }
 
@@ -64,16 +61,11 @@ namespace ProjetoDC.Scripts.Models.World
                 return;
             }
             Digimons.Add(digimon);
-            CapacityUsed += digimon.CapacityCost;
         }
 
         public void RemoveDigimon(DigimonInstance digimon)
         {
-            if(Digimons.Remove(digimon))
-            {
-                CapacityUsed -= digimon.CapacityCost;
-            }
-            else
+            if(!Digimons.Remove(digimon))
             {
                 GD.Print("Digimon não encontrado no Center.");
             }

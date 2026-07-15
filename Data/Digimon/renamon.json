@@ -1,0 +1,20 @@
+{
+  "id": 9,
+  "code": "renamon",
+  "name": "Renamon",
+  "stage": "Rookie",
+  "role": "Assassin",
+  "Element": "Earth",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 45,
+    "physicalDamage": 15,
+    "physicalDefense": 12,
+    "specialDamage": 30,
+    "specialDefense": 11,
+    "speed": 28
+  }
+}

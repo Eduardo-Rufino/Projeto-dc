@@ -1,0 +1,125 @@
+[gd_scene format=3 uid="uid://ckcfwmpa2eysu"]
+
+[ext_resource type="Script" uid="uid://baiglcsiaxsna" path="res://Scripts/UI/TrainingScreen.cs" id="1_agswk"]
+[ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="2_476de"]
+
+[node name="TrainingScreen" type="Control" unique_id=571400761]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_agswk")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1265505003]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1335126031]
+layout_mode = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1053213663]
+layout_mode = 2
+
+[node name="CurrentDayLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer4" unique_id=280842939]
+layout_mode = 2
+text = "---"
+
+[node name="AdvanceDayButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer4" unique_id=1615155361]
+layout_mode = 2
+text = "Advance Day"
+
+[node name="BitsLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1722046821]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1313228558]
+layout_mode = 2
+
+[node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=520440853]
+layout_mode = 2
+text = "0"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=923589939]
+layout_mode = 2
+
+[node name="DigimonDisplay" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer5" unique_id=700520545]
+custom_minimum_size = Vector2(140, 150)
+layout_mode = 2
+
+[node name="DigimonSprite" parent="MarginContainer/VBoxContainer/HBoxContainer5/DigimonDisplay" unique_id=2065239916 instance=ExtResource("2_476de")]
+position = Vector2(70, 70)
+
+[node name="Separation1" type="Label" parent="MarginContainer/VBoxContainer" unique_id=328927928]
+layout_mode = 2
+text = "-------------------------------------"
+
+[node name="MaxHpLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=966561204]
+layout_mode = 2
+text = "0/0"
+
+[node name="AttackLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2000926789]
+layout_mode = 2
+text = "0"
+
+[node name="DefenseLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=764097522]
+layout_mode = 2
+text = "0"
+
+[node name="SpeedLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1170796739]
+layout_mode = 2
+text = "0"
+
+[node name="SpecialAttackLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=846268901]
+layout_mode = 2
+text = "0"
+
+[node name="SpecialDefenseLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1169934579]
+layout_mode = 2
+text = "0"
+
+[node name="Separation2" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1990469840]
+layout_mode = 2
+text = "-------------------------------------"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1203541504]
+layout_mode = 2
+
+[node name="TrainHpButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1847906335]
+layout_mode = 2
+text = "Train HP"
+
+[node name="TrainSpeedButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2118603255]
+layout_mode = 2
+text = "Train Speed"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1324242817]
+layout_mode = 2
+
+[node name="TrainAttackButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1223890726]
+layout_mode = 2
+text = "Train Attack"
+
+[node name="TrainDefenceButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1747776835]
+layout_mode = 2
+text = "Train Defense"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1830390532]
+layout_mode = 2
+
+[node name="TrainSpecialAttackButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer3" unique_id=513001082]
+layout_mode = 2
+text = "Train SP. Attack"
+
+[node name="TrainSpecialDefenseButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer3" unique_id=1884410083]
+layout_mode = 2
+text = "Train SP. Defence"
+
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1790879026]
+layout_mode = 2
+text = "Back"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TrainHpButton" to="." method="OnTrainHealthPointsButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TrainSpeedButton" to="." method="OnTrainSpeedButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/TrainAttackButton" to="." method="OnTrainAttackButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/TrainDefenceButton" to="." method="OnTrainDefenseButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer3/TrainSpecialAttackButton" to="." method="OnTrainSpecialAttackButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer3/TrainSpecialDefenseButton" to="." method="OnTrainSpecialDefenseButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BackButton" to="." method="OnBackPressed"]

@@ -1,0 +1,20 @@
+{
+  "id": 19,
+  "code": "gargomon",
+  "name": "Gargomon",
+  "stage": "Champion",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 220,
+    "physicalDamage": 70,
+    "physicalDefense": 29,
+    "specialDamage": 37,
+    "specialDefense": 24,
+    "speed": 43
+  }
+}

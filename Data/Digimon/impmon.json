@@ -1,0 +1,20 @@
+{
+  "id": 10,
+  "code": "impmon",
+  "name": "Impmon",
+  "stage": "Rookie",
+  "role": "Ranged",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 52,
+    "physicalDamage": 12,
+    "physicalDefense": 14,
+    "specialDamage": 26,
+    "specialDefense": 13,
+    "speed": 24
+  }
+}

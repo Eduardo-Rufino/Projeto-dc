@@ -1,0 +1,153 @@
+[gd_scene format=3 uid="uid://3pckhs66yga1"]
+
+[ext_resource type="Script" uid="uid://brebmxuq4ayrd" path="res://Scripts/UI/CenterScreen.cs" id="1_1jp0u"]
+[ext_resource type="PackedScene" uid="uid://ckcfwmpa2eysu" path="res://Scenes/Training/TrainingScreen.tscn" id="2_qfqpf"]
+[ext_resource type="PackedScene" uid="uid://o4jewkemibht" path="res://Scenes/Battle/BattleScreen.tscn" id="3_6nuvu"]
+[ext_resource type="PackedScene" uid="uid://cmrii5olt4sqp" path="res://Scenes/Battle/EnemySelectionScreen.tscn" id="4_6nuvu"]
+[ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="5_xxyam"]
+
+[node name="CenterScreen" type="Control" unique_id=301538438]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_1jp0u")
+
+[node name="TrainingScreen" parent="." unique_id=571400761 instance=ExtResource("2_qfqpf")]
+visible = false
+layout_mode = 0
+
+[node name="BattleScreen" parent="." unique_id=523994927 instance=ExtResource("3_6nuvu")]
+visible = false
+layout_mode = 1
+
+[node name="EnemySelectionScreen" parent="." unique_id=541953092 instance=ExtResource("4_6nuvu")]
+visible = false
+layout_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1171547869]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=356926371]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=399130586]
+layout_mode = 2
+
+[node name="CurrentDayLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=2001738886]
+layout_mode = 2
+text = "---"
+
+[node name="AdvanceDayButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1168126074]
+layout_mode = 2
+text = "Advance Day"
+
+[node name="BitsLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1451569526]
+layout_mode = 2
+text = "---"
+
+[node name="CapacityLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=692456588]
+layout_mode = 2
+text = "0/0"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=270502468]
+layout_mode = 2
+
+[node name="DigimonDisplay" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer3" unique_id=716056396]
+custom_minimum_size = Vector2(140, 150)
+layout_mode = 2
+
+[node name="DigimonSprite" parent="MarginContainer/VBoxContainer/HBoxContainer3/DigimonDisplay" unique_id=961464645 instance=ExtResource("5_xxyam")]
+position = Vector2(70, 70)
+
+[node name="PlayerDigimonOption" type="OptionButton" parent="MarginContainer/VBoxContainer" unique_id=1094233454]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1337625784]
+layout_mode = 2
+text = "---"
+
+[node name="AgeInDaysLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=477370333]
+layout_mode = 2
+text = "---"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1106345706]
+layout_mode = 2
+
+[node name="HungryLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer4" unique_id=350857516]
+layout_mode = 2
+text = "0/0"
+
+[node name="FeedButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer4" unique_id=1120500862]
+layout_mode = 2
+text = "Feed"
+
+[node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=196098962]
+layout_mode = 2
+text = "0"
+
+[node name="ExpLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1787184729]
+layout_mode = 2
+text = "0/0"
+
+[node name="ExpProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer" unique_id=1508497394]
+layout_mode = 2
+show_percentage = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=229684109]
+layout_mode = 2
+
+[node name="TrainButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1748437260]
+layout_mode = 2
+text = "Train"
+
+[node name="BattleButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=520440788]
+layout_mode = 2
+text = "Battle"
+
+[node name="IdleButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2076707452]
+layout_mode = 2
+text = "Idle"
+
+[node name="EatButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1021607959]
+layout_mode = 2
+text = "Eat"
+
+[node name="SleepButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1179013404]
+layout_mode = 2
+text = "Sleep
+"
+
+[node name="HappyButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1866698438]
+layout_mode = 2
+text = "Happy"
+
+[node name="AttackButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=78115186]
+layout_mode = 2
+text = "Attack"
+
+[node name="AngryButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1038503582]
+layout_mode = 2
+text = "Angry"
+
+[node name="TrainTestButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1036802023]
+layout_mode = 2
+text = "Train Test
+"
+
+[node name="RefuseButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=104313771]
+layout_mode = 2
+text = "Refuse"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/AdvanceDayButton" to="." method="OnAdvanceDayButtonPressed"]
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/PlayerDigimonOption" to="." method="OnPlayerDigimonOptionItemSelected"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TrainButton" to="." method="OnTrainButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/BattleButton" to="." method="OnBattleButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/IdleButton" to="." method="OnIdlePressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EatButton" to="." method="OnEatPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/SleepButton" to="." method="OnSleepPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/HappyButton" to="." method="OnHappyPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/AttackButton" to="." method="OnAttackPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/AngryButton" to="." method="OnAngryPressed"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/TrainTestButton" to="." method="OnTrainPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/RefuseButton" to="." method="OnRefusePressed"]

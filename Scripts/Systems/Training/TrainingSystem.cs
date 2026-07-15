@@ -26,6 +26,9 @@ namespace ProjetoDC.Scripts.Systems.Training
 
             switch (type)
             {
+                case TrainingType.HealthPoints:
+                    result.HealthPointsGained = 10;
+                    break;
                 case TrainingType.Attack:
                     result.PhysicDamageGained = 1;
                     break;
@@ -36,6 +39,12 @@ namespace ProjetoDC.Scripts.Systems.Training
 
                 case TrainingType.Speed:
                     result.SpeedGained = 1;
+                    break;
+                case TrainingType.SpecialAttack:
+                    result.SpecialDamageGained = 1;
+                    break;
+                case TrainingType.SpecialDefense:
+                    result.SpecialDefenseGained = 1;
                     break;
             }
 

@@ -3,10 +3,11 @@
   "code": "tentomon",
   "name": "Tentomon",
   "stage": "Rookie",
-  "role": "Ranged",
+  "role": "Tank",
   "Element": "Electric",
   "Attribute": "Vacine",
   "EggType": "Forest",
+  "AttackType": "Special",
 
   "BaseStats": {
     "healthPoints": 120,

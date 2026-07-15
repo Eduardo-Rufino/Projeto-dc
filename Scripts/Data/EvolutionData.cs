@@ -11,9 +11,8 @@ namespace ProjetoDC.Scripts.Data
         public int FromDigimonId { get; set; }
         public int ToDigimonId { get; set; }
         public int RequiredLevel { get; set; }
-
         public int RequiredAgeInDays { get; set; }
-        public int Priority { get; set; }
+        public EvolutionRequirements RequiredStats { get; set; }
         public float StatMultiplier { get; set; } = 1.2f;
     }
 }

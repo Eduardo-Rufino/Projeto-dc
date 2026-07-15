@@ -1,0 +1,20 @@
+{
+  "id": 24,
+  "code": "sunflowmon",
+  "name": "Sunflowmon",
+  "stage": "Champion",
+  "role": "Support",
+  "Element": "Earth",
+  "Attribute": "Data",
+  "EggType": "Forest",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 175,
+    "physicalDamage": 24,
+    "physicalDefense": 28,
+    "specialDamage": 60,
+    "specialDefense": 30,
+    "speed": 16
+  }
+}

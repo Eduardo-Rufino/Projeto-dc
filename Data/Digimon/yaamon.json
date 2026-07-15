@@ -1,0 +1,20 @@
+{
+  "id": 38,
+  "code": "yaamon",
+  "name": "Yaamon",
+  "stage": "InTraining",
+  "role": "Warrior",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 50,
+    "physicalDamage": 8,
+    "physicalDefense": 10,
+    "specialDamage": 7,
+    "specialDefense": 9,
+    "speed": 10
+  }
+}

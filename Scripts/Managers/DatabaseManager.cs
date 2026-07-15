@@ -7,6 +7,10 @@ using System.Text.Json.Serialization;
 
 namespace ProjetoDC.Scripts.Managers
 {
+    /// <summary>
+    /// Gerencia o carregamento e acesso aos dados estáticos de Digimons e evoluções.
+    /// Lê arquivos JSON de pastas específicas e mantém dicionários/listas em memória.
+    /// </summary>
     public partial class DatabaseManager : Node
     {
         public static DatabaseManager Instance { get; private set; }
@@ -32,6 +36,10 @@ namespace ProjetoDC.Scripts.Managers
             JsonOptions.Converters.Add(new JsonStringEnumConverter());
         }
 
+        /// <summary>
+        /// Carrega os arquivos JSON de digimons da pasta configurada e popula o dicionário interno.
+        /// Faz verificações básicas (arquivo aberto, extensão .json, IDs duplicados).
+        /// </summary>
         public void LoadDigimons()
         {
             string path = DigimonFolder;
@@ -74,18 +82,28 @@ namespace ProjetoDC.Scripts.Managers
                 }
 
                 string json = file.GetAsText();
-
-                DigimonData? digimon =
-                    JsonSerializer.Deserialize<DigimonData>(json, JsonOptions);
-
-                if (digimons.ContainsKey(digimon.Id))
+                try
                 {
-                    GD.PrintErr("ID duplicado: " + digimon.Id);
+
+                    DigimonData? digimon =
+                        JsonSerializer.Deserialize<DigimonData>(json, JsonOptions);
+                    if (digimons.ContainsKey(digimon.Id))
+                    {
+                        GD.PrintErr("ID duplicado: " + digimon.Id);
+                    }
+                    else
+                    {
+                        digimons.Add(digimon.Id, digimon);
+                    }
                 }
-                else
+                catch (JsonException ex)
                 {
-                    digimons.Add(digimon.Id, digimon);
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                    fileName = dir.GetNext();
+                    continue;
+
                 }
+                
 
                 fileName = dir.GetNext();
             }
@@ -93,6 +111,9 @@ namespace ProjetoDC.Scripts.Managers
             GD.Print("Digimons carregados: " + digimons.Count);
         }
 
+        /// <summary>
+        /// Retorna o <see cref="DigimonData"/> pelo ID, ou null se não encontrado.
+        /// </summary>
         public DigimonData GetDigimon(int id)
         {
             if (digimons.TryGetValue(id, out var digimon))
@@ -102,11 +123,17 @@ namespace ProjetoDC.Scripts.Managers
             return null;
         }
 
+        /// <summary>
+        /// Retorna todos os Digimons carregados ordenados por ID.
+        /// </summary>
         public IEnumerable<DigimonData> GetAllDigimons()
         {
             return digimons.Values.OrderBy(d => d.Id);
         }
 
+        /// <summary>
+        /// Carrega arquivos de evoluções (listas) da pasta de evoluções e popula a lista interna.
+        /// </summary>
         public void LoadEvolutions()
         {
             string path = "res://Data/Evolutions/";
@@ -171,6 +198,9 @@ namespace ProjetoDC.Scripts.Managers
             GD.Print($"Total de evoluções carregadas: {evolutions.Count}");
         }
 
+        /// <summary>
+        /// Retorna a lista de evoluções originadas de um digimon específico.
+        /// </summary>
         public List<EvolutionData> GetEvolutionsFrom(int digimonId)
         {
             var evoList = evolutions.Where(e => e.FromDigimonId == digimonId).ToList();
@@ -181,17 +211,18 @@ namespace ProjetoDC.Scripts.Managers
             foreach (var evo in evoList)
             {
                 string toName = GetDigimonName(evo.ToDigimonId);
-                GD.Print($"  → Evolui para {toName} (Nível {evo.RequiredLevel})");
             }
             
             return evoList;
         }
 
+        /// <summary>
+        /// Recupera o nome do digimon pelo ID, usado apenas para logs/legibilidade.
+        /// </summary>
         private string GetDigimonName(int id)
         {
             var digimon = GetDigimon(id);
             return digimon?.Name ?? $"Desconhecido (ID {id})";
         }
-
     }
 }
