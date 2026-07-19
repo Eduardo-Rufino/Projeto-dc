@@ -12,8 +12,10 @@ namespace ProjetoDC.Scripts.Models.World
 {
     public partial class CenterState
     {
-        public int Bits { get; private set; }
-        public int CapacityLimit { get; private set; }
+        public int Bits { get; set; }
+        public int CapacityLimit { get; set; }
+        public int Meat { get; set; } = 100;
+        public int Medicine { get; set; } = 50;
         public int CapacityUsed => Digimons.Sum(d => d.CapacityCost);
 
         public List<DigimonInstance> Digimons { get; } = new();

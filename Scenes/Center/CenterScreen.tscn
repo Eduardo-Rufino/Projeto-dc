@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://ckcfwmpa2eysu" path="res://Scenes/Training/TrainingScreen.tscn" id="2_qfqpf"]
 [ext_resource type="PackedScene" uid="uid://o4jewkemibht" path="res://Scenes/Battle/BattleScreen.tscn" id="3_6nuvu"]
 [ext_resource type="PackedScene" uid="uid://cmrii5olt4sqp" path="res://Scenes/Battle/EnemySelectionScreen.tscn" id="4_6nuvu"]
+[ext_resource type="PackedScene" uid="uid://pr5s0dygmvkt" path="res://Scenes/Shop/ShopScreen.tscn" id="5_1tgri"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="5_xxyam"]
 
 [node name="CenterScreen" type="Control" unique_id=301538438]
@@ -20,6 +21,10 @@ visible = false
 layout_mode = 1
 
 [node name="EnemySelectionScreen" parent="." unique_id=541953092 instance=ExtResource("4_6nuvu")]
+visible = false
+layout_mode = 1
+
+[node name="ShopScreen" parent="." unique_id=1138266322 instance=ExtResource("5_1tgri")]
 visible = false
 layout_mode = 1
 
@@ -49,6 +54,14 @@ text = "---"
 [node name="CapacityLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=692456588]
 layout_mode = 2
 text = "0/0"
+
+[node name="MeatLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=648614942]
+layout_mode = 2
+text = "---"
+
+[node name="MedicineLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=798546814]
+layout_mode = 2
+text = "---"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=270502468]
 layout_mode = 2
@@ -105,6 +118,11 @@ text = "Train"
 layout_mode = 2
 text = "Battle"
 
+[node name="ShopButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1057779071]
+layout_mode = 2
+text = "Shop
+"
+
 [node name="IdleButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2076707452]
 layout_mode = 2
 text = "Idle"
@@ -143,6 +161,7 @@ text = "Refuse"
 [connection signal="item_selected" from="MarginContainer/VBoxContainer/PlayerDigimonOption" to="." method="OnPlayerDigimonOptionItemSelected"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TrainButton" to="." method="OnTrainButtonPressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/BattleButton" to="." method="OnBattleButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/ShopButton" to="." method="OnShopButtonPressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/IdleButton" to="." method="OnIdlePressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EatButton" to="." method="OnEatPressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/SleepButton" to="." method="OnSleepPressed"]

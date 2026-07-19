@@ -21,6 +21,8 @@ namespace ProjetoDC.Scripts.UI
         private Label _currentDayLabel;
         private Label _bitsLabel;
         private Label _capacityLabel;
+        private Label _meatLabel;
+        private Label _medicineLabel;
 
         private Button _trainButton;
         private Button _battleButton;
@@ -38,6 +40,7 @@ namespace ProjetoDC.Scripts.UI
         private TrainingScreen _trainingScreen;
         private EnemySelectionScreen _enemySelectionScreen;
         private BattleScreen _battleScreen;
+        private ShopScreen _shopScreen;
         private Control _centerPanel;
         private DigimonSprite _digimonSprite;
 
@@ -63,6 +66,7 @@ namespace ProjetoDC.Scripts.UI
             _trainingScreen = GetNodeOrNull<TrainingScreen>("TrainingScreen");
             _enemySelectionScreen = GetNodeOrNull<EnemySelectionScreen>("EnemySelectionScreen");
             _battleScreen = GetNodeOrNull<BattleScreen>("BattleScreen");
+            _shopScreen = GetNodeOrNull<ShopScreen>("ShopScreen");
             _centerPanel = GetNodeOrNull<Control>("MarginContainer");
             _digimonSprite = GetNodeOrNull<DigimonSprite>("MarginContainer/VBoxContainer/HBoxContainer3/DigimonDisplay/DigimonSprite");
 
@@ -89,6 +93,11 @@ namespace ProjetoDC.Scripts.UI
                 GD.PrintErr("EnemySelectionScreen não encontrado na cena!");
 
             _enemySelectionScreen.BackPressed += OnEnemySelectionBack;
+
+            if (_shopScreen == null)
+                GD.PrintErr("ShopScreen não encontrado na cena!");
+
+            _shopScreen.BackPressed += OnShopBack;
             // <<< FIM >>>
 
             // preencher opções
@@ -125,6 +134,7 @@ namespace ProjetoDC.Scripts.UI
 
             _trainingScreen = GetNodeOrNull<TrainingScreen>("TrainingScreen");
             _battleScreen = GetNodeOrNull<BattleScreen>("BattleScreen");
+            _shopScreen = GetNodeOrNull<ShopScreen>("ShopScreen");
 
             if (_trainingScreen == null)
                 GD.PrintErr("TrainingScreen não encontrado!");
@@ -132,6 +142,10 @@ namespace ProjetoDC.Scripts.UI
 
             if (_battleScreen == null)
                 GD.PrintErr("BattleScreen não encontrado!");
+            _centerPanel = GetNode<Control>("MarginContainer");
+
+            if (_shopScreen == null)
+                GD.PrintErr("ShopScreen não encontrado!");
             _centerPanel = GetNode<Control>("MarginContainer");
 
             // Usar GetNodeOrNull para evitar exceções se caminho estiver incorreto
@@ -144,6 +158,9 @@ namespace ProjetoDC.Scripts.UI
             _ageInDaysLabel = GetNodeOrNull<Label>($"{basePath}AgeInDaysLabel");
             _bitsLabel = GetNodeOrNull<Label>($"{basePath}BitsLabel");
             _capacityLabel = GetNodeOrNull<Label>($"{basePath}CapacityLabel");
+            _meatLabel = GetNodeOrNull<Label>($"{basePath}MeatLabel");
+            _medicineLabel = GetNodeOrNull<Label>($"{basePath}MedicineLabel");
+
 
             _expProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}ExpProgressBar");
 
@@ -184,6 +201,12 @@ namespace ProjetoDC.Scripts.UI
 
             if (_capacityLabel != null)
                 _capacityLabel.Text = $"Capacidade: {Game.Save.Center.CapacityUsed}/{Game.Save.Center.CapacityLimit}";
+
+            if (_meatLabel != null)
+                _meatLabel.Text = $"Comida: {Game.Save.Center.Meat}";
+
+            if (_medicineLabel != null)
+                _medicineLabel.Text = $"Remédio: {Game.Save.Center.Medicine}";
 
             // Atualizar player/enemy se existirem
             var player = Game.PlayerDigimon;
@@ -307,12 +330,28 @@ namespace ProjetoDC.Scripts.UI
             RefreshUI();
         }
 
+        private void OnShopBack()
+        {
+            _shopScreen.Visible = false;
+            _centerPanel.Visible = true;
+
+            RefreshUI();
+        }
+
         private void OnTrainButtonPressed()
         {
             _centerPanel.Visible = false;
             _trainingScreen.Visible = true;
 
             _trainingScreen.RefreshUI();
+        }
+
+        private void OnShopButtonPressed()
+        {
+            _centerPanel.Visible = false;
+            _shopScreen.Visible = true;
+
+            _shopScreen.RefreshUI();
         }
 
         private void OnBattleButtonPressed()

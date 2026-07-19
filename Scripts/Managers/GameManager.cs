@@ -176,8 +176,15 @@ namespace ProjetoDC.Scripts.Managers
 
         public SystemResult FeedDigimon(DigimonInstance digimon)
         {
+            if (Save.Center.Meat <= 0)
+            {
+                return SystemResult.Fail("Você não possui Comida.");
+            }
+
             if (digimon.Hunger >= digimon.MaxHunger)
                 return SystemResult.Fail("O Digimon não está com fome.");
+
+            Save.Center.Meat--;
 
             digimon.Feed(10);
 
@@ -285,6 +292,30 @@ namespace ProjetoDC.Scripts.Managers
 
             TryToEvolve(PlayerDigimon);
             
+        }
+
+        public SystemResult BuyMeat()
+        {
+            if (Save.Center.Bits < 20) {
+                return SystemResult.Fail("Bits insuficientes.");
+                GD.Print("sem dinheiro");
+            }
+
+            Save.Center.Bits -= 20;
+            Save.Center.Meat++;
+
+            return SystemResult.Ok();
+        }
+
+        public SystemResult BuyMedicine()
+        {
+            if (Save.Center.Bits < 100)
+                return SystemResult.Fail("Bits insuficientes.");
+
+            Save.Center.Bits -= 100;
+            Save.Center.Medicine++;
+
+            return SystemResult.Ok();
         }
     }
 }
