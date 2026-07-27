@@ -2,6 +2,7 @@ using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Managers;
 using System;
+using System.Threading.Tasks;
 
 namespace ProjetoDC.Scripts.UI
 {
@@ -10,6 +11,8 @@ namespace ProjetoDC.Scripts.UI
         private const string PortraitFolder = "res://Assets/Sprites/Digimon/";
 
         private Label _nameLabel;
+        private Label _healthLabel;
+        private Label _staminaLabel;
         private Label _levelLabel;
         private Label _maxHpLabel;
         private Label _attackLabel;
@@ -20,6 +23,7 @@ namespace ProjetoDC.Scripts.UI
         private Label _expLabel;
 
         private Label _currentDayLabel;
+        private Label _clockLabel;
         private Label _bitsLabel;
 
         private Button _trainHealthPointsButton;
@@ -29,6 +33,7 @@ namespace ProjetoDC.Scripts.UI
         private Button _trainSpecialAttackButton;
         private Button _trainSpeedButton;
         private Button _advanceDayButton;
+        private Button _useMedicineButton;
 
         private ProgressBar _expProgressBar;
 
@@ -54,21 +59,20 @@ namespace ProjetoDC.Scripts.UI
                 return;
             }
 
-            _digimonSprite = GetNodeOrNull<DigimonSprite>("MarginContainer/VBoxContainer/HBoxContainer5/DigimonDisplay/DigimonSprite");
+            _digimonSprite = GetNodeOrNull<DigimonSprite>(
+                "MarginContainer/VBoxContainer/HBoxContainer5/DigimonDisplay/DigimonSprite");
 
-            if (_digimonSprite != null)
-            {
-                _digimonSprite.SetDigimon("agumon");
-            }
-            else
+            if (_digimonSprite == null)
             {
                 GD.PrintErr("DigimonSprite não encontrado");
+                return;
             }
 
-            // carregar nós da UI com segurança
+            // Carregar nós da UI
             InitializeUIComponents();
-            
+
             RefreshUI();
+
             GD.Print("TrainingCenter iniciado.");
         }
 
@@ -98,6 +102,8 @@ namespace ProjetoDC.Scripts.UI
                 if (_nameLabel != null) _nameLabel.Text = $"Nome: {player.BaseData.Name}";
                 if (_levelLabel != null) _levelLabel.Text = $"Level: {player.Level}";
                 if (_maxHpLabel != null) _maxHpLabel.Text = $"HP: {player.MaxHealthPoints}";
+                if (_healthLabel != null) _healthLabel.Text = $"Health: {player.HealthState}";
+                if (_staminaLabel != null) _staminaLabel.Text = $"Stamina: {player.Stamina}/{player.MaxStamina}";
 
                 if (_attackLabel != null) _attackLabel.Text = $"ATK: {player.CurrentStats.PhysicalDamage}";
                 if (_defenseLabel != null) _defenseLabel.Text = $"DEF: {player.CurrentStats.PhysicalDefense}";
@@ -117,6 +123,7 @@ namespace ProjetoDC.Scripts.UI
                 if (_digimonSprite != null)
                 {
                     _digimonSprite.SetDigimon(player.BaseData.Code);
+                    _digimonSprite.RefreshState(player);
                 }
 
                 // portrait
@@ -137,6 +144,8 @@ namespace ProjetoDC.Scripts.UI
 
             // Labels principais
             _nameLabel = GetNodeOrNull<Label>($"{basePath}NameLabel");
+            _healthLabel = GetNodeOrNull<Label>($"{basePath}HealthLabel");
+            _staminaLabel = GetNodeOrNull<Label>($"{basePath}StaminaLabel");
             _levelLabel = GetNodeOrNull<Label>($"{basePath}LevelLabel");
             _maxHpLabel = GetNodeOrNull<Label>($"{basePath}MaxHpLabel");
             _attackLabel = GetNodeOrNull<Label>($"{basePath}AttackLabel");
@@ -146,6 +155,7 @@ namespace ProjetoDC.Scripts.UI
             _speedLabel = GetNodeOrNull<Label>($"{basePath}SpeedLabel");
             _expLabel = GetNodeOrNull<Label>($"{basePath}ExpLabel");
             _bitsLabel = GetNodeOrNull<Label>($"{basePath}BitsLabel");
+            _useMedicineButton = GetNodeOrNull<Button>($"{basePath}UseMedicineButton");
 
 
             // ProgressBars
@@ -154,6 +164,11 @@ namespace ProjetoDC.Scripts.UI
             // Day / Bits
             var dayPath = $"{basePath}HBoxContainer4/";
             _currentDayLabel = GetNodeOrNull<Label>($"{dayPath}CurrentDayLabel");
+            _clockLabel = GetNodeOrNull<Label>($"{dayPath}ClockLabel");
+            if (_clockLabel == null)
+                GD.PrintErr("ClockLabel não encontrado!");
+            else
+                GD.Print("ClockLabel encontrado.");
             //_bitsLabel = GetNodeOrNull<Label>($"{basePath}BitsLabel");
             _advanceDayButton = GetNodeOrNull<Button>($"{dayPath}AdvanceDayButton");
 
@@ -165,6 +180,9 @@ namespace ProjetoDC.Scripts.UI
             _trainSpecialAttackButton = GetNodeOrNull<Button>($"{buttonPath}TrainSpecialAttackButton");
             _trainSpecialDefenseButton = GetNodeOrNull<Button>($"{buttonPath}TrainSpecialDefenseButton");
             _trainSpeedButton = GetNodeOrNull<Button>($"{buttonPath}TrainSpeedButton");
+
+
+            if (_useMedicineButton != null) _useMedicineButton.ButtonUp += OnUseMedicineButtonPressed;
 
             // Conexões seguras (apenas se existirem nós)
             if (_trainHealthPointsButton != null)
@@ -206,34 +224,89 @@ namespace ProjetoDC.Scripts.UI
         //TODO: Aguardar a animação acabar para poder treinar novamente. Atualmente é possivel clicar varias
         //vezes no mesmo botão ou em botões diferentes e o treino será executado várias vezes, mesmo com a animação
         //ainda em execução e com apenas uma unica animação de treino o status aumenta varias vezes.
-        private async System.Threading.Tasks.Task ExecuteTraining(TrainingType type)
+        private async Task ExecuteTraining(TrainingType type)
         {
             if (_digimonSprite == null)
+            {
+                GD.Print("DigimonSprite não encontrado");
                 return;
+            }
 
-            // começa animação
+            var result = Game.TrainPlayer(type);
+
+            if (!result.Success)
+            {
+                GD.Print(result.Reason);
+                return;
+            }
+
             _digimonSprite.PlayTrain();
 
-            // espera animação acabar
             await ToSignal(
                 _digimonSprite._sprite,
-                AnimatedSprite2D.SignalName.AnimationFinished
-            );
-
-            // executa o treino
-            Game.TrainPlayer(type);
+                AnimatedSprite2D.SignalName.AnimationFinished);
 
             RefreshUI();
 
-            // volta para idle
             _digimonSprite.PlayIdle();
+        }
+
+        private void OnUseMedicineButtonPressed()
+        {
+            var result = Game.UseMedicinePlayer();
+
+            if (result.Success)
+            {
+                RefreshUI();
+            }
+            else
+            {
+                GD.Print(result.Reason);
+            }
+        }
+
+        private void OnMinutePassed()
+        {
+            UpdateClock();
+        }
+
+        private void OnDayPassed()
+        {
+            if (_currentDayLabel == null)
+                return;
+
+            _currentDayLabel.Text = $"Day: {Game.Save.World.CurrentDay}";
+        }
+
+        private void OnHourPassed()
+        {
+            UpdateDigimonStatus();
+        }
+
+        private void UpdateDigimonStatus()
+        {
+            var player = Game.PlayerDigimon;
+
+            if (player == null)
+                return;
+
+            _staminaLabel.Text = $"Stamina: {player.Stamina}";
         }
 
         private void OnAdvanceDayPressed()
         {
-            Game.AdvanceDay();
+            Game.SkipDay();
 
             RefreshUI();
+        }
+
+        private void UpdateClock()
+        {
+            if (_clockLabel != null)
+            {
+                _clockLabel.Text =
+                    $"{Game.Save.World.CurrentHour:00}:{Game.Save.World.CurrentMinute:00}";
+            }
         }
 
         private async void OnTrainHealthPointsButtonPressed()

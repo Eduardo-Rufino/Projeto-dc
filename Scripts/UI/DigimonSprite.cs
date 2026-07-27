@@ -1,4 +1,6 @@
 using Godot;
+using ProjetoDC.Enums;
+using ProjetoDC.Scripts.Gameplay;
 using System.Threading.Tasks;
 
 namespace ProjetoDC.Scripts.UI
@@ -16,7 +18,7 @@ namespace ProjetoDC.Scripts.UI
 
         public void SetDigimon(string code)
         {
-            if (_currentCode == code)
+            if (_currentCode == code && _sprite.SpriteFrames != null)
                 return;
 
             _currentCode = code;
@@ -39,8 +41,30 @@ namespace ProjetoDC.Scripts.UI
             AddAnimation(frames, code, "SickLose", 14);
 
             _sprite.SpriteFrames = frames;
+        }
 
-            PlayIdle();
+        public void RefreshState(DigimonInstance digimon)
+        {
+            if (digimon.HealthState == HealthState.Sick)
+            {
+                PlaySick();
+                return;
+            }
+
+            switch (digimon.Activity)
+            {
+                case DigimonActivity.Sleeping:
+                    PlaySleep();
+                    break;
+
+                case DigimonActivity.Training:
+                    PlayTrain();
+                    break;
+
+                default:
+                    PlayIdle();
+                    break;
+            }
         }
 
         /*

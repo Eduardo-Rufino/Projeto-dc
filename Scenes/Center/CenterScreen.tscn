@@ -43,6 +43,10 @@ layout_mode = 2
 layout_mode = 2
 text = "---"
 
+[node name="ClockLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=884599483]
+layout_mode = 2
+text = "---"
+
 [node name="AdvanceDayButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1168126074]
 layout_mode = 2
 text = "Advance Day"
@@ -80,6 +84,14 @@ layout_mode = 2
 layout_mode = 2
 text = "---"
 
+[node name="HealthLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1940593136]
+layout_mode = 2
+text = "---"
+
+[node name="UseMedicineButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=440069852]
+layout_mode = 2
+text = "Use Medicine"
+
 [node name="AgeInDaysLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=477370333]
 layout_mode = 2
 text = "---"
@@ -96,6 +108,10 @@ layout_mode = 2
 text = "Feed"
 
 [node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=196098962]
+layout_mode = 2
+text = "0"
+
+[node name="StaminaLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=347522198]
 layout_mode = 2
 text = "0"
 

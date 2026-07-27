@@ -5,9 +5,9 @@ using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Save;
 using ProjetoDC.Scripts.Systems.Battle;
 using ProjetoDC.Scripts.Systems.Center;
+using ProjetoDC.Scripts.Systems.Clock;
 using ProjetoDC.Scripts.Systems.Eggs;
 using ProjetoDC.Scripts.Systems.Evolution;
-using ProjetoDC.Scripts.Systems.Results;
 using ProjetoDC.Scripts.Systems.Training;
 using ProjetoDC.Scripts.UI;
 using System;
@@ -41,6 +41,7 @@ namespace ProjetoDC.Scripts.Managers
         public TrainingSystem TrainingSystem { get; private set; }
         public EggSystem EggSystem { get; set; }
         public EnemyGenerator EnemyGenerator { get; set; }
+        public ClockSystem ClockSystem { get; private set; }
 
         public override void _Ready()
         {
@@ -51,8 +52,13 @@ namespace ProjetoDC.Scripts.Managers
             TrainingSystem = new TrainingSystem();
             EggSystem = new EggSystem();
             EnemyGenerator = new EnemyGenerator();
+            ClockSystem = new ClockSystem(Save.World);
+
+            ClockSystem.HourPassed += OnHourPassed;
+            ClockSystem.DayPassed += OnDayPassed;
 
             GD.Print("GameManager inicializado!");
+            ClockSystem.MinutePassed += OnMinutePassed;
 
             // esperar outros autoloads
             CallDeferred(nameof(InitializeNewGame));
@@ -63,6 +69,35 @@ namespace ProjetoDC.Scripts.Managers
             GetTree().ProcessFrame -= OnFirstFrame;
 
             InitializeNewGame();
+        }
+
+        public override void _Process(double delta)
+        {
+            ClockSystem?.Update(delta);
+        }
+
+        private void OnMinutePassed()
+        {
+            GD.Print($"{Save.World.CurrentDay} - {Save.World.CurrentHour:00}:{Save.World.CurrentMinute:00}");
+        }
+
+        private void OnHourPassed()
+        {
+            foreach (var digimon in Save.Center.Digimons)
+            {
+                digimon.AdvanceHour(Save.World);
+            }
+        }
+
+        private void OnDayPassed()
+        {
+            foreach (var digimon in Save.Center.Digimons)
+            {
+                digimon.AdvanceDay();
+                digimon.TryBecomeSick();
+
+                TryToEvolve(digimon);
+            }
         }
 
         /// <summary>
@@ -158,15 +193,10 @@ namespace ProjetoDC.Scripts.Managers
         /// Avança o tempo global do jogo (dias) e aplica avanço nos digimons do Center.
         /// Também tenta evoluir o digimon do jogador quando apropriado.
         /// </summary>
-        public void AdvanceDay(int days = 1)
+        public void SkipDay()
         {
-            Save.World.AdvanceDay(days);
-
-            foreach (var digimon in Save.Center.Digimons)
-            {
-                digimon.AdvanceDays(days);
-                TryToEvolve(digimon);
-            }            
+            Save.World.CurrentHour = 23;
+            Save.World.CurrentMinute = 59;
         }
 
         public SystemResult FeedPlayer()
@@ -195,27 +225,30 @@ namespace ProjetoDC.Scripts.Managers
         /// Executa treino no <see cref="PlayerDigimon"/> usando o <see cref="TrainingSystem"/>.
         /// Em caso de sucesso aplica o resultado e tenta evolução.
         /// </summary>
-        public TrainingResult TrainPlayer(TrainingType type)
+        public SystemResult TrainPlayer(TrainingType type)
         {
             if (PlayerDigimon == null)
             {
-                return new TrainingResult
-                {
-                    Success = false,
-                    Reason = "PLAYER_DIGIMON_NULL"
-                };
+                return SystemResult.Fail("Nenhum Digimon selecionado.");
+            }
+
+            if (PlayerDigimon.HealthState == HealthState.Sick)
+            {
+                return SystemResult.Fail("O Digimon está doente.");
             }
 
             var result = TrainingSystem.Execute(PlayerDigimon, type);
 
             if (!result.Success)
-                return result;
+            {
+                return SystemResult.Fail(result.Reason);
+            }
 
             PlayerDigimon.ApplyTrainingResult(result);
 
             TryToEvolve(PlayerDigimon);
 
-            return result;
+            return SystemResult.Ok();
         }
 
         /// <summary>
@@ -316,6 +349,30 @@ namespace ProjetoDC.Scripts.Managers
             Save.Center.Medicine++;
 
             return SystemResult.Ok();
+        }
+
+        public SystemResult UseMedicinePlayer()
+        {
+            return UseMedicine(PlayerDigimon);
+        }
+
+        public SystemResult UseMedicine(DigimonInstance digimon)
+        {
+            if (Save.Center.Medicine <= 0)
+            {
+                return SystemResult.Fail("Você não possui remédios.");
+            }
+
+            if (digimon.HealthState != HealthState.Sick)
+            {
+                return SystemResult.Fail("O Digimon não está doente.");
+            }
+
+            Save.Center.Medicine--;
+
+            digimon.Heal(); // ou digimon.HealthState = HealthState.Healthy;
+
+            return SystemResult.Ok("O Digimon foi curado.");
         }
     }
 }
