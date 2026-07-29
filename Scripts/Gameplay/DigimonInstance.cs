@@ -16,31 +16,34 @@ namespace ProjetoDC.Scripts.Gameplay
     /// </summary>
     public class DigimonInstance
     {
-        public DigimonData BaseData { get; private set; }
+        public DigimonData BaseData { get; set; }
 
         public int Level { get; set; } = 1;
         public int MaxHealthPoints { get; set; }
         public int CurrentHealthPoints { get; set; }
         public int Experience { get; set; }
         public int ExperienceToNextLevel { get; set; }
-        public int AgeInDays { get; private set; }
-        public int CapacityCost { get; private set; }
+        public int AgeInDays { get; set; }
+        public int CapacityCost { get; set; }
 
         public int Hunger { get; set; }
 
         public int MaxHunger => 100;
 
-        public BaseStats CurrentStats { get; private set; }
-        public SaveData Save { get; set; }
+        public BaseStats CurrentStats { get; set; }
         public HealthState HealthState { get; set; } = HealthState.Healthy;
-        public DigimonActivity Activity { get; private set; } = DigimonActivity.Idle;
-        public int MaxStamina { get; private set; } = 100;
-        public int Stamina { get; private set; } = 100;
+        public DigimonActivity Activity { get; set; } = DigimonActivity.Idle;
+        public int MaxStamina { get; set; } = 100;
+        public int Stamina { get; set; } = 100;
 
         private static readonly Random _random = new();
 
         public event Action<DigimonActivity>? ActivityChanged;
 
+
+        public DigimonInstance()
+        {
+        }
 
         /// <summary>
         /// Construtor que inicializa a instância com os valores base do <see cref="DigimonData"/>.
@@ -50,7 +53,7 @@ namespace ProjetoDC.Scripts.Gameplay
         {
             AgeInDays = 0;
 
-            BaseData = baseData;
+            BaseData = CloneBaseData(baseData);
             CapacityCost = GetCapacityCostForStage(baseData.Stage);
 
             Hunger = MaxHunger;
@@ -77,6 +80,32 @@ namespace ProjetoDC.Scripts.Gameplay
 
             if (baseData == null)
                 throw new Exception("DigimonData não encontrado no DB");
+        }
+
+        private DigimonData CloneBaseData(DigimonData data)
+        {
+            return new DigimonData
+            {
+                Id = data.Id,
+                Code = data.Code,
+                Name = data.Name,
+                Stage = data.Stage,
+                Role = data.Role,
+                Attribute = data.Attribute,
+                Element = data.Element,
+                EggType = data.EggType,
+                AttackType = data.AttackType,
+
+                BaseStats = new BaseStats
+                {
+                    HealthPoints = data.BaseStats.HealthPoints,
+                    PhysicalDamage = data.BaseStats.PhysicalDamage,
+                    PhysicalDefense = data.BaseStats.PhysicalDefense,
+                    SpecialDamage = data.BaseStats.SpecialDamage,
+                    SpecialDefense = data.BaseStats.SpecialDefense,
+                    Speed = data.BaseStats.Speed
+                }
+            };
         }
         private static int GetCapacityCostForStage(DigimonStage stage) => stage switch
         {
@@ -309,7 +338,7 @@ namespace ProjetoDC.Scripts.Gameplay
 
         public SystemResult UseMedicine(DigimonInstance digimon)
         {
-            if (Save.Center.Medicine <= 0)
+            if (GameManager.Instance.Save.Center.Medicine <= 0)
             {
                 return SystemResult.Fail("Você não possui remédios.");
             }
@@ -319,7 +348,7 @@ namespace ProjetoDC.Scripts.Gameplay
                 return SystemResult.Fail("O Digimon não está doente.");
             }
 
-            Save.Center.Medicine--;
+            GameManager.Instance.Save.Center.Medicine--;
 
             digimon.HealthState = HealthState.Healthy;
 

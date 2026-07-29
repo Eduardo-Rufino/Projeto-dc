@@ -16,6 +16,7 @@ namespace ProjetoDC.Scripts.UI
 
         private Button _buyMeatButton;
         private Button _buyMedicineButton;
+        private Button _buyEggButton;
 
 
 
@@ -39,6 +40,7 @@ namespace ProjetoDC.Scripts.UI
 
             _buyMeatButton = GetNodeOrNull<Button>($"{basePath}BuyMeatButton");
             _buyMedicineButton = GetNodeOrNull<Button>($"{basePath}BuyMedicineButton");
+            _buyEggButton = GetNodeOrNull<Button>($"{basePath}BuyEggButton");
 
         }
 
@@ -52,6 +54,7 @@ namespace ProjetoDC.Scripts.UI
 
             _buyMeatButton.Disabled = Game.Save.Center.Bits < 20;
             _buyMedicineButton.Disabled = Game.Save.Center.Bits < 100;
+            _buyEggButton.Disabled = Game.Save.Center.Bits < 25;
         }
 
         private void OnBuyMeatPressed()
@@ -74,6 +77,20 @@ namespace ProjetoDC.Scripts.UI
 
             if (result.Success)
                 RefreshUI();
+        }
+
+        private void OnBuyBotamonEggPressed()
+        {
+            var result = Game.BuyEgg(25);
+
+            if (result.Success)
+            {
+                RefreshUI();
+            }
+            else
+            {
+                GD.Print(result.Reason);
+            }
         }
 
         private void OnBackPressed()

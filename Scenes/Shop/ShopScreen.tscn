@@ -73,6 +73,22 @@ custom_maximum_size = Vector2(150, -1)
 layout_mode = 2
 text = "Comprar"
 
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1898373855]
+layout_mode = 2
+
+[node name="EggItemLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1130240924]
+layout_mode = 2
+text = "Digiovo: "
+
+[node name="EggPriceLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1393082641]
+layout_mode = 2
+text = "Preço: 100 Bits"
+
+[node name="BuyEggButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=284024410]
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+text = "Comprar"
+
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=169101012]
 custom_maximum_size = Vector2(150, -1)
 layout_mode = 2
@@ -81,4 +97,5 @@ text = "Back
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BuyMeatButton" to="." method="OnBuyMeatPressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BuyMedicineButton" to="." method="OnBuyMedicinePressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BuyEggButton" to="." method="OnBuyBotamonEggPressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BackButton" to="." method="OnBackPressed"]

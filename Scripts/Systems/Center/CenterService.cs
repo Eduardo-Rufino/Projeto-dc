@@ -1,3 +1,4 @@
+using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Models.World;
 using System;
@@ -37,5 +38,27 @@ namespace ProjetoDC.Scripts.Systems.Center
             _center.RemoveDigimon(digimon);
         }
 
+        public IEnumerable<EggData> GetEggs()
+        {
+            return _center.Eggs;
+        }
+
+        public void AddEgg(EggData egg)
+        {
+            _center.AddEgg(egg);
+        }
+
+        public void RemoveEgg(EggData egg)
+        {
+            _center.RemoveEgg(egg);
+        }
+
+        public bool CanAddDigimon(DigimonInstance digimon)
+        {
+            if (digimon == null)
+                return false;
+
+            return _center.CapacityUsed + digimon.CapacityCost <= _center.CapacityLimit;
+        }
     }
 }

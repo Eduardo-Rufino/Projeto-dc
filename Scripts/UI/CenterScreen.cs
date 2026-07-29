@@ -4,6 +4,7 @@ using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.Systems;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProjetoDC.Scripts.UI
@@ -32,6 +33,7 @@ namespace ProjetoDC.Scripts.UI
         private Button _advanceDayButton;
         private Button _feedButton;
         private Button _useMedicineButton;
+        private Button _addDebugDigimonButton;
 
         private OptionButton _playerOption;
 
@@ -82,6 +84,8 @@ namespace ProjetoDC.Scripts.UI
 
             Game.ClockSystem.MinutePassed += OnMinutePassed;
             Game.ClockSystem.HourPassed += OnHourPassed;
+            GameManager.Instance.PlayerDigimonChanged += RefreshUI;
+            Game.GameLoaded += OnGameLoaded;
 
             if (_trainingScreen == null)
                 GD.PrintErr("TrainingScreen não encontrado na cena!");
@@ -151,7 +155,7 @@ namespace ProjetoDC.Scripts.UI
             _capacityLabel = GetNodeOrNull<Label>($"{basePath}CapacityLabel");
             _meatLabel = GetNodeOrNull<Label>($"{basePath}MeatLabel");
             _medicineLabel = GetNodeOrNull<Label>($"{basePath}MedicineLabel");
-
+            _addDebugDigimonButton = GetNodeOrNull<Button>($"{basePath}AddDebugDigimonButton");
 
             _expProgressBar = GetNodeOrNull<ProgressBar>($"{basePath}ExpProgressBar");
 
@@ -179,6 +183,9 @@ namespace ProjetoDC.Scripts.UI
             if (_useMedicineButton != null) _useMedicineButton.ButtonUp += OnUseMedicineButtonPressed;
             if (Game.ClockSystem != null) Game.ClockSystem.MinutePassed += OnMinutePassed;
             if(Game.ClockSystem != null) Game.ClockSystem.DayPassed += OnDayPassed;
+
+            if (_addDebugDigimonButton != null)
+                _addDebugDigimonButton.ButtonUp += OnAddDebugDigimonPressed;
         }
 
         public void RefreshUI()
@@ -271,6 +278,12 @@ namespace ProjetoDC.Scripts.UI
                 SceneTreeTimer.SignalName.Timeout);
         }
 
+        private void OnGameLoaded()
+        {
+            RefreshDigimonList();
+            RefreshUI();
+        }
+
         private void OnMinutePassed()
         {
             UpdateClock();
@@ -311,12 +324,31 @@ namespace ProjetoDC.Scripts.UI
 
         public void RefreshDigimonList()
         {
-            // Atualizar lista de digimons do player
+            int selectedIndex = 0;
+
             _playerOption.Clear();
+
+            int index = 0;
+
             foreach (var digimon in Game.CenterService.GetAllDigimons())
             {
-                GD.Print("------------------------------------" + digimon.BaseData.Name);
-                _playerOption.AddItem(digimon.BaseData.Name, digimon.BaseData.Id);
+                _playerOption.AddItem(
+                    digimon.BaseData.Name,
+                    index
+                );
+
+                if (digimon == Game.PlayerDigimon)
+                {
+                    selectedIndex = index;
+                }
+
+                index++;
+            }
+
+
+            if (_playerOption.ItemCount > 0)
+            {
+                _playerOption.Select(selectedIndex);
             }
         }
 
@@ -326,7 +358,6 @@ namespace ProjetoDC.Scripts.UI
                 return;
 
             _digimonSprite.RefreshState(Game.PlayerDigimon);
-            GD.Print($"Atividade alterada para: {activity}");
         }
 
         private void OnAdvanceDayPressed()
@@ -370,10 +401,16 @@ namespace ProjetoDC.Scripts.UI
 
         private void OnPlayerDigimonOptionItemSelected(long index)
         {
-            int id = _playerOption?.GetItemId((int)index) ?? -1;
-            if (id >= 0)
+            int listIndex = (int)index;
+
+            var digimonList = Game.CenterService.GetAllDigimons();
+
+            if (listIndex >= 0 && listIndex < digimonList.Count)
             {
-                Game.SetPlayerDigimon(id);
+                var digimon = digimonList[listIndex];
+
+                Game.SetPlayerDigimon(digimon);
+
                 RefreshUI();
             }
         }
@@ -473,6 +510,14 @@ namespace ProjetoDC.Scripts.UI
         private void OnRefusePressed()
         {
             _digimonSprite.PlayRefuse();
+        }
+
+        private void OnAddDebugDigimonPressed()
+        {
+            Game.AddDebugDigimon(2); // ID do Agumon (confirme se é realmente 2 no seu banco)
+            Game.AddDebugDigimon(3);
+
+            RefreshDigimonList();
         }
     }
 }

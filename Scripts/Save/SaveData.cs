@@ -13,7 +13,6 @@ namespace ProjetoDC.Scripts.Save
         public WorldState World { get; set; }
 
         public CenterState Center { get; set; }
-        public List<EggData> Eggs { get; set; }
 
         public SaveData()
         {

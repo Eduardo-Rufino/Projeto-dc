@@ -79,17 +79,31 @@ namespace ProjetoDC.Scripts.UI
         public void RefreshUI()
         {
             // Atualizar World / Center visuais
-            if (Game.Save.World != null)
+            if (Game == null)
             {
-                if (_currentDayLabel != null)
-                    _currentDayLabel.Text = $"Day: {Game.Save.World.CurrentDay}";
-            }
-            else
-            {
-                GD.Print("WorldState nulo em RefreshUI()");
+                GD.PrintErr("GameManager nulo em RefreshUI");
+                return;
             }
 
-            
+            if (Game.Save == null)
+            {
+                GD.PrintErr("Save nulo em RefreshUI");
+                return;
+            }
+
+            if (Game.Save.Center == null)
+            {
+                GD.PrintErr("Center nulo em RefreshUI");
+                return;
+            }
+
+            if (Game.Save.World == null)
+            {
+                GD.PrintErr("World nulo em RefreshUI");
+                return;
+            }
+
+
             if (_bitsLabel != null)
                 _bitsLabel.Text = $"Bits: {Game.Save.Center.Bits}";
             

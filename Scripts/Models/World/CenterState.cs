@@ -1,4 +1,5 @@
 using Godot;
+using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.UI;
@@ -18,10 +19,11 @@ namespace ProjetoDC.Scripts.Models.World
         public int Medicine { get; set; } = 50;
         public int CapacityUsed => Digimons.Sum(d => d.CapacityCost);
 
-        public List<DigimonInstance> Digimons { get; } = new();
+        public List<DigimonInstance> Digimons { get; set; } = new();
+        public List<EggData> Eggs { get; set; } = new();
 
         public CenterState() { 
-            Bits = 0;
+            Bits = 50000000;
             CapacityLimit = 10;
         }
 
@@ -70,6 +72,19 @@ namespace ProjetoDC.Scripts.Models.World
             if(!Digimons.Remove(digimon))
             {
                 GD.Print("Digimon não encontrado no Center.");
+            }
+        }
+
+        public void AddEgg(EggData egg)
+        {
+            Eggs.Add(egg);
+        }
+
+        public void RemoveEgg(EggData egg)
+        {
+            if (!Eggs.Remove(egg))
+            {
+                GD.Print("Ovo não encontrado no Center.");
             }
         }
     }

@@ -173,6 +173,10 @@ text = "Train Test
 layout_mode = 2
 text = "Refuse"
 
+[node name="AddDebugDigimonButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1561360122]
+layout_mode = 2
+text = "AddDebugDigimon"
+
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/AdvanceDayButton" to="." method="OnAdvanceDayButtonPressed"]
 [connection signal="item_selected" from="MarginContainer/VBoxContainer/PlayerDigimonOption" to="." method="OnPlayerDigimonOptionItemSelected"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/TrainButton" to="." method="OnTrainButtonPressed"]

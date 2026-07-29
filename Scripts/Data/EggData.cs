@@ -10,6 +10,12 @@ namespace ProjetoDC.Scripts.Data
     {
         public int BaseDigimonId { get; set; }
 
+        public int IncubationTime { get; set; }
+
+        public int IncubationProgress { get; set; }
+
         public bool IsReady { get; set; }
+
+        public bool IsStarterEgg { get; set; }
     }
 }
