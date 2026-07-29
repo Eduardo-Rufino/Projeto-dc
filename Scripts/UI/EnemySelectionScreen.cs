@@ -106,11 +106,6 @@ namespace ProjetoDC.Scripts.UI
 
             _battleScreen = GetNodeOrNull<BattleScreen>("BattleScreen");
 
-            if (_battleScreen == null)
-            {
-                GD.PrintErr("BattleScreen não encontrado!");
-            }
-
             _enemySelectionPanel = this;
         }
 

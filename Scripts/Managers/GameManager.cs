@@ -5,9 +5,10 @@ using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Save;
 using ProjetoDC.Scripts.Systems.Battle;
 using ProjetoDC.Scripts.Systems.Center;
+using ProjetoDC.Scripts.Systems.Clock;
 using ProjetoDC.Scripts.Systems.Eggs;
 using ProjetoDC.Scripts.Systems.Evolution;
-using ProjetoDC.Scripts.Systems.Results;
+using ProjetoDC.Scripts.Systems.Save;
 using ProjetoDC.Scripts.Systems.Training;
 using ProjetoDC.Scripts.UI;
 using System;
@@ -32,6 +33,8 @@ namespace ProjetoDC.Scripts.Managers
         public List<DigimonInstance> GeneratedEnemies { get; private set; } = new();
 
         public event Action DigimonListChanged;
+        public event Action PlayerDigimonChanged;
+        public event Action GameLoaded;
 
         /// <summary>Sistema de batalha ativo quando iniciado.</summary>
         public BattleSystem BattleSystem { get; private set; }
@@ -41,21 +44,51 @@ namespace ProjetoDC.Scripts.Managers
         public TrainingSystem TrainingSystem { get; private set; }
         public EggSystem EggSystem { get; set; }
         public EnemyGenerator EnemyGenerator { get; set; }
+        public ClockSystem ClockSystem { get; private set; }
+        public SaveSystem SaveSystem { get; private set; }
 
         public override void _Ready()
         {
             Instance = this;
 
-            Save = new SaveData();
+            SaveSystem = new SaveSystem();
+
+            if (SaveSystem.HasSave())
+            {
+                Save = SaveSystem.LoadGame();
+
+                GD.Print($"Digimons carregados: {Save.Center.Digimons.Count}");
+
+                foreach (var d in Save.Center.Digimons)
+                {
+                    GD.Print($"{d.BaseData?.Name} - Lv {d.Level}");
+                }
+
+                if (Save == null)
+                {
+                    GD.PrintErr("Falha ao carregar save.");
+                    Save = new SaveData();
+                }
+            }
+            else
+            {
+                Save = new SaveData();
+            }
+
             CenterService = new CenterService(Save.Center);
             TrainingSystem = new TrainingSystem();
             EggSystem = new EggSystem();
             EnemyGenerator = new EnemyGenerator();
+            ClockSystem = new ClockSystem(Save.World);
+
+            ClockSystem.HourPassed += OnHourPassed;
+            ClockSystem.DayPassed += OnDayPassed;
 
             GD.Print("GameManager inicializado!");
 
-            // esperar outros autoloads
-            CallDeferred(nameof(InitializeNewGame));
+            ClockSystem.MinutePassed += OnMinutePassed;
+
+            CallDeferred(nameof(InitializeGame));
         }
 
         private void OnFirstFrame()
@@ -63,6 +96,80 @@ namespace ProjetoDC.Scripts.Managers
             GetTree().ProcessFrame -= OnFirstFrame;
 
             InitializeNewGame();
+        }
+
+        private void InitializeGame()
+        {
+            if (SaveSystem.HasSave())
+            {
+                LoadExistingGame();
+            }
+            else
+            {
+                InitializeNewGame();
+            }
+        }
+
+        public void SaveGame()
+        {
+            SaveSystem.SaveGame(Save);
+        }
+
+        private void LoadExistingGame()
+        {
+            Save = SaveSystem.LoadGame();
+
+            CenterService = new CenterService(Save.Center);
+
+            ClockSystem = new ClockSystem(Save.World);
+
+            ClockSystem.HourPassed += OnHourPassed;
+            ClockSystem.DayPassed += OnDayPassed;
+            ClockSystem.MinutePassed += OnMinutePassed;
+
+            PlayerDigimon = CenterService.GetAllDigimons().FirstOrDefault();
+
+            if (PlayerDigimon != null)
+            {
+                SetPlayerDigimon(PlayerDigimon);
+            }
+
+            GD.Print("Save carregado com sucesso!");
+            GameLoaded?.Invoke();
+        }
+
+        public override void _Process(double delta)
+        {
+            ClockSystem?.Update(delta);
+        }
+
+        private void OnMinutePassed()
+        {
+            GD.Print($"{Save.World.CurrentDay} - {Save.World.CurrentHour:00}:{Save.World.CurrentMinute:00}");
+        }
+
+        private void OnHourPassed()
+        {
+            foreach (var digimon in Save.Center.Digimons)
+            {
+                digimon.AdvanceHour(Save.World);
+            }
+
+            EggSystem.AdvanceHour(CenterService);
+        }
+
+        private void OnDayPassed()
+        {
+            foreach (var digimon in Save.Center.Digimons)
+            {
+                digimon.AdvanceDay();
+                digimon.TryBecomeSick();
+
+                TryToEvolve(digimon);
+            }
+
+            EggSystem.AdvanceDay(CenterService);
+            SaveGame();
         }
 
         /// <summary>
@@ -84,19 +191,21 @@ namespace ProjetoDC.Scripts.Managers
         /// <summary>
         /// Seleciona o digimon do jogador a partir do Center pelo ID e reconstrói o sistema de batalha.
         /// </summary>
-        public void SetPlayerDigimon(int id)
+        public void SetPlayerDigimon(DigimonInstance digimon)
         {
-            var digimon = CenterService.GetDigimonById(id);
-
             if (digimon == null)
             {
-                GD.PrintErr($"Digimon {id} não encontrado no Center.");
+                GD.PrintErr("Digimon inválido.");
                 return;
             }
 
             PlayerDigimon = digimon;
 
-            GD.Print($"PlayerDigimon: {PlayerDigimon.BaseData.Name}");
+            GD.Print(
+                $"PlayerDigimon definido: {PlayerDigimon.BaseData.Name} Hash: {PlayerDigimon.GetHashCode()}"
+            );
+
+            PlayerDigimonChanged?.Invoke();
 
             RebuildBattle();
         }
@@ -158,15 +267,10 @@ namespace ProjetoDC.Scripts.Managers
         /// Avança o tempo global do jogo (dias) e aplica avanço nos digimons do Center.
         /// Também tenta evoluir o digimon do jogador quando apropriado.
         /// </summary>
-        public void AdvanceDay(int days = 1)
+        public void SkipDay()
         {
-            Save.World.AdvanceDay(days);
-
-            foreach (var digimon in Save.Center.Digimons)
-            {
-                digimon.AdvanceDays(days);
-                TryToEvolve(digimon);
-            }            
+            Save.World.CurrentHour = 1;
+            Save.World.CurrentMinute = 59;
         }
 
         public SystemResult FeedPlayer()
@@ -176,39 +280,69 @@ namespace ProjetoDC.Scripts.Managers
 
         public SystemResult FeedDigimon(DigimonInstance digimon)
         {
+            if (Save.Center.Meat <= 0)
+            {
+                return SystemResult.Fail("Você não possui Comida.");
+            }
+
             if (digimon.Hunger >= digimon.MaxHunger)
                 return SystemResult.Fail("O Digimon não está com fome.");
+
+            Save.Center.Meat--;
 
             digimon.Feed(10);
 
             return SystemResult.Ok("O Digimon foi alimentado.");
         }
 
+        public void SetPlayerDigimonInstance(DigimonInstance digimon)
+        {
+            if (digimon == null)
+            {
+                GD.PrintErr("Tentativa de selecionar Digimon nulo.");
+                return;
+            }
+
+            PlayerDigimon = digimon;
+
+            GD.Print(
+                $"PlayerDigimon definido: {PlayerDigimon.BaseData.Name} " +
+                $"Hash: {PlayerDigimon.GetHashCode()}"
+            );
+
+            PlayerDigimonChanged?.Invoke();
+
+            RebuildBattle();
+        }
+
         /// <summary>
         /// Executa treino no <see cref="PlayerDigimon"/> usando o <see cref="TrainingSystem"/>.
         /// Em caso de sucesso aplica o resultado e tenta evolução.
         /// </summary>
-        public TrainingResult TrainPlayer(TrainingType type)
+        public SystemResult TrainPlayer(TrainingType type)
         {
             if (PlayerDigimon == null)
             {
-                return new TrainingResult
-                {
-                    Success = false,
-                    Reason = "PLAYER_DIGIMON_NULL"
-                };
+                return SystemResult.Fail("Nenhum Digimon selecionado.");
+            }
+
+            if (PlayerDigimon.HealthState == HealthState.Sick)
+            {
+                return SystemResult.Fail("O Digimon está doente.");
             }
 
             var result = TrainingSystem.Execute(PlayerDigimon, type);
 
             if (!result.Success)
-                return result;
+            {
+                return SystemResult.Fail(result.Reason);
+            }
 
             PlayerDigimon.ApplyTrainingResult(result);
 
             TryToEvolve(PlayerDigimon);
 
-            return result;
+            return SystemResult.Ok();
         }
 
         /// <summary>
@@ -237,9 +371,11 @@ namespace ProjetoDC.Scripts.Managers
 
             if (PlayerDigimon != null)
             {
-                SetPlayerDigimon(PlayerDigimon.BaseData.Id);
+                SetPlayerDigimon(PlayerDigimon);
                 GD.Print($"Player inicial: {PlayerDigimon.BaseData.Name}");
             }
+
+            SaveSystem.SaveGame(Save);
         }
 
         /// <summary>
@@ -285,6 +421,116 @@ namespace ProjetoDC.Scripts.Managers
 
             TryToEvolve(PlayerDigimon);
             
+        }
+
+        public SystemResult BuyMeat()
+        {
+            if (Save.Center.Bits < 20) {
+                return SystemResult.Fail("Bits insuficientes.");
+                GD.Print("sem dinheiro");
+            }
+
+            Save.Center.Bits -= 20;
+            Save.Center.Meat++;
+
+            return SystemResult.Ok();
+        }
+
+        public SystemResult BuyMedicine()
+        {
+            if (Save.Center.Bits < 100)
+                return SystemResult.Fail("Bits insuficientes.");
+
+            Save.Center.Bits -= 100;
+            Save.Center.Medicine++;
+
+            return SystemResult.Ok();
+        }
+
+        public SystemResult BuyEgg(int digimonId)
+        {
+            const int eggPrice = 500;
+
+            if (Save.Center.Bits < eggPrice)
+            {
+                return SystemResult.Fail("Bits insuficientes.");
+            }
+
+            bool created = EggSystem.CreateEgg(
+                digimonId,
+                CenterService
+            );
+
+            if (!created)
+            {
+                return SystemResult.Fail("Não foi possível criar o ovo.");
+            }
+
+            Save.Center.Bits -= eggPrice;
+
+            return SystemResult.Ok();
+        }
+
+        public SystemResult UseMedicinePlayer()
+        {
+            return UseMedicine(PlayerDigimon);
+        }
+
+        public SystemResult UseMedicine(DigimonInstance digimon)
+        {
+            if (Save.Center.Medicine <= 0)
+            {
+                return SystemResult.Fail("Você não possui remédios.");
+            }
+
+            if (digimon.HealthState != HealthState.Sick)
+            {
+                return SystemResult.Fail("O Digimon não está doente.");
+            }
+
+            Save.Center.Medicine--;
+
+            digimon.Heal(); // ou digimon.HealthState = HealthState.Healthy;
+
+            return SystemResult.Ok("O Digimon foi curado.");
+        }
+
+        public void AddDebugDigimon(int id)
+        {
+            var data = DatabaseManager.Instance.GetDigimon(id);
+
+            if (data == null)
+            {
+                GD.PrintErr($"Digimon {id} não encontrado.");
+                return;
+            }
+
+            var digimon = new DigimonInstance(data);
+
+            CenterService.AddDigimon(digimon);
+
+            GD.Print($"{data.Name} adicionado ao Center.");
+        }
+
+        public void EnsureCenterCanContinue()
+        {
+            if (Save.Center.Digimons.Count == 0 &&
+                Save.Center.Eggs.Count == 0)
+            {
+                GD.Print("Centro vazio. Criando ovo inicial.");
+
+                EggSystem.CreateInitialEgg(CenterService);
+
+                SaveGame();
+            }
+        }
+
+        public override void _Notification(int what)
+        {
+            if (what == NotificationWMCloseRequest)
+            {
+                SaveGame();
+            }
         }
     }
 }

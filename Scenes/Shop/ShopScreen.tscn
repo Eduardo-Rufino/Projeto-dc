@@ -1,0 +1,101 @@
+[gd_scene format=3 uid="uid://pr5s0dygmvkt"]
+
+[ext_resource type="Script" uid="uid://b2bbno1kjaoy1" path="res://Scripts/UI/ShopScreen.cs" id="1_vrsw4"]
+
+[node name="ShopScreen" type="Control" unique_id=1138266322]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vrsw4")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=141087005]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1955897778]
+layout_mode = 2
+
+[node name="ShopLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1637089614]
+layout_mode = 2
+text = "SHOP
+"
+
+[node name="BitsLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2073456034]
+layout_mode = 2
+text = "---
+"
+
+[node name="MeatLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1130718544]
+layout_mode = 2
+text = "---
+"
+
+[node name="MedicineLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=650854452]
+layout_mode = 2
+text = "---
+"
+
+[node name="Separation" type="Label" parent="MarginContainer/VBoxContainer" unique_id=134449949]
+layout_mode = 2
+text = "--------------------------------------------------
+"
+
+[node name="MeatItemLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1030641380]
+layout_mode = 2
+text = "Meat:"
+
+[node name="MeatPriceLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1646006366]
+layout_mode = 2
+text = "20 Bits"
+
+[node name="BuyMeatButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=331291911]
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+text = "Comprar"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=618407995]
+layout_mode = 2
+
+[node name="MedicineItemLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1373529909]
+layout_mode = 2
+text = "Remédio:"
+
+[node name="MedicinePriceLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1109983988]
+layout_mode = 2
+text = "Preço: 100 Bits"
+
+[node name="BuyMedicineButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=335748837]
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+text = "Comprar"
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1898373855]
+layout_mode = 2
+
+[node name="EggItemLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1130240924]
+layout_mode = 2
+text = "Digiovo: "
+
+[node name="EggPriceLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1393082641]
+layout_mode = 2
+text = "Preço: 100 Bits"
+
+[node name="BuyEggButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=284024410]
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+text = "Comprar"
+
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=169101012]
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+text = "Back
+"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BuyMeatButton" to="." method="OnBuyMeatPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BuyMedicineButton" to="." method="OnBuyMedicinePressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BuyEggButton" to="." method="OnBuyBotamonEggPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BackButton" to="." method="OnBackPressed"]

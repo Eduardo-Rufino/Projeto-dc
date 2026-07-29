@@ -11,7 +11,9 @@ namespace ProjetoDC.Scripts.Models.World
 {
     public partial class WorldState
     {
-        public int CurrentDay { get; set; }
+        public int CurrentDay { get; set; } = 1;
+        public int CurrentHour { get; set; }
+        public int CurrentMinute { get; set; }
 
         public WorldState() { 
             

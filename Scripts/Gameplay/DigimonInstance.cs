@@ -1,6 +1,10 @@
 using Godot;
 using ProjetoDC.Enums;
+using ProjetoDC.Scripts.Core.Results;
 using ProjetoDC.Scripts.Data;
+using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.Models.World;
+using ProjetoDC.Scripts.Save;
 using ProjetoDC.Scripts.Systems.Results;
 using System;
 
@@ -12,23 +16,34 @@ namespace ProjetoDC.Scripts.Gameplay
     /// </summary>
     public class DigimonInstance
     {
-        public DigimonData BaseData { get; private set; }
+        public DigimonData BaseData { get; set; }
 
         public int Level { get; set; } = 1;
         public int MaxHealthPoints { get; set; }
         public int CurrentHealthPoints { get; set; }
         public int Experience { get; set; }
         public int ExperienceToNextLevel { get; set; }
-        public int AgeInDays { get; private set; }
-        public int CapacityCost { get; private set; }
+        public int AgeInDays { get; set; }
+        public int CapacityCost { get; set; }
 
         public int Hunger { get; set; }
 
         public int MaxHunger => 100;
 
-        public BaseStats CurrentStats { get; private set; }
-        public int Stamina { get; internal set; } = 10000;
+        public BaseStats CurrentStats { get; set; }
+        public HealthState HealthState { get; set; } = HealthState.Healthy;
+        public DigimonActivity Activity { get; set; } = DigimonActivity.Idle;
+        public int MaxStamina { get; set; } = 100;
+        public int Stamina { get; set; } = 100;
 
+        private static readonly Random _random = new();
+
+        public event Action<DigimonActivity>? ActivityChanged;
+
+
+        public DigimonInstance()
+        {
+        }
 
         /// <summary>
         /// Construtor que inicializa a instância com os valores base do <see cref="DigimonData"/>.
@@ -38,7 +53,7 @@ namespace ProjetoDC.Scripts.Gameplay
         {
             AgeInDays = 0;
 
-            BaseData = baseData;
+            BaseData = CloneBaseData(baseData);
             CapacityCost = GetCapacityCostForStage(baseData.Stage);
 
             Hunger = MaxHunger;
@@ -66,6 +81,32 @@ namespace ProjetoDC.Scripts.Gameplay
             if (baseData == null)
                 throw new Exception("DigimonData não encontrado no DB");
         }
+
+        private DigimonData CloneBaseData(DigimonData data)
+        {
+            return new DigimonData
+            {
+                Id = data.Id,
+                Code = data.Code,
+                Name = data.Name,
+                Stage = data.Stage,
+                Role = data.Role,
+                Attribute = data.Attribute,
+                Element = data.Element,
+                EggType = data.EggType,
+                AttackType = data.AttackType,
+
+                BaseStats = new BaseStats
+                {
+                    HealthPoints = data.BaseStats.HealthPoints,
+                    PhysicalDamage = data.BaseStats.PhysicalDamage,
+                    PhysicalDefense = data.BaseStats.PhysicalDefense,
+                    SpecialDamage = data.BaseStats.SpecialDamage,
+                    SpecialDefense = data.BaseStats.SpecialDefense,
+                    Speed = data.BaseStats.Speed
+                }
+            };
+        }
         private static int GetCapacityCostForStage(DigimonStage stage) => stage switch
         {
             DigimonStage.Baby => 1,
@@ -78,6 +119,22 @@ namespace ProjetoDC.Scripts.Gameplay
             DigimonStage.Special => 15,
             _ => 3,
         };
+
+        public void ConsumeStamina(int amount)
+        {
+            Stamina -= amount;
+
+            if (Stamina < 0)
+                Stamina = 0;
+        }
+
+        public void RecoverStamina(int amount)
+        {
+            Stamina += amount;
+
+            if (Stamina > MaxStamina)
+                Stamina = MaxStamina;
+        }
 
         /// <summary>
         /// Subtrai HP do Digimon e garante que não fique abaixo de zero.
@@ -117,7 +174,7 @@ namespace ProjetoDC.Scripts.Gameplay
                 CurrentHealthPoints = Math.Min(CurrentHealthPoints + result.HealthPointsGained, MaxHealthPoints);
             }
 
-            Stamina -= result.StaminaCost;
+            ConsumeStamina(result.StaminaCost);
             GainExperience(result.ExpGained);
         }
 
@@ -190,13 +247,54 @@ namespace ProjetoDC.Scripts.Gameplay
         public void AdvanceDays(int days = 1)
         {
             AgeInDays += days;
-
-            ConsumeHunger(days);
         }
 
-        private void ConsumeHunger(int days)
+        private void SetActivity(DigimonActivity activity)
         {
-            Hunger -= days * 10;
+            if (Activity == activity)
+                return;
+
+            Activity = activity;
+
+            ActivityChanged?.Invoke(activity);
+        }
+
+        public void AdvanceHour(WorldState world)
+        {
+            ConsumeHunger();
+
+            if (world.CurrentHour >= 1 && world.CurrentHour < 2)
+            {
+                SetActivity(DigimonActivity.Sleeping);
+                RecoverStamina(5);
+            }
+            else
+            {
+                if (Activity == DigimonActivity.Sleeping)
+                    SetActivity(DigimonActivity.Idle);
+
+                RecoverStamina(2);
+            }
+
+
+            GD.Print(
+                $"{BaseData.Name} passou uma hora. " +
+                $"Fome: {Hunger} | " +
+                $"Stamina: {Stamina}/{MaxStamina}" +
+                $"Atividade: {Activity}"
+            );
+        }
+
+        public void AdvanceDay()
+        {
+            AgeInDays++;
+
+            GD.Print($"{BaseData.Name} envelheceu. Idade: {AgeInDays} dias");
+        }
+
+        private void ConsumeHunger()
+        {
+            Hunger -= 1;
 
             if (Hunger < 0)
                 Hunger = 0;
@@ -218,6 +316,92 @@ namespace ProjetoDC.Scripts.Gameplay
         public void RestoreHealth()
         {
             CurrentHealthPoints = MaxHealthPoints;
+        }
+
+        public void SetHealthState(HealthState state)
+        {
+            HealthState = state;
+        }
+
+        public void BecomeSick()
+        {
+            if (HealthState != HealthState.Healthy)
+                return;
+
+            HealthState = HealthState.Sick;
+        }
+
+        public void Heal()
+        {
+            HealthState = HealthState.Healthy;
+        }
+
+        public SystemResult UseMedicine(DigimonInstance digimon)
+        {
+            if (GameManager.Instance.Save.Center.Medicine <= 0)
+            {
+                return SystemResult.Fail("Você não possui remédios.");
+            }
+
+            if (digimon.HealthState != HealthState.Sick)
+            {
+                return SystemResult.Fail("O Digimon não está doente.");
+            }
+
+            GameManager.Instance.Save.Center.Medicine--;
+
+            digimon.HealthState = HealthState.Healthy;
+
+            return SystemResult.Ok("O Digimon foi curado.");
+        }
+
+        public void TryBecomeSick()
+        {
+            if (HealthState == HealthState.Sick)
+                return;
+
+            int chance = CalculateSicknessRisk();
+
+            int roll = _random.Next(1, 101);
+
+            if (roll <= chance)
+            {
+                SetHealthState(HealthState.Sick);
+
+                GD.Print($"{BaseData.Name} ficou doente.");
+            }
+
+            GD.Print(
+                $"Idade={AgeInDays} | " +
+                $"Fome={Hunger} | " +
+                $"Chance={chance} | " +
+                $"Rolagem={roll}"
+);
+        }
+
+        public int CalculateSicknessRisk()
+        {
+            int risk = 0;
+
+            if (Hunger <= 70)
+                risk += 5;
+
+            if (Hunger <= 50)
+                risk += 10;
+
+            if (Hunger <= 30)
+                risk += 15;
+
+            if (Hunger <= 10)
+                risk += 20;
+
+            if (AgeInDays > 20)
+                risk += 5;
+
+            if (AgeInDays > 40)
+                risk += 5;
+
+            return risk;
         }
     }
 }
