@@ -93,7 +93,7 @@ namespace ProjetoDC.Scripts.UI
                 if (_playerSprite != null)
                 {
                     _playerSprite.SetDigimon(player.BaseData.Code);
-                    _playerSprite.SetFlip(true);
+                    _playerSprite.SetDirection(true);
                 }
             }
             if (enemy != null)
@@ -113,7 +113,7 @@ namespace ProjetoDC.Scripts.UI
                 if (_enemySprite != null)
                 {
                     _enemySprite.SetDigimon(enemy.BaseData.Code);
-                    _enemySprite.SetFlip(false);
+                    _enemySprite.SetDirection(false);
                 }
             }
         }

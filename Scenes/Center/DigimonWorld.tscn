@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://c8h4mt6pd6fc3"]
+
+[ext_resource type="Script" uid="uid://cmkn7hxxufcgb" path="res://Scripts/Gameplay/DigimonWorld.cs" id="1_ey0gg"]
+[ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="2_g0h4y"]
+
+[node name="DigimonWorld" type="Node2D" unique_id=537862215]
+script = ExtResource("1_ey0gg")
+
+[node name="DigimonSprite" parent="." unique_id=2065239916 instance=ExtResource("2_g0h4y")]

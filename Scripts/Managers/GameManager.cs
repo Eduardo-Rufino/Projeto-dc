@@ -57,17 +57,17 @@ namespace ProjetoDC.Scripts.Managers
             {
                 Save = SaveSystem.LoadGame();
 
+                if (Save == null)
+                {
+                    GD.PrintErr("Falha ao carregar save.");
+                    Save = new SaveData();
+                }
+
                 GD.Print($"Digimons carregados: {Save.Center.Digimons.Count}");
 
                 foreach (var d in Save.Center.Digimons)
                 {
                     GD.Print($"{d.BaseData?.Name} - Lv {d.Level}");
-                }
-
-                if (Save == null)
-                {
-                    GD.PrintErr("Falha ao carregar save.");
-                    Save = new SaveData();
                 }
             }
             else
@@ -75,18 +75,20 @@ namespace ProjetoDC.Scripts.Managers
                 Save = new SaveData();
             }
 
+
             CenterService = new CenterService(Save.Center);
             TrainingSystem = new TrainingSystem();
             EggSystem = new EggSystem();
             EnemyGenerator = new EnemyGenerator();
+
             ClockSystem = new ClockSystem(Save.World);
 
             ClockSystem.HourPassed += OnHourPassed;
             ClockSystem.DayPassed += OnDayPassed;
+            ClockSystem.MinutePassed += OnMinutePassed;
+
 
             GD.Print("GameManager inicializado!");
-
-            ClockSystem.MinutePassed += OnMinutePassed;
 
             CallDeferred(nameof(InitializeGame));
         }
@@ -117,15 +119,7 @@ namespace ProjetoDC.Scripts.Managers
 
         private void LoadExistingGame()
         {
-            Save = SaveSystem.LoadGame();
-
             CenterService = new CenterService(Save.Center);
-
-            ClockSystem = new ClockSystem(Save.World);
-
-            ClockSystem.HourPassed += OnHourPassed;
-            ClockSystem.DayPassed += OnDayPassed;
-            ClockSystem.MinutePassed += OnMinutePassed;
 
             PlayerDigimon = CenterService.GetAllDigimons().FirstOrDefault();
 
@@ -135,6 +129,7 @@ namespace ProjetoDC.Scripts.Managers
             }
 
             GD.Print("Save carregado com sucesso!");
+
             GameLoaded?.Invoke();
         }
 

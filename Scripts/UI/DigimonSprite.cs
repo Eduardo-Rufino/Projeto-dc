@@ -8,6 +8,7 @@ namespace ProjetoDC.Scripts.UI
     public partial class DigimonSprite : Node2D
     {
         public AnimatedSprite2D _sprite;
+        private bool _walking;
 
         private string _currentCode = "";
 
@@ -159,9 +160,19 @@ namespace ProjetoDC.Scripts.UI
             PlayIdle();
         }
 
-        public void SetFlip(bool flipped)
+        public void SetDirection(bool lookingLeft)
         {
-            _sprite.FlipH = flipped;
+            _sprite.FlipH = lookingLeft;
+        }
+
+        public void SetWalking(bool walking)
+        {
+            if (_walking == walking)
+                return;
+
+            _walking = walking;
+
+            _sprite.SpeedScale = walking ? 1.4f : 1.0f;
         }
 
         public void Play(string animation)

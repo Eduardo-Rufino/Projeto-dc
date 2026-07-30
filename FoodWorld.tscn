@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bonb78xc2kihs"]
+
+[node name="FoodWorld" type="Node2D" unique_id=750043842]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1420101922]

@@ -19,6 +19,7 @@ namespace ProjetoDC.Scripts.Models.World
         public int Medicine { get; set; } = 50;
         public int CapacityUsed => Digimons.Sum(d => d.CapacityCost);
 
+        public List<Food> Foods { get; set; } = new();
         public List<DigimonInstance> Digimons { get; set; } = new();
         public List<EggData> Eggs { get; set; } = new();
 

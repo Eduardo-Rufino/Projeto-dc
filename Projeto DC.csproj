@@ -74,7 +74,6 @@
     <Folder Include="Scenes\Exploration\" />
     <Folder Include="Scenes\Digimon\" />
     <Folder Include="Scenes\Tournament\" />
-    <Folder Include="Scenes\Common\" />
     <Folder Include="Scenes\Training\" />
     <Folder Include="Scenes\UI\" />
     <Folder Include="Scenes\Main\" />

@@ -251,6 +251,8 @@ namespace ProjetoDC.Scripts.Gameplay
 
         private void SetActivity(DigimonActivity activity)
         {
+            GD.Print($"{BaseData.Name}: {Activity} -> {activity}");
+
             if (Activity == activity)
                 return;
 
@@ -262,6 +264,10 @@ namespace ProjetoDC.Scripts.Gameplay
         public void AdvanceHour(WorldState world)
         {
             ConsumeHunger();
+
+            GD.Print(
+                $"HASH GAME {BaseData.Name}: {GetHashCode()}"
+            );
 
             if (world.CurrentHour >= 1 && world.CurrentHour < 2)
             {
@@ -402,6 +408,17 @@ namespace ProjetoDC.Scripts.Gameplay
                 risk += 5;
 
             return risk;
+        }
+
+        public bool CanMove()
+        {
+            if (HealthState == HealthState.Sick)
+                return false;
+
+            if (Activity == DigimonActivity.Sleeping)
+                return false;
+
+            return true;
         }
     }
 }
