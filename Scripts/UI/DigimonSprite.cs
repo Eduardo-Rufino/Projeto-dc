@@ -62,6 +62,10 @@ namespace ProjetoDC.Scripts.UI
                     PlayTrain();
                     break;
 
+                case DigimonActivity.Eating:
+                    PlayEat();
+                    break;
+
                 default:
                     PlayIdle();
                     break;
@@ -97,8 +101,8 @@ namespace ProjetoDC.Scripts.UI
         {
             frames.AddAnimation(animation);
             frames.SetAnimationSpeed(animation, 2);
-
-            if (animation == "Idle" || animation == "Happy" || animation == "Sleep")
+             
+            if (animation == "Idle" || animation == "Happy" || animation == "Sleep" || animation == "Eat")
             {
                 frames.SetAnimationLoopMode(animation, SpriteFrames.LoopMode.Linear);
             }
@@ -130,18 +134,6 @@ namespace ProjetoDC.Scripts.UI
             for (int i = 0; i < loops; i++)
             {
                 _sprite.Play(animation);
-
-                await ToSignal(_sprite, AnimatedSprite2D.SignalName.AnimationFinished);
-            }
-
-            PlayIdle();
-        }
-
-        public async Task PlayEat(int loops = 2)
-        {
-            for (int i = 0; i < loops; i++)
-            {
-                _sprite.Play("Eat");
 
                 await ToSignal(_sprite, AnimatedSprite2D.SignalName.AnimationFinished);
             }
@@ -182,12 +174,20 @@ namespace ProjetoDC.Scripts.UI
 
         public void PlayIdle()
         {
-            _sprite.Play("Idle");
+            if (_sprite.Animation != "Idle")
+                _sprite.Play("Idle");
+        }
+
+        public void PlayEat()
+        {
+            if (_sprite.Animation != "Eat")
+                _sprite.Play("Eat");
         }
 
         public void PlaySleep()
         {
-            _sprite.Play("Sleep");
+            if (_sprite.Animation != "Sleep")
+                _sprite.Play("Sleep");
         }
 
         public void PlayHappy()
@@ -210,7 +210,7 @@ namespace ProjetoDC.Scripts.UI
             _sprite.Play("SickLose");
         }
 
-        public async void PlayAttack()
+        public async Task PlayAttack()
         {
             _sprite.Play("Attack");
 
@@ -222,7 +222,7 @@ namespace ProjetoDC.Scripts.UI
             PlayIdle();
         }
 
-        public async void PlayHit()
+        public async Task PlayHit()
         {
             _sprite.Play("Hit");
 

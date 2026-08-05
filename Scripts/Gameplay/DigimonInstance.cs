@@ -261,6 +261,42 @@ namespace ProjetoDC.Scripts.Gameplay
             ActivityChanged?.Invoke(activity);
         }
 
+        public void StartSleeping()
+        {
+            SetActivity(DigimonActivity.Sleeping);
+        }
+
+        public void WakeUp()
+        {
+            if (Activity == DigimonActivity.Sleeping)
+                SetActivity(DigimonActivity.Idle);
+        }
+
+        public void StartTraining()
+        {
+            SetActivity(DigimonActivity.Training);
+        }
+
+        public void StopTraining()
+        {
+            if (Activity == DigimonActivity.Training)
+                SetActivity(DigimonActivity.Idle);
+        }
+
+        public void StartEating()
+        {
+            if (Activity == DigimonActivity.Sleeping)
+                return;
+
+            SetActivity(DigimonActivity.Eating);
+        }
+
+        public void StopEating()
+        {
+            if (Activity == DigimonActivity.Eating)
+                SetActivity(DigimonActivity.Idle);
+        }
+
         public void AdvanceHour(WorldState world)
         {
             ConsumeHunger();
@@ -271,13 +307,13 @@ namespace ProjetoDC.Scripts.Gameplay
 
             if (world.CurrentHour >= 1 && world.CurrentHour < 2)
             {
-                SetActivity(DigimonActivity.Sleeping);
+                StartSleeping();
                 RecoverStamina(5);
             }
             else
             {
                 if (Activity == DigimonActivity.Sleeping)
-                    SetActivity(DigimonActivity.Idle);
+                    WakeUp();
 
                 RecoverStamina(2);
             }
@@ -308,7 +344,7 @@ namespace ProjetoDC.Scripts.Gameplay
 
         public bool IsHungry()
         {
-            return Hunger <= MaxHunger;
+            return WantsFood();
         }
 
         public void Feed(int amount)
@@ -317,6 +353,21 @@ namespace ProjetoDC.Scripts.Gameplay
 
             if (Hunger > MaxHunger)
                 Hunger = MaxHunger;
+        }
+
+        public bool WantsFood()
+        {
+            return Hunger <= 80;
+        }
+
+        public bool IsFull()
+        {
+            return Hunger >= 100;
+        }
+
+        public bool IsStarving()
+        {
+            return Hunger <= 30;
         }
 
         public void RestoreHealth()
@@ -389,23 +440,26 @@ namespace ProjetoDC.Scripts.Gameplay
         {
             int risk = 0;
 
-            if (Hunger <= 70)
+            if (Hunger <= 80)
+                risk += 2;
+
+            if (Hunger <= 60)
+                risk += 3;
+
+            if (Hunger <= 40)
                 risk += 5;
 
-            if (Hunger <= 50)
+            if (Hunger <= 20)
                 risk += 10;
 
-            if (Hunger <= 30)
-                risk += 15;
-
-            if (Hunger <= 10)
+            if (Hunger <= 5)
                 risk += 20;
 
             if (AgeInDays > 20)
-                risk += 5;
+                risk += 2;
 
             if (AgeInDays > 40)
-                risk += 5;
+                risk += 3;
 
             return risk;
         }

@@ -1,13 +1,14 @@
 [gd_scene format=3 uid="uid://b2wmsgstn7ytx"]
 
 [ext_resource type="Script" uid="uid://dnloimeiixih7" path="res://Scenes/Center/Center.cs" id="1_gloqd"]
+[ext_resource type="PackedScene" uid="uid://bpdm1djccv738" path="res://Scenes/Center/Areas/CenterArea.tscn" id="2_gloqd"]
 
 [node name="Center" type="Node2D" unique_id=1265079242]
 script = ExtResource("1_gloqd")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2001207331]
 position = Vector2(649, 368)
-zoom = Vector2(2, 2)
+zoom = Vector2(0.7, 0.7)
 
 [node name="Ground" type="Node2D" parent="." unique_id=143457006]
 
@@ -80,3 +81,7 @@ position = Vector2(-50, 0)
 position = Vector2(647, 366)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1852425694]
+
+[node name="CenterAreas" type="Node2D" parent="." unique_id=1618977558]
+
+[node name="CenterArea" parent="CenterAreas" unique_id=1880692764 instance=ExtResource("2_gloqd")]

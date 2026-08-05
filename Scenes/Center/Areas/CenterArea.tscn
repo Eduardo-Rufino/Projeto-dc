@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://bpdm1djccv738"]
+
+[ext_resource type="Script" uid="uid://cr3cjuw5h53yp" path="res://Scripts/Models/World/CenterArea.cs" id="1_avmfy"]
+[ext_resource type="Script" uid="uid://dx7r3gwr4vspk" path="res://Scripts/Models/World/CenterAreaVisual.cs" id="2_2vg8t"]
+
+[node name="CenterArea" type="Node2D" unique_id=1880692764]
+script = ExtResource("1_avmfy")
+
+[node name="Visual" type="Node2D" parent="." unique_id=622492327]
+z_index = -10
+script = ExtResource("2_2vg8t")
+
+[node name="Polygon2D" type="Polygon2D" parent="Visual" unique_id=78020441]
+
+[node name="Walkpoints" type="Node2D" parent="." unique_id=1371590645]
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=1131097622]

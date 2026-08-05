@@ -1,12 +1,10 @@
-[gd_scene format=3 uid="uid://d2ocfe0xqru3r"]
+[gd_scene format=3 uid="uid://bonb78xc2kihs"]
 
 [ext_resource type="Script" uid="uid://b5bmkprnysmj4" path="res://Scripts/Models/World/FoodWorld.cs" id="1_ypoec"]
 [ext_resource type="Texture2D" uid="uid://quxn8tw3a7y3" path="res://Assets/Sprites/Food/beef on bone raw.png" id="2_k2e56"]
 
 [node name="FoodWorld" type="Node2D" unique_id=750043842]
-z_index = -5
 script = ExtResource("1_ypoec")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1420101922]
-z_index = -5
 texture = ExtResource("2_k2e56")

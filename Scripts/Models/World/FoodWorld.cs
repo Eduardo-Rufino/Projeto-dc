@@ -5,12 +5,23 @@ namespace ProjetoDC.Scripts.World;
 
 public partial class FoodWorld : Node2D
 {
-    public Food Food { get; private set; }
+    private Food _food;
+
 
     public void Initialize(Food food)
     {
-        Food = food;
+        _food = food;
+    }
 
-        GlobalPosition = food.Position;
+
+    public bool HasFood()
+    {
+        return _food != null && !_food.IsEmpty();
+    }
+
+
+    public Food GetFood()
+    {
+        return _food;
     }
 }

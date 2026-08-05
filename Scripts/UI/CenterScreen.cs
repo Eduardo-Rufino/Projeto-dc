@@ -373,7 +373,7 @@ namespace ProjetoDC.Scripts.UI
 
             if (result.Success)
             {
-                await _digimonSprite.PlayEat();
+                _digimonSprite.PlayEat();
             }
             else
             {

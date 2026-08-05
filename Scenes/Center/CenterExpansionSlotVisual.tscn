@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dm0lmvkamm8ir"]
+
+[ext_resource type="Script" uid="uid://c3c5so1onhg2e" path="res://Scripts/Models/World/CenterExpansionSlotVisual.cs" id="1_aih0i"]
+
+[node name="CenterExpansionSlotVisual" type="Node2D" unique_id=1603899868]
+script = ExtResource("1_aih0i")
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=2138724512]
+
+[node name="Area2D" type="Area2D" parent="." unique_id=507433675]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D" unique_id=1864857583]
+polygon = PackedVector2Array(100, 0, 50, 86.6, -50, 86.6, -100, 0, -50, -86.6, 50, -86.6)
