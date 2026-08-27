@@ -2,6 +2,25 @@
 
 [ext_resource type="Script" uid="uid://dnloimeiixih7" path="res://Scenes/Center/Center.cs" id="1_gloqd"]
 [ext_resource type="PackedScene" uid="uid://bpdm1djccv738" path="res://Scenes/Center/Areas/CenterArea.tscn" id="2_gloqd"]
+[ext_resource type="Script" uid="uid://bnrtydwuwbk5f" path="res://Scripts/UI/HUD.cs" id="2_oao4p"]
+[ext_resource type="PackedScene" uid="uid://covv6lvt7tbvh" path="res://Scenes/Center/AreaBuildMenu.tscn" id="2_q11ny"]
+[ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="3_csbr3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scj13"]
+bg_color = Color(0.1254902, 0.14509805, 0.16862746, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q11ny"]
+bg_color = Color(0.1882353, 0.21176471, 0.23921569, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
 
 [node name="Center" type="Node2D" unique_id=1265079242]
 script = ExtResource("1_gloqd")
@@ -39,48 +58,405 @@ position = Vector2(80, -80)
 
 [node name="Marker2D7" type="Marker2D" parent="Digimons/SpawnPoints" unique_id=530887609]
 
-[node name="WalkPoints" type="Node2D" parent="Digimons" unique_id=764876961]
-
-[node name="point1" type="Marker2D" parent="Digimons/WalkPoints" unique_id=1911288183]
-position = Vector2(150, 0)
-
-[node name="point2" type="Marker2D" parent="Digimons/WalkPoints" unique_id=2096941026]
-position = Vector2(-50, -50)
-
-[node name="point3" type="Marker2D" parent="Digimons/WalkPoints" unique_id=1092566768]
-position = Vector2(150, -50)
-
-[node name="point4" type="Marker2D" parent="Digimons/WalkPoints" unique_id=1722109218]
-position = Vector2(150, -150)
-
-[node name="point5" type="Marker2D" parent="Digimons/WalkPoints" unique_id=1673783072]
-position = Vector2(50, -150)
-
-[node name="point6" type="Marker2D" parent="Digimons/WalkPoints" unique_id=126952361]
-position = Vector2(50, -50)
-
-[node name="point7" type="Marker2D" parent="Digimons/WalkPoints" unique_id=1835739166]
-position = Vector2(50, -100)
-
-[node name="point8" type="Marker2D" parent="Digimons/WalkPoints" unique_id=545968802]
-position = Vector2(150, -100)
-
-[node name="point9" type="Marker2D" parent="Digimons/WalkPoints" unique_id=744081417]
-position = Vector2(0, -50)
-
-[node name="point10" type="Marker2D" parent="Digimons/WalkPoints" unique_id=2138296460]
-position = Vector2(0, -100)
-
-[node name="point11" type="Marker2D" parent="Digimons/WalkPoints" unique_id=696380735]
-position = Vector2(0, -150)
-
-[node name="point12" type="Marker2D" parent="Digimons/WalkPoints" unique_id=1397579273]
-position = Vector2(-50, 0)
-
 [node name="Effects" type="Node2D" parent="." unique_id=362748983]
 position = Vector2(647, 366)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1852425694]
+
+[node name="HUD" type="Control" parent="CanvasLayer" unique_id=1671752105]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_oao4p")
+
+[node name="TopBar" type="Control" parent="CanvasLayer/HUD" unique_id=284869996]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 100.0
+grow_horizontal = 2
+
+[node name="CenterMap" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=1722000983]
+anchors_preset = 0
+offset_right = 180.0
+offset_bottom = 100.0
+
+[node name="Panel" type="Panel" parent="CanvasLayer/HUD/TopBar/CenterMap" unique_id=359065717]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="CenterMapLabel" type="Label" parent="CanvasLayer/HUD/TopBar/CenterMap/Panel" unique_id=1858172320]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "MAPA DO CENTRO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DateTime" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=1609594561]
+anchors_preset = 0
+offset_left = 180.0
+offset_right = 580.0
+offset_bottom = 100.0
+
+[node name="Panel" type="Panel" parent="CanvasLayer/HUD/TopBar/DateTime" unique_id=1672129651]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel" unique_id=1741051013]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DateLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/VBoxContainer" unique_id=1778898101]
+layout_mode = 2
+text = "Dia 1"
+
+[node name="CalendarLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/VBoxContainer" unique_id=1647158106]
+layout_mode = 2
+text = "Calendario"
+
+[node name="ClockLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/VBoxContainer" unique_id=1697077575]
+layout_mode = 2
+text = "06:00"
+
+[node name="CenterStatus" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=1457227790]
+anchors_preset = 0
+offset_left = 580.0
+offset_right = 760.0
+offset_bottom = 100.0
+
+[node name="Panel" type="Panel" parent="CanvasLayer/HUD/TopBar/CenterStatus" unique_id=1193224602]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/CenterStatus/Panel" unique_id=73548883]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BitsLabel" type="Label" parent="CanvasLayer/HUD/TopBar/CenterStatus/Panel/VBoxContainer" unique_id=77422307]
+layout_mode = 2
+text = "Bits: 1000"
+
+[node name="CapacityLabel" type="Label" parent="CanvasLayer/HUD/TopBar/CenterStatus/Panel/VBoxContainer" unique_id=831839059]
+layout_mode = 2
+text = "Capacidade: 3 / 10"
+
+[node name="DigimonCountLabel" type="Label" parent="CanvasLayer/HUD/TopBar/CenterStatus/Panel/VBoxContainer" unique_id=2116072035]
+layout_mode = 2
+text = "Digimons: 3"
+
+[node name="DigimonStatus" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=1578979944]
+anchors_preset = 0
+offset_left = 760.0
+offset_right = 1020.0
+offset_bottom = 100.0
+
+[node name="Panel" type="Panel" parent="CanvasLayer/HUD/TopBar/DigimonStatus" unique_id=878179150]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel" unique_id=167920006]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 68
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer" unique_id=1832672382]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HPContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=1038127822]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HPContainer" unique_id=1278345001]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 10
+text = "100/100"
+
+[node name="HPBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HPContainer" unique_id=1326393487]
+layout_mode = 2
+show_percentage = false
+
+[node name="StaminaContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=966107721]
+layout_mode = 2
+
+[node name="StaminaLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/StaminaContainer" unique_id=468810918]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 10
+text = "100/100"
+
+[node name="StaminaBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/StaminaContainer" unique_id=172239511]
+layout_mode = 2
+show_percentage = false
+
+[node name="HungerContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=1744716492]
+layout_mode = 2
+
+[node name="HungerLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HungerContainer" unique_id=2009894667]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 10
+text = "100/100"
+
+[node name="HungerBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HungerContainer" unique_id=2102983867]
+layout_mode = 2
+show_percentage = false
+
+[node name="ActivityLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=844697184]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 10
+text = "Atividade: Idle"
+
+[node name="StatusLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=1417662978]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 10
+text = "Estado: Saudável"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer" unique_id=1345915301]
+layout_mode = 2
+
+[node name="AttackLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1159469647]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "ATQ Físico: ---"
+
+[node name="DefenseLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1793390462]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "DEF Física: ---"
+
+[node name="SpecialAttackLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1795534990]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "ATQ Especial: ---"
+
+[node name="SpecialDefenceLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1993036618]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "DEF Especial: ---"
+
+[node name="SpeedLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1949487367]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Velocidade: ---"
+
+[node name="SelectedDigimon" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=657801898]
+anchors_preset = 0
+offset_left = 1020.0
+offset_right = 1280.0
+offset_bottom = 100.0
+
+[node name="Panel" type="Panel" parent="CanvasLayer/HUD/TopBar/SelectedDigimon" unique_id=1469383768]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel" unique_id=1391575962]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 100
+
+[node name="InfoContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer" unique_id=49650267]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/InfoContainer" unique_id=919427126]
+layout_mode = 2
+text = "Botamon"
+
+[node name="LevelLabel" type="Label" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/InfoContainer" unique_id=60325849]
+layout_mode = 2
+text = "Lv. 1"
+
+[node name="SpritePanel" type="Panel" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer" unique_id=1248969012]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="DigimonSprite" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/SpritePanel" unique_id=2065239916 instance=ExtResource("3_csbr3")]
+scale = Vector2(1.6, 1.6)
+
+[node name="ControlBar" type="Control" parent="CanvasLayer/HUD" unique_id=2049210719]
+anchors_preset = 0
+offset_top = 100.0
+offset_right = 1280.0
+offset_bottom = 170.0
+
+[node name="ControlBackground" type="Panel" parent="CanvasLayer/HUD/ControlBar" unique_id=102531847]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="FeedButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=1129572515]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 3.0
+offset_right = 74.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "🍖"
+
+[node name="MedicineButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=258173917]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 3.0
+offset_right = 142.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "💊"
+
+[node name="CleanButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=102874810]
+layout_mode = 0
+offset_left = 146.0
+offset_top = 3.0
+offset_right = 210.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "🧹"
+
+[node name="ActionButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=521298803]
+layout_mode = 0
+offset_left = 214.0
+offset_top = 3.0
+offset_right = 278.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "---"
+
+[node name="ActionButton2" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=862047399]
+layout_mode = 0
+offset_left = 282.0
+offset_top = 3.0
+offset_right = 346.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "---"
+
+[node name="ActionButton3" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=87419195]
+layout_mode = 0
+offset_left = 350.0
+offset_top = 3.0
+offset_right = 414.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "---"
+
+[node name="ShopButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=515300819]
+layout_mode = 0
+offset_left = 418.0
+offset_top = 3.0
+offset_right = 482.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "🏪"
+
+[node name="InventoryButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=915491583]
+layout_mode = 0
+offset_left = 486.0
+offset_top = 3.0
+offset_right = 550.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "🎒"
+
+[node name="MailButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=1458335205]
+layout_mode = 0
+offset_left = 554.0
+offset_top = 3.0
+offset_right = 618.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "✉"
+
+[node name="TrophyButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=809423945]
+layout_mode = 0
+offset_left = 622.0
+offset_top = 3.0
+offset_right = 686.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "🏆"
+
+[node name="WorldButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=1420994301]
+layout_mode = 0
+offset_left = 690.0
+offset_top = 3.0
+offset_right = 754.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "🌎"
+
+[node name="SettingsButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=1487720285]
+layout_mode = 0
+offset_left = 758.0
+offset_top = 3.0
+offset_right = 822.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "⚙"
+
+[node name="ExitButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=482127801]
+layout_mode = 0
+offset_left = 826.0
+offset_top = 3.0
+offset_right = 890.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+text = "🚪"
+
+[node name="AreaBuildMenu" parent="CanvasLayer" unique_id=519113027 instance=ExtResource("2_q11ny")]
+visible = false
 
 [node name="CenterAreas" type="Node2D" parent="." unique_id=1618977558]
 

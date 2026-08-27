@@ -10,6 +10,12 @@ namespace ProjetoDC.Scripts.UI
         public AnimatedSprite2D _sprite;
         private bool _walking;
 
+        public string CurrentAnimation =>
+             _sprite.Animation.ToString();
+
+        public int CurrentFrame =>
+            _sprite.Frame;
+
         private string _currentCode = "";
 
         public override void _Ready()
@@ -42,6 +48,10 @@ namespace ProjetoDC.Scripts.UI
             AddAnimation(frames, code, "SickLose", 14);
 
             _sprite.SpriteFrames = frames;
+
+            _sprite.Stop();
+            _sprite.Frame = 0;
+            _sprite.Play("Idle");
         }
 
         public void RefreshState(DigimonInstance digimon)
@@ -59,7 +69,7 @@ namespace ProjetoDC.Scripts.UI
                     break;
 
                 case DigimonActivity.Training:
-                    PlayTrain();
+                    _ = PlayTrainingSequence(1);
                     break;
 
                 case DigimonActivity.Eating:
@@ -101,8 +111,8 @@ namespace ProjetoDC.Scripts.UI
         {
             frames.AddAnimation(animation);
             frames.SetAnimationSpeed(animation, 2);
-             
-            if (animation == "Idle" || animation == "Happy" || animation == "Sleep" || animation == "Eat")
+
+            if (animation == "Idle" || animation == "Sleep" || animation == "Eat")
             {
                 frames.SetAnimationLoopMode(animation, SpriteFrames.LoopMode.Linear);
             }
@@ -174,24 +184,27 @@ namespace ProjetoDC.Scripts.UI
 
         public void PlayIdle()
         {
-            if (_sprite.Animation != "Idle")
-                _sprite.Play("Idle");
+            if (_sprite.Animation == "Idle" && _sprite.IsPlaying())
+                return;
+
+            _sprite.Play("Idle");
         }
 
         public void PlayEat()
         {
-            if (_sprite.Animation != "Eat")
-                _sprite.Play("Eat");
+            _sprite.Play("Eat");
         }
 
         public void PlaySleep()
         {
-            if (_sprite.Animation != "Sleep")
-                _sprite.Play("Sleep");
+            _sprite.Play("Sleep");
         }
 
         public void PlayHappy()
         {
+            if (_sprite.Animation == "Happy" && _sprite.IsPlaying())
+                return;
+
             _sprite.Play("Happy");
         }
 
@@ -247,7 +260,39 @@ namespace ProjetoDC.Scripts.UI
 
         public void PlayTrain()
         {
+            if (_sprite.Animation == "Train" && _sprite.IsPlaying())
+                return;
+
             _sprite.Play("Train");
+        }
+
+        public async Task PlayTrainingSequence(int trainingLoops)
+        {
+            for (int i = 0; i < trainingLoops; i++)
+            {
+                _sprite.Stop();
+                _sprite.Frame = 0;
+                _sprite.Play("Train");
+
+                await ToSignal(
+                    _sprite,
+                    AnimatedSprite2D.SignalName.AnimationFinished
+                );
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                _sprite.Stop();
+                _sprite.Frame = 0;
+                _sprite.Play("Happy");
+
+                await ToSignal(
+                    _sprite,
+                    AnimatedSprite2D.SignalName.AnimationFinished
+                );
+            }
+
+            PlayIdle();
         }
     }
 }

@@ -22,9 +22,9 @@ public partial class CenterExpansionSlotVisual : Node2D
     }
 
     private void OnAreaInputEvent(
-        Node viewport,
-        InputEvent @event,
-        long shapeIdx)
+    Node viewport,
+    InputEvent @event,
+    long shapeIdx)
     {
         if (@event is InputEventMouseButton mouseEvent)
         {
@@ -32,7 +32,11 @@ public partial class CenterExpansionSlotVisual : Node2D
                 mouseEvent.Pressed)
             {
                 GD.Print(
-                    $"SLOT CLICADO! Grid: {GridPosition}"
+                    $"SLOT CLICADO! " +
+                    $"Grid: {GridPosition} | " +
+                    $"InstanceID: {GetInstanceId()} | " +
+                    $"Name: {Name} | " +
+                    $"Shape: {shapeIdx}"
                 );
 
                 SlotClicked?.Invoke(GridPosition);

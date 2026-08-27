@@ -24,4 +24,11 @@ public partial class FoodWorld : Node2D
     {
         return _food;
     }
+
+    public void SetPlacementMode(bool placementMode)
+    {
+        Modulate = placementMode
+            ? new Color(1f, 1f, 1f, 0.5f)
+            : new Color(1f, 1f, 1f, 1f);
+    }
 }

@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://covv6lvt7tbvh"]
+
+[ext_resource type="Script" uid="uid://g3186w0yioda" path="res://Scripts/UI/AreaBuildMenu.cs" id="1_nrl4c"]
+
+[node name="AreaBuildMenu" type="Control" unique_id=519113027]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nrl4c")
+
+[node name="Panel" type="Panel" parent="." unique_id=351426288]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=984795955]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer" unique_id=1713383447]
+layout_mode = 2
+text = "Escolha o tipo de área: "
+
+[node name="TrainingButton" type="Button" parent="Panel/VBoxContainer" unique_id=1310303360]
+layout_mode = 2
+text = "Training"
+
+[node name="DormitoryButton" type="Button" parent="Panel/VBoxContainer" unique_id=1489318198]
+layout_mode = 2
+text = "Dormitory"
+
+[node name="RestaurantButton" type="Button" parent="Panel/VBoxContainer" unique_id=325453221]
+layout_mode = 2
+text = "Restaurant"
+
+[node name="HospitalButton" type="Button" parent="Panel/VBoxContainer" unique_id=1562940128]
+layout_mode = 2
+text = "Hospital"
+
+[node name="CancelButton" type="Button" parent="Panel/VBoxContainer" unique_id=1059129565]
+layout_mode = 2
+text = "Cancelar"

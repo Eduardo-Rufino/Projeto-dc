@@ -1,8 +1,12 @@
 using Godot;
+using ProjetoDC.Enums;
+using ProjetoDC.Scripts.Core.Results;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
+using ProjetoDC.Scripts.UI;
 using ProjetoDC.Scripts.World;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,8 +20,6 @@ public partial class Center : Node2D
 
     private List<Marker2D> _spawnPoints = new();
 
-    private List<Marker2D> _walkPoints = new();
-
     private readonly Vector2 _areaGridOrigin = new Vector2(647, 366);
 
     private readonly List<FoodWorld> _foods = new();
@@ -26,12 +28,27 @@ public partial class Center : Node2D
 
     private readonly Dictionary<Vector2I, CenterArea> _centerAreas = new();
 
+    private Vector2I _pendingAreaPosition;
+
     private List<CenterExpansionSlot> _expansionSlots = new();
 
     private Node2D _digimonsContainer;
     private Node2D _expansionSlotsVisual;
 
+    private AreaBuildMenu _areaBuildMenu;
+    private HUD _hud;
+
+    private FoodWorld _placingFood;
+    private bool _isPlacingFood;
+
+    private PackedScene _medicineScene;
+
+    private MedicineWorld _placingMedicine;
+    private bool _isPlacingMedicine;
+
     private readonly RandomNumberGenerator _rng = new();
+
+    public event Action<DigimonInstance> DigimonInspected;
 
     private PackedScene _expansionSlotScene =
     GD.Load<PackedScene>("res://Scenes/Center/CenterExpansionSlotVisual.tscn");
@@ -52,7 +69,17 @@ public partial class Center : Node2D
             "res://Scenes/Center/Areas/CenterArea.tscn"
         );
 
-        
+        _medicineScene = GD.Load<PackedScene>(
+            "res://Scenes/Center/MedicineWorld.tscn"
+         );
+
+        _areaBuildMenu = GetNode<AreaBuildMenu>(
+            "CanvasLayer/AreaBuildMenu"
+        );
+
+        _hud = GetNode<HUD>("CanvasLayer/HUD");
+
+        _areaBuildMenu.AreaTypeSelected += OnAreaTypeSelected;
 
         if (_digimonScene == null)
         {
@@ -68,23 +95,10 @@ public partial class Center : Node2D
                 _spawnPoints.Add(marker);
         }
 
-        var walkRoot = GetNode<Node2D>("Digimons/WalkPoints");
-
-        foreach (Node child in walkRoot.GetChildren())
-        {
-            if (child is Marker2D marker)
-            {
-                _walkPoints.Add(marker);
-                GD.Print($"WalkPoint adicionado: {marker.Name} - {marker.GlobalPosition}");
-            }
-
-        }
-
         _digimonsContainer = GetNode<Node2D>("Digimons");
-
-        SpawnDigimons();
-
+        
         RegisterCenterAreas();
+        SpawnDigimons();
         RefreshExpansionSlots();
         CreateExpansionSlotVisuals();
 
@@ -97,19 +111,38 @@ public partial class Center : Node2D
             SpawnTestFood();
         }
 
-
         if (Input.IsActionJustPressed("test_food"))
         {
-            var food = GetNearestFood(new Vector2(570, 367));
+            Vector2 testPosition = new Vector2(570, 367);
+
+            CenterArea testArea = GetAreaAtPosition(testPosition);
+
+            var food = GetNearestFood(
+                testPosition,
+                testArea
+            );
 
             if (food != null)
             {
-                GD.Print($"Comida encontrada em: {food.GlobalPosition}");
+                GD.Print(
+                    $"Comida encontrada em: {food.GlobalPosition}"
+                );
             }
             else
             {
                 GD.Print("Nenhuma comida encontrada.");
             }
+        }
+
+        if (_isPlacingFood && _placingFood != null)
+        {
+            _placingFood.GlobalPosition = GetGlobalMousePosition();
+        }
+
+        if (_isPlacingMedicine && _placingMedicine != null)
+        {
+            _placingMedicine.GlobalPosition =
+                GetGlobalMousePosition();
         }
     }
 
@@ -144,6 +177,15 @@ public partial class Center : Node2D
         instance.GlobalPosition = spawnPoint.GlobalPosition;
 
         instance.Initialize(digimon);
+
+         CenterArea initialArea = GetAreaAtPosition(instance.GlobalPosition);
+
+        if (initialArea != null) {
+            instance.SetArea(initialArea);
+        }
+        else{
+            GD.PrintErr($"{digimon.BaseData.Name} nasceu fora de uma CenterArea");
+        }
 
         GD.Print($"Spawn em {instance.GlobalPosition}");
 
@@ -227,36 +269,34 @@ public partial class Center : Node2D
         return false;
     }
 
-    public FoodWorld GetNearestFood(Vector2 position)
+    public FoodWorld GetNearestFood(Vector2 position, CenterArea area)
     {
         FoodWorld nearestFood = null;
-        float nearestdistance = float.MaxValue;
+        float nearestDistance = float.MaxValue;
+
+        if (area == null)
+            return null;
 
         foreach (var food in _foods)
         {
             if (!food.HasFood())
                 continue;
 
+            CenterArea foodArea = GetAreaAtPosition(food.GlobalPosition);
+
+            if (foodArea != area)
+                continue;
+
             float currentDistance = position.DistanceTo(food.GlobalPosition);
 
-            if (currentDistance < nearestdistance)
+            if (currentDistance < nearestDistance)
             {
-                nearestdistance = currentDistance;
+                nearestDistance = currentDistance;
                 nearestFood = food;
             }
         }
 
         return nearestFood;
-    }
-
-    public Vector2 GetRandomWalkPoint()
-    {
-        if (_walkPoints.Count == 0)
-            return Vector2.Zero;
-
-        int index = _rng.RandiRange(0, _walkPoints.Count - 1);
-
-        return _walkPoints[index].GlobalPosition;
     }
 
     private void CreateInitialArea()
@@ -274,7 +314,7 @@ public partial class Center : Node2D
         );
     }
 
-    public bool AddArea(Vector2I gridPosition)
+    public bool AddArea(Vector2I gridPosition, CenterAreaType areaType)
     {
         if (IsAreaOccupied(gridPosition))
         {
@@ -290,7 +330,7 @@ public partial class Center : Node2D
             return false;
         }
 
-        CreateCenterArea(gridPosition);
+        CreateCenterArea(gridPosition, areaType);
 
         return true;
     }
@@ -352,7 +392,7 @@ public partial class Center : Node2D
         return available;
     }
 
-    private void CreateCenterArea(Vector2I gridPosition)
+    private void CreateCenterArea(Vector2I gridPosition, CenterAreaType areaType)
     {
         var scene = GD.Load<PackedScene>(
             "res://Scenes/Center/Areas/CenterArea.tscn"
@@ -367,6 +407,8 @@ public partial class Center : Node2D
         var area = scene.Instantiate<CenterArea>();
 
         area.GridPosition = gridPosition;
+
+        area.SetAreaType(areaType);
 
         GetNode("CenterAreas").AddChild(area);
 
@@ -404,7 +446,7 @@ public partial class Center : Node2D
     {
         if (_expansionSlotsVisual != null)
         {
-            _expansionSlotsVisual.QueueFree();
+            _expansionSlotsVisual.Free();
             _expansionSlotsVisual = null;
         }
 
@@ -453,12 +495,103 @@ public partial class Center : Node2D
 
     private void OnExpansionSlotClicked(Vector2I gridPosition)
     {
-        GD.Print($"Tentando expandir para: {gridPosition}");
+        GD.Print($"SLOT CLICADO! Grid: {gridPosition}");
 
-        if (AddArea(gridPosition))
+        _pendingAreaPosition = gridPosition;
+
+        GD.Print(
+            $"Escolhendo tipo de área para {_pendingAreaPosition}"
+        );
+
+        _areaBuildMenu.Open();
+    }
+
+    public CenterArea GetAreaAtPosition(Vector2 position)
+    {
+        foreach (var area in _centerAreas.Values)
+        {
+            if (area.IsPointInside(position))
+                return area;
+        }
+
+        return null;
+    }
+
+    private void OnAreaTypeSelected(CenterAreaType areaType)
+    {
+        GD.Print(
+            $"Construindo área {_pendingAreaPosition} " +
+            $"do tipo {areaType}"
+        );
+
+        if (AddArea(_pendingAreaPosition, areaType))
         {
             RefreshExpansionSlotVisuals();
         }
+    }
+
+    public void InspectDigimon(DigimonInstance digimon)
+    {
+        if (digimon == null)
+            return;
+
+        _hud.InspectDigimon(digimon);
+    }
+
+    public void StartFoodPlacement()
+    {
+        if (_isPlacingFood)
+            return;
+
+        if (_foods.Count >= MaxFoods)
+        {
+            GD.Print("Limite de comidas atingido.");
+            return;
+        }
+
+        _placingFood = _foodScene.Instantiate<FoodWorld>();
+
+        _digimonsContainer.AddChild(_placingFood);
+
+        _placingFood.Initialize(
+            new Food("Carne", 20)
+        );
+
+        _placingFood.SetPlacementMode(true);
+
+        _isPlacingFood = true;
+    }
+
+    public void PlaceFood()
+    {
+        if (_placingFood == null)
+            return;
+
+        CenterArea area = GetAreaAtPosition(
+            _placingFood.GlobalPosition
+        );
+
+        if (area == null)
+        {
+            GD.Print("Não é possível colocar comida fora de uma área do Center.");
+
+            _placingFood.QueueFree();
+            _placingFood = null;
+            _isPlacingFood = false;
+
+            return;
+        }
+
+        _placingFood.SetPlacementMode(false);
+
+        _foods.Add(_placingFood);
+
+        GD.Print(
+            $"Carne colocada em {_placingFood.GlobalPosition}"
+        );
+
+        _placingFood = null;
+        _isPlacingFood = false;
     }
 
     private void TestAreaOccupancy()
@@ -478,44 +611,108 @@ public partial class Center : Node2D
         }
     }
 
-    private void TestCreateArea()
+    private DigimonWorld GetDigimonAtPosition(Vector2 position)
     {
-        var available = GetAvailableNeighbors(Vector2I.Zero);
-
-        if (available.Count == 0)
+        foreach (var digimon in _digimonWorlds)
         {
-            GD.Print("Não existem espaços disponíveis.");
+            if (!GodotObject.IsInstanceValid(digimon))
+                continue;
+
+            if (digimon.IsPointInside(position))
+                return digimon;
+        }
+
+        return null;
+    }
+
+    public void StartMedicinePlacement()
+    {
+        if (_isPlacingMedicine)
+            return;
+
+        if (GameManager.Instance.Save.Center.Medicine <= 0)
+        {
+            GD.Print("Você não possui remédios.");
             return;
         }
 
-        CreateCenterArea(available[0]);
-
-        available = GetAvailableNeighbors(Vector2I.Zero);
-
-        if (available.Count == 0)
+        if (_medicineScene == null)
         {
-            GD.Print("Não existem mais espaços disponíveis.");
+            GD.PrintErr(
+                "MedicineWorld.tscn não foi carregado."
+            );
+
             return;
         }
 
-        CreateCenterArea(available[0]);
+
+
+        _placingMedicine =
+            _medicineScene.Instantiate<MedicineWorld>();
+
+        AddChild(_placingMedicine);
+
+        _placingMedicine.SetPlacementMode(true);
+
+        _isPlacingMedicine = true;
+
+        GD.Print("Iniciando posicionamento de medicamento.");
     }
 
-    private void TestAllAvailablePositions()
+    public void PlaceMedicine()
     {
-        var available = GetAllAvailablePositions();
+        if (!_isPlacingMedicine ||
+            _placingMedicine == null)
+            return;
 
-        GD.Print("=== POSIÇÕES DISPONÍVEIS ===");
+        Vector2 position =
+            _placingMedicine.GlobalPosition;
 
-        foreach (var position in available)
+        DigimonWorld digimonWorld =
+            GetDigimonAtPosition(position);
+
+        if (digimonWorld == null)
         {
-            GD.Print($"Disponível: {position}");
+            GD.Print(
+                "Medicamento não foi colocado sobre nenhum Digimon."
+            );
+
+            _placingMedicine.QueueFree();
+
+            _placingMedicine = null;
+            _isPlacingMedicine = false;
+
+            return;
         }
+
+        DigimonInstance digimon =
+            digimonWorld._digimon;
+
+        if (digimon == null)
+        {
+            GD.PrintErr(
+                "DigimonWorld encontrado, mas sem DigimonInstance."
+            );
+
+            _placingMedicine.QueueFree();
+
+            _placingMedicine = null;
+            _isPlacingMedicine = false;
+
+            return;
+        }
+
+        SystemResult result =
+            digimon.UseMedicine(digimon);
+
+        GD.Print(
+            $"Resultado do medicamento: {result.Reason}"
+        );
+
+        _placingMedicine.QueueFree();
+
+        _placingMedicine = null;
+        _isPlacingMedicine = false;
     }
 
-    private void TestAddArea()
-    {
-        AddArea(new Vector2I(1, 0));
-        AddArea(new Vector2I(2, 0));
-    }
 }

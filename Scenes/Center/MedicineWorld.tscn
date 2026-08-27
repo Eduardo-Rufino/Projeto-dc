@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bnt3ooktycvi6"]
+
+[ext_resource type="Script" uid="uid://bctml1lcv8chg" path="res://Scripts/Models/World/MedicineWorld.cs" id="1_0q5ft"]
+
+[node name="MedicineWorld" type="Node2D" unique_id=963420038]
+script = ExtResource("1_0q5ft")

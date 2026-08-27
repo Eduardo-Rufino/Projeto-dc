@@ -3,7 +3,15 @@
 [ext_resource type="Script" uid="uid://cmkn7hxxufcgb" path="res://Scripts/Gameplay/DigimonWorld.cs" id="1_ey0gg"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="2_g0h4y"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_scj13"]
+size = Vector2(48, 48)
+
 [node name="DigimonWorld" type="Node2D" unique_id=537862215]
 script = ExtResource("1_ey0gg")
 
 [node name="DigimonSprite" parent="." unique_id=2065239916 instance=ExtResource("2_g0h4y")]
+
+[node name="ClickArea" type="Area2D" parent="." unique_id=221505543]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea" unique_id=923794447]
+shape = SubResource("RectangleShape2D_scj13")

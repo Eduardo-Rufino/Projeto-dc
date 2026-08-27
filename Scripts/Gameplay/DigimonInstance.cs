@@ -31,7 +31,7 @@ namespace ProjetoDC.Scripts.Gameplay
         public int MaxHunger => 100;
 
         public BaseStats CurrentStats { get; set; }
-        public HealthState HealthState { get; set; } = HealthState.Healthy;
+        private HealthState _healthState = HealthState.Healthy;
         public DigimonActivity Activity { get; set; } = DigimonActivity.Idle;
         public int MaxStamina { get; set; } = 100;
         public int Stamina { get; set; } = 100;
@@ -407,7 +407,7 @@ namespace ProjetoDC.Scripts.Gameplay
 
             GameManager.Instance.Save.Center.Medicine--;
 
-            digimon.HealthState = HealthState.Healthy;
+            digimon.Heal();
 
             return SystemResult.Ok("O Digimon foi curado.");
         }
@@ -474,5 +474,20 @@ namespace ProjetoDC.Scripts.Gameplay
 
             return true;
         }
+
+        public HealthState HealthState
+        {
+            get => _healthState;
+            private set
+            {
+                if (_healthState == value)
+                    return;
+
+                _healthState = value;
+                HealthStateChanged?.Invoke(value);
+            }
+        }
+
+        public event Action<HealthState>? HealthStateChanged;
     }
 }

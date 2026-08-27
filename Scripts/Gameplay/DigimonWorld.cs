@@ -1,7 +1,10 @@
 using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Gameplay;
+using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.UI;
+using System;
 
 namespace ProjetoDC.Scripts.World;
 
@@ -9,10 +12,20 @@ public partial class DigimonWorld : Node2D
 {
     private DigimonSprite _sprite;
     private Center _center;
+    private CenterArea _currentArea;
     private bool _lookingLeft;
     private FoodWorld _targetFood;
     private bool _isEating;
     private double _eatTimer;
+    private double _trainingTimer;
+    private const double TrainingInterval = 5.0;
+    private bool _isTrainingAnimation;
+
+    private bool _isDragging;
+    private Vector2 _dragOffset;
+    private Vector2 _positionBeforeDrag;
+    private Vector2 _dragStartPosition;
+    private CenterArea _dragStartArea;
 
     private Vector2 _targetPosition;
 
@@ -27,6 +40,10 @@ public partial class DigimonWorld : Node2D
     public override void _Ready()
     {
         _sprite = GetNode<DigimonSprite>("DigimonSprite");
+
+        var clickArea = GetNode<Area2D>("ClickArea");
+
+        clickArea.InputEvent += OnClickAreaInputEvent;
 
         _targetPosition = GlobalPosition;
     }
@@ -46,6 +63,7 @@ public partial class DigimonWorld : Node2D
         _sprite.SetDigimon(digimon.BaseData.Code);
 
         _digimon.ActivityChanged += OnActivityChanged;
+        _digimon.HealthStateChanged += OnHealthStateChanged;
 
         GD.Print(
             $"ASSINANDO EVENTO: {_digimon.BaseData.Name}"
@@ -56,6 +74,8 @@ public partial class DigimonWorld : Node2D
         GD.Print(
             $"{digimon.BaseData.Name} | Estado: {digimon.HealthState} | Atividade: {digimon.Activity}"
         );
+
+        
     }
 
     private void OnActivityChanged(DigimonActivity activity)
@@ -110,10 +130,39 @@ public partial class DigimonWorld : Node2D
         _center = center;
     }
 
+    public void SetArea(CenterArea area)
+    {
+        _currentArea = area;
+
+        GD.Print(
+            $"{_digimon.BaseData.Name} entrou na área {_currentArea.GridPosition}"
+        );
+
+        if (_currentArea.IsTrainingArea())
+        {
+            _trainingTimer = TrainingInterval;
+            _idleTimer = 0;
+
+            GD.Print(
+                $"{_digimon.BaseData.Name} está em uma área de treinamento."
+            );
+        }
+    }
+
+    public bool IsInTrainingArea() { 
+        return _currentArea != null && _currentArea.IsTrainingArea();
+    }
+
     public override void _Process(double delta)
     {
         if (_digimon == null)
             return;
+
+        if (_isDragging)
+        {
+            ProcessDragging();
+            return;
+        }
 
         if (_isEating)
         {
@@ -138,6 +187,20 @@ public partial class DigimonWorld : Node2D
 
         if (!_isWalking)
         {
+            // Training Area possui timer de treinamento,
+            // mas continua usando a mesma lógica de movimentação normal.
+            if (_currentArea != null &&
+                _currentArea.IsTrainingArea() &&
+                !_isTrainingAnimation)
+            {
+                _trainingTimer -= delta;
+
+                if (_trainingTimer <= 0)
+                {
+                    ProcessTraining();
+                }
+            }
+
             _idleTimer -= delta;
 
             if (_idleTimer <= 0)
@@ -174,15 +237,33 @@ public partial class DigimonWorld : Node2D
         }
     }
 
+    private void ProcessDragging()
+    {
+        Vector2 mousePosition = GetGlobalMousePosition();
+
+        GlobalPosition = mousePosition + _dragOffset;
+    }
+
     private void ChooseNewDestination()
     {
         const float minimumDistance = 80f;
+
+        CenterArea currentArea = _center.GetAreaAtPosition(GlobalPosition);
+
+        if (currentArea == null)
+        {
+            GD.PrintErr(
+                $"{_digimon.BaseData.Name} não está dentro de nenhuma CenterArea."
+            );
+
+            return;
+        }
 
         Vector2 destination = GlobalPosition;
 
         for (int i = 0; i < 10; i++)
         {
-            destination = _center.GetRandomWalkPoint();
+            destination = currentArea.GetRandomPointInside();
 
             if (GlobalPosition.DistanceTo(destination) >= minimumDistance)
                 break;
@@ -193,7 +274,10 @@ public partial class DigimonWorld : Node2D
         _isWalking = true;
         _sprite.SetWalking(true);
 
-        GD.Print($"{_digimon.BaseData.Name} indo para {_targetPosition}");
+        GD.Print(
+            $"{_digimon.BaseData.Name} indo para {_targetPosition} " +
+            $"dentro da área {currentArea.GridPosition}"
+        );
     }
 
     private bool CheckFood()
@@ -207,7 +291,10 @@ public partial class DigimonWorld : Node2D
         if (!_digimon.WantsFood())
             return false;
 
-        var food = _center.GetNearestFood(GlobalPosition);
+        var food = _center.GetNearestFood(
+            GlobalPosition,
+            _currentArea
+        );
 
         if (food == null)
             return false;
@@ -308,5 +395,228 @@ public partial class DigimonWorld : Node2D
         GD.Print(
             $"{_digimon.BaseData.Name} começou a comer."
         );
+    }
+
+    private void OnClickAreaInputEvent(
+    Node viewport,
+    InputEvent @event,
+    long shapeIdx)
+    {
+        if (@event is InputEventMouseButton mouseEvent)
+        {
+            if (mouseEvent.ButtonIndex == MouseButton.Left &&
+                mouseEvent.Pressed)
+            {
+                _center.InspectDigimon(_digimon);
+
+                StartDragging(mouseEvent.Position);
+            }
+        }
+    }
+
+    private void StartDragging(Vector2 mousePosition)
+    {
+        if (_digimon == null)
+            return;
+
+        if (!_digimon.CanMove())
+            return;
+
+        _dragStartPosition = GlobalPosition;
+        _dragStartArea = _center.GetAreaAtPosition(GlobalPosition);
+
+        _isDragging = true;
+
+        _positionBeforeDrag = GlobalPosition;
+
+        _dragOffset = GlobalPosition - mousePosition;
+
+        _isWalking = false;
+        _sprite.SetWalking(false);
+
+        GD.Print(
+            $"{_digimon.BaseData.Name} começou a ser arrastado."
+        );
+    }
+
+    private void StopDragging()
+    {
+        if (!_isDragging)
+            return;
+
+        _isDragging = false;
+
+        CenterArea targetArea = _center.GetAreaAtPosition(GlobalPosition);
+
+        if (targetArea == null)
+        {
+            GD.Print(
+                $"{_digimon.BaseData.Name} foi solto fora de uma CenterArea. " +
+                $"Voltando para a posição anterior."
+            );
+
+            GlobalPosition = _dragStartPosition;
+            _currentArea = _dragStartArea;
+
+            return;
+        }
+
+        _currentArea = targetArea;
+
+        GD.Print(
+            $"{_digimon.BaseData.Name} parou de ser arrastado em {GlobalPosition}"
+        );
+
+        GD.Print(
+            $"{_digimon.BaseData.Name} agora está na área {_currentArea.GridPosition}"
+        );
+
+        GD.Print(
+            $"{_digimon.BaseData.Name} está em área de treino? {IsInTrainingArea()}"
+        );
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (!_isDragging)
+            return;
+
+        if (@event is InputEventMouseButton mouseEvent)
+        {
+            if (mouseEvent.ButtonIndex == MouseButton.Left &&
+                !mouseEvent.Pressed)
+            {
+                StopDragging();
+            }
+        }
+    }
+
+    private async void ProcessTraining()
+    {
+        if (_digimon == null)
+            return;
+
+        if (_isTrainingAnimation)
+            return;
+
+        if (_digimon.HealthState == HealthState.Sick)
+            return;
+
+        GD.Print(
+            $"[TREINO] {_digimon.BaseData.Name} | " +
+            $"Stamina: {_digimon.Stamina}/{_digimon.MaxStamina} | " +
+            $"Health: {_digimon.HealthState} | " +
+            $"Activity: {_digimon.Activity}"
+        );
+
+        GD.Print(
+            $"[TREINO] {_digimon.BaseData.Name} | " +
+            $"Área: {_currentArea?.GridPosition} | " +
+            $"É treino: {_currentArea?.IsTrainingArea()} | " +
+            $"Stamina: {_digimon.Stamina}/{_digimon.MaxStamina}"
+        );
+
+        if (_digimon.Stamina < 10)
+        {
+            _trainingTimer = TrainingInterval;
+            return;
+        }
+
+        var trainingSystem = GameManager.Instance.TrainingSystem;
+
+        if (trainingSystem == null)
+        {
+            GD.PrintErr("TrainingSystem não inicializado.");
+            return;
+        }
+
+        TrainingType[] trainingTypes =
+            Enum.GetValues<TrainingType>();
+
+        int randomIndex = GD.RandRange(
+            0,
+            trainingTypes.Length - 1
+        );
+
+        TrainingType type = trainingTypes[randomIndex];
+
+        GD.Print(
+            $"{_digimon.BaseData.Name} iniciou treinamento de {type}."
+        );
+
+        var result = trainingSystem.Execute(
+            _digimon,
+            type
+        );
+
+        if (!result.Success)
+        {
+            GD.Print(
+                $"{_digimon.BaseData.Name} não conseguiu treinar. " +
+                $"Motivo: {result.Reason}"
+            );
+
+            _trainingTimer = TrainingInterval;
+            return;
+        }
+
+        // ==========================================
+        // INÍCIO DO TREINAMENTO
+        // ==========================================
+
+        _isTrainingAnimation = true;
+        _isWalking = false;
+
+        _sprite.SetWalking(false);
+
+        // Agora o estado lógico também passa a ser Training.
+        _digimon.StartTraining();
+
+        // ==========================================
+        // ANIMAÇÃO
+        // ==========================================
+
+        int trainingLoops = GD.RandRange(1, 2);
+
+        await _sprite.PlayTrainingSequence(trainingLoops);
+
+        // ==========================================
+        // APLICA O RESULTADO
+        // ==========================================
+
+        _digimon.ApplyTrainingResult(result);
+
+        GD.Print(
+            $"{_digimon.BaseData.Name} terminou o treinamento de {type}."
+        );
+
+        // ==========================================
+        // FIM DO TREINAMENTO
+        // ==========================================
+
+        _digimon.StopTraining();
+
+        _isTrainingAnimation = false;
+
+        _trainingTimer = TrainingInterval;
+
+        // Volta a andar normalmente pela área.
+        ChooseNewDestination();
+    }
+
+    public bool IsPointInside(Vector2 position)
+    {
+        return GlobalPosition.DistanceTo(position) <= 32f;
+    }
+
+    private void OnHealthStateChanged(HealthState state)
+    {
+        UpdateVisualState();
+
+        if (!_digimon.CanMove())
+        {
+            _isWalking = false;
+            _sprite.SetWalking(false);
+        }
     }
 }
