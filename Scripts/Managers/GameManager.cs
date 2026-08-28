@@ -47,6 +47,8 @@ namespace ProjetoDC.Scripts.Managers
         public ClockSystem ClockSystem { get; private set; }
         public SaveSystem SaveSystem { get; private set; }
 
+        private bool _loadedExistingSave;
+
         public override void _Ready()
         {
             Instance = this;
@@ -62,12 +64,16 @@ namespace ProjetoDC.Scripts.Managers
                     GD.PrintErr("Falha ao carregar save.");
                     Save = new SaveData();
                 }
-
-                GD.Print($"Digimons carregados: {Save.Center.Digimons.Count}");
-
-                foreach (var d in Save.Center.Digimons)
+                else
                 {
-                    GD.Print($"{d.BaseData?.Name} - Lv {d.Level}");
+                    _loadedExistingSave = true;
+
+                    GD.Print($"Digimons carregados: {Save.Center.Digimons.Count}");
+
+                    foreach (var d in Save.Center.Digimons)
+                    {
+                        GD.Print($"{d.BaseData?.Name} - Lv {d.Level}");
+                    }
                 }
             }
             else
@@ -102,7 +108,7 @@ namespace ProjetoDC.Scripts.Managers
 
         private void InitializeGame()
         {
-            if (SaveSystem.HasSave())
+            if (_loadedExistingSave)
             {
                 LoadExistingGame();
             }
