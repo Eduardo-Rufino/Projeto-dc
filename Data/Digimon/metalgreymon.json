@@ -1,0 +1,20 @@
+{
+  "id": 39,
+  "code": "metalgreymon",
+  "name": "MetalGreymon",
+  "stage": "Ultimate",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Vacine",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 520,
+    "physicalDamage": 72,
+    "physicalDefense": 44,
+    "specialDamage": 34,
+    "specialDefense": 42,
+    "speed": 43
+  }
+}

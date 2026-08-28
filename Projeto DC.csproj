@@ -44,6 +44,15 @@
     <Content Include="Data\Digimon\tentomon.json" />
     <Content Include="Data\Digimon\gabumon.json" />
     <Content Include="Data\Digimon\agumon.json" />
+    <Content Include="Data\Digimon\metalgreymon.json" />
+    <Content Include="Data\Digimon\weregarurumon.json" />
+    <Content Include="Data\Digimon\wargrowlmon.json" />
+    <Content Include="Data\Digimon\rapidmon.json" />
+    <Content Include="Data\Digimon\magnaangemon.json" />
+    <Content Include="Data\Digimon\geogreymon_savers.json" />
+    <Content Include="Data\Digimon\devimon.json" />
+    <Content Include="Data\Digimon\icedevimon.json" />
+    <Content Include="Data\Digimon\devidramon.json" />
     <Content Include="Data\Evolutions\motimon_evolutions.json" />
     <Content Include="Data\Evolutions\tokomon_evolutions.json" />
     <Content Include="Data\Evolutions\gigimon_evolutions.json" />
@@ -54,6 +63,27 @@
     <Content Include="Data\Evolutions\punimon_evolutions.json" />
     <Content Include="Data\Evolutions\botamon_evolutions.json" />
     <Content Include="Data\Evolutions\agumon_evolutions.json" />
+    <Content Include="Data\Evolutions\gabumon_evolutions.json" />
+    <Content Include="Data\Evolutions\tentomon_evolutions.json" />
+    <Content Include="Data\Evolutions\patamon_evolutions.json" />
+    <Content Include="Data\Evolutions\gaomon_evolutions.json" />
+    <Content Include="Data\Evolutions\palmon_evolutions.json" />
+    <Content Include="Data\Evolutions\guilmon_evolutions.json" />
+    <Content Include="Data\Evolutions\terriermon_evolutions.json" />
+    <Content Include="Data\Evolutions\renamon_evolutions.json" />
+    <Content Include="Data\Evolutions\impmon_evolutions.json" />
+    <Content Include="Data\Evolutions\lalamon_evolutions.json" />
+    <Content Include="Data\Evolutions\gummymon_evolutions.json" />
+    <Content Include="Data\Evolutions\viximon_evolutions.json" />
+    <Content Include="Data\Evolutions\wanyamon_evolutions.json" />
+    <Content Include="Data\Evolutions\yaamon_evolutions.json" />
+    <Content Include="Data\Evolutions\tanemon_evolutions.json" />
+    <Content Include="Data\Evolutions\agumon_savers_evolutions.json" />
+    <Content Include="Data\Evolutions\greymon_evolutions.json" />
+    <Content Include="Data\Evolutions\garurumon_evolutions.json" />
+    <Content Include="Data\Evolutions\growlmon_evolutions.json" />
+    <Content Include="Data\Evolutions\gargomon_evolutions.json" />
+    <Content Include="Data\Evolutions\angemon_evolutions.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Audio\SFX\" />

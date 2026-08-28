@@ -1,0 +1,20 @@
+{
+  "id": 40,
+  "code": "weregarurumon",
+  "name": "WereGarurumon",
+  "stage": "Ultimate",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 300,
+    "physicalDamage": 88,
+    "physicalDefense": 40,
+    "specialDamage": 40,
+    "specialDefense": 32,
+    "speed": 52
+  }
+}

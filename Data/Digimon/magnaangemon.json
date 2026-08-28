@@ -1,0 +1,20 @@
+{
+  "id": 43,
+  "code": "magnaangemon",
+  "name": "MagnaAngemon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Light",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 278,
+    "physicalDamage": 73,
+    "physicalDefense": 34,
+    "specialDamage": 98,
+    "specialDefense": 33,
+    "speed": 54
+  }
+}

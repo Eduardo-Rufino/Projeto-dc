@@ -1,0 +1,34 @@
+[
+  {
+    "fromDigimonId": 7,
+    "toDigimonId": 18,
+    "requiredLevel": 5,
+    "requiredAgeInDays": 2,
+    "statMultiplier": 1.3,
+
+    "requiredStats": {
+      "healthPoints": 60,
+      "physicalDamage": 30,
+      "physicalDefense": 18,
+      "specialDamage": 0,
+      "specialDefense": 0,
+      "speed": 24
+    }
+  },
+  {
+    "fromDigimonId": 7,
+    "toDigimonId": 47,
+    "requiredLevel": 5,
+    "requiredAgeInDays": 2,
+    "statMultiplier": 1.3,
+
+    "requiredStats": {
+      "healthPoints": 60,
+      "physicalDamage": 0,
+      "physicalDefense": 0,
+      "specialDamage": 28,
+      "specialDefense": 16,
+      "speed": 24
+    }
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "id": 42,
+  "code": "rapidmon",
+  "name": "Rapidmon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 330,
+    "physicalDamage": 91,
+    "physicalDefense": 38,
+    "specialDamage": 48,
+    "specialDefense": 31,
+    "speed": 49
+  }
+}

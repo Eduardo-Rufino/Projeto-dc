@@ -1,0 +1,20 @@
+{
+  "id": 46,
+  "code": "icedevimon",
+  "name": "IceDevimon",
+  "stage": "Champion",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 230,
+    "physicalDamage": 60,
+    "physicalDefense": 26,
+    "specialDamage": 22,
+    "specialDefense": 24,
+    "speed": 48
+  }
+}

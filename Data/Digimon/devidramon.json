@@ -1,0 +1,20 @@
+{
+  "id": 47,
+  "code": "devidramon",
+  "name": "Devidramon",
+  "stage": "Champion",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 260,
+    "physicalDamage": 68,
+    "physicalDefense": 28,
+    "specialDamage": 18,
+    "specialDefense": 20,
+    "speed": 55
+  }
+}
