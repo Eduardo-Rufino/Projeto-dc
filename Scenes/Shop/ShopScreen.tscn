@@ -1,6 +1,52 @@
 [gd_scene format=3 uid="uid://pr5s0dygmvkt"]
 
 [ext_resource type="Script" uid="uid://b2bbno1kjaoy1" path="res://Scripts/UI/ShopScreen.cs" id="1_vrsw4"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/DigiTamas/Digitama.png" id="2_digitama"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_egg"]
+atlas = ExtResource("2_digitama")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dim"]
+bg_color = Color(0.03137255, 0.03529412, 0.043137256, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_window"]
+bg_color = Color(0.1254902, 0.14509805, 0.16862746, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_item"]
+bg_color = Color(0.1882353, 0.21176471, 0.23921569, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.1882353, 0.21176471, 0.23921569, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="ShopScreen" type="Control" unique_id=1138266322]
 layout_mode = 3
@@ -11,91 +57,245 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vrsw4")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=141087005]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Dim" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dim")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1955897778]
+[node name="Window" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -220.0
+offset_right = 230.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_window")
+
+[node name="MarginContainer" type="MarginContainer" parent="Window"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Window/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HeaderRow" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ShopLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1637089614]
+[node name="ShopLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/HeaderRow"]
 layout_mode = 2
-text = "SHOP
-"
+theme_override_font_sizes/font_size = 20
+text = "🏪 Loja"
 
-[node name="BitsLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2073456034]
+[node name="HeaderSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/HeaderRow"]
 layout_mode = 2
-text = "---
-"
+size_flags_horizontal = 3
 
-[node name="MeatLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1130718544]
+[node name="BitsLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/HeaderRow"]
 layout_mode = 2
-text = "---
-"
+theme_override_colors/font_color = Color(1, 0.85882354, 0.30980393, 1)
+theme_override_font_sizes/font_size = 16
+vertical_alignment = 1
+text = "💰 1000"
 
-[node name="MedicineLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=650854452]
+[node name="HSeparator" type="HSeparator" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "---
-"
 
-[node name="Separation" type="Label" parent="MarginContainer/VBoxContainer" unique_id=134449949]
+[node name="ItemsContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "--------------------------------------------------
-"
+size_flags_vertical = 3
+theme_override_constants/separation = 10
 
-[node name="MeatItemLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1030641380]
+[node name="MeatRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer"]
 layout_mode = 2
-text = "Meat:"
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
 
-[node name="MeatPriceLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1646006366]
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow"]
 layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "🍖"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="MeatItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Carne"
+
+[node name="MeatLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Você tem: 100"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MeatPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
 text = "20 Bits"
 
-[node name="BuyMeatButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=331291911]
-custom_maximum_size = Vector2(150, -1)
+[node name="BuyMeatButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 text = "Comprar"
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=618407995]
+[node name="MedicineRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
 
-[node name="MedicineItemLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1373529909]
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow"]
 layout_mode = 2
-text = "Remédio:"
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
-[node name="MedicinePriceLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1109983988]
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad"]
 layout_mode = 2
-text = "Preço: 100 Bits"
+theme_override_constants/separation = 10
 
-[node name="BuyMedicineButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=335748837]
-custom_maximum_size = Vector2(150, -1)
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "💊"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="MedicineItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Remédio"
+
+[node name="MedicineLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Você tem: 50"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MedicinePriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "100 Bits"
+
+[node name="BuyMedicineButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 text = "Comprar"
 
-[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1898373855]
+[node name="EggRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
 
-[node name="EggItemLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1130240924]
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow"]
 layout_mode = 2
-text = "Digiovo: "
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
-[node name="EggPriceLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1393082641]
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad"]
 layout_mode = 2
-text = "Preço: 100 Bits"
+theme_override_constants/separation = 10
 
-[node name="BuyEggButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=284024410]
-custom_maximum_size = Vector2(150, -1)
+[node name="IconTexture" type="TextureRect" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
+size_flags_vertical = 4
+texture_filter = 1
+texture = SubResource("AtlasTexture_egg")
+stretch_mode = 5
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="EggItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Digiovo"
+
+[node name="EggSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Botamon"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EggPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "500 Bits"
+
+[node name="BuyEggButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 text = "Comprar"
 
-[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=169101012]
-custom_maximum_size = Vector2(150, -1)
+[node name="HSeparator2" type="HSeparator" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Back
-"
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/BuyMeatButton" to="." method="OnBuyMeatPressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/BuyMedicineButton" to="." method="OnBuyMedicinePressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/BuyEggButton" to="." method="OnBuyBotamonEggPressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/BackButton" to="." method="OnBackPressed"]
+[node name="BackButton" type="Button" parent="Window/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Voltar"
+
+[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer/BuyMeatButton" to="." method="OnBuyMeatPressed"]
+[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer/BuyMedicineButton" to="." method="OnBuyMedicinePressed"]
+[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer/BuyEggButton" to="." method="OnBuyBotamonEggPressed"]
+[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/BackButton" to="." method="OnBackPressed"]

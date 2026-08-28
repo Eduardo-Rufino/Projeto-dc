@@ -30,31 +30,48 @@ namespace ProjetoDC.Scripts.UI
             RefreshUI();
         }
 
+        private const int EggPrice = 500;
+
         private void InitializeUIComponents()
         {
-            var basePath = "MarginContainer/VBoxContainer/";
+            var itemsPath = "Window/MarginContainer/VBoxContainer/ItemsContainer/";
 
-            _meatLabel = GetNodeOrNull<Label>($"{basePath}MeatLabel");
-            _medicineLabel = GetNodeOrNull<Label>($"{basePath}MedicineLabel");
-            _bitsLabel = GetNodeOrNull<Label>($"{basePath}BitsLabel");
+            _bitsLabel = GetNodeOrNull<Label>(
+                "Window/MarginContainer/VBoxContainer/HeaderRow/BitsLabel"
+            );
 
-            _buyMeatButton = GetNodeOrNull<Button>($"{basePath}BuyMeatButton");
-            _buyMedicineButton = GetNodeOrNull<Button>($"{basePath}BuyMedicineButton");
-            _buyEggButton = GetNodeOrNull<Button>($"{basePath}BuyEggButton");
+            _meatLabel = GetNodeOrNull<Label>(
+                $"{itemsPath}MeatRow/Pad/HBoxContainer/InfoContainer/MeatLabel"
+            );
 
+            _medicineLabel = GetNodeOrNull<Label>(
+                $"{itemsPath}MedicineRow/Pad/HBoxContainer/InfoContainer/MedicineLabel"
+            );
+
+            _buyMeatButton = GetNodeOrNull<Button>(
+                $"{itemsPath}MeatRow/Pad/HBoxContainer/BuyMeatButton"
+            );
+
+            _buyMedicineButton = GetNodeOrNull<Button>(
+                $"{itemsPath}MedicineRow/Pad/HBoxContainer/BuyMedicineButton"
+            );
+
+            _buyEggButton = GetNodeOrNull<Button>(
+                $"{itemsPath}EggRow/Pad/HBoxContainer/BuyEggButton"
+            );
         }
 
         public void RefreshUI()
         {
             GD.Print($"Bits: {Game.Save.Center.Bits}");
 
-            _bitsLabel.Text = $"Bits: {Game.Save.Center.Bits}";
-            _meatLabel.Text = $"Meat: {Game.Save.Center.Meat}";
-            _medicineLabel.Text = $"Medicine: {Game.Save.Center.Medicine}";
+            _bitsLabel.Text = $"💰 {Game.Save.Center.Bits:N0}";
+            _meatLabel.Text = $"Você tem: {Game.Save.Center.Meat}";
+            _medicineLabel.Text = $"Você tem: {Game.Save.Center.Medicine}";
 
             _buyMeatButton.Disabled = Game.Save.Center.Bits < 20;
             _buyMedicineButton.Disabled = Game.Save.Center.Bits < 100;
-            _buyEggButton.Disabled = Game.Save.Center.Bits < 25;
+            _buyEggButton.Disabled = Game.Save.Center.Bits < EggPrice;
         }
 
         private void OnBuyMeatPressed()
