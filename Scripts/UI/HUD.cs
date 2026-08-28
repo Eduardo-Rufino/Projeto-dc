@@ -20,6 +20,8 @@ namespace ProjetoDC.Scripts.UI
         private Label _hungerLabel;
         private Label _statusLabel;
         private Label _activityLabel;
+        private Label _happinessLabel;
+        private Label _disciplineLabel;
         private Label _attackLabel;
         private Label _defenseLabel;
         private Label _specialAttackLabel;
@@ -28,10 +30,19 @@ namespace ProjetoDC.Scripts.UI
 
         private Button _feedButton;
         private Button _medicineButton;
+        private Button _cleanButton;
+        private Button _shopButton;
+
+        private Control _digimonStatusPage1;
+        private Control _digimonStatusPage2;
+        private Button _digimonStatusPageButton;
+        private bool _digimonStatusOnPage2;
 
         private ProgressBar _hpBar;
         private ProgressBar _staminaBar;
         private ProgressBar _hungerBar;
+        private ProgressBar _happinessBar;
+        private ProgressBar _disciplineBar;
 
         private double _infoRefreshTimer;
         private const double InfoRefreshInterval = 0.2;
@@ -77,54 +88,85 @@ namespace ProjetoDC.Scripts.UI
                 "TopBar/SelectedDigimon/Panel/HBoxContainer/SpritePanel/DigimonSprite"
             );
             _hpLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HPContainer/HPLabel"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/HPContainer/HPLabel"
             );
 
             _staminaLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/StaminaContainer/StaminaLabel"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/StaminaContainer/StaminaLabel"
             );
 
             _hungerLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HungerContainer/HungerLabel"
-            );            
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/HungerContainer/HungerLabel"
+            );
             _hpBar = GetNode<ProgressBar>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HPContainer/HPBar"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/HPContainer/HPBar"
             );
 
             _staminaBar = GetNode<ProgressBar>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/StaminaContainer/StaminaBar"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/StaminaContainer/StaminaBar"
             );
 
             _hungerBar = GetNode<ProgressBar>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HungerContainer/HungerBar"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/HungerContainer/HungerBar"
             );
             _statusLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/StatusLabel"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/StatusLabel"
             );
 
             _activityLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/ActivityLabel"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/ActivityLabel"
+            );
+
+            _happinessLabel = GetNode<Label>(
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/HappinessContainer/HappinessLabel"
+            );
+
+            _happinessBar = GetNode<ProgressBar>(
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/HappinessContainer/HappinessBar"
+            );
+
+            _disciplineLabel = GetNode<Label>(
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/DisciplineContainer/DisciplineLabel"
+            );
+
+            _disciplineBar = GetNode<ProgressBar>(
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/DisciplineContainer/DisciplineBar"
             );
 
             _attackLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2/AttackLabel"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page2/AttackLabel"
             );
 
             _defenseLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2/DefenseLabel"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page2/DefenseLabel"
             );
 
             _specialAttackLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2/SpecialAttackLabel"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page2/SpecialAttackLabel"
             );
 
             _specialDefenseLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2/SpecialDefenceLabel"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page2/SpecialDefenceLabel"
             );
 
             _speedLabel = GetNode<Label>(
-                "TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2/SpeedLabel"
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page2/SpeedLabel"
             );
+
+            _digimonStatusPage1 = GetNode<Control>(
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page1"
+            );
+
+            _digimonStatusPage2 = GetNode<Control>(
+                "TopBar/DigimonStatus/Panel/HBoxContainer/Page2"
+            );
+
+            _digimonStatusPageButton = GetNode<Button>(
+                "TopBar/DigimonStatus/Panel/HBoxContainer/PageButton"
+            );
+
+            _digimonStatusPageButton.Pressed += OnDigimonStatusPageButtonPressed;
+
             _feedButton = GetNode<Button>(
                 "ControlBar/FeedButton"
             );
@@ -138,6 +180,19 @@ namespace ProjetoDC.Scripts.UI
 
             _medicineButton.ButtonDown += OnMedicineButtonDown;
             _medicineButton.ButtonUp += OnMedicineButtonUp;
+
+            _cleanButton = GetNode<Button>(
+                "ControlBar/CleanButton"
+            );
+
+            _cleanButton.ButtonDown += OnCleanButtonDown;
+            _cleanButton.ButtonUp += OnCleanButtonUp;
+
+            _shopButton = GetNode<Button>(
+                "ControlBar/ShopButton"
+            );
+
+            _shopButton.Pressed += OnShopButtonPressed;
 
             // O GameManager pode ainda estar terminando sua inicialização.
             CallDeferred(nameof(ConnectToGameManager));
@@ -207,6 +262,7 @@ namespace ProjetoDC.Scripts.UI
             if (_inspectedDigimon != null)
             {
                 _inspectedDigimon.ActivityChanged -= OnInspectedDigimonActivityChanged;
+                _inspectedDigimon.HealthStateChanged -= OnInspectedDigimonHealthStateChanged;
             }
         }
 
@@ -249,9 +305,31 @@ namespace ProjetoDC.Scripts.UI
             );
         }
 
+        private void OnInspectedDigimonHealthStateChanged(HealthState state)
+        {
+            if (_inspectedDigimon == null)
+                return;
+
+            _selectedDigimonSprite.RefreshState(
+                _inspectedDigimon
+            );
+        }
+
         public void InspectDigimon(DigimonInstance digimon)
         {
+            if (_inspectedDigimon != null)
+            {
+                _inspectedDigimon.ActivityChanged -= OnInspectedDigimonActivityChanged;
+                _inspectedDigimon.HealthStateChanged -= OnInspectedDigimonHealthStateChanged;
+            }
+
             _inspectedDigimon = digimon;
+
+            if (_inspectedDigimon != null)
+            {
+                _inspectedDigimon.ActivityChanged += OnInspectedDigimonActivityChanged;
+                _inspectedDigimon.HealthStateChanged += OnInspectedDigimonHealthStateChanged;
+            }
 
             RefreshInspectedDigimonInfo();
 
@@ -279,6 +357,8 @@ namespace ProjetoDC.Scripts.UI
                 _hungerLabel.Text = "";
                 _statusLabel.Text = "";
                 _activityLabel.Text = "";
+                _happinessLabel.Text = "";
+                _disciplineLabel.Text = "";
 
                 return;
             }
@@ -315,6 +395,18 @@ namespace ProjetoDC.Scripts.UI
             _activityLabel.Text =
                 $"Atividade: {_inspectedDigimon.Activity}";
 
+            _happinessBar.MaxValue = DigimonInstance.MaxHappiness;
+            _happinessBar.Value = _inspectedDigimon.Happiness;
+
+            _happinessLabel.Text =
+                $"Felicidade: {_inspectedDigimon.Happiness} / {DigimonInstance.MaxHappiness}";
+
+            _disciplineBar.MaxValue = DigimonInstance.MaxDiscipline;
+            _disciplineBar.Value = _inspectedDigimon.Discipline;
+
+            _disciplineLabel.Text =
+                $"Disciplina: {_inspectedDigimon.Discipline} / {DigimonInstance.MaxDiscipline}";
+
             _attackLabel.Text =
                 $"ATQ Físico: {_inspectedDigimon.CurrentStats.PhysicalDamage}";
 
@@ -329,6 +421,16 @@ namespace ProjetoDC.Scripts.UI
 
             _speedLabel.Text =
                 $"Velocidade: {_inspectedDigimon.CurrentStats.Speed}";
+        }
+
+        private void OnDigimonStatusPageButtonPressed()
+        {
+            _digimonStatusOnPage2 = !_digimonStatusOnPage2;
+
+            _digimonStatusPage1.Visible = !_digimonStatusOnPage2;
+            _digimonStatusPage2.Visible = _digimonStatusOnPage2;
+
+            _digimonStatusPageButton.Text = _digimonStatusOnPage2 ? "◀" : "▶";
         }
 
         private void OnFeedButtonDown()
@@ -349,6 +451,21 @@ namespace ProjetoDC.Scripts.UI
         private void OnMedicineButtonUp()
         {
             _center.PlaceMedicine();
+        }
+
+        private void OnCleanButtonDown()
+        {
+            _center.StartBroomPlacement();
+        }
+
+        private void OnCleanButtonUp()
+        {
+            _center.UseBroom();
+        }
+
+        private void OnShopButtonPressed()
+        {
+            _center.OpenShop();
         }
     }
 }

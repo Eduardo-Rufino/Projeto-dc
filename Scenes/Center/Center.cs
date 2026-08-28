@@ -16,6 +16,7 @@ public partial class Center : Node2D
 
     private PackedScene _digimonScene;
     private PackedScene _foodScene;
+    private PackedScene _poopScene;
     private PackedScene _centerAreaScene;
 
     private List<Marker2D> _spawnPoints = new();
@@ -23,6 +24,8 @@ public partial class Center : Node2D
     private readonly Vector2 _areaGridOrigin = new Vector2(647, 366);
 
     private readonly List<FoodWorld> _foods = new();
+
+    private readonly List<PoopWorld> _poops = new();
 
     private readonly List<DigimonWorld> _digimonWorlds = new();
 
@@ -37,6 +40,7 @@ public partial class Center : Node2D
 
     private AreaBuildMenu _areaBuildMenu;
     private HUD _hud;
+    private ShopScreen _shopScreen;
 
     private FoodWorld _placingFood;
     private bool _isPlacingFood;
@@ -45,6 +49,13 @@ public partial class Center : Node2D
 
     private MedicineWorld _placingMedicine;
     private bool _isPlacingMedicine;
+
+    private PackedScene _broomScene;
+
+    private BroomWorld _placingBroom;
+    private bool _isPlacingBroom;
+
+    private const float CleanRadius = 28f;
 
     private readonly RandomNumberGenerator _rng = new();
 
@@ -65,6 +76,10 @@ public partial class Center : Node2D
             "res://Scenes/Center/FoodWorld.tscn"
         );
 
+        _poopScene = GD.Load<PackedScene>(
+            "res://Scenes/Center/PoopWorld.tscn"
+        );
+
         _centerAreaScene = GD.Load<PackedScene>(
             "res://Scenes/Center/Areas/CenterArea.tscn"
         );
@@ -73,11 +88,19 @@ public partial class Center : Node2D
             "res://Scenes/Center/MedicineWorld.tscn"
          );
 
+        _broomScene = GD.Load<PackedScene>(
+            "res://Scenes/Center/BroomWorld.tscn"
+        );
+
         _areaBuildMenu = GetNode<AreaBuildMenu>(
             "CanvasLayer/AreaBuildMenu"
         );
 
         _hud = GetNode<HUD>("CanvasLayer/HUD");
+
+        _shopScreen = GetNode<ShopScreen>("CanvasLayer/ShopScreen");
+
+        _shopScreen.BackPressed += OnShopBackPressed;
 
         _areaBuildMenu.AreaTypeSelected += OnAreaTypeSelected;
 
@@ -99,6 +122,8 @@ public partial class Center : Node2D
         
         RegisterCenterAreas();
         SpawnDigimons();
+        RestoreFoods();
+        RestorePoops();
         RefreshExpansionSlots();
         CreateExpansionSlotVisuals();
 
@@ -142,6 +167,12 @@ public partial class Center : Node2D
         if (_isPlacingMedicine && _placingMedicine != null)
         {
             _placingMedicine.GlobalPosition =
+                GetGlobalMousePosition();
+        }
+
+        if (_isPlacingBroom && _placingBroom != null)
+        {
+            _placingBroom.GlobalPosition =
                 GetGlobalMousePosition();
         }
     }
@@ -224,11 +255,40 @@ public partial class Center : Node2D
             GD.RandRange(200, 400)
         );
 
+        food.PositionX = world.GlobalPosition.X;
+        food.PositionY = world.GlobalPosition.Y;
+
         world.Initialize(food);
 
         _foods.Add(world);
 
+        GameManager.Instance.Save.Center.Foods.Add(food);
+
         GD.Print($"Comida criada em: {world.GlobalPosition}");
+    }
+
+    private void RestoreFoods()
+    {
+        foreach (var food in GameManager.Instance.Save.Center.Foods.ToList())
+        {
+            if (food.IsEmpty())
+            {
+                GameManager.Instance.Save.Center.Foods.Remove(food);
+                continue;
+            }
+
+            var world = _foodScene.Instantiate<FoodWorld>();
+
+            _digimonsContainer.AddChild(world);
+
+            world.GlobalPosition = new Vector2(food.PositionX, food.PositionY);
+
+            world.Initialize(food);
+
+            _foods.Add(world);
+        }
+
+        GD.Print($"Comidas restauradas: {_foods.Count}");
     }
 
     public void RemoveFood(FoodWorld food)
@@ -241,6 +301,11 @@ public partial class Center : Node2D
 
         if (!_foods.Remove(food))
             return;
+
+        var foodData = food.GetFood();
+
+        if (foodData != null)
+            GameManager.Instance.Save.Center.Foods.Remove(foodData);
 
         food.QueueFree();
 
@@ -297,6 +362,80 @@ public partial class Center : Node2D
         }
 
         return nearestFood;
+    }
+
+    public PoopWorld SpawnPoop(Vector2 position)
+    {
+        if (_poopScene == null)
+        {
+            GD.PrintErr("PoopWorld.tscn não foi carregado.");
+            return null;
+        }
+
+        var poop = _poopScene.Instantiate<PoopWorld>();
+
+        _digimonsContainer.AddChild(poop);
+
+        poop.GlobalPosition = position;
+
+        var world = GameManager.Instance.Save.World;
+
+        var poopData = new Poop
+        {
+            PositionX = position.X,
+            PositionY = position.Y,
+            CreatedOnDay = world.CurrentDay,
+            CreatedOnHour = world.CurrentHour
+        };
+
+        poop.Initialize(poopData);
+
+        GameManager.Instance.Save.Center.Poops.Add(poopData);
+
+        _poops.Add(poop);
+
+        GD.Print($"Coco criado em {position}.");
+
+        return poop;
+    }
+
+    private void RestorePoops()
+    {
+        foreach (var poopData in GameManager.Instance.Save.Center.Poops)
+        {
+            var poop = _poopScene.Instantiate<PoopWorld>();
+
+            _digimonsContainer.AddChild(poop);
+
+            poop.GlobalPosition = new Vector2(poopData.PositionX, poopData.PositionY);
+
+            poop.Initialize(poopData);
+
+            _poops.Add(poop);
+        }
+
+        GD.Print($"Cocos restaurados: {_poops.Count}");
+    }
+
+    public void RemovePoop(PoopWorld poop)
+    {
+        if (poop == null)
+            return;
+
+        if (!GodotObject.IsInstanceValid(poop))
+            return;
+
+        if (!_poops.Remove(poop))
+            return;
+
+        var poopData = poop.GetPoop();
+
+        if (poopData != null)
+            GameManager.Instance.Save.Center.Poops.Remove(poopData);
+
+        poop.QueueFree();
+
+        GD.Print($"Cocos restantes: {_poops.Count}");
     }
 
     private void CreateInitialArea()
@@ -530,6 +669,18 @@ public partial class Center : Node2D
         }
     }
 
+    public void OpenShop()
+    {
+        _shopScreen.RefreshUI();
+
+        _shopScreen.Visible = true;
+    }
+
+    private void OnShopBackPressed()
+    {
+        _shopScreen.Visible = false;
+    }
+
     public void InspectDigimon(DigimonInstance digimon)
     {
         if (digimon == null)
@@ -584,7 +735,14 @@ public partial class Center : Node2D
 
         _placingFood.SetPlacementMode(false);
 
+        Food food = _placingFood.GetFood();
+
+        food.PositionX = _placingFood.GlobalPosition.X;
+        food.PositionY = _placingFood.GlobalPosition.Y;
+
         _foods.Add(_placingFood);
+
+        GameManager.Instance.Save.Center.Foods.Add(food);
 
         GD.Print(
             $"Carne colocada em {_placingFood.GlobalPosition}"
@@ -713,6 +871,106 @@ public partial class Center : Node2D
 
         _placingMedicine = null;
         _isPlacingMedicine = false;
+    }
+
+    public void StartBroomPlacement()
+    {
+        if (_isPlacingBroom)
+            return;
+
+        if (_broomScene == null)
+        {
+            GD.PrintErr("BroomWorld.tscn não foi carregado.");
+            return;
+        }
+
+        _placingBroom = _broomScene.Instantiate<BroomWorld>();
+
+        AddChild(_placingBroom);
+
+        _placingBroom.SetPlacementMode(true);
+
+        _isPlacingBroom = true;
+
+        GD.Print("Iniciando limpeza.");
+    }
+
+    public void UseBroom()
+    {
+        if (!_isPlacingBroom || _placingBroom == null)
+            return;
+
+        Vector2 position = _placingBroom.GlobalPosition;
+
+        PoopWorld poop = GetPoopAtPosition(position);
+
+        if (poop != null)
+        {
+            RemovePoop(poop);
+
+            GD.Print("Coco limpo.");
+        }
+        else
+        {
+            FoodWorld food = GetFoodAtPosition(position);
+
+            if (food != null)
+            {
+                RemoveFood(food);
+
+                GD.Print("Carne removida com a vassoura.");
+            }
+        }
+
+        _placingBroom.QueueFree();
+
+        _placingBroom = null;
+        _isPlacingBroom = false;
+    }
+
+    private PoopWorld GetPoopAtPosition(Vector2 position)
+    {
+        foreach (var poop in _poops)
+        {
+            if (!GodotObject.IsInstanceValid(poop))
+                continue;
+
+            if (position.DistanceTo(poop.GlobalPosition) <= CleanRadius)
+                return poop;
+        }
+
+        return null;
+    }
+
+    private FoodWorld GetFoodAtPosition(Vector2 position)
+    {
+        foreach (var food in _foods)
+        {
+            if (!GodotObject.IsInstanceValid(food))
+                continue;
+
+            if (position.DistanceTo(food.GlobalPosition) <= CleanRadius)
+                return food;
+        }
+
+        return null;
+    }
+
+    public bool AreaHasPoop(CenterArea area)
+    {
+        if (area == null)
+            return false;
+
+        foreach (var poop in _poops)
+        {
+            if (!GodotObject.IsInstanceValid(poop))
+                continue;
+
+            if (GetAreaAtPosition(poop.GlobalPosition) == area)
+                return true;
+        }
+
+        return false;
     }
 
 }

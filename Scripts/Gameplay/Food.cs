@@ -6,9 +6,14 @@ public class Food
 {
     public string Name { get; set; }
 
-    public int RemainingNutrition { get; private set; }
+    public int RemainingNutrition { get; set; }
 
-    public int MaxNutrition { get; private set; }
+    public int MaxNutrition { get; set; }
+
+    public float PositionX { get; set; }
+    public float PositionY { get; set; }
+
+    public Food() { }
 
     public Food(string name, int nutrition)
     {

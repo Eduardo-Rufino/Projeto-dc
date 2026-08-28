@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Models/World/PoopWorld.cs" id="1_poop"]
+[ext_resource type="Texture2D" uid="uid://c5ok6na1jipcl" path="res://Assets/Sprites/Miscelaneos/digicoco_48x48.png" id="2_poop"]
+
+[node name="PoopWorld" type="Node2D"]
+script = ExtResource("1_poop")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_poop")

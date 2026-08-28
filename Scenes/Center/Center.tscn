@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bpdm1djccv738" path="res://Scenes/Center/Areas/CenterArea.tscn" id="2_gloqd"]
 [ext_resource type="Script" uid="uid://bnrtydwuwbk5f" path="res://Scripts/UI/HUD.cs" id="2_oao4p"]
 [ext_resource type="PackedScene" uid="uid://covv6lvt7tbvh" path="res://Scenes/Center/AreaBuildMenu.tscn" id="2_q11ny"]
+[ext_resource type="PackedScene" uid="uid://pr5s0dygmvkt" path="res://Scenes/Shop/ShopScreen.tscn" id="2_shop"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="3_csbr3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scj13"]
@@ -191,93 +192,155 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel" unique_id=167920006]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-theme_override_constants/separation = 68
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 4.0
+offset_right = -6.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer" unique_id=1832672382]
+[node name="Page1" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer" unique_id=1832672382]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="ColA" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1" unique_id=1832672383]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="HPContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=1038127822]
+[node name="HPContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA" unique_id=1038127822]
 layout_mode = 2
 
-[node name="HPLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HPContainer" unique_id=1278345001]
-layout_mode = 2
-size_flags_vertical = 1
-theme_override_font_sizes/font_size = 10
-text = "100/100"
-
-[node name="HPBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HPContainer" unique_id=1326393487]
-layout_mode = 2
-show_percentage = false
-
-[node name="StaminaContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=966107721]
-layout_mode = 2
-
-[node name="StaminaLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/StaminaContainer" unique_id=468810918]
+[node name="HPLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/HPContainer" unique_id=1278345001]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 10
 text = "100/100"
 
-[node name="StaminaBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/StaminaContainer" unique_id=172239511]
+[node name="HPBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/HPContainer" unique_id=1326393487]
+custom_minimum_size = Vector2(0, 9)
 layout_mode = 2
 show_percentage = false
 
-[node name="HungerContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=1744716492]
+[node name="StaminaContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA" unique_id=966107721]
 layout_mode = 2
 
-[node name="HungerLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HungerContainer" unique_id=2009894667]
+[node name="StaminaLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/StaminaContainer" unique_id=468810918]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 10
 text = "100/100"
 
-[node name="HungerBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer/HungerContainer" unique_id=2102983867]
+[node name="StaminaBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/StaminaContainer" unique_id=172239511]
+custom_minimum_size = Vector2(0, 9)
 layout_mode = 2
 show_percentage = false
 
-[node name="ActivityLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=844697184]
+[node name="HungerContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA" unique_id=1744716492]
+layout_mode = 2
+
+[node name="HungerLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/HungerContainer" unique_id=2009894667]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 10
+text = "100/100"
+
+[node name="HungerBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColA/HungerContainer" unique_id=2102983867]
+custom_minimum_size = Vector2(0, 9)
+layout_mode = 2
+show_percentage = false
+
+[node name="ColB" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1" unique_id=844697183]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="HappinessContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB" unique_id=1038127823]
+layout_mode = 2
+
+[node name="HappinessLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/HappinessContainer" unique_id=1278345002]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 10
+text = "100/100"
+
+[node name="HappinessBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/HappinessContainer" unique_id=1326393488]
+custom_minimum_size = Vector2(0, 9)
+layout_mode = 2
+show_percentage = false
+
+[node name="DisciplineContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB" unique_id=966107722]
+layout_mode = 2
+
+[node name="DisciplineLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/DisciplineContainer" unique_id=468810919]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 10
+text = "100/100"
+
+[node name="DisciplineBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB/DisciplineContainer" unique_id=172239512]
+custom_minimum_size = Vector2(0, 9)
+layout_mode = 2
+show_percentage = false
+
+[node name="ActivityLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB" unique_id=844697184]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 10
 text = "Atividade: Idle"
 
-[node name="StatusLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer" unique_id=1417662978]
+[node name="StatusLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page1/ColB" unique_id=1417662978]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 10
 text = "Estado: Saudável"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer" unique_id=1345915301]
+[node name="Page2" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer" unique_id=1345915301]
+visible = false
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+theme_override_constants/separation = 4
 
-[node name="AttackLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1159469647]
+[node name="AttackLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page2" unique_id=1159469647]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 11
 text = "ATQ Físico: ---"
 
-[node name="DefenseLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1793390462]
+[node name="DefenseLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page2" unique_id=1793390462]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 11
 text = "DEF Física: ---"
 
-[node name="SpecialAttackLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1795534990]
+[node name="SpecialAttackLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page2" unique_id=1795534990]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 11
 text = "ATQ Especial: ---"
 
-[node name="SpecialDefenceLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1993036618]
+[node name="SpecialDefenceLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page2" unique_id=1993036618]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 11
 text = "DEF Especial: ---"
 
-[node name="SpeedLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/VBoxContainer2" unique_id=1949487367]
+[node name="SpeedLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer/Page2" unique_id=1949487367]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 11
 text = "Velocidade: ---"
+
+[node name="PageButton" type="Button" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer" unique_id=2884671053]
+custom_minimum_size = Vector2(18, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 12
+text = "▶"
 
 [node name="SelectedDigimon" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=657801898]
 anchors_preset = 0
@@ -456,6 +519,9 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
 text = "🚪"
 
 [node name="AreaBuildMenu" parent="CanvasLayer" unique_id=519113027 instance=ExtResource("2_q11ny")]
+visible = false
+
+[node name="ShopScreen" parent="CanvasLayer" instance=ExtResource("2_shop")]
 visible = false
 
 [node name="CenterAreas" type="Node2D" parent="." unique_id=1618977558]

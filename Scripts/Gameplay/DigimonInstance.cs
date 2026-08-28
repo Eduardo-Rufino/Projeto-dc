@@ -30,6 +30,22 @@ namespace ProjetoDC.Scripts.Gameplay
 
         public int MaxHunger => 100;
 
+        public int Happiness { get; set; } = 50;
+        public int Discipline { get; set; } = 50;
+
+        public const int MaxHappiness = 100;
+        public const int MaxDiscipline = 100;
+
+        public void ChangeHappiness(int amount)
+        {
+            Happiness = Math.Clamp(Happiness + amount, 0, MaxHappiness);
+        }
+
+        public void ChangeDiscipline(int amount)
+        {
+            Discipline = Math.Clamp(Discipline + amount, 0, MaxDiscipline);
+        }
+
         public BaseStats CurrentStats { get; set; }
         private HealthState _healthState = HealthState.Healthy;
         public DigimonActivity Activity { get; set; } = DigimonActivity.Idle;
@@ -176,6 +192,8 @@ namespace ProjetoDC.Scripts.Gameplay
 
             ConsumeStamina(result.StaminaCost);
             GainExperience(result.ExpGained);
+
+            ChangeHappiness(10);
         }
 
         /// <summary>
@@ -353,6 +371,8 @@ namespace ProjetoDC.Scripts.Gameplay
 
             if (Hunger > MaxHunger)
                 Hunger = MaxHunger;
+
+            ChangeHappiness(5);
         }
 
         public bool WantsFood()
@@ -473,6 +493,15 @@ namespace ProjetoDC.Scripts.Gameplay
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Indica se o jogador pode arrastar o Digimon manualmente.
+        /// Diferente de <see cref="CanMove"/>: dormindo ainda pode ser arrastado, doente não.
+        /// </summary>
+        public bool CanBeDragged()
+        {
+            return HealthState != HealthState.Sick;
         }
 
         public HealthState HealthState

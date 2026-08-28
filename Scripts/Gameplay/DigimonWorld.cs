@@ -17,6 +17,13 @@ public partial class DigimonWorld : Node2D
     private FoodWorld _targetFood;
     private bool _isEating;
     private double _eatTimer;
+    private double _poopTimer;
+    private const double PoopIntervalSeconds = 30.0;
+
+    private double _dirtyAreaTimer;
+    private const double DirtyAreaCheckInterval = 10.0;
+    private const int DirtyAreaHappinessPenalty = 2;
+    private const int DirtyAreaDisciplinePenalty = 2;
     private double _trainingTimer;
     private const double TrainingInterval = 5.0;
     private bool _isTrainingAnimation;
@@ -51,6 +58,8 @@ public partial class DigimonWorld : Node2D
     public void Initialize(DigimonInstance digimon)
     {
         _digimon = digimon;
+
+        _poopTimer = PoopIntervalSeconds;
 
         GD.Print(
             $"VISUAL RECEBEU {_digimon.BaseData.Name} HASH: {_digimon.GetHashCode()}"
@@ -162,6 +171,25 @@ public partial class DigimonWorld : Node2D
         {
             ProcessDragging();
             return;
+        }
+
+        if (_digimon.Activity != DigimonActivity.Sleeping)
+        {
+            _poopTimer -= delta;
+
+            if (_poopTimer <= 0)
+            {
+                Poop();
+            }
+        }
+
+        _dirtyAreaTimer -= delta;
+
+        if (_dirtyAreaTimer <= 0)
+        {
+            _dirtyAreaTimer = DirtyAreaCheckInterval;
+
+            CheckDirtyArea();
         }
 
         if (_isEating)
@@ -364,6 +392,34 @@ public partial class DigimonWorld : Node2D
         _idleTimer = 1.0;
     }
 
+    private void Poop()
+    {
+        _poopTimer = PoopIntervalSeconds;
+
+        _center.SpawnPoop(GlobalPosition);
+
+        GD.Print(
+            $"{_digimon.BaseData.Name} fez coco em {GlobalPosition}."
+        );
+    }
+
+    private void CheckDirtyArea()
+    {
+        if (_currentArea == null)
+            return;
+
+        if (!_center.AreaHasPoop(_currentArea))
+            return;
+
+        _digimon.ChangeHappiness(-DirtyAreaHappinessPenalty);
+        _digimon.ChangeDiscipline(-DirtyAreaDisciplinePenalty);
+
+        GD.Print(
+            $"{_digimon.BaseData.Name} está num ambiente sujo. " +
+            $"Felicidade: {_digimon.Happiness} | Disciplina: {_digimon.Discipline}"
+        );
+    }
+
     private void ReachDestination()
     {
         _isWalking = false;
@@ -402,24 +458,25 @@ public partial class DigimonWorld : Node2D
     InputEvent @event,
     long shapeIdx)
     {
-        if (@event is InputEventMouseButton mouseEvent)
+        if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed)
         {
-            if (mouseEvent.ButtonIndex == MouseButton.Left &&
-                mouseEvent.Pressed)
+            if (mouseEvent.ButtonIndex == MouseButton.Left)
+            {
+                StartDragging();
+            }
+            else if (mouseEvent.ButtonIndex == MouseButton.Right)
             {
                 _center.InspectDigimon(_digimon);
-
-                StartDragging(mouseEvent.Position);
             }
         }
     }
 
-    private void StartDragging(Vector2 mousePosition)
+    private void StartDragging()
     {
         if (_digimon == null)
             return;
 
-        if (!_digimon.CanMove())
+        if (!_digimon.CanBeDragged())
             return;
 
         _dragStartPosition = GlobalPosition;
@@ -429,7 +486,7 @@ public partial class DigimonWorld : Node2D
 
         _positionBeforeDrag = GlobalPosition;
 
-        _dragOffset = GlobalPosition - mousePosition;
+        _dragOffset = GlobalPosition - GetGlobalMousePosition();
 
         _isWalking = false;
         _sprite.SetWalking(false);
