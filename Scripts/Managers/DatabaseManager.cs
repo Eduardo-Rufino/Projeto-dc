@@ -18,6 +18,9 @@ namespace ProjetoDC.Scripts.Managers
         public override void _Ready()
         {
             Instance = this;
+
+            LoadDigimons();
+            LoadEvolutions();
         }
 
         private const string DigimonFolder = "res://Data/Digimon/";

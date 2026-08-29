@@ -12,9 +12,6 @@ public partial class Main : Node
 
         //GameManager.Instance.NewGame();
 
-        DatabaseManager.Instance.LoadDigimons();
-        DatabaseManager.Instance.LoadEvolutions();
-
         CallDeferred(nameof(OpenCenterScreen));
     }
 
