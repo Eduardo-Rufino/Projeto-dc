@@ -170,5 +170,15 @@ namespace ProjetoDC.Scripts.Models.World
         {
             return AreaType == CenterAreaType.Training;
         }
+
+        public bool IsDormitory()
+        {
+            return AreaType == CenterAreaType.Dormitory;
+        }
+
+        public bool IsHospital()
+        {
+            return AreaType == CenterAreaType.Hospital;
+        }
     }
 }

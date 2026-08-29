@@ -25,19 +25,21 @@ namespace ProjetoDC.Scripts.Managers
     {
         public static GameManager Instance { get; private set; }
 
-        /// <summary>Digimon do jogador atualmente selecionado.</summary>
+        /// <summary>Digimon do jogador atualmente selecionado (fora de batalha: treino, alimentação, etc.).</summary>
         public DigimonInstance PlayerDigimon { get; private set; }
 
-        /// <summary>Digimon inimigo atual para batalhas.</summary>
-        public DigimonInstance EnemyDigimon { get; private set; }
-        public List<DigimonInstance> GeneratedEnemies { get; private set; } = new();
+        /// <summary>Times da batalha 3x3 em andamento.</summary>
+        public List<DigimonInstance> PlayerBattleTeam { get; private set; } = new();
+        public List<DigimonInstance> EnemyBattleTeam { get; private set; } = new();
 
         public event Action DigimonListChanged;
         public event Action PlayerDigimonChanged;
         public event Action GameLoaded;
+        public event Action<BattleResult> TeamBattleFinished;
+        public event Action TeamBattleStarted;
 
-        /// <summary>Sistema de batalha ativo quando iniciado.</summary>
-        public BattleSystem BattleSystem { get; private set; }
+        /// <summary>Estado puro da batalha 3x3 ativa (nulo fora de batalha).</summary>
+        public BattleMatch BattleMatch { get; private set; }
 
         public SaveData Save { get; private set; }
         public CenterService CenterService { get; private set; }
@@ -207,61 +209,6 @@ namespace ProjetoDC.Scripts.Managers
             );
 
             PlayerDigimonChanged?.Invoke();
-
-            RebuildBattle();
-        }
-
-        /// <summary>
-        /// Cria uma instância inimiga a partir do DB e reconstrói o sistema de batalha.
-        /// </summary>
-        public void SetEnemyDigimon(int id)
-        {
-            var data = DatabaseManager.Instance.GetDigimon(id);
-
-            if (data == null)
-            {
-                GD.PrintErr($"Digimon {id} não encontrado.");
-                return;
-            }
-
-            EnemyDigimon = new DigimonInstance(data);
-
-            GD.Print($"EnemyDigimon: {EnemyDigimon.BaseData.Name}");
-
-            RebuildBattle();
-        }
-
-        /// <summary>
-        /// Reconstrói o objeto <see cref="BattleSystem"/> quando ambos players estiverem definidos.
-        /// </summary>
-        private void RebuildBattle()
-        {
-            if (PlayerDigimon == null || EnemyDigimon == null)
-                return;
-
-            BattleSystem = new BattleSystem(PlayerDigimon, EnemyDigimon);
-
-            GD.Print("BattleSystem reconstruído.");
-        }
-
-        /// <summary>
-        /// Dispara a tela de batalha e inicializa com o BattleSystem atual.
-        /// </summary>
-        public async void StartBattle()
-        {
-            if (BattleSystem == null)
-            {
-                GD.PrintErr("BattleSystem não inicializado!");
-                return;
-            }
-
-            var battleScene = GD.Load<PackedScene>("res://Scenes/BattleScreen.tscn");
-            var battleScreen = battleScene.Instantiate<BattleScreen>();
-
-            GetTree().Root.AddChild(battleScreen);
-
-            var controller = battleScreen.GetNode<BattleController>("BattleController");
-            controller.Init(BattleSystem);
         }
 
         /// <summary>
@@ -312,8 +259,6 @@ namespace ProjetoDC.Scripts.Managers
             );
 
             PlayerDigimonChanged?.Invoke();
-
-            RebuildBattle();
         }
 
         /// <summary>
@@ -380,48 +325,86 @@ namespace ProjetoDC.Scripts.Managers
         }
 
         /// <summary>
-        /// Inicializa batalha selecionando um jogador do Center e um inimigo fixo (temporário).
+        /// Inicia uma batalha 3x3 em tempo real com o time escolhido pelo jogador (exatamente
+        /// 3 Digimons, sem restrição de Role). Gera o time inimigo calibrado por esse time e
+        /// abre a arena; a recompensa é aplicada quando a arena avisa que a batalha terminou.
         /// </summary>
-        public void InitializeBattle(DigimonInstance enemy)
+        public void StartTeamBattle(List<DigimonInstance> playerTeam)
         {
-            EnemyDigimon = enemy;
-
-            EnemyDigimon.RestoreHealth();
-
-            RebuildBattle();
-        }
-
-        public void GenerateEnemyCandidates()
-        {
-            if (PlayerDigimon == null)
+            if (playerTeam == null || playerTeam.Count != 3)
+            {
+                GD.PrintErr("StartTeamBattle exige exatamente 3 Digimons.");
                 return;
+            }
 
-            PlayerDigimon.RestoreHealth();
+            PlayerBattleTeam = playerTeam;
 
-            GeneratedEnemies = EnemyGenerator.GenerateEnemies(PlayerDigimon, 4);
+            EnemyBattleTeam = EnemyGenerator.GenerateEnemyTeam(PlayerBattleTeam, 3);
+
+            if (EnemyBattleTeam.Count == 0)
+            {
+                GD.PrintErr("Não foi possível gerar o time inimigo.");
+                return;
+            }
+
+            TeamBattleStarted?.Invoke();
+
+            var arenaScene = GD.Load<PackedScene>("res://Scenes/Battle/BattleArena.tscn");
+            var arena = arenaScene.Instantiate<BattleArena>();
+
+            GetTree().Root.AddChild(arena);
+
+            arena.Init(PlayerBattleTeam, EnemyBattleTeam);
+
+            BattleMatch = arena.Match;
+
+            arena.BattleFinished += result => OnTeamBattleFinished(result, arena);
         }
 
-        public void ApplyBattleReward(BattleResult result)
+        private void OnTeamBattleFinished(BattleResult result, BattleArena arena)
         {
-            if (PlayerDigimon == null && EnemyDigimon == null)
+            ApplyTeamBattleReward(result);
+
+            arena.QueueFree();
+
+            BattleMatch = null;
+
+            TeamBattleFinished?.Invoke(result);
+        }
+
+        /// <summary>
+        /// Aplica o resultado de uma batalha 3x3: na derrota, todo o time perde Felicidade;
+        /// na vitória, cada membro (sobrevivente ou não) recebe sua fração de XP e o bônus
+        /// de Felicidade, e tenta evoluir; os Bits vão pro Center uma única vez.
+        /// </summary>
+        public void ApplyTeamBattleReward(BattleResult result)
+        {
+            if (PlayerBattleTeam.Count == 0)
                 return;
 
             if (result == BattleResult.EnemyWon)
             {
                 GD.Print("Derrota! Sem recompensa");
+
+                foreach (var member in PlayerBattleTeam)
+                    member.ChangeHappiness(-6);
+
                 return;
             }
 
-            var reward = BattleRewardCalculator.Calculate(PlayerDigimon, EnemyDigimon);
+            var reward = BattleRewardCalculator.CalculateForTeam(PlayerBattleTeam, EnemyBattleTeam);
 
-            GD.Print($"Vitória! +{reward.Experience} XP | +{reward.Bits} Bits");
+            GD.Print($"Vitória! +{reward.Experience} XP por membro | +{reward.Bits} Bits");
 
-            PlayerDigimon.GainExperience(reward.Experience);
+            foreach (var member in PlayerBattleTeam)
+            {
+                member.GainExperience(reward.Experience);
+                member.ChangeHappiness(8);
+
+                TryToEvolve(member);
+            }
 
             Save.Center.AddBits(reward.Bits);
-
-            TryToEvolve(PlayerDigimon);
-            
         }
 
         public SystemResult BuyMeat()
@@ -448,7 +431,7 @@ namespace ProjetoDC.Scripts.Managers
             return SystemResult.Ok();
         }
 
-        public SystemResult BuyEgg(int digimonId)
+        public SystemResult BuyEgg()
         {
             const int eggPrice = 500;
 
@@ -457,8 +440,27 @@ namespace ProjetoDC.Scripts.Managers
                 return SystemResult.Fail("Bits insuficientes.");
             }
 
+            var babyDigimons = DatabaseManager.Instance.GetAllDigimons()
+                .Where(d => d.Stage == DigimonStage.Baby)
+                .ToList();
+
+            if (babyDigimons.Count == 0)
+            {
+                return SystemResult.Fail("Nenhum Digimon Baby disponível.");
+            }
+
+            var chosen = babyDigimons[GD.RandRange(0, babyDigimons.Count - 1)];
+
+            // Confere a capacidade com uma instância descartável, só para checar o custo pelo estágio.
+            var previewDigimon = new DigimonInstance(chosen);
+
+            if (!CenterService.CanAddDigimon(previewDigimon))
+            {
+                return SystemResult.Fail("Não há capacidade suficiente no Center.");
+            }
+
             bool created = EggSystem.CreateEgg(
-                digimonId,
+                chosen.Id,
                 CenterService
             );
 

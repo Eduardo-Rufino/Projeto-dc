@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bnrtydwuwbk5f" path="res://Scripts/UI/HUD.cs" id="2_oao4p"]
 [ext_resource type="PackedScene" uid="uid://covv6lvt7tbvh" path="res://Scenes/Center/AreaBuildMenu.tscn" id="2_q11ny"]
 [ext_resource type="PackedScene" uid="uid://pr5s0dygmvkt" path="res://Scenes/Shop/ShopScreen.tscn" id="2_shop"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle/TeamSelectionScreen.tscn" id="2_teamselect"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="3_csbr3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scj13"]
@@ -522,6 +523,9 @@ text = "🚪"
 visible = false
 
 [node name="ShopScreen" parent="CanvasLayer" instance=ExtResource("2_shop")]
+visible = false
+
+[node name="TeamSelectionScreen" parent="CanvasLayer" instance=ExtResource("2_teamselect")]
 visible = false
 
 [node name="CenterAreas" type="Node2D" parent="." unique_id=1618977558]

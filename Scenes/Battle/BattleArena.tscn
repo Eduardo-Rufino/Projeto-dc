@@ -1,0 +1,64 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Systems/Battle/BattleArena.cs" id="1_arena"]
+[ext_resource type="PackedScene" uid="uid://c5mnilcm2vrfn" path="res://Scenes/Battle/BattleResultScreen.tscn" id="2_result"]
+[ext_resource type="PackedScene" uid="uid://bpdm1djccv738" path="res://Scenes/Center/Areas/CenterArea.tscn" id="3_hex"]
+
+[node name="BattleArena" type="Node2D"]
+script = ExtResource("1_arena")
+
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Background" type="ColorRect" parent="BackgroundLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.11, 0.16, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+zoom = Vector2(0.75, 0.75)
+current = true
+
+[node name="CombatAreas" type="Node2D" parent="."]
+
+[node name="HexA" parent="CombatAreas" instance=ExtResource("3_hex")]
+GridPosition = Vector2i(0, 0)
+
+[node name="HexB" parent="CombatAreas" instance=ExtResource("3_hex")]
+GridPosition = Vector2i(1, 0)
+
+[node name="HexC" parent="CombatAreas" instance=ExtResource("3_hex")]
+GridPosition = Vector2i(1, -1)
+
+[node name="PlayerSpawnPoints" type="Node2D" parent="."]
+
+[node name="Point1" type="Marker2D" parent="PlayerSpawnPoints"]
+position = Vector2(350, 300)
+
+[node name="Point2" type="Marker2D" parent="PlayerSpawnPoints"]
+position = Vector2(452, 360)
+
+[node name="Point3" type="Marker2D" parent="PlayerSpawnPoints"]
+position = Vector2(350, 430)
+
+[node name="EnemySpawnPoints" type="Node2D" parent="."]
+
+[node name="Point1" type="Marker2D" parent="EnemySpawnPoints"]
+position = Vector2(900, 143)
+
+[node name="Point2" type="Marker2D" parent="EnemySpawnPoints"]
+position = Vector2(900, 577)
+
+[node name="Point3" type="Marker2D" parent="EnemySpawnPoints"]
+position = Vector2(750, 143)
+
+[node name="UnitsContainer" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="BattleResultScreen" parent="CanvasLayer" instance=ExtResource("2_result")]
+visible = false

@@ -23,6 +23,7 @@ namespace ProjetoDC.Scripts.Models.World
         public List<Poop> Poops { get; set; } = new();
         public List<DigimonInstance> Digimons { get; set; } = new();
         public List<EggData> Eggs { get; set; } = new();
+        public List<CenterAreaData> BuiltAreas { get; set; } = new();
 
         public CenterState() { 
             Bits = 50000000;

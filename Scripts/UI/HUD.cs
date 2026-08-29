@@ -32,6 +32,7 @@ namespace ProjetoDC.Scripts.UI
         private Button _medicineButton;
         private Button _cleanButton;
         private Button _shopButton;
+        private Button _trophyButton;
 
         private Control _digimonStatusPage1;
         private Control _digimonStatusPage2;
@@ -193,6 +194,12 @@ namespace ProjetoDC.Scripts.UI
             );
 
             _shopButton.Pressed += OnShopButtonPressed;
+
+            _trophyButton = GetNode<Button>(
+                "ControlBar/TrophyButton"
+            );
+
+            _trophyButton.Pressed += OnTrophyButtonPressed;
 
             // O GameManager pode ainda estar terminando sua inicialização.
             CallDeferred(nameof(ConnectToGameManager));
@@ -466,6 +473,11 @@ namespace ProjetoDC.Scripts.UI
         private void OnShopButtonPressed()
         {
             _center.OpenShop();
+        }
+
+        private void OnTrophyButtonPressed()
+        {
+            _center.OpenTeamSelection();
         }
     }
 }

@@ -17,5 +17,9 @@ namespace ProjetoDC.Scripts.Data
         public bool IsReady { get; set; }
 
         public bool IsStarterEgg { get; set; }
+
+        public float PositionX { get; set; }
+
+        public float PositionY { get; set; }
     }
 }

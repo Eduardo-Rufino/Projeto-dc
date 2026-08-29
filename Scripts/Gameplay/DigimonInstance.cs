@@ -111,6 +111,7 @@ namespace ProjetoDC.Scripts.Gameplay
                 Element = data.Element,
                 EggType = data.EggType,
                 AttackType = data.AttackType,
+                SupportType = data.SupportType,
 
                 BaseStats = new BaseStats
                 {
@@ -172,6 +173,19 @@ namespace ProjetoDC.Scripts.Gameplay
         }
 
         /// <summary>
+        /// Recupera uma porcentagem do HP máximo (regeneração passiva no Center).
+        /// </summary>
+        public void RegenerateHealth(float percentage)
+        {
+            if (CurrentHealthPoints >= MaxHealthPoints)
+                return;
+
+            int amount = Math.Max(1, (int)(MaxHealthPoints * percentage));
+
+            CurrentHealthPoints = Math.Min(MaxHealthPoints, CurrentHealthPoints + amount);
+        }
+
+        /// <summary>
         /// Aplica os ganhos resultantes de um treino:
         /// atualiza stats, HP, reduz stamina e aplica experiência.
         /// </summary>
@@ -194,6 +208,7 @@ namespace ProjetoDC.Scripts.Gameplay
             GainExperience(result.ExpGained);
 
             ChangeHappiness(10);
+            ChangeDiscipline(5);
         }
 
         /// <summary>
@@ -257,7 +272,13 @@ namespace ProjetoDC.Scripts.Gameplay
             CurrentHealthPoints = MaxHealthPoints;
 
             GD.Print($"{newForm.Name} evoluiu! Stats atualizados!");
+
+            Evolved?.Invoke(newForm);
         }
+
+        /// <summary>Disparado quando o Digimon evolui, com a nova forma. Usado pelo visual
+        /// (DigimonWorld) pra saber que precisa trocar o sprite.</summary>
+        public event Action<DigimonData> Evolved;
 
         /// <summary>
         /// Avança o contador de idade em dias para o Digimon.
@@ -358,6 +379,9 @@ namespace ProjetoDC.Scripts.Gameplay
 
             if (Hunger < 0)
                 Hunger = 0;
+
+            if (Hunger <= 20)
+                ChangeHappiness(-1);
         }
 
         public bool IsHungry()
@@ -411,6 +435,8 @@ namespace ProjetoDC.Scripts.Gameplay
         public void Heal()
         {
             HealthState = HealthState.Healthy;
+
+            ChangeDiscipline(5);
         }
 
         public SystemResult UseMedicine(DigimonInstance digimon)
@@ -513,6 +539,10 @@ namespace ProjetoDC.Scripts.Gameplay
                     return;
 
                 _healthState = value;
+
+                if (value == HealthState.Sick)
+                    ChangeHappiness(-8);
+
                 HealthStateChanged?.Invoke(value);
             }
         }

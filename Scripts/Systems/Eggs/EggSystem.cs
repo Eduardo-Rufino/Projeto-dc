@@ -3,12 +3,16 @@ using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Systems.Center;
+using System;
 using System.Linq;
 
 namespace ProjetoDC.Scripts.Systems.Eggs
 {
     public class EggSystem
     {
+        /// <summary>Disparado quando um ovo termina de chocar, com o ovo e o Digimon recém-nascido.</summary>
+        public event Action<EggData, DigimonInstance> EggHatched;
+
         public EggSystem() { }
 
 
@@ -203,6 +207,8 @@ namespace ProjetoDC.Scripts.Systems.Eggs
 
             GD.Print($"{digimon.BaseData.Name} nasceu!");
             GD.Print($"Nasceu {digimon.BaseData.Name} - Hash: {digimon.GetHashCode()}");
+
+            EggHatched?.Invoke(egg, digimon);
 
             GameManager.Instance.SaveSystem.SaveGame(
                 GameManager.Instance.Save

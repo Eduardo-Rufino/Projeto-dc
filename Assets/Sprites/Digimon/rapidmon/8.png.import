@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bcpm45ku08tlp"
-path="res://.godot/imported/8.png-9e3d93532ce61b12cbe8cffcf262918d.ctex"
+path="res://.godot/imported/8.png-4e5cf7967e1f14561936c97b21f9c3db.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Digimon/rapidimon/8.png"
-dest_files=["res://.godot/imported/8.png-9e3d93532ce61b12cbe8cffcf262918d.ctex"]
+source_file="res://Assets/Sprites/Digimon/rapidmon/8.png"
+dest_files=["res://.godot/imported/8.png-4e5cf7967e1f14561936c97b21f9c3db.ctex"]
 
 [params]
 

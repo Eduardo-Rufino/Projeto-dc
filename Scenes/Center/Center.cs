@@ -1,6 +1,7 @@
 using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Core.Results;
+using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
@@ -17,6 +18,7 @@ public partial class Center : Node2D
     private PackedScene _digimonScene;
     private PackedScene _foodScene;
     private PackedScene _poopScene;
+    private PackedScene _eggScene;
     private PackedScene _centerAreaScene;
 
     private List<Marker2D> _spawnPoints = new();
@@ -26,6 +28,8 @@ public partial class Center : Node2D
     private readonly List<FoodWorld> _foods = new();
 
     private readonly List<PoopWorld> _poops = new();
+
+    private readonly List<EggWorld> _eggs = new();
 
     private readonly List<DigimonWorld> _digimonWorlds = new();
 
@@ -41,6 +45,8 @@ public partial class Center : Node2D
     private AreaBuildMenu _areaBuildMenu;
     private HUD _hud;
     private ShopScreen _shopScreen;
+    private TeamSelectionScreen _teamSelectionScreen;
+    private CanvasLayer _canvasLayer;
 
     private FoodWorld _placingFood;
     private bool _isPlacingFood;
@@ -56,6 +62,8 @@ public partial class Center : Node2D
     private bool _isPlacingBroom;
 
     private const float CleanRadius = 28f;
+    private const int PoopFreshnessHours = 3;
+    private const int CleanQuicklyHappinessBonus = 3;
 
     private readonly RandomNumberGenerator _rng = new();
 
@@ -80,6 +88,10 @@ public partial class Center : Node2D
             "res://Scenes/Center/PoopWorld.tscn"
         );
 
+        _eggScene = GD.Load<PackedScene>(
+            "res://Scenes/Center/EggWorld.tscn"
+        );
+
         _centerAreaScene = GD.Load<PackedScene>(
             "res://Scenes/Center/Areas/CenterArea.tscn"
         );
@@ -101,8 +113,24 @@ public partial class Center : Node2D
         _shopScreen = GetNode<ShopScreen>("CanvasLayer/ShopScreen");
 
         _shopScreen.BackPressed += OnShopBackPressed;
+        _shopScreen.EggPurchased += OnEggPurchased;
+
+        _teamSelectionScreen = GetNode<TeamSelectionScreen>("CanvasLayer/TeamSelectionScreen");
+
+        _teamSelectionScreen.BackPressed += OnTeamSelectionBackPressed;
 
         _areaBuildMenu.AreaTypeSelected += OnAreaTypeSelected;
+
+        GameManager.Instance.EggSystem.EggHatched -= OnEggHatched;
+        GameManager.Instance.EggSystem.EggHatched += OnEggHatched;
+
+        GameManager.Instance.TeamBattleFinished -= OnTeamBattleFinished;
+        GameManager.Instance.TeamBattleFinished += OnTeamBattleFinished;
+
+        GameManager.Instance.TeamBattleStarted -= OnTeamBattleStarted;
+        GameManager.Instance.TeamBattleStarted += OnTeamBattleStarted;
+
+        _canvasLayer = GetNode<CanvasLayer>("CanvasLayer");
 
         if (_digimonScene == null)
         {
@@ -121,12 +149,28 @@ public partial class Center : Node2D
         _digimonsContainer = GetNode<Node2D>("Digimons");
         
         RegisterCenterAreas();
+        RestoreBuiltAreas();
         SpawnDigimons();
         RestoreFoods();
         RestorePoops();
+        RestoreEggs();
         RefreshExpansionSlots();
         CreateExpansionSlotVisuals();
 
+    }
+
+    public override void _ExitTree()
+    {
+        if (GameManager.Instance?.EggSystem != null)
+        {
+            GameManager.Instance.EggSystem.EggHatched -= OnEggHatched;
+        }
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.TeamBattleFinished -= OnTeamBattleFinished;
+            GameManager.Instance.TeamBattleStarted -= OnTeamBattleStarted;
+        }
     }
 
     public override void _Process(double delta)
@@ -197,6 +241,13 @@ public partial class Center : Node2D
         DigimonInstance digimon,
         Marker2D spawnPoint)
     {
+        return SpawnDigimon(digimon, spawnPoint.GlobalPosition);
+    }
+
+    private DigimonWorld SpawnDigimon(
+        DigimonInstance digimon,
+        Vector2 position)
+    {
         GD.Print($"Criando DigimonWorld: {digimon.BaseData.Name}");
 
         var instance = _digimonScene.Instantiate<DigimonWorld>();
@@ -205,7 +256,7 @@ public partial class Center : Node2D
 
         instance.SetCenter(this);
 
-        instance.GlobalPosition = spawnPoint.GlobalPosition;
+        instance.GlobalPosition = position;
 
         instance.Initialize(digimon);
 
@@ -431,11 +482,42 @@ public partial class Center : Node2D
         var poopData = poop.GetPoop();
 
         if (poopData != null)
+        {
             GameManager.Instance.Save.Center.Poops.Remove(poopData);
+
+            RewardQuickCleaning(poopData, poop.GlobalPosition);
+        }
 
         poop.QueueFree();
 
         GD.Print($"Cocos restantes: {_poops.Count}");
+    }
+
+    private void RewardQuickCleaning(Poop poopData, Vector2 position)
+    {
+        var world = GameManager.Instance.Save.World;
+
+        bool isFresh = world.CurrentDay == poopData.CreatedOnDay &&
+            (world.CurrentHour - poopData.CreatedOnHour) <= PoopFreshnessHours;
+
+        if (!isFresh)
+            return;
+
+        CenterArea area = GetAreaAtPosition(position);
+
+        if (area == null)
+            return;
+
+        foreach (var digimonWorld in _digimonWorlds)
+        {
+            if (!GodotObject.IsInstanceValid(digimonWorld))
+                continue;
+
+            if (GetAreaAtPosition(digimonWorld.GlobalPosition) != area)
+                continue;
+
+            digimonWorld._digimon?.ChangeHappiness(CleanQuicklyHappinessBonus);
+        }
     }
 
     private void CreateInitialArea()
@@ -471,7 +553,31 @@ public partial class Center : Node2D
 
         CreateCenterArea(gridPosition, areaType);
 
+        // Persiste só a área nova construída pelo jogador - RestoreBuiltAreas() no _Ready()
+        // não passa por aqui de novo, então não duplica no save a cada load.
+        GameManager.Instance.Save.Center.BuiltAreas.Add(new CenterAreaData
+        {
+            GridX = gridPosition.X,
+            GridY = gridPosition.Y,
+            AreaType = areaType
+        });
+
         return true;
+    }
+
+    private void RestoreBuiltAreas()
+    {
+        foreach (var areaData in GameManager.Instance.Save.Center.BuiltAreas)
+        {
+            var gridPosition = new Vector2I(areaData.GridX, areaData.GridY);
+
+            if (IsAreaOccupied(gridPosition))
+                continue;
+
+            CreateCenterArea(gridPosition, areaData.AreaType);
+        }
+
+        GD.Print($"Áreas construídas restauradas: {GameManager.Instance.Save.Center.BuiltAreas.Count}");
     }
 
     private void RegisterCenterAreas()
@@ -679,6 +785,40 @@ public partial class Center : Node2D
     private void OnShopBackPressed()
     {
         _shopScreen.Visible = false;
+    }
+
+    public void OpenTeamSelection()
+    {
+        _teamSelectionScreen.RefreshUI();
+
+        _teamSelectionScreen.Visible = true;
+    }
+
+    private void OnTeamSelectionBackPressed()
+    {
+        _teamSelectionScreen.Visible = false;
+    }
+
+    private void OnTeamBattleStarted()
+    {
+        // Esconde o Center inteiro (mundo + HUD) durante o combate, igual à tela de
+        // seleção de time - a arena de batalha é uma cena separada por cima, então o
+        // Center continua existindo/simulando, só não deve aparecer nem ser clicável.
+        Visible = false;
+        _canvasLayer.Visible = false;
+    }
+
+    private void OnTeamBattleFinished(BattleResult result)
+    {
+        Visible = true;
+        _canvasLayer.Visible = true;
+
+        _teamSelectionScreen.Visible = false;
+
+        // A arena de batalha usa sua própria Camera2D (precisa pra enquadrar a luta
+        // certo, independente de onde a câmera do Center estava olhando); ao encerrar
+        // a arena, garantimos que a câmera do Center volte a ser a atual.
+        GetNode<Camera2D>("Camera2D").MakeCurrent();
     }
 
     public void InspectDigimon(DigimonInstance digimon)
@@ -971,6 +1111,85 @@ public partial class Center : Node2D
         }
 
         return false;
+    }
+
+    private Vector2 GetRandomAreaPosition()
+    {
+        var area = _centerAreas.Values.FirstOrDefault();
+
+        if (area != null)
+            return area.GetRandomPointInside();
+
+        return _areaGridOrigin;
+    }
+
+    public EggWorld SpawnEgg(EggData egg)
+    {
+        if (_eggScene == null)
+        {
+            GD.PrintErr("EggWorld.tscn não foi carregado.");
+            return null;
+        }
+
+        var world = _eggScene.Instantiate<EggWorld>();
+
+        _digimonsContainer.AddChild(world);
+
+        world.GlobalPosition = new Vector2(egg.PositionX, egg.PositionY);
+
+        world.Initialize(egg);
+
+        _eggs.Add(world);
+
+        GD.Print($"Ovo posicionado em {world.GlobalPosition}.");
+
+        return world;
+    }
+
+    private void RestoreEggs()
+    {
+        foreach (var egg in GameManager.Instance.Save.Center.Eggs)
+        {
+            if (egg.PositionX == 0 && egg.PositionY == 0)
+            {
+                Vector2 position = GetRandomAreaPosition();
+
+                egg.PositionX = position.X;
+                egg.PositionY = position.Y;
+            }
+
+            SpawnEgg(egg);
+        }
+
+        GD.Print($"Ovos restaurados: {_eggs.Count}");
+    }
+
+    private void OnEggPurchased(EggData egg)
+    {
+        Vector2 position = GetRandomAreaPosition();
+
+        egg.PositionX = position.X;
+        egg.PositionY = position.Y;
+
+        SpawnEgg(egg);
+    }
+
+    private void OnEggHatched(EggData egg, DigimonInstance digimon)
+    {
+        var eggWorld = _eggs.FirstOrDefault(e => e.GetEgg() == egg);
+
+        Vector2 position = GetRandomAreaPosition();
+
+        if (eggWorld != null)
+        {
+            position = eggWorld.GlobalPosition;
+
+            _eggs.Remove(eggWorld);
+
+            eggWorld.QueueFree();
+        }
+
+        SpawnDigimon(digimon, position);
     }
 
 }

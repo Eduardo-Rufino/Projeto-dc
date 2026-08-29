@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dnjx4vlquhspq"
-path="res://.godot/imported/11.png-8dceee89d724130a824a484929a6a8fa.ctex"
+path="res://.godot/imported/11.png-e3421a3a60a305bdaa1fbebdfd23fe5c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Digimon/wargrowmon/11.png"
-dest_files=["res://.godot/imported/11.png-8dceee89d724130a824a484929a6a8fa.ctex"]
+source_file="res://Assets/Sprites/Digimon/wargrowlmon/11.png"
+dest_files=["res://.godot/imported/11.png-e3421a3a60a305bdaa1fbebdfd23fe5c.ctex"]
 
 [params]
 

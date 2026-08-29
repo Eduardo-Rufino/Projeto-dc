@@ -1,4 +1,5 @@
 using Godot;
+using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Managers;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace ProjetoDC.Scripts.UI
 
 
         public event Action BackPressed;
+        public event Action<EggData> EggPurchased;
 
         private GameManager Game => GameManager.Instance;
 
@@ -96,13 +98,15 @@ namespace ProjetoDC.Scripts.UI
                 RefreshUI();
         }
 
-        private void OnBuyBotamonEggPressed()
+        private void OnBuyEggPressed()
         {
-            var result = Game.BuyEgg(25);
+            var result = Game.BuyEgg();
 
             if (result.Success)
             {
                 RefreshUI();
+
+                EggPurchased?.Invoke(Game.Save.Center.Eggs.Last());
             }
             else
             {

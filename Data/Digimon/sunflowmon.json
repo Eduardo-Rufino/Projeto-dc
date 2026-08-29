@@ -8,6 +8,7 @@
   "Attribute": "Data",
   "EggType": "Forest",
   "AttackType": "Special",
+  "SupportType": "Buffer",
 
   "BaseStats": {
     "healthPoints": 175,

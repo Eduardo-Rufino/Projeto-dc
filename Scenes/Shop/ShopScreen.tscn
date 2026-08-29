@@ -297,5 +297,5 @@ text = "Voltar"
 
 [connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer/BuyMeatButton" to="." method="OnBuyMeatPressed"]
 [connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer/BuyMedicineButton" to="." method="OnBuyMedicinePressed"]
-[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer/BuyEggButton" to="." method="OnBuyBotamonEggPressed"]
+[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer/BuyEggButton" to="." method="OnBuyEggPressed"]
 [connection signal="pressed" from="Window/MarginContainer/VBoxContainer/BackButton" to="." method="OnBackPressed"]

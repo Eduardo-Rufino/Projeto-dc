@@ -1,8 +1,11 @@
 using Godot;
 using ProjetoDC.Enums;
+using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
+using ProjetoDC.Scripts.Systems.Battle;
+using ProjetoDC.Scripts.Systems.Results;
 using ProjetoDC.Scripts.UI;
 using System;
 
@@ -18,12 +21,22 @@ public partial class DigimonWorld : Node2D
     private bool _isEating;
     private double _eatTimer;
     private double _poopTimer;
-    private const double PoopIntervalSeconds = 30.0;
+    private const double PoopIntervalSeconds = 120.0;
 
     private double _dirtyAreaTimer;
     private const double DirtyAreaCheckInterval = 10.0;
     private const int DirtyAreaHappinessPenalty = 2;
     private const int DirtyAreaDisciplinePenalty = 2;
+
+    private double _hpRegenTimer;
+    private const double HpRegenInterval = 5.0;
+    private const float NormalHpRegenPercentage = 0.01f;
+    private const float HospitalHpRegenPercentage = 0.08f;
+    private const int DormitorySleepDisciplineBonus = 3;
+    private const int WokenWhileSleepingHappinessPenalty = 4;
+    private const int FailedTrainingDisciplinePenalty = 1;
+
+    private static readonly Color TrainingGainColor = new(1f, 0.85f, 0.2f);
     private double _trainingTimer;
     private const double TrainingInterval = 5.0;
     private bool _isTrainingAnimation;
@@ -73,6 +86,7 @@ public partial class DigimonWorld : Node2D
 
         _digimon.ActivityChanged += OnActivityChanged;
         _digimon.HealthStateChanged += OnHealthStateChanged;
+        _digimon.Evolved += OnEvolved;
 
         GD.Print(
             $"ASSINANDO EVENTO: {_digimon.BaseData.Name}"
@@ -94,6 +108,13 @@ public partial class DigimonWorld : Node2D
         );
 
         UpdateVisualState();
+
+        if (activity == DigimonActivity.Sleeping &&
+            _currentArea != null &&
+            _currentArea.IsDormitory())
+        {
+            _digimon.ChangeDiscipline(DormitorySleepDisciplineBonus);
+        }
 
         if (!_digimon.CanMove())
         {
@@ -190,6 +211,15 @@ public partial class DigimonWorld : Node2D
             _dirtyAreaTimer = DirtyAreaCheckInterval;
 
             CheckDirtyArea();
+        }
+
+        _hpRegenTimer -= delta;
+
+        if (_hpRegenTimer <= 0)
+        {
+            _hpRegenTimer = HpRegenInterval;
+
+            RegenerateHealth();
         }
 
         if (_isEating)
@@ -420,6 +450,51 @@ public partial class DigimonWorld : Node2D
         );
     }
 
+    private void RegenerateHealth()
+    {
+        bool inHospital = _currentArea != null && _currentArea.IsHospital();
+
+        float percentage = inHospital
+            ? HospitalHpRegenPercentage
+            : NormalHpRegenPercentage;
+
+        _digimon.RegenerateHealth(percentage);
+    }
+
+    /// <summary>Mostra um indicador flutuante (igual ao de dano em batalha) pra cada stat
+    /// que o treino aumentou - normalmente só um por treino, já que cada tipo de treino
+    /// afeta um stat só.</summary>
+    private void ShowTrainingGainIndicators(TrainingResult result)
+    {
+        if (result.PhysicDamageGained != 0)
+            ShowStatGainIndicator($"+{result.PhysicDamageGained} ATK");
+
+        if (result.SpecialDamageGained != 0)
+            ShowStatGainIndicator($"+{result.SpecialDamageGained} ATK");
+
+        if (result.PhysicDefenseGained != 0)
+            ShowStatGainIndicator($"+{result.PhysicDefenseGained} DEF");
+
+        if (result.SpecialDefenseGained != 0)
+            ShowStatGainIndicator($"+{result.SpecialDefenseGained} DEF");
+
+        if (result.SpeedGained != 0)
+            ShowStatGainIndicator($"+{result.SpeedGained} VEL");
+
+        if (result.HealthPointsGained != 0)
+            ShowStatGainIndicator($"+{result.HealthPointsGained} HP");
+    }
+
+    private void ShowStatGainIndicator(string text)
+    {
+        var scene = GD.Load<PackedScene>("res://Scenes/Battle/DamageIndicator.tscn");
+        var indicator = scene.Instantiate<DamageIndicator>();
+
+        GetParent().AddChild(indicator);
+
+        indicator.Initialize(GlobalPosition + new Vector2(0, -30f), text, TrainingGainColor);
+    }
+
     private void ReachDestination()
     {
         _isWalking = false;
@@ -478,6 +553,11 @@ public partial class DigimonWorld : Node2D
 
         if (!_digimon.CanBeDragged())
             return;
+
+        if (_digimon.Activity == DigimonActivity.Sleeping)
+        {
+            _digimon.ChangeHappiness(-WokenWhileSleepingHappinessPenalty);
+        }
 
         _dragStartPosition = GlobalPosition;
         _dragStartArea = _center.GetAreaAtPosition(GlobalPosition);
@@ -613,6 +693,8 @@ public partial class DigimonWorld : Node2D
                 $"Motivo: {result.Reason}"
             );
 
+            _digimon.ChangeDiscipline(-FailedTrainingDisciplinePenalty);
+
             _trainingTimer = TrainingInterval;
             return;
         }
@@ -642,6 +724,8 @@ public partial class DigimonWorld : Node2D
         // ==========================================
 
         _digimon.ApplyTrainingResult(result);
+
+        ShowTrainingGainIndicators(result);
 
         GD.Print(
             $"{_digimon.BaseData.Name} terminou o treinamento de {type}."
@@ -675,5 +759,12 @@ public partial class DigimonWorld : Node2D
             _isWalking = false;
             _sprite.SetWalking(false);
         }
+    }
+
+    private void OnEvolved(DigimonData newForm)
+    {
+        _sprite.SetDigimon(newForm.Code);
+
+        UpdateVisualState();
     }
 }

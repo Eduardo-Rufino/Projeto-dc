@@ -8,6 +8,7 @@
   "Attribute": "Data",
   "EggType": "Forest",
   "AttackType": "Special",
+  "SupportType": "Healer",
 
   "BaseStats": {
     "healthPoints": 48,

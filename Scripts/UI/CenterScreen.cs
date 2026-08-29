@@ -44,8 +44,7 @@ namespace ProjetoDC.Scripts.UI
         private GameManager Game => GameManager.Instance;
 
         private TrainingScreen _trainingScreen;
-        private EnemySelectionScreen _enemySelectionScreen;
-        private BattleScreen _battleScreen;
+        private TeamSelectionScreen _teamSelectionScreen;
         private ShopScreen _shopScreen;
         private Control _centerPanel;
         private DigimonSprite _digimonSprite;
@@ -70,8 +69,7 @@ namespace ProjetoDC.Scripts.UI
 
             // <<< ADICIONAR AQUI >>>
             _trainingScreen = GetNodeOrNull<TrainingScreen>("TrainingScreen");
-            _enemySelectionScreen = GetNodeOrNull<EnemySelectionScreen>("EnemySelectionScreen");
-            _battleScreen = GetNodeOrNull<BattleScreen>("BattleScreen");
+            _teamSelectionScreen = GetNodeOrNull<TeamSelectionScreen>("TeamSelectionScreen");
             _shopScreen = GetNodeOrNull<ShopScreen>("ShopScreen");
             _centerPanel = GetNodeOrNull<Control>("MarginContainer");
             _digimonSprite = GetNodeOrNull<DigimonSprite>("MarginContainer/VBoxContainer/HBoxContainer3/DigimonDisplay/DigimonSprite");
@@ -86,21 +84,17 @@ namespace ProjetoDC.Scripts.UI
             Game.ClockSystem.HourPassed += OnHourPassed;
             GameManager.Instance.PlayerDigimonChanged += RefreshUI;
             Game.GameLoaded += OnGameLoaded;
+            Game.TeamBattleFinished += OnTeamBattleFinished;
 
             if (_trainingScreen == null)
                 GD.PrintErr("TrainingScreen não encontrado na cena!");
 
             _trainingScreen.BackPressed += OnTrainingBack;
 
-            if (_battleScreen == null)
-                GD.PrintErr("BattleScreen não encontrado na cena!");
+            if (_teamSelectionScreen == null)
+                GD.PrintErr("TeamSelectionScreen não encontrado na cena!");
 
-            _battleScreen.BackPressed += OnBattleBack;
-
-            if (_enemySelectionScreen == null)
-                GD.PrintErr("EnemySelectionScreen não encontrado na cena!");
-
-            _enemySelectionScreen.BackPressed += OnEnemySelectionBack;
+            _teamSelectionScreen.BackPressed += OnTeamSelectionBack;
 
             if (_shopScreen == null)
                 GD.PrintErr("ShopScreen não encontrado na cena!");
@@ -126,15 +120,15 @@ namespace ProjetoDC.Scripts.UI
             var basePath = "MarginContainer/VBoxContainer/";
 
             _trainingScreen = GetNodeOrNull<TrainingScreen>("TrainingScreen");
-            _battleScreen = GetNodeOrNull<BattleScreen>("BattleScreen");
+            _teamSelectionScreen = GetNodeOrNull<TeamSelectionScreen>("TeamSelectionScreen");
             _shopScreen = GetNodeOrNull<ShopScreen>("ShopScreen");
 
             if (_trainingScreen == null)
                 GD.PrintErr("TrainingScreen não encontrado!");
             _centerPanel = GetNode<Control>("MarginContainer");
 
-            if (_battleScreen == null)
-                GD.PrintErr("BattleScreen não encontrado!");
+            if (_teamSelectionScreen == null)
+                GD.PrintErr("TeamSelectionScreen não encontrado!");
             _centerPanel = GetNode<Control>("MarginContainer");
 
             if (_shopScreen == null)
@@ -215,9 +209,8 @@ namespace ProjetoDC.Scripts.UI
             if (_medicineLabel != null)
                 _medicineLabel.Text = $"Remédio: {Game.Save.Center.Medicine}";
 
-            // Atualizar player/enemy se existirem
+            // Atualizar player se existir
             var player = Game.PlayerDigimon;
-            var enemy = Game.EnemyDigimon;
 
             if (player != null)
             {
@@ -423,19 +416,17 @@ namespace ProjetoDC.Scripts.UI
             RefreshUI();
         }
 
-        private void OnBattleBack()
+        private void OnTeamSelectionBack()
         {
-            _battleScreen.StopBattle();
-
-            _battleScreen.Visible = false;
+            _teamSelectionScreen.Visible = false;
             _centerPanel.Visible = true;
 
             RefreshUI();
         }
 
-        private void OnEnemySelectionBack()
+        private void OnTeamBattleFinished(BattleResult result)
         {
-            _enemySelectionScreen.Visible = false;
+            _teamSelectionScreen.Visible = false;
             _centerPanel.Visible = true;
 
             RefreshUI();
@@ -467,12 +458,10 @@ namespace ProjetoDC.Scripts.UI
 
         private void OnBattleButtonPressed()
         {
-            Game.GenerateEnemyCandidates();
-
             _centerPanel.Visible = false;
-            _enemySelectionScreen.Visible = true;
+            _teamSelectionScreen.Visible = true;
 
-            _enemySelectionScreen.RefreshUI();
+            _teamSelectionScreen.RefreshUI();
         }
 
         private void OnAttackPressed()

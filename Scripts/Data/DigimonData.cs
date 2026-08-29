@@ -54,6 +54,12 @@ namespace ProjetoDC.Scripts.Data
         public EggType EggType { get; set; }
 
         public AttackType AttackType { get; set; }
+
+        /// <summary>
+        /// Especialização do Digimon quando Role == Support (Healer/Buffer/Debuffer).
+        /// Irrelevante para as outras Roles.
+        /// </summary>
+        public SupportType SupportType { get; set; }
         
         /// <summary>
         /// Obtém ou define os stats base do Digimon.
