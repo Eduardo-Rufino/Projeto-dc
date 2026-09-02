@@ -1,0 +1,12 @@
+{
+  "Id": 3,
+  "Name": "Desafio Champion",
+  "Description": "Trio clássico dos Digidestined (Tai, Matt e Izzy) em suas formas Champion - Greymon, Garurumon e Kabuterimon.",
+  "RecommendedLevel": 15,
+  "Opponents": [
+    { "DigimonId": 13, "Level": 15 },
+    { "DigimonId": 14, "Level": 15 },
+    { "DigimonId": 15, "Level": 15 }
+  ],
+  "CapacityReward": 6
+}

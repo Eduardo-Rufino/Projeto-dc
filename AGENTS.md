@@ -54,7 +54,7 @@ Este arquivo é a referência canônica de arquitetura/estado do projeto, usada 
 - `DigimonInstance.CurrentStats` é uma **cópia** de `BaseData.BaseStats` (via `CloneBaseData`) — editar `CurrentStats` não altera o template
 - Classes em `Scripts/Data/` têm setters públicos (POCOs mutáveis para deserialização)
 - Ações de gameplay (alimentar, curar, comprar, treinar, evoluir) ficam centralizadas em `GameManager`, não espalhadas pelas telas de UI
-- `CenterState.Bits` começa em 50_000_000 e `CapacityLimit` em 10 — valores de debug/placeholder, não balanceamento final
+- `CenterState.Bits` começa em 0 (save novo começa zerado, sem Bits/itens de debug) e `CapacityLimit` em 10 — `CapacityLimit` ainda é placeholder, não balanceamento final
 
 ## Namespaces
 

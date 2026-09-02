@@ -1,0 +1,20 @@
+{
+  "id": 66,
+  "code": "ikkakumon",
+  "name": "Ikkakumon",
+  "stage": "Champion",
+  "role": "Tank",
+  "Element": "Water",
+  "Attribute": "Data",
+  "EggType": "Water",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 280,
+    "physicalDamage": 85,
+    "physicalDefense": 75,
+    "specialDamage": 15,
+    "specialDefense": 45,
+    "speed": 28
+  }
+}

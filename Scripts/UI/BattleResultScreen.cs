@@ -1,5 +1,6 @@
 using Godot;
 using ProjetoDC.Enums;
+using ProjetoDC.Scripts.Systems.Battle;
 using System;
 
 namespace ProjetoDC.Scripts.UI
@@ -39,7 +40,7 @@ namespace ProjetoDC.Scripts.UI
             _okButton.Pressed += OnOkPressed;
         }
 
-        public void ShowResult(BattleResult result)
+        public void ShowResult(BattleResult result, BattleReward reward = null)
         {
             Size = GetViewportRect().Size;
             CustomMinimumSize = Size;
@@ -51,12 +52,18 @@ namespace ProjetoDC.Scripts.UI
             {
                 case BattleResult.PlayerWon:
                     _resultLabel.Text = "VITÓRIA!";
-                    _rewardLabel.Text = "Parabéns!";
+                    _rewardLabel.Text = reward != null
+                        ? $"+{reward.Experience} XP por membro | +{reward.Bits} Bits" +
+                          (reward.CapacityGained > 0 ? $" | +{reward.CapacityGained} Capacidade!" : "") +
+                          (reward.BonusBitsGained > 0 ? $" | +{reward.BonusBitsGained} Bits de bônus!" : "")
+                        : "Parabéns!";
                     break;
 
                 case BattleResult.EnemyWon:
                     _resultLabel.Text = "DERROTA";
-                    _rewardLabel.Text = "Melhor sorte da próxima vez.";
+                    _rewardLabel.Text = reward != null && reward.Experience > 0
+                        ? $"+{reward.Experience} XP de consolação por membro | Melhor sorte da próxima vez."
+                        : "Melhor sorte da próxima vez.";
                     break;
             }
         }

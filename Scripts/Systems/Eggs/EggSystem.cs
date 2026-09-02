@@ -1,4 +1,5 @@
 using Godot;
+using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
@@ -12,6 +13,11 @@ namespace ProjetoDC.Scripts.Systems.Eggs
     {
         /// <summary>Disparado quando um ovo termina de chocar, com o ovo e o Digimon recém-nascido.</summary>
         public event Action<EggData, DigimonInstance> EggHatched;
+
+        /// <summary>Disparado quando um novo ovo é criado (inicial ou comprado), pra quem
+        /// desenha o Center poder posicionar o visual (EggWorld) na hora - sem isso, o ovo
+        /// só aparece depois que a cena recarrega e reconstrói a partir do save.</summary>
+        public event Action<EggData> EggCreated;
 
         public EggSystem() { }
 
@@ -32,24 +38,35 @@ namespace ProjetoDC.Scripts.Systems.Eggs
                 return;
             }
 
-            var digimonData = db.GetDigimon(25);
+            // Qualquer Digimon Baby (estágio inicial) pode nascer do ovo inicial - mesma
+            // lista/critério usado por GameManager.BuyEgg pros ovos comprados na loja.
+            var babyDigimons = db.GetAllDigimons()
+                .Where(d => d.Stage == DigimonStage.Baby)
+                .ToList();
 
-            if (digimonData == null)
+            if (babyDigimons.Count == 0)
             {
-                GD.PrintErr("Digimon ID 25 não existe no DB");
+                GD.PrintErr("Nenhum Digimon Baby disponível no DB");
                 return;
             }
+
+            var digimonData = babyDigimons[GD.RandRange(0, babyDigimons.Count - 1)];
 
             var egg = new EggData
             {
                 BaseDigimonId = digimonData.Id,
-                IncubationTime = 6,
+                // Bem mais rápido que os 3 dias de um ovo comprado (EggSystem.CreateEgg) -
+                // é o primeiro Digimon do jogador, ele deve poder começar a jogar logo.
+                IncubationTime = 1,
                 IncubationProgress = 0,
                 IsReady = false,
-                IsStarterEgg = true
+                IsStarterEgg = true,
+                CapacityCost = DigimonInstance.GetCapacityCostForStage(digimonData.Stage)
             };
 
             center.AddEgg(egg);
+
+            EggCreated?.Invoke(egg);
 
             GD.Print($"Novo ovo criado: {digimonData.Name}");
         }
@@ -70,10 +87,15 @@ namespace ProjetoDC.Scripts.Systems.Eggs
                 IncubationTime = 3,
                 IncubationProgress = 0,
                 IsReady = false,
-                IsStarterEgg = false
+                IsStarterEgg = false,
+                CapacityCost = DigimonInstance.GetCapacityCostForStage(digimonData.Stage)
             };
 
             center.AddEgg(egg);
+
+            // (Não dispara EggCreated aqui: o fluxo de compra já tem seu próprio evento -
+            // ShopScreen.EggPurchased, escutado por Center.OnEggPurchased - disparar os dois
+            // pro mesmo ovo duplicaria o EggWorld visual.)
 
             GD.Print($"Ovo comprado: {digimonData.Name}");
 
@@ -174,7 +196,11 @@ namespace ProjetoDC.Scripts.Systems.Eggs
             var digimon = new DigimonInstance(digimonData);
 
 
-            if (!center.CanAddDigimon(digimon))
+            // O próprio ovo já reserva CapacityCost (ver EggData.CapacityCost) - sem
+            // descontar isso, chocar exigiria capacidade em dobro (a do ovo que já existe
+            // + a do Digimon novo) pra uma troca que, na prática, não deveria pedir nada
+            // além do que o ovo já estava ocupando.
+            if (!center.CanAddDigimon(digimon, freeingEgg: egg))
             {
                 GD.Print(
                     $"{digimon.BaseData.Name} está pronto para nascer, " +

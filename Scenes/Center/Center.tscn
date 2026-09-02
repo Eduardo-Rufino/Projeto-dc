@@ -3,9 +3,19 @@
 [ext_resource type="Script" uid="uid://dnloimeiixih7" path="res://Scenes/Center/Center.cs" id="1_gloqd"]
 [ext_resource type="PackedScene" uid="uid://bpdm1djccv738" path="res://Scenes/Center/Areas/CenterArea.tscn" id="2_gloqd"]
 [ext_resource type="Script" uid="uid://bnrtydwuwbk5f" path="res://Scripts/UI/HUD.cs" id="2_oao4p"]
-[ext_resource type="PackedScene" uid="uid://covv6lvt7tbvh" path="res://Scenes/Center/AreaBuildMenu.tscn" id="2_q11ny"]
+[ext_resource type="Script" path="res://Scripts/UI/AnalogClock.cs" id="4_analogclock"]
+[ext_resource type="Script" path="res://Scripts/UI/MiniMap.cs" id="4_minimap"]
 [ext_resource type="PackedScene" uid="uid://pr5s0dygmvkt" path="res://Scenes/Shop/ShopScreen.tscn" id="2_shop"]
 [ext_resource type="PackedScene" path="res://Scenes/Battle/TeamSelectionScreen.tscn" id="2_teamselect"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/EvolutionCapacityScreen.tscn" id="2_evocap"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/EvolutionOverlay.tscn" id="2_evoanim"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/InventoryScreen.tscn" id="2_inventory"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/TutorialScreen.tscn" id="2_tutorial"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/EvolutionGuideScreen.tscn" id="2_evoguide"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/BaseEditorScreen.tscn" id="2_basedit"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/SettingsScreen.tscn" id="2_settings"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle/BattleTypeScreen.tscn" id="2_battletype"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle/TournamentListScreen.tscn" id="2_tournamentlist"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="3_csbr3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scj13"]
@@ -23,6 +33,14 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_active"]
+bg_color = Color(0.24705882, 0.38431373, 0.28627452, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.40392157, 0.7019608, 0.44313726, 1)
 
 [node name="Center" type="Node2D" unique_id=1265079242]
 script = ExtResource("1_gloqd")
@@ -96,15 +114,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
 
-[node name="CenterMapLabel" type="Label" parent="CanvasLayer/HUD/TopBar/CenterMap/Panel" unique_id=1858172320]
+[node name="MiniMap" type="Control" parent="CanvasLayer/HUD/TopBar/CenterMap/Panel" unique_id=1858172320]
+script = ExtResource("4_minimap")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "MAPA DO CENTRO"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DateTime" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=1609594561]
@@ -122,25 +139,49 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel" unique_id=1741051013]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 14
 
-[node name="DateLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/VBoxContainer" unique_id=1778898101]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer" unique_id=1741051013]
+layout_mode = 2
+
+[node name="DateLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer/VBoxContainer" unique_id=1778898101]
 layout_mode = 2
 text = "Dia 1"
 
-[node name="CalendarLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/VBoxContainer" unique_id=1647158106]
+[node name="CalendarLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer/VBoxContainer" unique_id=1647158106]
 layout_mode = 2
 text = "Calendario"
 
-[node name="ClockLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/VBoxContainer" unique_id=1697077575]
+[node name="ClockLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer/VBoxContainer" unique_id=1697077575]
 layout_mode = 2
 text = "06:00"
+
+[node name="AnalogClock" type="Control" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+script = ExtResource("4_analogclock")
+
+[node name="SkipSleepButton" type="Button" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Pula pro momento em que os Digimons acordam"
+text = "💤 Pular sono"
+
+[node name="SpeedButton" type="Button" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+toggle_mode = true
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_button_active")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_active")
+tooltip_text = "Acelera a passagem do tempo (relógio, fome, incubação) em 2x"
+text = "⏩ x2"
 
 [node name="CenterStatus" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=1457227790]
 anchors_preset = 0
@@ -365,18 +406,101 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 100
+theme_override_constants/separation = 78
 
-[node name="InfoContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer" unique_id=49650267]
+[node name="LeftPad" type="MarginContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="InfoContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad" unique_id=49650267]
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/InfoContainer" unique_id=919427126]
+[node name="NameRow" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer"]
 layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="NameSlot" type="Control" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/NameRow"]
+custom_minimum_size = Vector2(88, 20)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="NameLabel" type="Label" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/NameRow/NameSlot" unique_id=919427126]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 2
+tooltip_text = "Clique para renomear"
+vertical_alignment = 1
+clip_text = true
 text = "Botamon"
 
-[node name="LevelLabel" type="Label" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/InfoContainer" unique_id=60325849]
+[node name="NameLineEdit" type="LineEdit" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/NameRow/NameSlot"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+max_length = 24
+
+[node name="DeleteButton" type="Button" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/NameRow"]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 8
+tooltip_text = "Deletar Digimon"
+text = "🗑️"
+
+[node name="LevelRow" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="LevelLabel" type="Label" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/LevelRow" unique_id=60325849]
+layout_mode = 2
+size_flags_vertical = 4
 text = "Lv. 1"
+
+[node name="TypeIconsRow" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/LevelRow"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="AttributeIcon" type="TextureRect" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/LevelRow/TypeIconsRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ElementIcon" type="TextureRect" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/LevelRow/TypeIconsRow"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+
+[node name="XPContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer"]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="XPLabel" type="Label" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/XPContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 9
+text = "EXP: 0/100"
+
+[node name="XPBar" type="ProgressBar" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/XPContainer"]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+theme_override_colors/fill_color = Color(1, 0.85882354, 0.30980393, 1)
+show_percentage = false
 
 [node name="SpritePanel" type="Panel" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel/HBoxContainer" unique_id=1248969012]
 layout_mode = 2
@@ -426,7 +550,11 @@ offset_left = 146.0
 offset_top = 3.0
 offset_right = 210.0
 offset_bottom = 67.0
+toggle_mode = true
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_button_active")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_active")
+tooltip_text = "Limpar cocô/comida - clique pra ativar, clique nos itens no chão pra limpar, clique de novo pra desativar"
 text = "🧹"
 
 [node name="ActionButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=521298803]
@@ -436,7 +564,8 @@ offset_top = 3.0
 offset_right = 278.0
 offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
-text = "---"
+tooltip_text = "Tutoriais"
+text = "📖"
 
 [node name="ActionButton2" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=862047399]
 layout_mode = 0
@@ -445,7 +574,8 @@ offset_top = 3.0
 offset_right = 346.0
 offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
-text = "---"
+tooltip_text = "Guia de Evolução"
+text = "✨"
 
 [node name="ActionButton3" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=87419195]
 layout_mode = 0
@@ -454,7 +584,8 @@ offset_top = 3.0
 offset_right = 414.0
 offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
-text = "---"
+tooltip_text = "Editor de Bases"
+text = "🏗"
 
 [node name="ShopButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=515300819]
 layout_mode = 0
@@ -508,6 +639,7 @@ offset_top = 3.0
 offset_right = 822.0
 offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+tooltip_text = "Configurações"
 text = "⚙"
 
 [node name="ExitButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=482127801]
@@ -519,13 +651,66 @@ offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
 text = "🚪"
 
-[node name="AreaBuildMenu" parent="CanvasLayer" unique_id=519113027 instance=ExtResource("2_q11ny")]
+[node name="WarningToast" type="Panel" parent="CanvasLayer/HUD"]
 visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 108.0
+offset_right = 220.0
+offset_bottom = 150.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="Label" type="Label" parent="CanvasLayer/HUD/WarningToast"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.4, 0.35, 1)
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+text = ""
 
 [node name="ShopScreen" parent="CanvasLayer" instance=ExtResource("2_shop")]
 visible = false
 
 [node name="TeamSelectionScreen" parent="CanvasLayer" instance=ExtResource("2_teamselect")]
+visible = false
+
+[node name="BattleTypeScreen" parent="CanvasLayer" instance=ExtResource("2_battletype")]
+visible = false
+
+[node name="TournamentListScreen" parent="CanvasLayer" instance=ExtResource("2_tournamentlist")]
+visible = false
+
+[node name="EvolutionCapacityScreen" parent="CanvasLayer" instance=ExtResource("2_evocap")]
+visible = false
+
+[node name="EvolutionOverlay" parent="CanvasLayer" instance=ExtResource("2_evoanim")]
+visible = false
+
+[node name="InventoryScreen" parent="CanvasLayer" instance=ExtResource("2_inventory")]
+visible = false
+
+[node name="TutorialScreen" parent="CanvasLayer" instance=ExtResource("2_tutorial")]
+visible = false
+
+[node name="EvolutionGuideScreen" parent="CanvasLayer" instance=ExtResource("2_evoguide")]
+visible = false
+
+[node name="BaseEditorScreen" parent="CanvasLayer" instance=ExtResource("2_basedit")]
+visible = false
+
+[node name="SettingsScreen" parent="CanvasLayer" instance=ExtResource("2_settings")]
 visible = false
 
 [node name="CenterAreas" type="Node2D" parent="." unique_id=1618977558]

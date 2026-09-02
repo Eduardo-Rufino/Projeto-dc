@@ -1,0 +1,20 @@
+{
+  "id": 73,
+  "code": "magnadramon",
+  "name": "Magnadramon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Light",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 600,
+    "physicalDamage": 55,
+    "physicalDefense": 95,
+    "specialDamage": 290,
+    "specialDefense": 110,
+    "speed": 150
+  }
+}

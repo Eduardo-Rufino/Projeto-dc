@@ -461,7 +461,7 @@ namespace ProjetoDC.Scripts.UI
             _centerPanel.Visible = false;
             _teamSelectionScreen.Visible = true;
 
-            _teamSelectionScreen.RefreshUI();
+            _teamSelectionScreen.Open();
         }
 
         private void OnAttackPressed()

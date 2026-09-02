@@ -1,0 +1,20 @@
+{
+  "id": 52,
+  "code": "wargreymon",
+  "name": "WarGreymon",
+  "stage": "Mega",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Vacine",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 745,
+    "physicalDamage": 220,
+    "physicalDefense": 140,
+    "specialDamage": 220,
+    "specialDefense": 110,
+    "speed": 94
+  }
+}

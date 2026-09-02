@@ -6,7 +6,8 @@ namespace ProjetoDC.Scripts.Systems.Battle
 {
     /// <summary>
     /// Fórmula de dano da batalha (extraída do antigo BattleSystem 1x1, sem alteração de
-    /// comportamento): ATK - DEF do alvo (mínimo 1), variação aleatória ±10%, crítico com
+    /// comportamento): ATK - DEF do alvo (mínimo 1), multiplicador de vantagem de tipo
+    /// (ver <see cref="TypeAdvantageCalculator"/>), variação aleatória ±10%, crítico com
     /// 10% de chance dobra o dano. Lê os stats via <see cref="BattleCombatant.GetEffectiveStat"/>,
     /// então buffs/debuffs ativos já entram na conta.
     /// </summary>
@@ -18,6 +19,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
         {
             int damage = CalculateBaseDamage(attacker, defender);
 
+            damage = ApplyTypeAdvantage(damage, attacker, defender);
             damage = ApplyDamageVariance(damage);
             damage = ApplyCritical(damage);
 
@@ -41,6 +43,25 @@ namespace ProjetoDC.Scripts.Systems.Battle
             );
 
             return Math.Max(1, attack - defense);
+        }
+
+        private static int ApplyTypeAdvantage(int damage, BattleCombatant attacker, BattleCombatant defender)
+        {
+            float multiplier = TypeAdvantageCalculator.GetDamageMultiplier(
+                attacker.Digimon.BaseData,
+                defender.Digimon.BaseData
+            );
+
+            if (multiplier != 1.0f)
+            {
+                GD.Print(
+                    multiplier > 1.0f
+                        ? $"Vantagem de tipo! x{multiplier}"
+                        : $"Desvantagem de tipo! x{multiplier}"
+                );
+            }
+
+            return Math.Max(1, (int)(damage * multiplier));
         }
 
         private static int ApplyDamageVariance(int damage)

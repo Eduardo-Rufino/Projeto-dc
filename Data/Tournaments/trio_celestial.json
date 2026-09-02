@@ -1,0 +1,12 @@
+{
+  "Id": 9,
+  "Name": "Trio Celestial",
+  "Description": "Trio Mega de Digimons sagrados - Seraphimon, Magnadramon e Hououmon.",
+  "RecommendedLevel": 35,
+  "Opponents": [
+    { "DigimonId": 56, "Level": 35 },
+    { "DigimonId": 73, "Level": 35 },
+    { "DigimonId": 62, "Level": 35 }
+  ],
+  "BitsReward": 30000
+}

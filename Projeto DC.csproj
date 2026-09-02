@@ -6,6 +6,20 @@
     <RootNamespace>ProjetoDC</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Data\Itens\meat.json" />
+    <Content Include="Data\Itens\medicine.json" />
+    <Content Include="Data\Tournaments\copa_novato.json" />
+    <Content Include="Data\Tournaments\torneio_rookie.json" />
+    <Content Include="Data\Tournaments\desafio_champion.json" />
+    <Content Include="Data\Tournaments\trio_das_trevas.json" />
+    <Content Include="Data\Tournaments\trio_tamers.json" />
+    <Content Include="Data\Tournaments\copa_ultimate.json" />
+    <Content Include="Data\Tournaments\reis_do_mar.json" />
+    <Content Include="Data\Tournaments\copa_mega.json" />
+    <Content Include="Data\Tournaments\trio_celestial.json" />
+    <Content Include="Data\Tournaments\trio_guardiao_02.json" />
+    <Content Include="Data\Tournaments\copa_lendaria.json" />
+    <Content Include="Data\Tournaments\copa_mega_revanche.json" />
     <Content Include="Data\Digimon\yaamon.json" />
     <Content Include="Data\Digimon\wanyamon.json" />
     <Content Include="Data\Digimon\tanemon.json" />
@@ -53,6 +67,34 @@
     <Content Include="Data\Digimon\devimon.json" />
     <Content Include="Data\Digimon\icedevimon.json" />
     <Content Include="Data\Digimon\devidramon.json" />
+    <Content Include="Data\Digimon\machgaogamon.json" />
+    <Content Include="Data\Digimon\taomon.json" />
+    <Content Include="Data\Digimon\lillymon.json" />
+    <Content Include="Data\Digimon\megakabuterimon.json" />
+    <Content Include="Data\Digimon\wargreymon.json" />
+    <Content Include="Data\Digimon\metalgarurumon.json" />
+    <Content Include="Data\Digimon\gallantmon.json" />
+    <Content Include="Data\Digimon\megagargomon.json" />
+    <Content Include="Data\Digimon\seraphimon.json" />
+    <Content Include="Data\Digimon\poyomon.json" />
+    <Content Include="Data\Digimon\yokomon.json" />
+    <Content Include="Data\Digimon\biyomon.json" />
+    <Content Include="Data\Digimon\birdramon.json" />
+    <Content Include="Data\Digimon\garudamon.json" />
+    <Content Include="Data\Digimon\hououmon.json" />
+    <Content Include="Data\Digimon\pichimon.json" />
+    <Content Include="Data\Digimon\bukamon.json" />
+    <Content Include="Data\Digimon\gomamon.json" />
+    <Content Include="Data\Digimon\ikkakumon.json" />
+    <Content Include="Data\Digimon\zudomon.json" />
+    <Content Include="Data\Digimon\vikemon.json" />
+    <Content Include="Data\Digimon\nyaromon.json" />
+    <Content Include="Data\Digimon\salamon.json" />
+    <Content Include="Data\Digimon\gatomon.json" />
+    <Content Include="Data\Digimon\angewomon.json" />
+    <Content Include="Data\Digimon\magnadramon.json" />
+    <Content Include="Data\Digimon\herculeskabuterimon.json" />
+    <Content Include="Data\Digimon\rosemon.json" />
     <Content Include="Data\Evolutions\motimon_evolutions.json" />
     <Content Include="Data\Evolutions\tokomon_evolutions.json" />
     <Content Include="Data\Evolutions\gigimon_evolutions.json" />
@@ -84,6 +126,31 @@
     <Content Include="Data\Evolutions\growlmon_evolutions.json" />
     <Content Include="Data\Evolutions\gargomon_evolutions.json" />
     <Content Include="Data\Evolutions\angemon_evolutions.json" />
+    <Content Include="Data\Evolutions\gaogamon_evolutions.json" />
+    <Content Include="Data\Evolutions\kyubimon_evolutions.json" />
+    <Content Include="Data\Evolutions\togemon_evolutions.json" />
+    <Content Include="Data\Evolutions\kabuterimon_evolutions.json" />
+    <Content Include="Data\Evolutions\metalgreymon_evolutions.json" />
+    <Content Include="Data\Evolutions\weregarurumon_evolutions.json" />
+    <Content Include="Data\Evolutions\wargrowlmon_evolutions.json" />
+    <Content Include="Data\Evolutions\rapidmon_evolutions.json" />
+    <Content Include="Data\Evolutions\magnaangemon_evolutions.json" />
+    <Content Include="Data\Evolutions\poyomon_evolutions.json" />
+    <Content Include="Data\Evolutions\yokomon_evolutions.json" />
+    <Content Include="Data\Evolutions\biyomon_evolutions.json" />
+    <Content Include="Data\Evolutions\birdramon_evolutions.json" />
+    <Content Include="Data\Evolutions\garudamon_evolutions.json" />
+    <Content Include="Data\Evolutions\pichimon_evolutions.json" />
+    <Content Include="Data\Evolutions\bukamon_evolutions.json" />
+    <Content Include="Data\Evolutions\gomamon_evolutions.json" />
+    <Content Include="Data\Evolutions\ikkakumon_evolutions.json" />
+    <Content Include="Data\Evolutions\zudomon_evolutions.json" />
+    <Content Include="Data\Evolutions\nyaromon_evolutions.json" />
+    <Content Include="Data\Evolutions\salamon_evolutions.json" />
+    <Content Include="Data\Evolutions\gatomon_evolutions.json" />
+    <Content Include="Data\Evolutions\angewomon_evolutions.json" />
+    <Content Include="Data\Evolutions\megakabuterimon_evolutions.json" />
+    <Content Include="Data\Evolutions\lillymon_evolutions.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Audio\SFX\" />
@@ -115,8 +182,5 @@
     <None Include=".github\copilot-instructions.md" />
     <None Include="AGENTS.md" />
     <None Include="CLAUDE.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
   </ItemGroup>
 </Project>

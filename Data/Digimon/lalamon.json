@@ -11,11 +11,11 @@
   "SupportType": "Healer",
 
   "BaseStats": {
-    "healthPoints": 48,
-    "physicalDamage": 11,
-    "physicalDefense": 14,
-    "specialDamage": 28,
-    "specialDefense": 13,
-    "speed": 6
+    "healthPoints": 94,
+    "physicalDamage": 5,
+    "physicalDefense": 23,
+    "specialDamage": 9,
+    "specialDefense": 23,
+    "speed": 28
   }
 }

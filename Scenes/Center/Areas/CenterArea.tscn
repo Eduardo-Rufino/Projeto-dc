@@ -5,7 +5,6 @@
 
 [node name="CenterArea" type="Node2D" unique_id=1880692764]
 script = ExtResource("1_avmfy")
-AreaType = 1
 
 [node name="Visual" type="Node2D" parent="." unique_id=622492327]
 z_index = -10

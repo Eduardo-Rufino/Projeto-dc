@@ -11,6 +11,10 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
         public BattleTeam EnemyTeam { get; }
 
+        /// <summary>Tempo real de luta desde o início (usado pra ir enfraquecendo cura ao
+        /// longo do combate - ver BattleUnit.GetHealEffectivenessMultiplier).</summary>
+        public double ElapsedSeconds { get; private set; }
+
         public BattleMatch(BattleTeam playerTeam, BattleTeam enemyTeam)
         {
             PlayerTeam = playerTeam;
@@ -24,6 +28,8 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
         public void Tick(double delta)
         {
+            ElapsedSeconds += delta;
+
             PlayerTeam.Tick(delta);
             EnemyTeam.Tick(delta);
         }

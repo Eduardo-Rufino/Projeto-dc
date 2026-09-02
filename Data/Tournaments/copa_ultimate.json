@@ -1,0 +1,12 @@
+{
+  "Id": 6,
+  "Name": "Copa Ultimate",
+  "Description": "Esquadrão all-star Ultimate - MetalGreymon na linha de frente, MegaKabuterimon como tanque e Rapidmon à distância.",
+  "RecommendedLevel": 25,
+  "Opponents": [
+    { "DigimonId": 39, "Level": 25 },
+    { "DigimonId": 51, "Level": 25 },
+    { "DigimonId": 42, "Level": 25 }
+  ],
+  "CapacityReward": 10
+}

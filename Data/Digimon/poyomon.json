@@ -1,0 +1,20 @@
+{
+  "id": 57,
+  "code": "poyomon",
+  "name": "Poyomon",
+  "stage": "Baby",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Beast",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 22,
+    "physicalDamage": 2,
+    "physicalDefense": 4,
+    "specialDamage": 11,
+    "specialDefense": 4,
+    "speed": 9
+  }
+}

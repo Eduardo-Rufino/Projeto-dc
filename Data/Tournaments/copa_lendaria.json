@@ -1,0 +1,12 @@
+{
+  "Id": 11,
+  "Name": "Copa das Lendas",
+  "Description": "O torneio lendário do Center - Gallantmon, MegaGargomon e Magnadramon, muito acima do nível de qualquer outro campeonato. Só pra times extremamente treinados.",
+  "RecommendedLevel": 45,
+  "Opponents": [
+    { "DigimonId": 54, "Level": 48 },
+    { "DigimonId": 55, "Level": 48 },
+    { "DigimonId": 73, "Level": 48 }
+  ],
+  "CapacityReward": 20
+}

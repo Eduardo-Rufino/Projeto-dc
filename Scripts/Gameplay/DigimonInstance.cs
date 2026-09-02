@@ -18,6 +18,16 @@ namespace ProjetoDC.Scripts.Gameplay
     {
         public DigimonData BaseData { get; set; }
 
+        /// <summary>Apelido opcional definido pelo jogador na HUD (clicando no nome do Digimon
+        /// selecionado). Só afeta exibição - toda lógica interna (evolução, save, banco de
+        /// dados) continua usando BaseData/Id, nunca este campo. Use DisplayName pra mostrar
+        /// na UI.</summary>
+        public string Nickname { get; set; }
+
+        /// <summary>Nome mostrado pra o jogador: o apelido, se definido, senão o nome da espécie.</summary>
+        public string DisplayName =>
+            string.IsNullOrWhiteSpace(Nickname) ? BaseData.Name : Nickname;
+
         public int Level { get; set; } = 1;
         public int MaxHealthPoints { get; set; }
         public int CurrentHealthPoints { get; set; }
@@ -25,6 +35,13 @@ namespace ProjetoDC.Scripts.Gameplay
         public int ExperienceToNextLevel { get; set; }
         public int AgeInDays { get; set; }
         public int CapacityCost { get; set; }
+
+        /// <summary>Última posição conhecida no mundo do Center (atualizada continuamente
+        /// por DigimonWorld._Process) - restaurada em Center.SpawnDigimons ao carregar o
+        /// save, em vez de sempre nascer nos SpawnPoints fixos. (0,0) (o default) significa
+        /// "ainda não tem posição salva" - mesma convenção já usada em EggData.</summary>
+        public float PositionX { get; set; }
+        public float PositionY { get; set; }
 
         public int Hunger { get; set; }
 
@@ -51,6 +68,19 @@ namespace ProjetoDC.Scripts.Gameplay
         public DigimonActivity Activity { get; set; } = DigimonActivity.Idle;
         public int MaxStamina { get; set; } = 100;
         public int Stamina { get; set; } = 100;
+
+        /// <summary>True depois que o jogador escolhe "manter sem evoluir" no aviso de
+        /// evolução bloqueada por falta de capacidade (ver GameManager.EvolutionBlockedByCapacity)
+        /// - evita reabrir o mesmo aviso a cada tentativa (treino, dia, batalha) enquanto a
+        /// capacidade continuar insuficiente. A tentativa de evolução em si não para: quando
+        /// a capacidade for suficiente, evolui normalmente e essa flag é zerada de novo.</summary>
+        public bool EvolutionCapacityWarningDismissed { get; set; }
+
+        /// <summary>Quantas horas seguidas (na sessão de sono atual) o Digimon já dormiu
+        /// fora do Dormitório - zera ao acordar ou ao passar uma hora dormindo dentro do
+        /// Dormitório. Usado por DigimonWorld.OnDormitoryHourPassed pra aplicar a penalidade
+        /// crescente de Felicidade.</summary>
+        public int HoursSleptOutsideDormitory { get; set; }
 
         private static readonly Random _random = new();
 
@@ -124,7 +154,9 @@ namespace ProjetoDC.Scripts.Gameplay
                 }
             };
         }
-        private static int GetCapacityCostForStage(DigimonStage stage) => stage switch
+        /// <summary>Público pra EggSystem poder calcular o custo de capacidade de um ovo
+        /// (o mesmo custo do Digimon Baby que vai nascer dele) sem duplicar a tabela.</summary>
+        public static int GetCapacityCostForStage(DigimonStage stage) => stage switch
         {
             DigimonStage.Baby => 1,
             DigimonStage.InTraining => 2,
@@ -253,32 +285,61 @@ namespace ProjetoDC.Scripts.Gameplay
             GD.Print($"{BaseData.Name} subiu para o nível {Level}");
         }
 
+        // Fração de quanto um stat negligenciado é puxado em direção à ficha da nova espécie
+        // ao evoluir - ex.: um Digimon Special que evoluiu treinando quase só físico não
+        // fica travado pra sempre com um SpecialDamage residual da forma anterior. Nunca
+        // reduz um stat que o jogador já treinou acima do valor da espécie, só complementa
+        // o que ficou pra trás (ver BlendTowardSpecies).
+        private const float EvolutionSpeciesBlendWeight = 0.4f;
+
         /// <summary>
         /// Atualiza a forma base (evolução) do Digimon e multiplica os stats existentes
         /// pelo multiplicador informado, atualizando HP para o máximo.
         /// </summary>
         public void Evolve(DigimonData newForm, float multiplier)
         {
+            var oldForm = BaseData;
+
             BaseData = newForm;
             CapacityCost = GetCapacityCostForStage(newForm.Stage);
-            CurrentStats.PhysicalDamage = (int)(CurrentStats.PhysicalDamage * multiplier);
-            CurrentStats.PhysicalDefense = (int)(CurrentStats.PhysicalDefense * multiplier);
-            CurrentStats.SpecialDamage = (int)(CurrentStats.SpecialDamage * multiplier);
-            CurrentStats.SpecialDefense = (int)(CurrentStats.SpecialDefense * multiplier);
-            CurrentStats.Speed = (int)(CurrentStats.Speed * multiplier);
-            CurrentStats.HealthPoints = (int)(CurrentStats.HealthPoints * multiplier);
+
+            var species = newForm.BaseStats;
+
+            CurrentStats.PhysicalDamage = BlendTowardSpecies(CurrentStats.PhysicalDamage, multiplier, species.PhysicalDamage);
+            CurrentStats.PhysicalDefense = BlendTowardSpecies(CurrentStats.PhysicalDefense, multiplier, species.PhysicalDefense);
+            CurrentStats.SpecialDamage = BlendTowardSpecies(CurrentStats.SpecialDamage, multiplier, species.SpecialDamage);
+            CurrentStats.SpecialDefense = BlendTowardSpecies(CurrentStats.SpecialDefense, multiplier, species.SpecialDefense);
+            CurrentStats.Speed = BlendTowardSpecies(CurrentStats.Speed, multiplier, species.Speed);
+            CurrentStats.HealthPoints = BlendTowardSpecies(CurrentStats.HealthPoints, multiplier, species.HealthPoints);
 
             MaxHealthPoints = CurrentStats.HealthPoints;
             CurrentHealthPoints = MaxHealthPoints;
 
             GD.Print($"{newForm.Name} evoluiu! Stats atualizados!");
 
-            Evolved?.Invoke(newForm);
+            Evolved?.Invoke(oldForm, newForm);
         }
 
-        /// <summary>Disparado quando o Digimon evolui, com a nova forma. Usado pelo visual
-        /// (DigimonWorld) pra saber que precisa trocar o sprite.</summary>
-        public event Action<DigimonData> Evolved;
+        /// <summary>
+        /// Multiplica o stat atual pelo multiplicador da evolução (recompensa o treino
+        /// acumulado) e, se isso ainda ficar abaixo do valor "de ficha" da nova espécie,
+        /// puxa uma fração dele em direção a esse valor - nunca reduz o que já foi
+        /// multiplicado, só corrige quem ficou pra trás (nunca pune quem já treinou acima
+        /// da média da espécie).
+        /// </summary>
+        private static int BlendTowardSpecies(int currentValue, float multiplier, int speciesValue)
+        {
+            int multiplied = (int)(currentValue * multiplier);
+
+            float blended = Mathf.Lerp(multiplied, speciesValue, EvolutionSpeciesBlendWeight);
+
+            return Math.Max(multiplied, (int)blended);
+        }
+
+        /// <summary>Disparado quando o Digimon evolui, com a forma antiga e a nova. Usado
+        /// pelo visual (DigimonWorld) pra tocar a animação de evolução (alterna entre os
+        /// sprites das duas formas antes de assentar na nova).</summary>
+        public event Action<DigimonData, DigimonData> Evolved;
 
         /// <summary>
         /// Avança o contador de idade em dias para o Digimon.
@@ -336,6 +397,16 @@ namespace ProjetoDC.Scripts.Gameplay
                 SetActivity(DigimonActivity.Idle);
         }
 
+        // Janela de sono, hoje sincronizada pro Center inteiro (sem Digimons diurnos/
+        // noturnos ainda - cada um vai ter sua própria janela quando esse sistema existir de
+        // verdade). Passa da meia-noite (22h de um dia até 6h do dia seguinte), por isso o
+        // teste em IsSleepHour usa "ou" em vez de um intervalo comum início<fim.
+        public const int SleepStartHour = 22;
+        public const int SleepEndHour = 6;
+
+        public static bool IsSleepHour(int hour) =>
+            hour >= SleepStartHour || hour < SleepEndHour;
+
         public void AdvanceHour(WorldState world)
         {
             ConsumeHunger();
@@ -344,7 +415,7 @@ namespace ProjetoDC.Scripts.Gameplay
                 $"HASH GAME {BaseData.Name}: {GetHashCode()}"
             );
 
-            if (world.CurrentHour >= 1 && world.CurrentHour < 2)
+            if (IsSleepHour(world.CurrentHour))
             {
                 StartSleeping();
                 RecoverStamina(5);
@@ -480,6 +551,30 @@ namespace ProjetoDC.Scripts.Gameplay
                 $"Chance={chance} | " +
                 $"Rolagem={roll}"
 );
+        }
+
+        // Chance de ficar doente a cada mordida de comida estragada (ver
+        // DigimonWorld.ProcessEating) - separado da chance diária normal
+        // (CalculateSicknessRisk/TryBecomeSick), que é sobre fome/idade, não sobre ter
+        // comido algo ruim agora mesmo.
+        private const int SpoiledFoodSicknessChance = 15;
+
+        /// <summary>Rolagem de chance extra de ficar doente por comer comida estragada -
+        /// chamada uma vez por mordida (Food.Consume), então comer bastante de uma comida
+        /// estragada acumula várias chances, não só uma.</summary>
+        public void TryBecomeSickFromSpoiledFood()
+        {
+            if (HealthState == HealthState.Sick)
+                return;
+
+            int roll = _random.Next(1, 101);
+
+            if (roll <= SpoiledFoodSicknessChance)
+            {
+                SetHealthState(HealthState.Sick);
+
+                GD.Print($"{BaseData.Name} ficou doente por comer comida estragada.");
+            }
         }
 
         public int CalculateSicknessRisk()

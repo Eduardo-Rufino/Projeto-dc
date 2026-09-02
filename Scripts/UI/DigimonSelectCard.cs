@@ -23,10 +23,10 @@ namespace ProjetoDC.Scripts.UI
 
         public override void _Ready()
         {
-            _portrait = GetNode<TextureRect>("VBoxContainer/Portrait");
-            _nameLabel = GetNode<Label>("VBoxContainer/NameLabel");
-            _levelLabel = GetNode<Label>("VBoxContainer/LevelLabel");
-            _roleLabel = GetNode<Label>("VBoxContainer/RoleLabel");
+            _portrait = GetNode<TextureRect>("Pad/VBoxContainer/Portrait");
+            _nameLabel = GetNode<Label>("Pad/VBoxContainer/NameLabel");
+            _levelLabel = GetNode<Label>("Pad/VBoxContainer/LevelLabel");
+            _roleLabel = GetNode<Label>("Pad/VBoxContainer/RoleLabel");
 
             Toggled += _ => ToggledSelection?.Invoke(this);
         }
@@ -35,7 +35,7 @@ namespace ProjetoDC.Scripts.UI
         {
             Digimon = digimon;
 
-            _nameLabel.Text = digimon.BaseData.Name;
+            _nameLabel.Text = digimon.DisplayName;
             _levelLabel.Text = $"Lv {digimon.Level}";
             _roleLabel.Text = digimon.BaseData.Role.ToString();
 

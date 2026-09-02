@@ -1,0 +1,20 @@
+{
+  "id": 65,
+  "code": "gomamon",
+  "name": "Gomamon",
+  "stage": "Rookie",
+  "role": "Tank",
+  "Element": "Water",
+  "Attribute": "Data",
+  "EggType": "Water",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 120,
+    "physicalDamage": 35,
+    "physicalDefense": 30,
+    "specialDamage": 9,
+    "specialDefense": 22,
+    "speed": 16
+  }
+}

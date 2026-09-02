@@ -1,0 +1,20 @@
+{
+  "id": 51,
+  "code": "megakabuterimon",
+  "name": "MegaKabuterimon",
+  "stage": "Ultimate",
+  "role": "Tank",
+  "Element": "Electric",
+  "Attribute": "Vacine",
+  "EggType": "Forest",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 585,
+    "physicalDamage": 35,
+    "physicalDefense": 122,
+    "specialDamage": 35,
+    "specialDefense": 122,
+    "speed": 44
+  }
+}

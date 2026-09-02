@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Projeto DC"
-run/main_scene="uid://dnuu3xwu4hsh4"
+run/main_scene="uid://b2wmsgstn7ytx"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 DatabaseManager="*uid://hi7t7ecuvq1y"
 GameManager="*uid://b0m7eqsc0id5x"
+MusicManager="*res://Scripts/Managers/MusicManager.cs"
 
 [display]
 

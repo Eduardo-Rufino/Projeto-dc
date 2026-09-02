@@ -1,0 +1,20 @@
+{
+  "id": 74,
+  "code": "herculeskabuterimon",
+  "name": "HerculesKabuterimon",
+  "stage": "Mega",
+  "role": "Tank",
+  "Element": "Electric",
+  "Attribute": "Vacine",
+  "EggType": "Forest",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 995,
+    "physicalDamage": 60,
+    "physicalDefense": 207,
+    "specialDamage": 60,
+    "specialDefense": 207,
+    "speed": 75
+  }
+}

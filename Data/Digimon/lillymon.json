@@ -1,0 +1,20 @@
+{
+  "id": 50,
+  "code": "lillymon",
+  "name": "Lillymon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Plant",
+  "Attribute": "Data",
+  "EggType": "Forest",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 340,
+    "physicalDamage": 35,
+    "physicalDefense": 53,
+    "specialDamage": 159,
+    "specialDefense": 62,
+    "speed": 110
+  }
+}

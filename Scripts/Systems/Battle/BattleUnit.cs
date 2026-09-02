@@ -22,7 +22,13 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private const float TankSpeed = 80f;
         private const float WarriorSpeed = 80f;
         private const float AssassinSpeed = 105f;
-        private const float RangedSpeed = 80f;
+
+        // Precisa ficar acima da velocidade de Tank/Warrior/Support (todos em 80): a fuga de
+        // ameaça do Ranged (ComputeRangedPosition) depende de conseguir abrir distância de
+        // quem está perseguindo - com a mesma velocidade, os dois ficam empatados pra sempre
+        // e o Ranged nunca mais volta a atacar (é o que segurava a fuga a vida toda).
+        private const float RangedSpeed = 92f;
+
         private const float SupportSpeed = 80f;
 
         // Distância que o alvo pode ter andado do ponto onde o projétil foi mirado
@@ -39,6 +45,16 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private const float HealPercentage = 0.15f;
         private const float BuffDebuffPercentage = 0.2f;
         private const double BuffDebuffDuration = 6.0;
+
+        // Depois desse tanto de luta, a cura começa a perder eficácia, piorando mais a cada
+        // HealDecayInterval segundos - sem isso, um Healer sozinho (principalmente num 1x1,
+        // sem ninguém pra dividir o dano) pode curar mais rápido do que o oponente consegue
+        // causar dano, tornando a luta literalmente impossível de vencer. Nunca cai abaixo
+        // de MinHealEffectiveness - a cura fica cada vez menos decisiva, mas nunca inútil.
+        private const double HealDecayGraceSeconds = 30.0;
+        private const double HealDecayInterval = 5.0;
+        private const float HealDecayPerStep = 0.15f;
+        private const float MinHealEffectiveness = 0.2f;
 
         // A Speed real do combate: o cooldown de ação escala pela razão entre a Speed do
         // atacante e a do alvo (2x mais rápido = ataca ~2x mais vezes no mesmo intervalo),
@@ -62,6 +78,14 @@ namespace ProjetoDC.Scripts.Systems.Battle
         // do alvo em vez de ficar parada trocando golpes - deixa o combate mais vivo.
         private const float OrbitRadiusFactor = 0.7f;
         private const float MinOrbitRadius = 55f;
+
+        // Teto de segurança: MinOrbitRadius (55) é maior que o alcance de Warrior/Tank (40)
+        // e Assassin (36) - sem esse teto, orbitar empurrava esses papéis pra FORA do
+        // próprio alcance de ataque, criando um vaivém (entra no alcance, orbita pra fora,
+        // se aproxima de novo, orbita pra fora de novo...) que raramente deixava o cooldown
+        // zerar com o alvo realmente dentro do alcance - na prática, quase não batiam.
+        private const float MaxOrbitRangeFactor = 0.85f;
+
         private const float OrbitSpeedFactor = 0.5f;
         private const float OrbitAngularSpeedMin = 1.0f;
         private const float OrbitAngularSpeedMax = 2.2f;
@@ -77,6 +101,29 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private const float TargetPriorityPenaltyStep = 70f;
         private const double RetargetInterval = 3.0;
 
+        // Dash do melee (Warrior/Tank): quando o alvo está fora do alcance corpo a corpo mas
+        // já perto o suficiente, dá um impulso curto de velocidade extra em vez de andar no
+        // passo normal - é o que dá ao melee uma chance real de fechar a distância contra um
+        // Ranged fugindo (que sozinho é mais rápido que o melee - ver RangedSpeed). O mesmo
+        // impulso também ajuda a desviar de ataques à distância: o deslocamento repentino
+        // tende a passar do ProjectileDodgeDistance calculado em FireProjectile/ApplyAction,
+        // então não precisa de nenhuma lógica de esquiva separada.
+        private const float MeleeDashRange = 180f;
+        private const float MeleeDashSpeedMultiplier = 5f;
+        private const double MeleeDashDuration = 0.2;
+        private const double MeleeDashCooldown = 6.0;
+
+        private double _dashCooldownRemaining;
+        private double _dashTimeRemaining;
+
+        // Segurança contra perseguição impossível: Warrior/Tank/Support não reavaliam alvo
+        // periodicamente (só quando o atual morre) - se o alvo escolhido for mais rápido e
+        // nunca deixar a distância chegar no alcance (ex.: um Ranged fugindo de outra ameaça
+        // enquanto foge desse perseguidor também), a unidade fica perseguindo pra sempre sem
+        // nunca atacar, tirando ela do combate pro resto da luta. Se passar tempo demais sem
+        // sequer CHEGAR no alcance (não é sobre esperar cooldown), força uma troca de alvo.
+        private const double StuckChaseTimeout = 6.0;
+
         // Taunt do Tank: de tempos em tempos, força quem está perto (só quem causa dano -
         // Support não é afetado, já que ele não "ataca" ninguém) a mirar nele, abrindo
         // espaço pro DPS/suporte aliado fugir de quem estava perseguindo eles.
@@ -89,6 +136,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private double _forcedTargetRemaining;
 
         private double _retargetTimer;
+        private double _stuckChaseTimer;
 
         private static readonly Color DamageColor = new(0.95f, 0.25f, 0.2f);
         private static readonly Color HealColor = new(0.35f, 0.9f, 0.4f);
@@ -102,6 +150,14 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private Control _hpBarRoot;
         private ColorRect _hpBarFill;
         private float _hpBarMaxWidth;
+        private SelectionEllipse _selectionEllipse;
+        private SelectionEllipse _selectedRing;
+        private bool _isSelected;
+
+        // Mesmas cores pra barra de vida e pro anel no chão - verde time do jogador,
+        // vermelho time inimigo, pra identificar o lado de cada unidade de relance.
+        private static readonly Color PlayerSideColor = new(0.2f, 0.85f, 0.25f, 1f);
+        private static readonly Color EnemySideColor = new(0.9f, 0.25f, 0.2f, 1f);
 
         private BattleArena _arena;
         private BattleCombatant _combatant;
@@ -119,6 +175,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
         public BattleCombatant Combatant => _combatant;
         public bool IsPlayerSide => _isPlayerSide;
         public bool IsDead => _isDead;
+        public float Speed => _speed;
 
         public override void _Ready()
         {
@@ -126,6 +183,8 @@ namespace ProjetoDC.Scripts.Systems.Battle
             _hpBarRoot = GetNode<Control>("HpBar");
             _hpBarFill = GetNode<ColorRect>("HpBar/Fill");
             _hpBarMaxWidth = _hpBarFill.Size.X;
+            _selectionEllipse = GetNode<SelectionEllipse>("SelectionEllipse");
+            _selectedRing = GetNode<SelectionEllipse>("SelectedRing");
         }
 
         public void Initialize(BattleCombatant combatant, bool isPlayerSide, BattleArena arena)
@@ -133,6 +192,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
             _combatant = combatant;
             _isPlayerSide = isPlayerSide;
             _arena = arena;
+
+            Color sideColor = isPlayerSide ? PlayerSideColor : EnemySideColor;
+
+            _hpBarFill.Color = sideColor;
+            _selectionEllipse.SetColor(sideColor);
 
             _sprite.SetDigimon(combatant.Digimon.BaseData.Code);
             _sprite.SetDirection(!isPlayerSide);
@@ -259,6 +323,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             _attackCooldownRemaining -= delta;
             _retargetTimer -= delta;
+            _dashCooldownRemaining -= delta;
 
             if (_forcedTargetRemaining > 0)
             {
@@ -276,12 +341,16 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             if (_forcedTargetRemaining <= 0)
             {
-                bool dueForRetarget = _retargetTimer <= 0 && UsesDynamicTargeting;
+                bool dueForRetarget = (_retargetTimer <= 0 && UsesDynamicTargeting) ||
+                    _stuckChaseTimer >= StuckChaseTimeout;
 
                 if (!IsTargetValid(_target) || dueForRetarget)
                 {
                     if (dueForRetarget)
+                    {
                         _retargetTimer = RetargetInterval;
+                        _stuckChaseTimer = 0;
+                    }
 
                     _target = SelectTarget();
                 }
@@ -299,6 +368,20 @@ namespace ProjetoDC.Scripts.Systems.Battle
                 return;
 
             float distance = GlobalPosition.DistanceTo(targetUnit.GlobalPosition);
+
+            // Só conta como "perseguição travada" o tempo em que nunca chegou no alcance -
+            // esperar o cooldown já dentro do alcance não é o problema que isso previne.
+            _stuckChaseTimer = distance <= _range ? 0 : _stuckChaseTimer + delta;
+
+            if (IsMeleeRole &&
+                _dashTimeRemaining <= 0 &&
+                _dashCooldownRemaining <= 0 &&
+                distance > _range &&
+                distance <= MeleeDashRange)
+            {
+                _dashTimeRemaining = MeleeDashDuration;
+                _dashCooldownRemaining = MeleeDashCooldown;
+            }
 
             MoveTowardTarget(targetUnit.GlobalPosition, distance, delta);
 
@@ -319,12 +402,28 @@ namespace ProjetoDC.Scripts.Systems.Battle
             _combatant.Digimon.BaseData.Role == RoleType.Support &&
             _combatant.Digimon.BaseData.SupportType == SupportType.Debuffer;
 
+        /// <summary>Papéis que usam MeleeRange (alcance 40) - só eles recebem o dash, já que
+        /// Assassin (range menor, mas o mais rápido do jogo) não sofre do mesmo problema de
+        /// nunca alcançar um Ranged fugindo.</summary>
+        private bool IsMeleeRole =>
+            _combatant.Digimon.BaseData.Role == RoleType.Warrior ||
+            _combatant.Digimon.BaseData.Role == RoleType.Tank;
+
         private void MoveTowardTarget(Vector2 targetPosition, float distance, double delta)
         {
             Vector2 previousPosition = GlobalPosition;
             Vector2 desiredPosition;
 
-            if (_combatant.Digimon.BaseData.Role == RoleType.Ranged)
+            if (_dashTimeRemaining > 0)
+            {
+                _dashTimeRemaining -= delta;
+
+                desiredPosition = GlobalPosition.MoveToward(
+                    targetPosition,
+                    (float)(_speed * MeleeDashSpeedMultiplier * delta)
+                );
+            }
+            else if (_combatant.Digimon.BaseData.Role == RoleType.Ranged)
             {
                 desiredPosition = ComputeRangedPosition(targetPosition, distance, delta);
             }
@@ -361,7 +460,33 @@ namespace ProjetoDC.Scripts.Systems.Battle
             if (_arena.IsPointInsideArena(previousPosition) &&
                 !_arena.IsPointInsideArena(desiredPosition))
             {
-                desiredPosition = previousPosition;
+                // Perto da borda, o círculo de órbita (ou o passo de fuga do kiting/Ranged)
+                // pode cair inteiro fora da arena - travando a unidade parada ali pra sempre,
+                // ainda atacando normalmente (o alcance do ataque não depende do movimento ter
+                // dado certo). Em vez de só desistir do movimento, tenta andar direto pro alvo,
+                // que normalmente puxa de volta pra dentro.
+                Vector2 towardTarget = GlobalPosition.MoveToward(targetPosition, (float)(_speed * delta));
+
+                if (_arena.IsPointInsideArena(towardTarget))
+                {
+                    desiredPosition = towardTarget;
+                }
+                else
+                {
+                    // Nem o alvo ajuda (ex.: o próprio alvo está do outro lado de um canto
+                    // apertado entre dois hexágonos) - isso era o caso que ainda travava a
+                    // unidade de vez, porque o fallback antigo simplesmente desistia do
+                    // movimento (desiredPosition = previousPosition) e o frame seguinte caía
+                    // exatamente na mesma decisão, preso pra sempre. Anda em direção ao centro
+                    // da arena em vez disso - um ponto sempre válido por construção -, e se
+                    // nem esse passo (curto) bastar pra sair da borda, salta direto pro centro,
+                    // que nunca falha o teste de dentro/fora.
+                    Vector2 towardCenter = GlobalPosition.MoveToward(_arena.ArenaCenter, (float)(_speed * delta));
+
+                    desiredPosition = _arena.IsPointInsideArena(towardCenter)
+                        ? towardCenter
+                        : _arena.ArenaCenter;
+                }
             }
 
             // Olha sempre pro alvo, não pra direção instantânea do passo - orbitar/circular
@@ -388,14 +513,18 @@ namespace ProjetoDC.Scripts.Systems.Battle
         /// <summary>
         /// Ponto de destino pra quando a unidade já está no alcance e só esperando o
         /// cooldown: circula em volta do alvo (a um raio um pouco menor que o alcance,
-        /// com um mínimo pra não virar um shuffle minúsculo no corpo a corpo) em vez de
-        /// ficar parada no lugar entre um ataque e outro.
+        /// com um mínimo pra não virar um shuffle minúsculo no corpo a corpo, mas nunca
+        /// passando do próprio alcance de ataque) em vez de ficar parada no lugar entre
+        /// um ataque e outro.
         /// </summary>
         private Vector2 ComputeOrbitPosition(Vector2 targetPosition, double delta)
         {
             _orbitAngle += _orbitAngularSpeed * (float)delta;
 
-            float orbitRadius = Mathf.Max(_range * OrbitRadiusFactor, MinOrbitRadius);
+            float orbitRadius = Mathf.Min(
+                Mathf.Max(_range * OrbitRadiusFactor, MinOrbitRadius),
+                _range * MaxOrbitRangeFactor
+            );
 
             Vector2 offset = new Vector2(
                 Mathf.Cos(_orbitAngle),
@@ -411,25 +540,33 @@ namespace ProjetoDC.Scripts.Systems.Battle
         }
 
         /// <summary>
-        /// Posicionamento do Ranged: prioriza se afastar de qualquer inimigo que esteja
-        /// perto demais (não só do alvo de ataque escolhido), e só quando não há ameaça
-        /// próxima é que ele se preocupa em chegar no alcance do alvo. Isso faz ele buscar
-        /// ativamente uma posição segura, em vez de só manter distância de quem está
-        /// atacando.
+        /// Posicionamento do Ranged: enquanto ainda não chegou no alcance do próprio alvo,
+        /// prioriza se afastar de qualquer inimigo que esteja perto demais (não só do alvo
+        /// escolhido), buscando ativamente uma posição segura em vez de só manter distância
+        /// de quem está atacando. Mas se já está no alcance do alvo (já pode atacar), não
+        /// abandona mais essa posição só por causa de uma ameaça genérica passando perto -
+        /// senão um perseguidor da mesma velocidade prende o Ranged num impasse de fuga
+        /// permanente, sem nunca mais voltar a atacar. Nesse caso o único gatilho de fuga
+        /// que resta é ficar perto demais do próprio alvo (minDistance, abaixo).
         /// </summary>
         private Vector2 ComputeRangedPosition(Vector2 targetPosition, float distanceToTarget, double delta)
         {
-            BattleUnit nearestThreat = FindNearestEnemyUnit();
+            bool alreadyInRangeOfTarget = distanceToTarget <= _range;
 
-            if (nearestThreat != null)
+            if (!alreadyInRangeOfTarget)
             {
-                float threatDistance = GlobalPosition.DistanceTo(nearestThreat.GlobalPosition);
+                BattleUnit nearestThreat = FindNearestEnemyUnit();
 
-                if (threatDistance < RangedDangerRadius)
+                if (nearestThreat != null)
                 {
-                    Vector2 away = (GlobalPosition - nearestThreat.GlobalPosition).Normalized();
+                    float threatDistance = GlobalPosition.DistanceTo(nearestThreat.GlobalPosition);
 
-                    return GlobalPosition + away * (float)(_speed * delta);
+                    if (threatDistance < RangedDangerRadius)
+                    {
+                        Vector2 away = (GlobalPosition - nearestThreat.GlobalPosition).Normalized();
+
+                        return GlobalPosition + away * (float)(_speed * delta);
+                    }
                 }
             }
 
@@ -636,12 +773,18 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
         private async Task PerformAction()
         {
+            // Confere de novo bem na hora de começar: o alvo pode ter morrido entre o
+            // instante em que o _Process decidiu chamar PerformAction() e agora (outro
+            // atacante resolveu o dele primeiro nesse mesmo quadro).
+            if (_target != null && _target.IsDead)
+                return;
+
             _isActing = true;
             _attackCooldownRemaining = ComputeEffectiveCooldown();
 
             _sprite.SetWalking(false);
 
-            await _sprite.PlayAttack();
+            bool cancelledMidSwing = await PlayAttackWatchingTarget();
 
             // A unidade pode ter morrido enquanto a animação tocava (o AnimatedSprite2D é
             // compartilhado, e Die() troca a animação pra "SickLose" - se isso disparar um
@@ -651,6 +794,15 @@ namespace ProjetoDC.Scripts.Systems.Battle
             {
                 _sprite.SetWalking(false);
                 _sprite.PlayDeath();
+                return;
+            }
+
+            // O alvo morreu no meio do próprio golpe (outro atacante mais rápido o derrubou
+            // primeiro) - a animação já foi cortada pra Idle em PlayAttackWatchingTarget(),
+            // então não "conecta" visualmente o soco/mordida num Digimon já caído.
+            if (cancelledMidSwing)
+            {
+                _isActing = false;
                 return;
             }
 
@@ -681,7 +833,16 @@ namespace ProjetoDC.Scripts.Systems.Battle
                         return;
                     }
 
-                    if (targetUnit.GlobalPosition.DistanceTo(aimedPosition) > ProjectileDodgeDistance)
+                    // A margem de esquiva precisa escalar com quanto tempo o projétil ficou
+                    // no ar (tiros de longo alcance voam bem mais tempo) e com a velocidade
+                    // real do alvo - um limite fixo (ex.: 40) fazia até movimento normal
+                    // (orbitando, perseguindo outra coisa) em tiros de longa distância passar
+                    // fácil da marca, contando como "esquiva" um golpe que claramente acertou.
+                    float flightDistance = GlobalPosition.DistanceTo(aimedPosition);
+                    float flightSeconds = flightDistance / AttackProjectile.TravelSpeed;
+                    float dodgeThreshold = ProjectileDodgeDistance + targetUnit.Speed * flightSeconds;
+
+                    if (targetUnit.GlobalPosition.DistanceTo(aimedPosition) > dodgeThreshold)
                     {
                         GD.Print($"{_target.Digimon.BaseData.Name} desviou do ataque à distância!");
 
@@ -694,6 +855,48 @@ namespace ProjetoDC.Scripts.Systems.Battle
             ApplyAction();
 
             _isActing = false;
+        }
+
+        /// <summary>
+        /// Toca a animação de ataque quadro a quadro (em vez de só esperar o
+        /// AnimationFinished) pra poder cortar pra Idle na hora se o alvo morrer no meio do
+        /// golpe - outro atacante mais rápido pode ter derrubado o mesmo alvo primeiro.
+        /// Sem isso, o golpe terminava de tocar inteiro e visualmente "acertava" um Digimon
+        /// que já tinha caído. Retorna true se foi cortada assim.
+        ///
+        /// Espera especificamente pela animação "Attack" continuar tocando (não só "alguma
+        /// coisa" estar tocando): essa unidade pode tomar um golpe e ter o próprio sprite
+        /// tomado de assalto por PlayHit() no meio do seu golpe, e se isso terminar caindo
+        /// num Idle (que fica em loop pra sempre), esperar por "IsPlaying()" genérico nunca
+        /// mais desligaria - travando essa unidade parada, sem atacar nem se mover, pro
+        /// resto da luta (era exatamente esse o bug: unidade morre parada depois de tomar
+        /// dois golpes em sequência enquanto ainda estava com o próprio ataque em curso).
+        /// </summary>
+        private async Task<bool> PlayAttackWatchingTarget()
+        {
+            _sprite.Play("Attack");
+
+            while (_sprite.IsPlayingAnimation("Attack"))
+            {
+                if (_isDead)
+                    return false;
+
+                if (_target != null && _target.IsDead)
+                {
+                    _sprite.PlayIdle();
+                    return true;
+                }
+
+                await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            }
+
+            // Só força Idle se "Attack" realmente terminou sozinho - se outra coisa já
+            // assumiu o sprite nesse meio tempo (ex.: essa unidade tomou um golpe e entrou
+            // em PlayHit()), não pisa em cima disso.
+            if (_sprite.CurrentAnimation == "Attack")
+                _sprite.PlayIdle();
+
+            return false;
         }
 
         /// <summary>
@@ -766,7 +969,19 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             int damage = _arena.Match.ResolveAttack(_combatant, _target);
 
-            targetUnit.ShowFloatingText($"-{damage}", DamageColor);
+            // Mesmo cálculo que DamageCalculator já aplicou de verdade no dano acima -
+            // só pra mostrar pro jogador que aquele golpe teve vantagem/desvantagem de
+            // tipo, sem precisar que ResolveAttack devolva mais que o número final.
+            float typeMultiplier = TypeAdvantageCalculator.GetDamageMultiplier(
+                _combatant.Digimon.BaseData,
+                _target.Digimon.BaseData
+            );
+
+            string damageText = typeMultiplier == 1.0f
+                ? $"-{damage}"
+                : $"-{damage} x{typeMultiplier:0.#}";
+
+            targetUnit.ShowFloatingText(damageText, DamageColor);
 
             if (_target.IsDead)
             {
@@ -802,12 +1017,13 @@ namespace ProjetoDC.Scripts.Systems.Battle
         };
 
         /// <summary>Cura o alvo e retorna a quantidade de HP realmente recuperada (pode ser
-        /// menor que o valor nominal se o Digimon já estava quase cheio).</summary>
+        /// menor que o valor nominal se o Digimon já estava quase cheio, ou por causa da
+        /// eficácia reduzida em lutas muito longas - ver GetHealEffectivenessMultiplier).</summary>
         private int ApplyHeal()
         {
             var targetDigimon = _target.Digimon;
 
-            int healAmount = (int)(targetDigimon.MaxHealthPoints * HealPercentage);
+            int healAmount = (int)(targetDigimon.MaxHealthPoints * HealPercentage * GetHealEffectivenessMultiplier());
             int before = targetDigimon.CurrentHealthPoints;
 
             targetDigimon.CurrentHealthPoints = Math.Min(
@@ -816,6 +1032,54 @@ namespace ProjetoDC.Scripts.Systems.Battle
             );
 
             return targetDigimon.CurrentHealthPoints - before;
+        }
+
+        /// <summary>
+        /// Multiplicador de eficácia da cura: 100% durante os primeiros HealDecayGraceSeconds
+        /// de luta, depois cai HealDecayPerStep a cada HealDecayInterval segundos - nunca
+        /// abaixo de MinHealEffectiveness. Usa o tempo real da luta (BattleMatch.ElapsedSeconds),
+        /// não o tempo de vida dessa unidade, então vale igual pra quem entrou desde o início.
+        /// </summary>
+        private float GetHealEffectivenessMultiplier()
+        {
+            double elapsed = _arena.Match.ElapsedSeconds;
+
+            if (elapsed <= HealDecayGraceSeconds)
+                return 1f;
+
+            double secondsPastGrace = elapsed - HealDecayGraceSeconds;
+            int decaySteps = (int)(secondsPastGrace / HealDecayInterval) + 1;
+
+            float multiplier = 1f - decaySteps * HealDecayPerStep;
+
+            return Mathf.Max(MinHealEffectiveness, multiplier);
+        }
+
+        // True entre o momento em que o resultado da luta é decidido e a unidade ser
+        // destruída (arena fechada) - controla o loop de PlayVictory abaixo.
+        private bool _isCelebrating;
+
+        /// <summary>Toca a animação de comemoração ("Happy") em loop - chamado pela
+        /// BattleArena nos sobreviventes do time vencedor assim que o resultado é decidido,
+        /// e continua repetindo até a unidade ser destruída (jogador saiu da tela de
+        /// resultado/batalha). Unidades mortas ficam na pose de derrota, não comemoram.</summary>
+        public void PlayVictory()
+        {
+            if (_isDead || _isCelebrating)
+                return;
+
+            _isCelebrating = true;
+
+            _sprite.SetWalking(false);
+
+            _ = _sprite.PlayVictoryLoop(() => _isCelebrating && !_isDead);
+        }
+
+        public override void _ExitTree()
+        {
+            // Sinaliza pro loop de PlayVictory (se estiver rodando) parar de tentar tocar
+            // a próxima repetição - a unidade está sendo destruída (arena fechada).
+            _isCelebrating = false;
         }
 
         public async Task PlayHitReaction()
@@ -843,6 +1107,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             if (_hpBarRoot != null)
                 _hpBarRoot.Visible = false;
+
+            if (_selectionEllipse != null)
+                _selectionEllipse.Visible = false;
+
+            SetSelected(false);
         }
 
         private void UpdateHpBar()
@@ -857,6 +1126,20 @@ namespace ProjetoDC.Scripts.Systems.Battle
                 _hpBarMaxWidth * Mathf.Clamp(pct, 0f, 1f),
                 _hpBarFill.Size.Y
             );
+        }
+
+        /// <summary>
+        /// Marca/desmarca essa unidade como a selecionada pelo jogador (clique na arena - ver
+        /// BattleArena.HandleUnitSelectionClick) - só liga/desliga o anel branco no chão. O
+        /// card com retrato/HP de quem está selecionado é responsabilidade da própria
+        /// BattleArena (ver UpdateSelectedUnitPanel), não da unidade.
+        /// </summary>
+        public void SetSelected(bool selected)
+        {
+            _isSelected = selected && !_isDead;
+
+            if (_selectedRing != null)
+                _selectedRing.Visible = _isSelected;
         }
     }
 }

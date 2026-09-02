@@ -1,0 +1,12 @@
+{
+  "Id": 12,
+  "Name": "Copa Mega: Revanche",
+  "Description": "Revanche contra o trio da Copa Mega - WarGreymon, HerculesKabuterimon e Rosemon voltam muito mais fortes. O desafio mais difícil do Center.",
+  "RecommendedLevel": 55,
+  "Opponents": [
+    { "DigimonId": 52, "Level": 58 },
+    { "DigimonId": 74, "Level": 58 },
+    { "DigimonId": 75, "Level": 58 }
+  ],
+  "BitsReward": 50000
+}

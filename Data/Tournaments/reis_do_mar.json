@@ -1,0 +1,10 @@
+{
+  "Id": 7,
+  "Name": "Reis do Mar",
+  "Description": "Duelo 1x1 contra o Vikemon, guardião lendário dos mares - um verdadeiro tanque.",
+  "RecommendedLevel": 28,
+  "Opponents": [
+    { "DigimonId": 68, "Level": 30 }
+  ],
+  "BitsReward": 20000
+}

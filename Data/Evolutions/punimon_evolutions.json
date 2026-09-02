@@ -4,15 +4,15 @@
     "toDigimonId": 30,
     "requiredLevel": 2,
     "requiredAgeInDays": 0,
-    "statMultiplier": 1.1,
+    "statMultiplier": 1.2,
 
     "requiredStats": {
-      "healthPoints": 35,
-      "physicalDamage": 10,
-      "physicalDefense": 6,
+      "healthPoints": 38,
+      "physicalDamage": 6,
+      "physicalDefense": 4,
       "specialDamage": 0,
-      "specialDefense": 5,
-      "speed": 0
+      "specialDefense": 0,
+      "speed": 14
     }
   },
   {
@@ -20,15 +20,15 @@
     "toDigimonId": 37,
     "requiredLevel": 2,
     "requiredAgeInDays": 0,
-    "statMultiplier": 1.1,
+    "statMultiplier": 1.15,
 
     "requiredStats": {
       "healthPoints": 30,
-      "physicalDamage": 0,
-      "physicalDefense": 4,
-      "specialDamage": 15,
-      "specialDefense": 4,
-      "speed": 8
+      "physicalDamage": 3,
+      "physicalDefense": 0,
+      "specialDamage": 0,
+      "specialDefense": 0,
+      "speed": 6
     }
   },
   {
@@ -36,15 +36,15 @@
     "toDigimonId": 35,
     "requiredLevel": 2,
     "requiredAgeInDays": 0,
-    "statMultiplier": 1.1,
+    "statMultiplier": 1.15,
 
     "requiredStats": {
-      "healthPoints": 30,
-      "physicalDamage": 15,
-      "physicalDefense": 4,
-      "specialDamage": 8,
-      "specialDefense": 3,
-      "speed": 10
+      "healthPoints": 28,
+      "physicalDamage": 0,
+      "physicalDefense": 0,
+      "specialDamage": 6,
+      "specialDefense": 0,
+      "speed": 12
     }
   }
 ]

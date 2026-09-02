@@ -1,0 +1,12 @@
+{
+  "Id": 10,
+  "Name": "Trio Guardião 02",
+  "Description": "Trio de Digidestined da segunda geração em suas formas Ultimate - WereGarurumon, Angewomon e Zudomon.",
+  "RecommendedLevel": 22,
+  "Opponents": [
+    { "DigimonId": 40, "Level": 22 },
+    { "DigimonId": 72, "Level": 22 },
+    { "DigimonId": 67, "Level": 22 }
+  ],
+  "CapacityReward": 9
+}

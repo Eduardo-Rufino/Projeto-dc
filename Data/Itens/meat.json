@@ -1,0 +1,6 @@
+{
+  "Id": 1,
+  "Name": "Carne",
+  "Description": "Alimento básico. Coloque no Center pra os Digimons comerem sozinhos quando estiverem com fome.",
+  "IconPath": "res://Assets/Sprites/Food/beef on bone fried.png"
+}

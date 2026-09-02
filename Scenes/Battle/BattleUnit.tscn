@@ -2,9 +2,22 @@
 
 [ext_resource type="Script" path="res://Scripts/Systems/Battle/BattleUnit.cs" id="1_unit"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="2_sprite"]
+[ext_resource type="Script" path="res://Scripts/Systems/Battle/SelectionEllipse.cs" id="3_ground"]
 
 [node name="BattleUnit" type="Node2D"]
 script = ExtResource("1_unit")
+
+[node name="SelectionEllipse" type="Node2D" parent="."]
+position = Vector2(0, 26)
+script = ExtResource("3_ground")
+
+[node name="SelectedRing" type="Node2D" parent="."]
+position = Vector2(0, 26)
+visible = false
+script = ExtResource("3_ground")
+RadiusX = 32.0
+RadiusY = 12.0
+LineWidth = 3.0
 
 [node name="DigimonSprite" parent="." instance=ExtResource("2_sprite")]
 

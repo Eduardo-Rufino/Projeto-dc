@@ -1,0 +1,20 @@
+{
+  "id": 60,
+  "code": "birdramon",
+  "name": "Birdramon",
+  "stage": "Champion",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 186,
+    "physicalDamage": 20,
+    "physicalDefense": 30,
+    "specialDamage": 91,
+    "specialDefense": 35,
+    "speed": 76
+  }
+}

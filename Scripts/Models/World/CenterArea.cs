@@ -18,6 +18,12 @@ namespace ProjetoDC.Scripts.Models.World
         [Export]
         public float DebugBorderWidth { get; set; } = 3f;
 
+        // A arena de batalha reaproveita CenterArea pros hexágonos de combate, mas ali o
+        // tipo é sempre irrelevante pro jogador (não é o Center de verdade) - desliga a
+        // letra indicadora nesse caso (ver BattleArena.tscn).
+        [Export]
+        public bool ShowTypeLabel { get; set; } = true;
+
         public override void _Ready()
         {
             Position = CenterGrid.GridToWorld(GridPosition);
@@ -27,6 +33,9 @@ namespace ProjetoDC.Scripts.Models.World
             );
 
             CreateDebugBorder();
+
+            if (ShowTypeLabel)
+                CreateAreaIcon();
 
             GD.Print(
                 $"CenterArea criada: {Name} | Tipo {AreaType} | Grid: {GridPosition} | Position: {Position}"
@@ -138,7 +147,7 @@ namespace ProjetoDC.Scripts.Models.World
 
             border.Name = "DebugBorder";
             border.Width = DebugBorderWidth;
-            border.DefaultColor = GetAreaDebugColor();
+            border.DefaultColor = GetAreaColor(AreaType);
             border.Closed = true;
             border.ZIndex = 10;
 
@@ -147,18 +156,54 @@ namespace ProjetoDC.Scripts.Models.World
             AddChild(border);
         }
 
-        private Color GetAreaDebugColor()
+        /// <summary>Cor associada a cada tipo de área - usada na borda/ícone do hexágono
+        /// real e também no minimapa (ver Scripts/UI/MiniMap.cs), por isso é pública/estática
+        /// em vez de só um detalhe interno dessa classe.</summary>
+        public static Color GetAreaColor(CenterAreaType areaType)
         {
-            return AreaType switch
+            return areaType switch
             {
                 CenterAreaType.Neutral => Colors.White,
+
+                // Todas as variantes de treino (genérica + específicas por stat) compartilham
+                // a mesma cor de categoria - o que diferencia uma da outra é o selo no ícone
+                // (ver AreaTypeIcon.DrawTrainingStatBadge), não a cor.
                 CenterAreaType.Training => Colors.Blue,
+                CenterAreaType.TrainingHealthPoints => Colors.Blue,
+                CenterAreaType.TrainingAttack => Colors.Blue,
+                CenterAreaType.TrainingDefense => Colors.Blue,
+                CenterAreaType.TrainingSpecialAttack => Colors.Blue,
+                CenterAreaType.TrainingSpecialDefense => Colors.Blue,
+                CenterAreaType.TrainingSpeed => Colors.Blue,
+
                 CenterAreaType.Dormitory => Colors.Purple,
                 CenterAreaType.Restaurant => Colors.Green,
                 CenterAreaType.Hospital => Colors.Red,
 
                 _ => Colors.White
             };
+        }
+
+        /// <summary>
+        /// Indicador visual simples e desenhado por código (sem asset externo) do tipo da
+        /// área, no meio do hexágono - placeholder/teste (ver AreaTypeIcon) até ter arte de
+        /// verdade.
+        /// </summary>
+        private void CreateAreaIcon()
+        {
+            var icon = new AreaTypeIcon
+            {
+                Name = "AreaTypeIcon",
+                // Negativo: fica acima do preenchimento da área (Visual, z_index -10) mas
+                // abaixo dos Digimons (z_index 0 por padrão) - o ícone não deve tampar quem
+                // está em pé em cima dele.
+                ZIndex = -5,
+                MouseFilter = Control.MouseFilterEnum.Ignore
+            };
+
+            AddChild(icon);
+
+            icon.Setup(AreaType, GetAreaColor(AreaType));
         }
 
         public void SetAreaType(CenterAreaType areaType)
@@ -168,8 +213,24 @@ namespace ProjetoDC.Scripts.Models.World
 
         public bool IsTrainingArea()
         {
-            return AreaType == CenterAreaType.Training;
+            return AreaType == CenterAreaType.Training || ForcedTrainingType.HasValue;
         }
+
+        /// <summary>Stat que essa área força sempre que um Digimon treina nela, ou null pra
+        /// área de treino genérica (stat aleatório - ver DigimonWorld.ProcessTraining) e pra
+        /// qualquer área que não seja de treino.</summary>
+        public TrainingType? ForcedTrainingType => GetForcedTrainingType(AreaType);
+
+        public static TrainingType? GetForcedTrainingType(CenterAreaType areaType) => areaType switch
+        {
+            CenterAreaType.TrainingHealthPoints => TrainingType.HealthPoints,
+            CenterAreaType.TrainingAttack => TrainingType.Attack,
+            CenterAreaType.TrainingDefense => TrainingType.Defense,
+            CenterAreaType.TrainingSpecialAttack => TrainingType.SpecialAttack,
+            CenterAreaType.TrainingSpecialDefense => TrainingType.SpecialDefense,
+            CenterAreaType.TrainingSpeed => TrainingType.Speed,
+            _ => null
+        };
 
         public bool IsDormitory()
         {
@@ -179,6 +240,11 @@ namespace ProjetoDC.Scripts.Models.World
         public bool IsHospital()
         {
             return AreaType == CenterAreaType.Hospital;
+        }
+
+        public bool IsRestaurant()
+        {
+            return AreaType == CenterAreaType.Restaurant;
         }
     }
 }

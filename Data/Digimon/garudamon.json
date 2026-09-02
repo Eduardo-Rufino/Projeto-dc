@@ -1,0 +1,20 @@
+{
+  "id": 61,
+  "code": "garudamon",
+  "name": "Garudamon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 340,
+    "physicalDamage": 35,
+    "physicalDefense": 53,
+    "specialDamage": 159,
+    "specialDefense": 62,
+    "speed": 132
+  }
+}

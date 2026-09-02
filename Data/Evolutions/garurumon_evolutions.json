@@ -2,17 +2,17 @@
   {
     "fromDigimonId": 14,
     "toDigimonId": 40,
-    "requiredLevel": 15,
+    "requiredLevel": 20,
     "requiredAgeInDays": 5,
-    "statMultiplier": 1.5,
+    "statMultiplier": 1.6,
 
     "requiredStats": {
-      "healthPoints": 240,
-      "physicalDamage": 0,
+      "healthPoints": 280,
+      "physicalDamage": 34,
       "physicalDefense": 0,
-      "specialDamage": 82,
-      "specialDefense": 30,
-      "speed": 54
+      "specialDamage": 155,
+      "specialDefense": 0,
+      "speed": 122
     }
   }
 ]

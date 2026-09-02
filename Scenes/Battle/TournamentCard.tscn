@@ -1,0 +1,90 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/TournamentCard.cs" id="1_card"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_item"]
+bg_color = Color(0.1882353, 0.21176471, 0.23921569, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.1882353, 0.21176471, 0.23921569, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="TournamentCard" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+script = ExtResource("1_card")
+
+[node name="Pad" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Pad"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderRow" type="HBoxContainer" parent="Pad/VBoxContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Pad/VBoxContainer/HeaderRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Nome do Campeonato"
+
+[node name="HeaderSpacer" type="Control" parent="Pad/VBoxContainer/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FormatLabel" type="Label" parent="Pad/VBoxContainer/HeaderRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85882354, 0.30980393, 1)
+theme_override_font_sizes/font_size = 13
+text = "3x3"
+
+[node name="LevelLabel" type="Label" parent="Pad/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 11
+text = "Nível recomendado: 0"
+
+[node name="OpponentsLabel" type="Label" parent="Pad/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 2
+text = "Oponentes: -"
+
+[node name="FooterRow" type="HBoxContainer" parent="Pad/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RewardLabel" type="Label" parent="Pad/VBoxContainer/FooterRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+vertical_alignment = 1
+text = "Recompensa: -"
+
+[node name="ChallengeButton" type="Button" parent="Pad/VBoxContainer/FooterRow"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Desafiar"

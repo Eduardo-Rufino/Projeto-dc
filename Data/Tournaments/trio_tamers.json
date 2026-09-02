@@ -1,0 +1,12 @@
+{
+  "Id": 5,
+  "Name": "Trio Tamers",
+  "Description": "Time 3x3 inspirado no trio de parceiros de Digimon Tamers - Growlmon, Kyubimon e Gargomon.",
+  "RecommendedLevel": 19,
+  "Opponents": [
+    { "DigimonId": 18, "Level": 19 },
+    { "DigimonId": 20, "Level": 19 },
+    { "DigimonId": 19, "Level": 19 }
+  ],
+  "BitsReward": 8000
+}

@@ -1,0 +1,20 @@
+{
+  "id": 75,
+  "code": "rosemon",
+  "name": "Rosemon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Plant",
+  "Attribute": "Data",
+  "EggType": "Forest",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 580,
+    "physicalDamage": 60,
+    "physicalDefense": 90,
+    "specialDamage": 270,
+    "specialDefense": 105,
+    "speed": 185
+  }
+}

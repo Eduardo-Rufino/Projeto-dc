@@ -21,13 +21,21 @@ namespace ProjetoDC.Scripts.Managers
 
             LoadDigimons();
             LoadEvolutions();
+            LoadItems();
+            LoadTournaments();
         }
 
         private const string DigimonFolder = "res://Data/Digimon/";
+        private const string ItemFolder = "res://Data/Itens/";
+        private const string TournamentFolder = "res://Data/Tournaments/";
 
         private Dictionary<int, DigimonData> digimons = new();
 
         private List<EvolutionData> evolutions = new();
+
+        private Dictionary<int, ItemData> items = new();
+
+        private Dictionary<int, TournamentData> tournaments = new();
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
@@ -226,6 +234,180 @@ namespace ProjetoDC.Scripts.Managers
         {
             var digimon = GetDigimon(id);
             return digimon?.Name ?? $"Desconhecido (ID {id})";
+        }
+
+        /// <summary>
+        /// Carrega os arquivos JSON de itens (Data/Itens/*.json) da mesma forma que
+        /// LoadDigimons - um arquivo por item.
+        /// </summary>
+        public void LoadItems()
+        {
+            string path = ItemFolder;
+
+            using var dir = DirAccess.Open(path);
+
+            if (dir == null)
+            {
+                GD.PrintErr("Pasta de itens não encontrada!");
+                return;
+            }
+
+            dir.ListDirBegin();
+
+            string fileName = dir.GetNext();
+
+            while (fileName != "")
+            {
+                if (fileName == "." || fileName == "..")
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                if (!fileName.EndsWith(".json"))
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string fullPath = path + fileName;
+
+                using var file = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
+
+                if (file == null)
+                {
+                    GD.PrintErr("Erro ao abrir: " + fullPath);
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string json = file.GetAsText();
+
+                try
+                {
+                    ItemData item = JsonSerializer.Deserialize<ItemData>(json, JsonOptions);
+
+                    if (items.ContainsKey(item.Id))
+                    {
+                        GD.PrintErr("ID de item duplicado: " + item.Id);
+                    }
+                    else
+                    {
+                        items.Add(item.Id, item);
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                }
+
+                fileName = dir.GetNext();
+            }
+
+            GD.Print("Itens carregados: " + items.Count);
+        }
+
+        /// <summary>Retorna o <see cref="ItemData"/> pelo ID, ou null se não encontrado.</summary>
+        public ItemData GetItem(int id)
+        {
+            if (items.TryGetValue(id, out var item))
+                return item;
+
+            GD.PrintErr("Item não encontrado: " + id);
+            return null;
+        }
+
+        /// <summary>Retorna todos os itens carregados, ordenados por ID.</summary>
+        public IEnumerable<ItemData> GetAllItems()
+        {
+            return items.Values.OrderBy(i => i.Id);
+        }
+
+        /// <summary>
+        /// Carrega os arquivos JSON de campeonatos (Data/Tournaments/*.json), mesmo padrão
+        /// de LoadDigimons/LoadItems - um arquivo por campeonato.
+        /// </summary>
+        public void LoadTournaments()
+        {
+            string path = TournamentFolder;
+
+            using var dir = DirAccess.Open(path);
+
+            if (dir == null)
+            {
+                GD.PrintErr("Pasta de campeonatos não encontrada!");
+                return;
+            }
+
+            dir.ListDirBegin();
+
+            string fileName = dir.GetNext();
+
+            while (fileName != "")
+            {
+                if (fileName == "." || fileName == "..")
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                if (!fileName.EndsWith(".json"))
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string fullPath = path + fileName;
+
+                using var file = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
+
+                if (file == null)
+                {
+                    GD.PrintErr("Erro ao abrir: " + fullPath);
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string json = file.GetAsText();
+
+                try
+                {
+                    TournamentData tournament = JsonSerializer.Deserialize<TournamentData>(json, JsonOptions);
+
+                    if (tournaments.ContainsKey(tournament.Id))
+                    {
+                        GD.PrintErr("ID de campeonato duplicado: " + tournament.Id);
+                    }
+                    else
+                    {
+                        tournaments.Add(tournament.Id, tournament);
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                }
+
+                fileName = dir.GetNext();
+            }
+
+            GD.Print("Campeonatos carregados: " + tournaments.Count);
+        }
+
+        /// <summary>Retorna o <see cref="TournamentData"/> pelo ID, ou null se não encontrado.</summary>
+        public TournamentData GetTournament(int id)
+        {
+            if (tournaments.TryGetValue(id, out var tournament))
+                return tournament;
+
+            GD.PrintErr("Campeonato não encontrado: " + id);
+            return null;
+        }
+
+        /// <summary>Retorna todos os campeonatos carregados, ordenados por ID.</summary>
+        public IEnumerable<TournamentData> GetAllTournaments()
+        {
+            return tournaments.Values.OrderBy(t => t.Id);
         }
     }
 }

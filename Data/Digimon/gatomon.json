@@ -1,0 +1,20 @@
+{
+  "id": 71,
+  "code": "gatomon",
+  "name": "Gatomon",
+  "stage": "Rookie",
+  "role": "Assassin",
+  "Element": "Light",
+  "Attribute": "Data",
+  "EggType": "Light",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 55,
+    "physicalDamage": 15,
+    "physicalDefense": 14,
+    "specialDamage": 62,
+    "specialDefense": 14,
+    "speed": 50
+  }
+}

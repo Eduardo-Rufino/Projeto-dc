@@ -10,11 +10,11 @@
   "AttackType": "Special",
 
   "BaseStats": {
-    "healthPoints": 500,
-    "physicalDamage": 37,
-    "physicalDefense": 43,
-    "specialDamage": 39,
-    "specialDefense": 40,
+    "healthPoints": 330,
+    "physicalDamage": 20,
+    "physicalDefense": 69,
+    "specialDamage": 20,
+    "specialDefense": 69,
     "speed": 25
   }
 }

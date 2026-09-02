@@ -1,0 +1,20 @@
+{
+  "id": 63,
+  "code": "pichimon",
+  "name": "Pichimon",
+  "stage": "Baby",
+  "role": "Warrior",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Water",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 22,
+    "physicalDamage": 12,
+    "physicalDefense": 7,
+    "specialDamage": 2,
+    "specialDefense": 4,
+    "speed": 5
+  }
+}

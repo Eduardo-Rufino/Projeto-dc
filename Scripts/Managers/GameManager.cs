@@ -1,7 +1,9 @@
 using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Core.Results;
+using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
+using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.Save;
 using ProjetoDC.Scripts.Systems.Battle;
 using ProjetoDC.Scripts.Systems.Center;
@@ -32,14 +34,48 @@ namespace ProjetoDC.Scripts.Managers
         public List<DigimonInstance> PlayerBattleTeam { get; private set; } = new();
         public List<DigimonInstance> EnemyBattleTeam { get; private set; } = new();
 
-        public event Action DigimonListChanged;
         public event Action PlayerDigimonChanged;
         public event Action GameLoaded;
         public event Action<BattleResult> TeamBattleFinished;
         public event Action TeamBattleStarted;
 
+        /// <summary>Disparado quando um Digimon atende os requisitos de evolução mas o
+        /// Center não tem capacidade livre pra nova forma - carrega o Digimon bloqueado, a
+        /// forma que ele evoluiria e quanto falta de capacidade. Não dispara de novo pro
+        /// mesmo Digimon enquanto ele não escolher "manter sem evoluir"
+        /// (DigimonInstance.EvolutionCapacityWarningDismissed) - ver TryToEvolve.</summary>
+        public event Action<DigimonInstance, DigimonData, int> EvolutionBlockedByCapacity;
+
+        /// <summary>Disparado quando um Digimon é removido permanentemente do Center (ver
+        /// DeleteDigimon) - quem desenha o Center escuta isso pra tirar o DigimonWorld
+        /// visual correspondente, senão ele continuaria andando por aí sem existir mais
+        /// no save.</summary>
+        public event Action<DigimonInstance> DigimonDeleted;
+
         /// <summary>Estado puro da batalha 3x3 ativa (nulo fora de batalha).</summary>
         public BattleMatch BattleMatch { get; private set; }
+
+        /// <summary>Motivos independentes que podem estar pedindo pra pausar a árvore ao
+        /// mesmo tempo (batalha, animação de evolução, tela secundária aberta na HUD, etc.) -
+        /// GetTree().Paused só fica true enquanto pelo menos um motivo estiver ativo, e só
+        /// volta a false quando TODOS forem liberados. Sem isso, cada sistema mexendo direto
+        /// em GetTree().Paused derrubava a pausa dos outros (ex.: fechar/abrir uma tela da
+        /// HUD despausando uma batalha ou animação de evolução em andamento).</summary>
+        private readonly HashSet<string> _pauseReasons = new();
+
+        public void RequestPause(string reason)
+        {
+            _pauseReasons.Add(reason);
+
+            GetTree().Paused = _pauseReasons.Count > 0;
+        }
+
+        public void ReleasePause(string reason)
+        {
+            _pauseReasons.Remove(reason);
+
+            GetTree().Paused = _pauseReasons.Count > 0;
+        }
 
         public SaveData Save { get; private set; }
         public CenterService CenterService { get; private set; }
@@ -141,9 +177,21 @@ namespace ProjetoDC.Scripts.Managers
             GameLoaded?.Invoke();
         }
 
+        // Só acelera o ClockSystem (relógio/fome/stamina/incubação/doença - tudo que anda por
+        // MinutePassed/HourPassed/DayPassed) - sistemas que tickam em tempo real puro fora
+        // dele (ex.: regeneração de HP em DigimonWorld) continuam no ritmo normal. Não é
+        // salvo no save: some ao reabrir o jogo, é só uma preferência de sessão (ver
+        // HUD.OnSpeedButtonPressed).
+        public bool IsClockSpeedDoubled { get; private set; }
+
+        public void ToggleClockSpeedDoubled()
+        {
+            IsClockSpeedDoubled = !IsClockSpeedDoubled;
+        }
+
         public override void _Process(double delta)
         {
-            ClockSystem?.Update(delta);
+            ClockSystem?.Update(delta * (IsClockSpeedDoubled ? 2.0 : 1.0));
         }
 
         private void OnMinutePassed()
@@ -173,6 +221,40 @@ namespace ProjetoDC.Scripts.Managers
 
             EggSystem.AdvanceDay(CenterService);
             SaveGame();
+        }
+
+        /// <summary>Se o botão de pular sono deveria estar habilitado agora - usado pela HUD.
+        /// A janela de sono em si vive em DigimonInstance (hoje sincronizada pro Center
+        /// inteiro, sem Digimons diurnos/noturnos ainda) pra não duplicar o hardcode aqui.
+        /// Quando esse sistema existir de verdade, SkipSleep precisa ser revisto - "pular"
+        /// deixa de fazer sentido do jeito que está se cada Digimon tiver seu próprio ciclo.</summary>
+        public bool CanSkipSleep => DigimonInstance.IsSleepHour(Save.World.CurrentHour);
+
+        /// <summary>Disparado quando SkipSleep pula um trecho do relógio, com quantos
+        /// segundos de tempo real esse trecho representaria (minutos pulados ×
+        /// ClockSystem.SecondsPerGameMinute) - pra sistemas que tickam em tempo real, não em
+        /// minutos de jogo (ex.: DigimonWorld.CatchUpPassiveTime, regeneração de HP), poderem
+        /// aplicar de uma vez o que teriam acumulado esperando de verdade.</summary>
+        public event Action<double> SleepSkipped;
+
+        /// <summary>
+        /// Pula da hora de sono atual direto pro momento em que os Digimons acordam - avança
+        /// o relógio de verdade minuto a minuto (ClockSystem.AdvanceUntilHour), então nada
+        /// que dependa do tempo passando é ignorado (fome, stamina, incubação de ovo, chance
+        /// de doença, evolução, save de fim de dia): só a espera em tempo real real, sem
+        /// nada pra fazer enquanto todo mundo dorme, deixa de existir. Não faz nada (retorna
+        /// false) se não for a hora de sono agora.
+        /// </summary>
+        public bool SkipSleep()
+        {
+            if (!DigimonInstance.IsSleepHour(Save.World.CurrentHour))
+                return false;
+
+            int minutesSkipped = ClockSystem.AdvanceUntilHour(DigimonInstance.SleepEndHour);
+
+            SleepSkipped?.Invoke(minutesSkipped * ClockSystem.SecondsPerGameMinute);
+
+            return true;
         }
 
         /// <summary>
@@ -293,66 +375,173 @@ namespace ProjetoDC.Scripts.Managers
 
         /// <summary>
         /// Tenta evoluir o digimon passado utilizando a lógica do <see cref="EvolutionSystem"/>.
+        /// Se os requisitos forem atendidos mas faltar capacidade no Center, não evolui e
+        /// dispara <see cref="EvolutionBlockedByCapacity"/> (uma vez só, até o jogador decidir
+        /// manter sem evoluir ou liberar capacidade) em vez de travar o Digimon por baixo dos
+        /// panos - ver DigimonInstance.EvolutionCapacityWarningDismissed.
         /// </summary>
         public bool TryToEvolve(DigimonInstance digimon)
         {
             if (digimon == null)
                 return false;
 
-            return EvolutionSystem.TryToEvolve(digimon);
+            var attempt = EvolutionSystem.TryToEvolve(
+                digimon,
+                Save.Center.CapacityUsed,
+                Save.Center.CapacityLimit
+            );
+
+            switch (attempt.Outcome)
+            {
+                case EvolutionOutcome.Evolved:
+                    digimon.EvolutionCapacityWarningDismissed = false;
+                    return true;
+
+                case EvolutionOutcome.BlockedByCapacity:
+                    if (!digimon.EvolutionCapacityWarningDismissed)
+                    {
+                        EvolutionBlockedByCapacity?.Invoke(
+                            digimon,
+                            attempt.TargetForm,
+                            attempt.CapacityDeficit
+                        );
+                    }
+
+                    return false;
+
+                default:
+                    return false;
+            }
         }
 
         /// <summary>
-        /// Inicialização de novo jogo: cria ovo inicial via <see cref="EggSystem"/>.
+        /// Inicialização de novo jogo: cria ovo inicial via <see cref="EggSystem"/>. Um save
+        /// novo nunca tem Digimon já no Center nesse ponto (só o ovo) - é HatchEgg quem
+        /// define o PlayerDigimon, quando o ovo choca de verdade (ver EggSystem.HatchEgg).
         /// </summary>
         public void InitializeNewGame()
         {
-            GD.Print($"[DEBUG] Digimons no Center ANTES egg: {Save.Center.Digimons.Count}");
-
             EggSystem.CreateInitialEgg(CenterService);
-
-            GD.Print($"[DEBUG] Digimons no Center DEPOIS egg: {Save.Center.Digimons.Count}");
-
-            PlayerDigimon = CenterService.GetAllDigimons().FirstOrDefault();
-
-            if (PlayerDigimon != null)
-            {
-                SetPlayerDigimon(PlayerDigimon);
-                GD.Print($"Player inicial: {PlayerDigimon.BaseData.Name}");
-            }
 
             SaveSystem.SaveGame(Save);
         }
 
         /// <summary>
-        /// Inicia uma batalha 3x3 em tempo real com o time escolhido pelo jogador (exatamente
-        /// 3 Digimons, sem restrição de Role). Gera o time inimigo calibrado por esse time e
-        /// abre a arena; a recompensa é aplicada quando a arena avisa que a batalha terminou.
+        /// Inicia uma batalha em tempo real com o time escolhido pelo jogador (1 Digimon pra
+        /// um duelo 1x1, ou 3 pro 3x3 completo - sem restrição de Role). A mesma arena/lógica
+        /// de combate atende os dois: o tamanho do time inimigo gerado acompanha o do jogador.
+        /// Gera o time inimigo calibrado por esse time e abre a arena; a recompensa é aplicada
+        /// quando a arena avisa que a batalha terminou.
         /// </summary>
         public void StartTeamBattle(List<DigimonInstance> playerTeam)
         {
-            if (playerTeam == null || playerTeam.Count != 3)
+            if (playerTeam == null || (playerTeam.Count != 1 && playerTeam.Count != 3))
             {
-                GD.PrintErr("StartTeamBattle exige exatamente 3 Digimons.");
+                GD.PrintErr("StartTeamBattle exige 1 Digimon (1x1) ou 3 Digimons (3x3).");
                 return;
             }
 
-            PlayerBattleTeam = playerTeam;
+            var enemyTeam = EnemyGenerator.GenerateEnemyTeam(playerTeam, playerTeam.Count);
 
-            EnemyBattleTeam = EnemyGenerator.GenerateEnemyTeam(PlayerBattleTeam, 3);
-
-            if (EnemyBattleTeam.Count == 0)
+            if (enemyTeam.Count == 0)
             {
                 GD.PrintErr("Não foi possível gerar o time inimigo.");
                 return;
             }
+
+            ActiveTournament = null;
+
+            LaunchBattle(playerTeam, enemyTeam);
+        }
+
+        /// <summary>
+        /// Inicia a batalha de um campeonato (ver TournamentData): diferente da batalha
+        /// livre, o time inimigo é fixo - não calibrado pelo poder do time do jogador -, e o
+        /// tamanho do time do jogador precisa bater exatamente com o número de oponentes
+        /// cadastrados (1x1 ou 3x3, dependendo do campeonato).
+        /// </summary>
+        public void StartTournamentBattle(TournamentData tournament, List<DigimonInstance> playerTeam)
+        {
+            if (tournament == null)
+                return;
+
+            if (playerTeam == null || playerTeam.Count != tournament.Opponents.Count)
+            {
+                GD.PrintErr($"StartTournamentBattle exige {tournament.Opponents.Count} Digimon(s) pra '{tournament.Name}'.");
+                return;
+            }
+
+            var enemyTeam = BuildTournamentEnemyTeam(tournament);
+
+            if (enemyTeam.Count != tournament.Opponents.Count)
+            {
+                GD.PrintErr($"Não foi possível montar o time do campeonato '{tournament.Name}'.");
+                return;
+            }
+
+            ActiveTournament = tournament;
+
+            LaunchBattle(playerTeam, enemyTeam);
+        }
+
+        private List<DigimonInstance> BuildTournamentEnemyTeam(TournamentData tournament)
+        {
+            var enemies = new List<DigimonInstance>();
+
+            foreach (var opponent in tournament.Opponents)
+            {
+                var data = DatabaseManager.Instance.GetDigimon(opponent.DigimonId);
+
+                if (data == null)
+                {
+                    GD.PrintErr($"Digimon {opponent.DigimonId} do campeonato '{tournament.Name}' não encontrado.");
+                    continue;
+                }
+
+                var enemy = new DigimonInstance(data);
+
+                while (enemy.Level < opponent.Level)
+                {
+                    enemy.GainExperience(enemy.ExperienceToNextLevel);
+                }
+
+                enemy.RestoreHealth();
+                EnemyGenerator.ApplyTournamentTrainingBonus(enemy);
+
+                enemies.Add(enemy);
+            }
+
+            return enemies;
+        }
+
+        /// <summary>
+        /// Setup compartilhado por StartTeamBattle e StartTournamentBattle: sobe a arena por
+        /// cima da cena atual e pausa o resto do jogo (ver comentário original abaixo).
+        /// </summary>
+        private void LaunchBattle(List<DigimonInstance> playerTeam, List<DigimonInstance> enemyTeam)
+        {
+            PlayerBattleTeam = playerTeam;
+            EnemyBattleTeam = enemyTeam;
 
             TeamBattleStarted?.Invoke();
 
             var arenaScene = GD.Load<PackedScene>("res://Scenes/Battle/BattleArena.tscn");
             var arena = arenaScene.Instantiate<BattleArena>();
 
+            // A arena é adicionada por cima da cena atual (Center continua existindo por
+            // baixo, não é trocada) - sem pausar a árvore, o Center seguia processando fome/
+            // regeneração de HP dos Digimons do time do jogador (os MESMOS DigimonInstance
+            // usados na batalha) por trás da luta. Isso fazia um Digimon já derrotado (HP 0)
+            // voltar a ter HP>0 por causa da regeneração passiva do Center, virando alvo
+            // válido nas checagens de "está vivo" da batalha de novo - o time inimigo então
+            // trocava de alvo pra ele, "matava" de novo, e o ciclo podia se repetir. Pausar a
+            // árvore inteira (com a arena marcada como Always, pra continuar processando por
+            // cima da pausa) resolve isso na raiz.
+            arena.ProcessMode = ProcessModeEnum.Always;
+
             GetTree().Root.AddChild(arena);
+
+            RequestPause("battle");
 
             arena.Init(PlayerBattleTeam, EnemyBattleTeam);
 
@@ -363,6 +552,8 @@ namespace ProjetoDC.Scripts.Managers
 
         private void OnTeamBattleFinished(BattleResult result, BattleArena arena)
         {
+            ReleasePause("battle");
+
             ApplyTeamBattleReward(result);
 
             arena.QueueFree();
@@ -377,42 +568,117 @@ namespace ProjetoDC.Scripts.Managers
         /// na vitória, cada membro (sobrevivente ou não) recebe sua fração de XP e o bônus
         /// de Felicidade, e tenta evoluir; os Bits vão pro Center uma única vez.
         /// </summary>
+        // Fração do XP normal que o time ganha mesmo perdendo - sem isso, um time que está
+        // ficando pra trás nunca acumula XP suficiente pra evoluir e virar o jogo, ficando
+        // travado sem conseguir progredir. Público pra BattleArena usar o mesmo valor ao
+        // pré-visualizar a recompensa na tela de resultado (ver BattleArena._Process).
+        public const int LossExperienceDivisor = 5;
+
+        /// <summary>Campeonato da batalha em andamento, ou nulo se for batalha livre - setado
+        /// por StartTournamentBattle, consumido (e zerado) em ApplyTeamBattleReward. Público
+        /// pra BattleArena consultar ao montar a prévia de recompensa.</summary>
+        public TournamentData ActiveTournament { get; private set; }
+
         public void ApplyTeamBattleReward(BattleResult result)
         {
             if (PlayerBattleTeam.Count == 0)
+            {
+                ActiveTournament = null;
                 return;
+            }
+
+            // Campeonato não dá XP (nem na vitória, nem no XP de consolação da derrota) -
+            // só Bits/capacidade/bônus. Sem essa restrição, dava pra farmar XP infinito
+            // perdendo de propósito pro time inimigo de um campeonato forte (a tentativa não
+            // é "gasta" numa derrota, então era repetível à vontade).
+            bool isTournament = ActiveTournament != null;
 
             if (result == BattleResult.EnemyWon)
             {
-                GD.Print("Derrota! Sem recompensa");
+                int consolationXp = 0;
+
+                if (!isTournament)
+                {
+                    var lossReward = BattleRewardCalculator.CalculateForTeam(PlayerBattleTeam, EnemyBattleTeam);
+                    consolationXp = lossReward.Experience / LossExperienceDivisor;
+                }
+
+                GD.Print($"Derrota! +{consolationXp} XP de consolação por membro, sem Bits.");
 
                 foreach (var member in PlayerBattleTeam)
+                {
                     member.ChangeHappiness(-6);
 
+                    if (consolationXp > 0)
+                    {
+                        member.GainExperience(consolationXp);
+
+                        TryToEvolve(member);
+                    }
+                }
+
+                // Perder um campeonato não dá a recompensa de capacidade, mas também não
+                // "gasta" a tentativa - o campeonato continua disponível pra tentar de novo.
+                ActiveTournament = null;
                 return;
             }
 
             var reward = BattleRewardCalculator.CalculateForTeam(PlayerBattleTeam, EnemyBattleTeam);
 
-            GD.Print($"Vitória! +{reward.Experience} XP por membro | +{reward.Bits} Bits");
+            int xpGained = isTournament ? 0 : reward.Experience;
+
+            GD.Print($"Vitória! +{xpGained} XP por membro | +{reward.Bits} Bits");
 
             foreach (var member in PlayerBattleTeam)
             {
-                member.GainExperience(reward.Experience);
+                if (xpGained > 0)
+                    member.GainExperience(xpGained);
+
                 member.ChangeHappiness(8);
 
                 TryToEvolve(member);
             }
 
             Save.Center.AddBits(reward.Bits);
+
+            ApplyTournamentRewardIfNeeded();
+
+            ActiveTournament = null;
+        }
+
+        /// <summary>
+        /// Recompensa de progressão dos campeonatos, concedida só na primeira vitória de cada
+        /// um (ver CenterState.ClearedTournamentIds) - vitórias seguintes ainda dão o XP/Bits
+        /// normais da batalha, só não repetem esse bônus. Cada campeonato define capacidade
+        /// e/ou Bits de bônus (TournamentData.CapacityReward/BitsReward); nem todos precisam
+        /// dar os dois.
+        /// </summary>
+        private void ApplyTournamentRewardIfNeeded()
+        {
+            if (ActiveTournament == null)
+                return;
+
+            if (Save.Center.ClearedTournamentIds.Contains(ActiveTournament.Id))
+                return;
+
+            Save.Center.ClearedTournamentIds.Add(ActiveTournament.Id);
+
+            if (ActiveTournament.CapacityReward > 0)
+                Save.Center.AddCapacity(ActiveTournament.CapacityReward);
+
+            if (ActiveTournament.BitsReward > 0)
+                Save.Center.AddBits(ActiveTournament.BitsReward);
+
+            GD.Print(
+                $"Campeonato '{ActiveTournament.Name}' concluído! " +
+                $"+{ActiveTournament.CapacityReward} de capacidade | +{ActiveTournament.BitsReward} Bits de bônus."
+            );
         }
 
         public SystemResult BuyMeat()
         {
-            if (Save.Center.Bits < 20) {
+            if (Save.Center.Bits < 20)
                 return SystemResult.Fail("Bits insuficientes.");
-                GD.Print("sem dinheiro");
-            }
 
             Save.Center.Bits -= 20;
             Save.Center.Meat++;
@@ -429,6 +695,24 @@ namespace ProjetoDC.Scripts.Managers
             Save.Center.Medicine++;
 
             return SystemResult.Ok();
+        }
+
+        /// <summary>Custo de capacidade que o próximo ovo comprado vai reservar - todo
+        /// Digimon Baby custa o mesmo (ver DigimonInstance.GetCapacityCostForStage), então
+        /// basta olhar o primeiro da lista. Usado tanto por BuyEgg quanto pela loja pra
+        /// decidir se mostra o botão de comprar habilitado antes mesmo de tentar.</summary>
+        public bool HasCapacityForEgg()
+        {
+            var babyDigimons = DatabaseManager.Instance.GetAllDigimons()
+                .Where(d => d.Stage == DigimonStage.Baby)
+                .ToList();
+
+            if (babyDigimons.Count == 0)
+                return false;
+
+            int cost = DigimonInstance.GetCapacityCostForStage(babyDigimons[0].Stage);
+
+            return Save.Center.CapacityUsed + cost <= Save.Center.CapacityLimit;
         }
 
         public SystemResult BuyEgg()
@@ -456,7 +740,7 @@ namespace ProjetoDC.Scripts.Managers
 
             if (!CenterService.CanAddDigimon(previewDigimon))
             {
-                return SystemResult.Fail("Não há capacidade suficiente no Center.");
+                return SystemResult.Fail("Não há capacidade suficiente no Center para outro ovo.");
             }
 
             bool created = EggSystem.CreateEgg(
@@ -470,6 +754,38 @@ namespace ProjetoDC.Scripts.Managers
             }
 
             Save.Center.Bits -= eggPrice;
+
+            return SystemResult.Ok();
+        }
+
+        /// <summary>Preço das áreas "base" (Treino genérico/Dormitório/Restaurante/Hospital).</summary>
+        public const int AreaPrice = 1500;
+
+        /// <summary>Preço das áreas de treino especializadas por stat (ver CenterArea.
+        /// GetForcedTrainingType) - mais caras que a área de treino genérica, já que dão um
+        /// bônus permanente de treino (ver TrainingSystem.SpecificAreaBonusMultiplier).</summary>
+        public const int SpecificTrainingAreaPrice = 5000;
+
+        /// <summary>Preço de compra de um tipo de área, na loja.</summary>
+        public static int GetAreaPrice(CenterAreaType areaType) =>
+            CenterArea.GetForcedTrainingType(areaType).HasValue
+                ? SpecificTrainingAreaPrice
+                : AreaPrice;
+
+        /// <summary>
+        /// Compra uma área nova - só cobra os Bits (preço depende do tipo, ver GetAreaPrice).
+        /// O posicionamento em si (escolher em qual hexágono disponível ela entra) acontece
+        /// depois, no Center (ver Center.StartAreaPlacement, disparado pelo evento
+        /// ShopScreen.AreaPurchased).
+        /// </summary>
+        public SystemResult BuyArea(CenterAreaType areaType)
+        {
+            int price = GetAreaPrice(areaType);
+
+            if (Save.Center.Bits < price)
+                return SystemResult.Fail("Bits insuficientes.");
+
+            Save.Center.Bits -= price;
 
             return SystemResult.Ok();
         }
@@ -513,6 +829,39 @@ namespace ProjetoDC.Scripts.Managers
             CenterService.AddDigimon(digimon);
 
             GD.Print($"{data.Name} adicionado ao Center.");
+        }
+
+        /// <summary>
+        /// Remove um Digimon permanentemente do Center (ex.: pra liberar capacidade em
+        /// <see cref="EvolutionBlockedByCapacity"/>). Se ele era o PlayerDigimon selecionado,
+        /// passa a seleção pra outro do roster (ou nenhum, se o Center ficou vazio).
+        /// </summary>
+        public bool DeleteDigimon(DigimonInstance digimon)
+        {
+            if (digimon == null)
+                return false;
+
+            // Nunca deixa o jogador apagar o próprio último Digimon - EnsureCenterCanContinue
+            // só cobre o caso de já ter ficado vazio (cria um ovo novo), então é melhor nem
+            // deixar chegar nesse estado.
+            if (CenterService.GetAllDigimons().Count <= 1)
+            {
+                GD.Print("Não é possível deletar o único Digimon do Center.");
+                return false;
+            }
+
+            CenterService.RemoveDigimon(digimon);
+
+            if (PlayerDigimon == digimon)
+            {
+                PlayerDigimon = CenterService.GetAllDigimons().FirstOrDefault();
+
+                PlayerDigimonChanged?.Invoke();
+            }
+
+            DigimonDeleted?.Invoke(digimon);
+
+            return true;
         }
 
         public void EnsureCenterCanContinue()

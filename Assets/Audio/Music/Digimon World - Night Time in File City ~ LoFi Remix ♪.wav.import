@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cekiwwjlebmvs"
+path="res://.godot/imported/Digimon World - Night Time in File City ~ LoFi Remix ♪.wav-5e8aeb1e66bcda21797138898ed6b2d2.sample"
+
+[deps]
+
+source_file="res://Assets/Audio/Music/Digimon World - Night Time in File City ~ LoFi Remix ♪.wav"
+dest_files=["res://.godot/imported/Digimon World - Night Time in File City ~ LoFi Remix ♪.wav-5e8aeb1e66bcda21797138898ed6b2d2.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

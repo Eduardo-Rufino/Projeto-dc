@@ -1,0 +1,20 @@
+{
+  "id": 56,
+  "code": "seraphimon",
+  "name": "Seraphimon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Light",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 600,
+    "physicalDamage": 60,
+    "physicalDefense": 100,
+    "specialDamage": 280,
+    "specialDefense": 115,
+    "speed": 130
+  }
+}

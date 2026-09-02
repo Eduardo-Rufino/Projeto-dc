@@ -1,0 +1,12 @@
+{
+  "Id": 4,
+  "Name": "Trio das Trevas",
+  "Description": "Time 3x3 de Digimons das trevas - Devimon, IceDevimon e Devidramon.",
+  "RecommendedLevel": 17,
+  "Opponents": [
+    { "DigimonId": 45, "Level": 17 },
+    { "DigimonId": 46, "Level": 17 },
+    { "DigimonId": 47, "Level": 17 }
+  ],
+  "CapacityReward": 8
+}

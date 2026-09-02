@@ -74,9 +74,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -230.0
-offset_top = -220.0
+offset_top = -290.0
 offset_right = 230.0
-offset_bottom = 220.0
+offset_bottom = 290.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_window")
@@ -119,133 +119,137 @@ text = "💰 1000"
 [node name="HSeparator" type="HSeparator" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ItemsContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer"]
+[node name="ItemsScroll" type="ScrollContainer" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="ItemsContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="MeatRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer"]
+[node name="MeatRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_item")
 
-[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow"]
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 vertical_alignment = 1
 text = "🍖"
 
-[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_constants/separation = 0
 
-[node name="MeatItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer/InfoContainer"]
+[node name="MeatItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad/HBoxContainer/InfoContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "Carne"
 
-[node name="MeatLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer/InfoContainer"]
+[node name="MeatLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad/HBoxContainer/InfoContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
 theme_override_font_sizes/font_size = 10
 text = "Você tem: 100"
 
-[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MeatPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+[node name="MeatPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 12
 text = "20 Bits"
 
-[node name="BuyMeatButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer"]
+[node name="BuyMeatButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad/HBoxContainer"]
 custom_minimum_size = Vector2(84, 0)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 text = "Comprar"
 
-[node name="MedicineRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer"]
+[node name="MedicineRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_item")
 
-[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow"]
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 vertical_alignment = 1
 text = "💊"
 
-[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_constants/separation = 0
 
-[node name="MedicineItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer/InfoContainer"]
+[node name="MedicineItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad/HBoxContainer/InfoContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "Remédio"
 
-[node name="MedicineLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer/InfoContainer"]
+[node name="MedicineLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad/HBoxContainer/InfoContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
 theme_override_font_sizes/font_size = 10
 text = "Você tem: 50"
 
-[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MedicinePriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
+[node name="MedicinePriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 12
 text = "100 Bits"
 
-[node name="BuyMedicineButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
+[node name="BuyMedicineButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad/HBoxContainer"]
 custom_minimum_size = Vector2(84, 0)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 text = "Comprar"
 
-[node name="EggRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer"]
+[node name="EggRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_item")
 
-[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow"]
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="IconTexture" type="TextureRect" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+[node name="IconTexture" type="TextureRect" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
 size_flags_vertical = 4
@@ -253,37 +257,576 @@ texture_filter = 1
 texture = SubResource("AtlasTexture_egg")
 stretch_mode = 5
 
-[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_constants/separation = 0
 
-[node name="EggItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer/InfoContainer"]
+[node name="EggItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer/InfoContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "Digiovo"
 
-[node name="EggSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer/InfoContainer"]
+[node name="EggSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer/InfoContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
 theme_override_font_sizes/font_size = 10
-text = "Botamon"
+text = "Digimon Baby aleatório"
 
-[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="EggPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+[node name="EggPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 12
 text = "500 Bits"
 
-[node name="BuyEggButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer"]
+[node name="BuyEggButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
 custom_minimum_size = Vector2(84, 0)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 text = "Comprar"
+
+[node name="TrainingAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "🏋"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Área de Treino"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Nova área pro Center"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "1500 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="TrainingHpAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingHpAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingHpAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingHpAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "❤️"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingHpAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingHpAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Treino de HP"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingHpAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Treino focado - bônus de HP"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingHpAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingHpAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "5000 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingHpAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="TrainingAttackAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAttackAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAttackAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAttackAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "⚔️"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAttackAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAttackAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Treino de Ataque"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAttackAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Treino focado - bônus de Ataque"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAttackAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAttackAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "5000 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingAttackAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="TrainingDefenseAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingDefenseAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingDefenseAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingDefenseAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "🛡️"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingDefenseAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingDefenseAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Treino de Defesa"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingDefenseAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Treino focado - bônus de Defesa"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingDefenseAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingDefenseAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "5000 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingDefenseAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="TrainingSpecialAttackAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialAttackAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialAttackAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialAttackAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "✨"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialAttackAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialAttackAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Treino de Ataque Especial"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialAttackAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Treino focado - bônus de Ataque Especial"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialAttackAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialAttackAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "5000 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialAttackAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="TrainingSpecialDefenseAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialDefenseAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialDefenseAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialDefenseAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "🔷"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialDefenseAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialDefenseAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Treino de Defesa Especial"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialDefenseAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Treino focado - bônus de Defesa Especial"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialDefenseAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialDefenseAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "5000 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpecialDefenseAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="TrainingSpeedAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpeedAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpeedAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpeedAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "⚡"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpeedAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpeedAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Treino de Velocidade"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpeedAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Treino focado - bônus de Velocidade"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpeedAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpeedAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "5000 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/TrainingSpeedAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="DormitoryAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/DormitoryAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/DormitoryAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/DormitoryAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "🛏"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/DormitoryAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/DormitoryAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Dormitório"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/DormitoryAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Nova área pro Center"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/DormitoryAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/DormitoryAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "1500 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/DormitoryAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="RestaurantAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/RestaurantAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/RestaurantAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/RestaurantAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "🍴"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/RestaurantAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/RestaurantAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Restaurante"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/RestaurantAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Nova área pro Center"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/RestaurantAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/RestaurantAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "1500 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/RestaurantAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="HospitalAreaRow" type="PanelContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/HospitalAreaRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/HospitalAreaRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/HospitalAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "⚕"
+
+[node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/HospitalAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="AreaItemLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/HospitalAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Hospital"
+
+[node name="AreaSubLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/HospitalAreaRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Nova área pro Center"
+
+[node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/HospitalAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AreaPriceLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/HospitalAreaRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "1500 Bits"
+
+[node name="BuyAreaButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/HospitalAreaRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="MessageLabel" type="Label" parent="Window/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.4, 0.35, 1)
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+autowrap_mode = 2
+text = ""
 
 [node name="HSeparator2" type="HSeparator" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -295,7 +838,7 @@ size_flags_horizontal = 4
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 text = "Voltar"
 
-[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/MeatRow/Pad/HBoxContainer/BuyMeatButton" to="." method="OnBuyMeatPressed"]
-[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/MedicineRow/Pad/HBoxContainer/BuyMedicineButton" to="." method="OnBuyMedicinePressed"]
-[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsContainer/EggRow/Pad/HBoxContainer/BuyEggButton" to="." method="OnBuyEggPressed"]
+[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad/HBoxContainer/BuyMeatButton" to="." method="OnBuyMeatPressed"]
+[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad/HBoxContainer/BuyMedicineButton" to="." method="OnBuyMedicinePressed"]
+[connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer/BuyEggButton" to="." method="OnBuyEggPressed"]
 [connection signal="pressed" from="Window/MarginContainer/VBoxContainer/BackButton" to="." method="OnBackPressed"]

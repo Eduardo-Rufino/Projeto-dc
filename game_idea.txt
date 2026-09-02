@@ -1,0 +1,513 @@
+Projeto - Digimon Training Center (Nome Temporário)
+Visão Geral
+
+O jogo é um fangame inspirado principalmente no Digimon Championship, com foco na criação de gerações de Digimon e no desenvolvimento permanente de um Centro de Treinamento.
+
+O objetivo do jogador não é criar um único Digimon perfeito, mas construir um Centro cada vez mais eficiente, capaz de formar gerações mais fortes e desbloquear evoluções que antes eram impossíveis.
+
+Filosofia do Projeto
+O verdadeiro protagonista é o Centro de Treinamento
+
+Os Digimon são temporários.
+
+Eles:
+
+Nascem.
+Treinam.
+Evoluem.
+Lutam.
+Envelhecem.
+Morrem.
+
+O Centro permanece.
+
+Ele evolui constantemente e representa a progressão permanente do jogador.
+
+O jogador nunca perde progresso. Ele apenas perde um Digimon.
+
+Filosofia de Progressão
+
+Cada geração deve ser melhor que a anterior.
+
+O jogador deve sentir que:
+
+chega mais rápido nas evoluções;
+possui melhores equipamentos;
+possui mais NPCs;
+possui mais opções de treinamento;
+consegue acessar áreas novas;
+consegue alcançar evoluções antes impossíveis.
+Regra Principal de Design
+
+Toda mecânica do jogo deve fortalecer pelo menos um destes pilares:
+
+Progressão permanente do Centro.
+Progressão temporária dos Digimon.
+
+Caso uma mecânica não fortaleça nenhum deles, sua necessidade deve ser reavaliada.
+
+Loop Principal
+Chocar Ovo
+
+↓
+
+Treinar
+
+↓
+
+Explorar
+
+↓
+
+Ganhar níveis
+
+↓
+
+Evoluir
+
+↓
+
+Escolher uma atividade
+
+├── Exploração
+│      ↓
+│  XP
+│  NPCs
+│  Quests
+│  Melhorias
+│
+└── Torneios
+       ↓
+   Dinheiro
+   Itens
+   Novas Ligas
+
+↓
+
+Melhorar Centro
+
+↓
+
+Nova geração
+Progressão
+Progressão Temporária
+
+Representada pelos Digimon.
+
+Inclui:
+
+atributos;
+nível;
+evolução;
+idade;
+felicidade;
+disciplina;
+stamina;
+fome.
+Progressão Permanente
+
+Representada pelo Centro.
+
+Inclui:
+
+construções;
+NPCs;
+equipamentos;
+capacidade;
+novas áreas;
+ovos;
+torneios;
+melhorias gerais.
+Sistemas
+Banco de Dados
+
+Armazena dados fixos.
+
+Digimon
+Ovos
+Evoluções
+Passivas
+NPCs
+Construções
+Áreas
+Torneios
+Itens
+
+Formato inicial:
+
+JSON.
+
+Save / Load
+
+Armazena:
+
+progresso;
+Digimon;
+Centro;
+inventário;
+NPCs;
+construções;
+áreas desbloqueadas.
+
+Formato:
+
+JSON.
+
+Sistema de Ovos
+Compra de ovos.
+Seleção.
+Incubação.
+Nascimento.
+Sistema de Digimon
+
+Cada Digimon possui:
+
+espécie;
+estágio;
+role;
+nível;
+HP;
+ataque físico;
+defesa física;
+ataque especial;
+defesa especial;
+velocidade;
+peso;
+idade;
+felicidade;
+disciplina;
+fome;
+stamina;
+passivas;
+custo de capacidade.
+
+Futuramente:
+
+personalidade;
+traits.
+Sistema de Roles
+
+As Roles definem o crescimento natural do Digimon.
+
+Não representam necessariamente seu comportamento em batalha.
+
+Responsáveis por:
+
+crescimento de atributos por nível;
+afinidade evolutiva;
+identidade de combate.
+
+Roles iniciais:
+
+Tank
+Guerreiro
+Assassino
+Atirador
+Suporte
+
+Futuramente:
+
+Tank/Suporte
+Bruiser
+Debuffer
+Controlador
+Invocador
+outras.
+
+As Roles devem ser facilmente expansíveis.
+
+O balanceamento será feito primeiro nas Roles e depois nos Digimon.
+
+Sistema de Atributos
+
+Os atributos finais são compostos por:
+
+Status Base
+
++
+
+Ganho por nível (Role)
+
++
+
+Treinamento
+
++
+
+Passivas
+
++
+
+Buffs
+
++
+
+Equipamentos (futuro)
+
+O treinamento continua sendo a principal forma de personalizar um Digimon.
+
+O nível diferencia naturalmente cada espécie.
+
+Sistema de Treinamento
+
+Responsável principalmente pelos atributos.
+
+Inclui:
+
+salas;
+equipamentos;
+sucesso/falha;
+consumo de stamina;
+consumo de fome;
+consumo de felicidade.
+
+Não é a principal fonte de nível.
+
+Sistema de Exploração
+
+Possui:
+
+mapas;
+NPCs;
+Digimon selvagens;
+eventos;
+quests.
+
+Funções principais:
+
+ganhar experiência;
+aumentar nível;
+desbloquear NPCs;
+liberar melhorias do Centro;
+desbloquear novas áreas.
+Sistema de Evolução
+
+Cada evolução possui requisitos.
+
+Podem incluir:
+
+nível;
+atributos;
+disciplina;
+felicidade;
+peso;
+idade;
+condições especiais;
+melhorias do Centro.
+
+Nem todas possuem a mesma dificuldade.
+
+Existirão evoluções:
+
+Early Game.
+Mid Game.
+Late Game.
+
+A afinidade da Role influencia o quão natural é atingir determinada evolução.
+
+Ainda assim, qualquer caminho deve ser possível com investimento suficiente.
+
+Sistema de Batalha
+
+Primeira versão:
+
+sem movimentação;
+ataques automáticos;
+velocidade determina frequência dos ataques.
+
+Versão futura:
+
+movimentação semelhante ao Championship;
+esquivas;
+IA mais complexa;
+batalhas 3x3.
+Sistema de Torneios
+
+Principal objetivo do jogo.
+
+Tipos:
+
+comuns;
+especiais;
+ligas;
+desafios.
+
+Podem possuir restrições como:
+
+limite de capacidade;
+estágio máximo;
+idade;
+sem itens;
+equipes específicas.
+
+As restrições existem para manter Digimon de todos os níveis relevantes.
+
+Premiações:
+
+dinheiro;
+itens;
+NPCs;
+melhorias;
+aumento de capacidade;
+desbloqueio de conteúdo.
+Sistema do Centro
+
+Principal sistema permanente.
+
+Inclui:
+
+construções;
+NPCs;
+equipamentos;
+salas;
+melhorias;
+limite de capacidade;
+desbloqueios.
+
+Toda melhoria facilita futuras gerações.
+
+Sistema de Capacidade
+
+Representa a infraestrutura do Centro.
+
+Cada Digimon possui um custo.
+
+Esse custo depende de:
+
+estágio evolutivo;
+modificador individual da espécie.
+
+Exemplo:
+
+Baby = 1
+
+Rookie = 2
+
+Champion = 4
+
+Ultimate = 7
+
+Mega = 10
+
+Depois aplica-se o modificador.
+
+Exemplo:
+
+Examon
+
+Mega (10)
+
+Modificador (+8)
+
+=
+
+18
+
+PrinceMamemon
+
+Mega (10)
+
+Modificador (+0)
+
+=
+
+10
+
+Isso representa:
+
+alimentação;
+espaço;
+equipamentos;
+manutenção.
+Filosofia de Balanceamento
+
+Todo Digimon deve possuir um motivo para existir.
+
+O objetivo não é que todos tenham o mesmo poder.
+
+O objetivo é que todos sejam escolhas válidas.
+
+Cada Digimon deve se destacar por uma combinação de:
+
+passivas;
+custo;
+role;
+facilidade de evolução;
+utilidade em torneios;
+sinergias.
+
+Nenhum Digimon deve ser estritamente melhor que outro no mesmo papel.
+
+Arquitetura Inicial
+Projeto
+
+↓
+
+GameManager
+
+↓
+
+Banco de Dados
+
+↓
+
+Save
+
+↓
+
+Sistema de Digimon
+
+↓
+
+Sistema de Ovos
+
+↓
+
+Centro
+
+↓
+
+Treinamento
+
+↓
+
+Batalha
+
+↓
+
+Evolução
+
+↓
+
+Exploração
+
+↓
+
+Torneios
+Dependências
+Sistema	Depende de
+Banco de Dados	Nenhum
+Save/Load	Banco de Dados
+Sistema de Digimon	Banco de Dados
+Sistema de Ovos	Sistema de Digimon
+Centro	Sistema de Digimon
+Treinamento	Sistema de Digimon
+Batalha	Sistema de Digimon
+Evolução	Sistema de Digimon
+Exploração	Batalha
+Torneios	Batalha
+Princípios de Desenvolvimento
+Todo sistema deve ter apenas uma responsabilidade.
+O código deve ser orientado à expansão.
+Nenhum Digimon terá código exclusivo.
+Todas as informações dos Digimon virão do banco de dados.
+Primeiro fazer funcionar, depois otimizar.
+Evitar duplicação de código.
+Sempre implementar primeiro a menor versão funcional (MVP).
+Balancear primeiro as Roles, depois os Digimon.
+Novos Digimon devem ser adicionados principalmente por meio do banco de dados, reduzindo a necessidade de alterações no código.
+Minha última sugestão para "congelar" o escopo
+
+Eu adicionaria uma observação no final:
+
+Versão 1.0 (MVP): o objetivo não é ter centenas de Digimon ou todos os sistemas imaginados. O objetivo é validar o ciclo principal do jogo: chocar → treinar → explorar → evoluir → disputar torneios → melhorar o Centro → iniciar uma nova geração.

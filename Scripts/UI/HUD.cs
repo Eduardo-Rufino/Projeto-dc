@@ -10,11 +10,24 @@ namespace ProjetoDC.Scripts.UI
         private Label _dateLabel;
         private Label _calendarLabel;
         private Label _clockLabel;
+        private Button _skipSleepButton;
+        private Button _speedButton;
+        private AnalogClock _analogClock;
+        private MiniMap _miniMap;
         private Label _bitsLabel;
         private Label _capacityLabel;
         private Label _digimonCountLabel;
         private Label _selectedDigimonNameLabel;
+        private LineEdit _selectedDigimonNameEdit;
+        private Button _deleteDigimonButton;
+        private ConfirmationDialog _deleteDigimonConfirmDialog;
+        private AcceptDialog _deleteDigimonBlockedDialog;
+        private DigimonInstance _pendingDeleteDigimon;
         private Label _selectedDigimonLevelLabel;
+        private Label _selectedDigimonXpLabel;
+        private ProgressBar _selectedDigimonXpBar;
+        private TextureRect _attributeIcon;
+        private TextureRect _elementIcon;
         private Label _hpLabel;
         private Label _staminaLabel;
         private Label _hungerLabel;
@@ -33,6 +46,13 @@ namespace ProjetoDC.Scripts.UI
         private Button _cleanButton;
         private Button _shopButton;
         private Button _trophyButton;
+        private Button _exitButton;
+        private Button _inventoryButton;
+        private Button _tutorialButton;
+        private Button _evolutionGuideButton;
+        private Button _baseEditorButton;
+        private Button _settingsButton;
+        private ConfirmationDialog _exitConfirmDialog;
 
         private Control _digimonStatusPage1;
         private Control _digimonStatusPage2;
@@ -52,18 +72,46 @@ namespace ProjetoDC.Scripts.UI
         private DigimonInstance _inspectedDigimon;
         private DigimonSprite _selectedDigimonSprite;
 
+        private Panel _warningToast;
+        private Label _warningLabel;
+
         public override void _Ready()
         {
+            // Precisa continuar rodando com a árvore pausada - é a própria HUD quem decide
+            // pausar (ver _Process/_center.IsBlockingScreenOpen), então ela não pode travar
+            // junto, senão nunca detectaria a tela secundária fechando pra despausar de volta.
+            ProcessMode = ProcessModeEnum.Always;
+
             _dateLabel = GetNode<Label>(
-                "TopBar/DateTime/Panel/VBoxContainer/DateLabel"
+                "TopBar/DateTime/Panel/HBoxContainer/VBoxContainer/DateLabel"
             );
 
             _calendarLabel = GetNode<Label>(
-                "TopBar/DateTime/Panel/VBoxContainer/CalendarLabel"
+                "TopBar/DateTime/Panel/HBoxContainer/VBoxContainer/CalendarLabel"
             );
 
             _clockLabel = GetNode<Label>(
-                "TopBar/DateTime/Panel/VBoxContainer/ClockLabel"
+                "TopBar/DateTime/Panel/HBoxContainer/VBoxContainer/ClockLabel"
+            );
+
+            _skipSleepButton = GetNode<Button>(
+                "TopBar/DateTime/Panel/HBoxContainer/SkipSleepButton"
+            );
+
+            _skipSleepButton.Pressed += OnSkipSleepButtonPressed;
+
+            _speedButton = GetNode<Button>(
+                "TopBar/DateTime/Panel/HBoxContainer/SpeedButton"
+            );
+
+            _speedButton.Pressed += OnSpeedButtonPressed;
+
+            _analogClock = GetNode<AnalogClock>(
+                "TopBar/DateTime/Panel/HBoxContainer/AnalogClock"
+            );
+
+            _miniMap = GetNode<MiniMap>(
+                "TopBar/CenterMap/Panel/MiniMap"
             );
 
             _bitsLabel = GetNode<Label>(
@@ -79,12 +127,43 @@ namespace ProjetoDC.Scripts.UI
             );
 
             _selectedDigimonNameLabel = GetNode<Label>(
-                "TopBar/SelectedDigimon/Panel/HBoxContainer/InfoContainer/NameLabel"
+                "TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/NameRow/NameSlot/NameLabel"
             );
 
-            _selectedDigimonLevelLabel = GetNode<Label>(
-                "TopBar/SelectedDigimon/Panel/HBoxContainer/InfoContainer/LevelLabel"
+            _selectedDigimonNameEdit = GetNode<LineEdit>(
+                "TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/NameRow/NameSlot/NameLineEdit"
             );
+
+            _selectedDigimonNameLabel.GuiInput += OnSelectedDigimonNameLabelGuiInput;
+            _selectedDigimonNameEdit.TextSubmitted += OnSelectedDigimonNameSubmitted;
+            _selectedDigimonNameEdit.FocusExited += OnSelectedDigimonNameEditFocusExited;
+
+            _deleteDigimonButton = GetNode<Button>(
+                "TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/NameRow/DeleteButton"
+            );
+
+            _deleteDigimonButton.Pressed += OnDeleteDigimonButtonPressed;
+
+            _selectedDigimonLevelLabel = GetNode<Label>(
+                "TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/LevelRow/LevelLabel"
+            );
+
+            _selectedDigimonXpLabel = GetNode<Label>(
+                "TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/XPContainer/XPLabel"
+            );
+
+            _selectedDigimonXpBar = GetNode<ProgressBar>(
+                "TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/XPContainer/XPBar"
+            );
+
+            _attributeIcon = GetNode<TextureRect>(
+                "TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/LevelRow/TypeIconsRow/AttributeIcon"
+            );
+
+            _elementIcon = GetNode<TextureRect>(
+                "TopBar/SelectedDigimon/Panel/HBoxContainer/LeftPad/InfoContainer/LevelRow/TypeIconsRow/ElementIcon"
+            );
+
             _selectedDigimonSprite = GetNode<DigimonSprite>(
                 "TopBar/SelectedDigimon/Panel/HBoxContainer/SpritePanel/DigimonSprite"
             );
@@ -168,6 +247,9 @@ namespace ProjetoDC.Scripts.UI
 
             _digimonStatusPageButton.Pressed += OnDigimonStatusPageButtonPressed;
 
+            _warningToast = GetNode<Panel>("WarningToast");
+            _warningLabel = GetNode<Label>("WarningToast/Label");
+
             _feedButton = GetNode<Button>(
                 "ControlBar/FeedButton"
             );
@@ -186,8 +268,7 @@ namespace ProjetoDC.Scripts.UI
                 "ControlBar/CleanButton"
             );
 
-            _cleanButton.ButtonDown += OnCleanButtonDown;
-            _cleanButton.ButtonUp += OnCleanButtonUp;
+            _cleanButton.Pressed += OnCleanButtonPressed;
 
             _shopButton = GetNode<Button>(
                 "ControlBar/ShopButton"
@@ -201,14 +282,49 @@ namespace ProjetoDC.Scripts.UI
 
             _trophyButton.Pressed += OnTrophyButtonPressed;
 
+            _settingsButton = GetNode<Button>(
+                "ControlBar/SettingsButton"
+            );
+
+            _settingsButton.Pressed += OnSettingsButtonPressed;
+
+            _exitButton = GetNode<Button>(
+                "ControlBar/ExitButton"
+            );
+
+            _exitButton.Pressed += OnExitButtonPressed;
+
+            _inventoryButton = GetNode<Button>(
+                "ControlBar/InventoryButton"
+            );
+
+            _inventoryButton.Pressed += OnInventoryButtonPressed;
+
+            _tutorialButton = GetNode<Button>(
+                "ControlBar/ActionButton"
+            );
+
+            _tutorialButton.Pressed += OnTutorialButtonPressed;
+
+            _evolutionGuideButton = GetNode<Button>(
+                "ControlBar/ActionButton2"
+            );
+
+            _evolutionGuideButton.Pressed += OnEvolutionGuideButtonPressed;
+
+            _baseEditorButton = GetNode<Button>(
+                "ControlBar/ActionButton3"
+            );
+
+            _baseEditorButton.Pressed += OnBaseEditorButtonPressed;
+
             // O GameManager pode ainda estar terminando sua inicialização.
             CallDeferred(nameof(ConnectToGameManager));
         }
 
         public override void _Process(double delta)
         {
-            if (_inspectedDigimon == null)
-                return;
+            SyncPauseWithBlockingScreens();
 
             _infoRefreshTimer -= delta;
 
@@ -217,7 +333,36 @@ namespace ProjetoDC.Scripts.UI
 
             _infoRefreshTimer = InfoRefreshInterval;
 
-            RefreshInspectedDigimonInfo();
+            // Capacidade/Bits/contagem de Digimons podem mudar por várias fontes (comprar,
+            // ovo chocar, Digimon evoluir de estágio, etc.) sem um evento dedicado pra cada
+            // uma - poll simples resolve sem precisar instrumentar cada ponto de mutação.
+            RefreshCenterStatus();
+
+            // Não chama enquanto o campo de apelido está aberto: RefreshInspectedDigimonInfo
+            // cancela a edição em andamento (CancelNameEdit), então esse poll periódico
+            // fechava a caixa de edição sozinho a cada 0.2s, antes do jogador conseguir
+            // digitar qualquer coisa.
+            if (_inspectedDigimon != null && !_selectedDigimonNameEdit.Visible)
+                RefreshInspectedDigimonInfo();
+        }
+
+        /// <summary>Pausa o resto do jogo (câmera, Digimons, relógio, etc.) sempre que
+        /// qualquer tela secundária está aberta por cima do Center (loja, inventário,
+        /// tutorial, seleção de time, etc.) - diálogos de confirmação não contam (ver
+        /// Center.IsBlockingScreenOpen). Cada uma dessas telas precisa de ProcessMode.Always
+        /// pra continuar clicável mesmo com a árvore pausada.
+        /// Usa GameManager.Request/ReleasePause (motivo "screen") em vez de mexer direto em
+        /// GetTree().Paused - assim não atropela outros motivos de pausa que já existem
+        /// (batalha, animação de evolução), que ficam ativos independente disso.</summary>
+        private void SyncPauseWithBlockingScreens()
+        {
+            if (_center == null || GameManager.Instance == null)
+                return;
+
+            if (_center.IsBlockingScreenOpen())
+                GameManager.Instance.RequestPause("screen");
+            else
+                GameManager.Instance.ReleasePause("screen");
         }
 
         private void ConnectToGameManager()
@@ -238,10 +383,23 @@ namespace ProjetoDC.Scripts.UI
 
             GameManager.Instance.ClockSystem.MinutePassed += RefreshDateTime;
 
-            _center.DigimonInspected += RefreshSelectedDigimon;
+            // Sem isso, o painel de status (nome/nível/HP/etc.) só era atualizado quando o
+            // jogador clicava no próprio Digimon no mundo (ver DigimonWorld -> Center.
+            // InspectDigimon -> HUD.InspectDigimon) - início de jogo novo, save carregado e
+            // troca de PlayerDigimon (ex.: deletar o selecionado) deixavam o painel preso no
+            // texto de placeholder do .tscn ("Botamon Lv. 1") até isso acontecer.
+            GameManager.Instance.PlayerDigimonChanged += OnPlayerDigimonChanged;
+
+            if (GameManager.Instance.PlayerDigimon != null)
+                InspectDigimon(GameManager.Instance.PlayerDigimon);
 
             RefreshDateTime();
             RefreshCenterStatus();
+        }
+
+        private void OnPlayerDigimonChanged()
+        {
+            InspectDigimon(GameManager.Instance.PlayerDigimon);
         }
 
         private void RefreshDateTime()
@@ -252,6 +410,22 @@ namespace ProjetoDC.Scripts.UI
             _calendarLabel.Text = "Calendário";
             _clockLabel.Text =
                 $"{world.CurrentHour:00}:{world.CurrentMinute:00}";
+
+            _analogClock.SetTime(world.CurrentHour, world.CurrentMinute);
+
+            _skipSleepButton.Disabled = !GameManager.Instance.CanSkipSleep;
+
+            _speedButton.ButtonPressed = GameManager.Instance.IsClockSpeedDoubled;
+        }
+
+        private void OnSkipSleepButtonPressed()
+        {
+            GameManager.Instance.SkipSleep();
+        }
+
+        private void OnSpeedButtonPressed()
+        {
+            GameManager.Instance.ToggleClockSpeedDoubled();
         }
 
         public override void _ExitTree()
@@ -261,9 +435,9 @@ namespace ProjetoDC.Scripts.UI
                 GameManager.Instance.ClockSystem.MinutePassed -= RefreshDateTime;
             }
 
-            if (_center != null)
+            if (GameManager.Instance != null)
             {
-                _center.DigimonInspected -= RefreshSelectedDigimon;
+                GameManager.Instance.PlayerDigimonChanged -= OnPlayerDigimonChanged;
             }
 
             if (_inspectedDigimon != null)
@@ -282,24 +456,9 @@ namespace ProjetoDC.Scripts.UI
                 $"Capacidade: {center.CapacityUsed} / {center.CapacityLimit}";
             _digimonCountLabel.Text =
                 $"Digimons: {center.Digimons.Count}";
-        }
 
-        private void RefreshSelectedDigimon(DigimonInstance digimon)
-        {
-            _inspectedDigimon = digimon;
-
-            RefreshInspectedDigimonInfo();
-
-            if (_inspectedDigimon == null)
-                return;
-
-            _selectedDigimonSprite.SetDigimon(
-                _inspectedDigimon.BaseData.Code
-            );
-
-            _selectedDigimonSprite.RefreshState(
-                _inspectedDigimon
-            );
+            if (_center != null)
+                _miniMap.RefreshAreas(_center.GetAreas());
         }
 
         private void OnInspectedDigimonActivityChanged(DigimonActivity activity)
@@ -352,12 +511,110 @@ namespace ProjetoDC.Scripts.UI
             );
         }
 
+        /// <summary>Aviso temporário no topo da tela (ex.: Center.IsSpecificTrainingAreaOccupied
+        /// recusando um segundo Digimon numa área de treino específica) - some sozinho depois
+        /// de alguns segundos, mesmo padrão do ShopScreen.ShowMessage.</summary>
+        public void ShowWarning(string message)
+        {
+            if (_warningToast == null || _warningLabel == null)
+                return;
+
+            _warningLabel.Text = message;
+            _warningToast.Visible = true;
+
+            GetTree().CreateTimer(3.0).Timeout += () =>
+            {
+                if (IsInstanceValid(_warningToast))
+                    _warningToast.Visible = false;
+            };
+        }
+
+        private void OnSelectedDigimonNameLabelGuiInput(InputEvent @event)
+        {
+            if (_inspectedDigimon == null)
+                return;
+
+            if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
+            {
+                AcceptEvent();
+                StartNameEdit();
+            }
+        }
+
+        private void StartNameEdit()
+        {
+            _selectedDigimonNameEdit.Text = _inspectedDigimon.DisplayName;
+
+            _selectedDigimonNameLabel.Visible = false;
+            _selectedDigimonNameEdit.Visible = true;
+
+            // GrabFocus() direto aqui, no meio do próprio evento de clique que trocou a
+            // visibilidade Label->LineEdit, perde a disputa com o input ainda em processamento
+            // (o LineEdit nunca fica de fato focado, e o clique seguinte já dispara
+            // FocusExited/CommitNameEdit no mesmo instante). Adiar pra depois do input atual
+            // terminar de processar resolve.
+            CallDeferred(nameof(FocusNameEdit));
+        }
+
+        private void FocusNameEdit()
+        {
+            _selectedDigimonNameEdit.GrabFocus();
+            _selectedDigimonNameEdit.SelectAll();
+        }
+
+        private void OnSelectedDigimonNameSubmitted(string newText)
+        {
+            CommitNameEdit();
+        }
+
+        private void OnSelectedDigimonNameEditFocusExited()
+        {
+            CommitNameEdit();
+        }
+
+        /// <summary>Aplica o texto digitado como Nickname (só exibição - ver DigimonInstance.
+        /// DisplayName) e volta a mostrar o Label. Texto vazio ou igual ao nome da espécie
+        /// limpa o apelido, voltando a mostrar o nome padrão.</summary>
+        private void CommitNameEdit()
+        {
+            if (!_selectedDigimonNameEdit.Visible)
+                return;
+
+            if (_inspectedDigimon != null)
+            {
+                string newName = _selectedDigimonNameEdit.Text.Trim();
+
+                _inspectedDigimon.Nickname =
+                    newName.Length == 0 || newName == _inspectedDigimon.BaseData.Name
+                        ? null
+                        : newName;
+
+                _selectedDigimonNameLabel.Text = _inspectedDigimon.DisplayName;
+            }
+
+            _selectedDigimonNameEdit.Visible = false;
+            _selectedDigimonNameLabel.Visible = true;
+        }
+
+        private void CancelNameEdit()
+        {
+            _selectedDigimonNameEdit.Visible = false;
+            _selectedDigimonNameLabel.Visible = true;
+        }
+
         private void RefreshInspectedDigimonInfo()
         {
+            CancelNameEdit();
+
             if (_inspectedDigimon == null)
             {
                 _selectedDigimonNameLabel.Text = "Nenhum Digimon";
                 _selectedDigimonLevelLabel.Text = "";
+                _selectedDigimonXpLabel.Text = "";
+                _selectedDigimonXpBar.Value = 0;
+
+                _attributeIcon.Texture = null;
+                _elementIcon.Texture = null;
 
                 _hpLabel.Text = "";
                 _staminaLabel.Text = "";
@@ -367,14 +624,34 @@ namespace ProjetoDC.Scripts.UI
                 _happinessLabel.Text = "";
                 _disciplineLabel.Text = "";
 
+                _selectedDigimonSprite.Visible = false;
+                _deleteDigimonButton.Disabled = true;
+
                 return;
             }
 
+            _selectedDigimonSprite.Visible = true;
+            _deleteDigimonButton.Disabled = false;
+
             _selectedDigimonNameLabel.Text =
-                _inspectedDigimon.BaseData.Name;
+                _inspectedDigimon.DisplayName;
 
             _selectedDigimonLevelLabel.Text =
                 $"Lv. {_inspectedDigimon.Level}";
+
+            _selectedDigimonXpBar.MaxValue = _inspectedDigimon.ExperienceToNextLevel;
+            _selectedDigimonXpBar.Value = _inspectedDigimon.Experience;
+
+            _selectedDigimonXpLabel.Text =
+                $"EXP: {_inspectedDigimon.Experience}/{_inspectedDigimon.ExperienceToNextLevel}";
+
+            _attributeIcon.Texture = GD.Load<Texture2D>(
+                TypeIcons.GetPath(_inspectedDigimon.BaseData.Attribute)
+            );
+
+            _elementIcon.Texture = GD.Load<Texture2D>(
+                TypeIcons.GetPath(_inspectedDigimon.BaseData.Element)
+            );
 
             _hpBar.MaxValue = _inspectedDigimon.MaxHealthPoints;
             _hpBar.Value = _inspectedDigimon.CurrentHealthPoints;
@@ -460,14 +737,9 @@ namespace ProjetoDC.Scripts.UI
             _center.PlaceMedicine();
         }
 
-        private void OnCleanButtonDown()
+        private void OnCleanButtonPressed()
         {
-            _center.StartBroomPlacement();
-        }
-
-        private void OnCleanButtonUp()
-        {
-            _center.UseBroom();
+            _center.ToggleBroomMode();
         }
 
         private void OnShopButtonPressed()
@@ -477,7 +749,124 @@ namespace ProjetoDC.Scripts.UI
 
         private void OnTrophyButtonPressed()
         {
-            _center.OpenTeamSelection();
+            _center.OpenBattleTypeMenu();
+        }
+
+        private void OnInventoryButtonPressed()
+        {
+            _center.OpenInventory();
+        }
+
+        private void OnTutorialButtonPressed()
+        {
+            _center.OpenTutorial();
+        }
+
+        private void OnEvolutionGuideButtonPressed()
+        {
+            _center.OpenEvolutionGuide();
+        }
+
+        private void OnBaseEditorButtonPressed()
+        {
+            _center.OpenBaseEditor();
+        }
+
+        private void OnSettingsButtonPressed()
+        {
+            _center.OpenSettings();
+        }
+
+        private void OnDeleteDigimonButtonPressed()
+        {
+            if (_inspectedDigimon == null)
+                return;
+
+            if (GameManager.Instance.CenterService.GetAllDigimons().Count <= 1)
+            {
+                if (_deleteDigimonBlockedDialog == null)
+                {
+                    _deleteDigimonBlockedDialog = new AcceptDialog
+                    {
+                        Title = "Deletar Digimon"
+                    };
+
+                    AddChild(_deleteDigimonBlockedDialog);
+                }
+
+                _deleteDigimonBlockedDialog.DialogText =
+                    "Você não pode deletar seu único Digimon.";
+
+                _deleteDigimonBlockedDialog.PopupCentered();
+
+                return;
+            }
+
+            _pendingDeleteDigimon = _inspectedDigimon;
+
+            if (_deleteDigimonConfirmDialog == null)
+            {
+                _deleteDigimonConfirmDialog = new ConfirmationDialog
+                {
+                    Title = "Deletar Digimon"
+                };
+
+                AddChild(_deleteDigimonConfirmDialog);
+
+                _deleteDigimonConfirmDialog.Confirmed += OnDeleteDigimonConfirmed;
+            }
+
+            _deleteDigimonConfirmDialog.DialogText =
+                $"Tem certeza que quer deletar {_pendingDeleteDigimon.DisplayName}?\n" +
+                "Essa ação é PERMANENTE: o Digimon será apagado e não pode ser recuperado.";
+
+            _deleteDigimonConfirmDialog.PopupCentered();
+        }
+
+        private void OnDeleteDigimonConfirmed()
+        {
+            if (_pendingDeleteDigimon == null)
+                return;
+
+            GameManager.Instance.DeleteDigimon(_pendingDeleteDigimon);
+
+            if (_inspectedDigimon == _pendingDeleteDigimon)
+            {
+                _inspectedDigimon = null;
+                RefreshInspectedDigimonInfo();
+            }
+
+            _pendingDeleteDigimon = null;
+        }
+
+        private void OnExitButtonPressed()
+        {
+            if (_exitConfirmDialog == null)
+            {
+                _exitConfirmDialog = new ConfirmationDialog
+                {
+                    Title = "Fechar o jogo",
+                    DialogText = "Tem certeza que quer fechar o jogo?\n" +
+                        "As alterações serão salvas automaticamente ao fechar."
+                };
+
+                AddChild(_exitConfirmDialog);
+
+                _exitConfirmDialog.Confirmed += OnExitConfirmed;
+            }
+
+            _exitConfirmDialog.PopupCentered();
+        }
+
+        private void OnExitConfirmed()
+        {
+            // O save-ao-fechar normal (GameManager._Notification/NotificationWMCloseRequest)
+            // é disparado pelo SO fechando a janela, não necessariamente por GetTree().Quit()
+            // chamado por código - salva explicitamente aqui pra garantir, já que a própria
+            // mensagem de confirmação promete isso ao jogador.
+            GameManager.Instance?.SaveGame();
+
+            GetTree().Quit();
         }
     }
 }

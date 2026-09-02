@@ -1,0 +1,20 @@
+{
+  "id": 72,
+  "code": "angewomon",
+  "name": "Angewomon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Light",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 320,
+    "physicalDamage": 30,
+    "physicalDefense": 50,
+    "specialDamage": 165,
+    "specialDefense": 60,
+    "speed": 140
+  }
+}

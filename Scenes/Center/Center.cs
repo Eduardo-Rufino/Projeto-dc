@@ -10,6 +10,7 @@ using ProjetoDC.Scripts.World;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 public partial class Center : Node2D
 {
@@ -35,18 +36,48 @@ public partial class Center : Node2D
 
     private readonly Dictionary<Vector2I, CenterArea> _centerAreas = new();
 
-    private Vector2I _pendingAreaPosition;
+    private CenterAreaType? _pendingPurchasedAreaType;
+
+    // True quando o posicionamento em andamento veio do inventário de bases (BaseEditorScreen)
+    // em vez de uma compra nova na loja - ver StartAreaPlacementFromInventory/EndAreaPlacement.
+    private bool _pendingPlacementFromInventory;
 
     private List<CenterExpansionSlot> _expansionSlots = new();
 
     private Node2D _digimonsContainer;
     private Node2D _expansionSlotsVisual;
 
-    private AreaBuildMenu _areaBuildMenu;
+    private Camera2D _camera;
+    private bool _isPanningCamera;
+
+    private const float MinCameraZoom = 0.35f;
+    private const float MaxCameraZoom = 1.5f;
+    private const float CameraZoomStep = 0.1f;
+
     private HUD _hud;
     private ShopScreen _shopScreen;
     private TeamSelectionScreen _teamSelectionScreen;
+    private BattleTypeScreen _battleTypeScreen;
+    private TournamentListScreen _tournamentListScreen;
+
+    // Pra qual tela o botão Voltar da TeamSelectionScreen deve retornar - varia conforme
+    // ela foi aberta pela Batalha Livre (BattleTypeScreen) ou por um campeonato específico
+    // (TournamentListScreen).
+    private Control _teamSelectionReturnScreen;
+    private EvolutionCapacityScreen _evolutionCapacityScreen;
+    private EvolutionOverlay _evolutionOverlay;
+    private InventoryScreen _inventoryScreen;
+    private TutorialScreen _tutorialScreen;
+    private EvolutionGuideScreen _evolutionGuideScreen;
+    private BaseEditorScreen _baseEditorScreen;
+    private SettingsScreen _settingsScreen;
     private CanvasLayer _canvasLayer;
+
+    // Garante só uma animação de evolução por vez: se vários Digimons evoluírem juntos
+    // (ex.: todo o time depois de uma vitória em batalha), cada um entra nessa fila e joga
+    // sua animação em sequência, não ao mesmo tempo.
+    private readonly Queue<(DigimonData oldForm, DigimonData newForm, DigimonWorld world)> _evolutionQueue = new();
+    private bool _isProcessingEvolutionQueue;
 
     private FoodWorld _placingFood;
     private bool _isPlacingFood;
@@ -67,14 +98,16 @@ public partial class Center : Node2D
 
     private readonly RandomNumberGenerator _rng = new();
 
-    public event Action<DigimonInstance> DigimonInspected;
-
     private PackedScene _expansionSlotScene =
     GD.Load<PackedScene>("res://Scenes/Center/CenterExpansionSlotVisual.tscn");
 
     public override void _Ready()
     {
         PrintTree();
+
+        MusicManager.Instance?.PlayCenterMusic();
+
+        _camera = GetNode<Camera2D>("Camera2D");
 
         _digimonScene = GD.Load<PackedScene>(
             "res://Scenes/Center/DigimonWorld.tscn"
@@ -104,25 +137,61 @@ public partial class Center : Node2D
             "res://Scenes/Center/BroomWorld.tscn"
         );
 
-        _areaBuildMenu = GetNode<AreaBuildMenu>(
-            "CanvasLayer/AreaBuildMenu"
-        );
-
         _hud = GetNode<HUD>("CanvasLayer/HUD");
 
         _shopScreen = GetNode<ShopScreen>("CanvasLayer/ShopScreen");
 
         _shopScreen.BackPressed += OnShopBackPressed;
         _shopScreen.EggPurchased += OnEggPurchased;
+        _shopScreen.AreaPurchased += OnAreaPurchased;
 
         _teamSelectionScreen = GetNode<TeamSelectionScreen>("CanvasLayer/TeamSelectionScreen");
 
         _teamSelectionScreen.BackPressed += OnTeamSelectionBackPressed;
 
-        _areaBuildMenu.AreaTypeSelected += OnAreaTypeSelected;
+        _battleTypeScreen = GetNode<BattleTypeScreen>("CanvasLayer/BattleTypeScreen");
+
+        _battleTypeScreen.FreeBattleSelected += OnFreeBattleSelected;
+        _battleTypeScreen.TournamentSelected += OnTournamentMenuSelected;
+        _battleTypeScreen.BackPressed += OnBattleTypeBackPressed;
+
+        _tournamentListScreen = GetNode<TournamentListScreen>("CanvasLayer/TournamentListScreen");
+
+        _tournamentListScreen.BackPressed += OnTournamentListBackPressed;
+        _tournamentListScreen.TournamentSelected += OnTournamentSelected;
+
+        _evolutionCapacityScreen = GetNode<EvolutionCapacityScreen>("CanvasLayer/EvolutionCapacityScreen");
+        _evolutionOverlay = GetNode<EvolutionOverlay>("CanvasLayer/EvolutionOverlay");
+
+        _inventoryScreen = GetNode<InventoryScreen>("CanvasLayer/InventoryScreen");
+        _inventoryScreen.BackPressed += OnInventoryBackPressed;
+
+        _tutorialScreen = GetNode<TutorialScreen>("CanvasLayer/TutorialScreen");
+        _tutorialScreen.BackPressed += OnTutorialBackPressed;
+
+        _evolutionGuideScreen = GetNode<EvolutionGuideScreen>("CanvasLayer/EvolutionGuideScreen");
+        _evolutionGuideScreen.BackPressed += OnEvolutionGuideBackPressed;
+
+        _baseEditorScreen = GetNode<BaseEditorScreen>("CanvasLayer/BaseEditorScreen");
+        _baseEditorScreen.BackPressed += OnBaseEditorBackPressed;
+
+        _settingsScreen = GetNode<SettingsScreen>("CanvasLayer/SettingsScreen");
+        _settingsScreen.BackPressed += OnSettingsBackPressed;
+
+        GameManager.Instance.EvolutionBlockedByCapacity -= OnEvolutionBlockedByCapacity;
+        GameManager.Instance.EvolutionBlockedByCapacity += OnEvolutionBlockedByCapacity;
+
+        GameManager.Instance.DigimonDeleted -= OnDigimonDeleted;
+        GameManager.Instance.DigimonDeleted += OnDigimonDeleted;
+
+        GameManager.Instance.SleepSkipped -= OnSleepSkipped;
+        GameManager.Instance.SleepSkipped += OnSleepSkipped;
 
         GameManager.Instance.EggSystem.EggHatched -= OnEggHatched;
         GameManager.Instance.EggSystem.EggHatched += OnEggHatched;
+
+        GameManager.Instance.EggSystem.EggCreated -= OnEggCreated;
+        GameManager.Instance.EggSystem.EggCreated += OnEggCreated;
 
         GameManager.Instance.TeamBattleFinished -= OnTeamBattleFinished;
         GameManager.Instance.TeamBattleFinished += OnTeamBattleFinished;
@@ -154,9 +223,6 @@ public partial class Center : Node2D
         RestoreFoods();
         RestorePoops();
         RestoreEggs();
-        RefreshExpansionSlots();
-        CreateExpansionSlotVisuals();
-
     }
 
     public override void _ExitTree()
@@ -164,12 +230,16 @@ public partial class Center : Node2D
         if (GameManager.Instance?.EggSystem != null)
         {
             GameManager.Instance.EggSystem.EggHatched -= OnEggHatched;
+            GameManager.Instance.EggSystem.EggCreated -= OnEggCreated;
         }
 
         if (GameManager.Instance != null)
         {
             GameManager.Instance.TeamBattleFinished -= OnTeamBattleFinished;
             GameManager.Instance.TeamBattleStarted -= OnTeamBattleStarted;
+            GameManager.Instance.EvolutionBlockedByCapacity -= OnEvolutionBlockedByCapacity;
+            GameManager.Instance.DigimonDeleted -= OnDigimonDeleted;
+            GameManager.Instance.SleepSkipped -= OnSleepSkipped;
         }
     }
 
@@ -225,15 +295,30 @@ public partial class Center : Node2D
     {
         var digimons = GameManager.Instance.CenterService.GetAllDigimons();
 
-        for (int i = 0; i < digimons.Count; i++)
+        int nextSpawnPointIndex = 0;
+
+        foreach (var digimon in digimons)
         {
-            if (i >= _spawnPoints.Count)
+            // (0,0) é o default de um DigimonInstance que nunca teve a posição salva ainda
+            // (ex.: acabou de nascer de um ovo antes de DigimonWorld._Process rodar uma vez
+            // - mesma convenção já usada em EggData.PositionX/Y) - só nesse caso usa um
+            // SpawnPoint fixo; do contrário, volta pra onde o jogador deixou.
+            bool hasSavedPosition = digimon.PositionX != 0f || digimon.PositionY != 0f;
+
+            if (hasSavedPosition)
+            {
+                SpawnDigimon(digimon, new Vector2(digimon.PositionX, digimon.PositionY));
+                continue;
+            }
+
+            if (nextSpawnPointIndex >= _spawnPoints.Count)
             {
                 GD.PrintErr("Não há SpawnPoints suficientes.");
                 break;
             }
 
-            SpawnDigimon(digimons[i], _spawnPoints[i]);
+            SpawnDigimon(digimon, _spawnPoints[nextSpawnPointIndex]);
+            nextSpawnPointIndex++;
         }
     }
 
@@ -535,6 +620,11 @@ public partial class Center : Node2D
         );
     }
 
+    /// <summary>Todas as áreas do Center atualmente registradas (posição no grid + tipo) -
+    /// usado pelo minimapa (ver Scripts/UI/MiniMap.cs) pra desenhar um esquema simplificado
+    /// sem precisar de uma segunda câmera renderizando o mundo de verdade.</summary>
+    public IEnumerable<CenterArea> GetAreas() => _centerAreas.Values;
+
     public bool AddArea(Vector2I gridPosition, CenterAreaType areaType)
     {
         if (IsAreaOccupied(gridPosition))
@@ -738,17 +828,25 @@ public partial class Center : Node2D
         );
     }
 
+    // Só é não-nulo durante o modo de posicionamento de área (ver StartAreaPlacement) - os
+    // hexágonos de expansão só existem/são clicáveis nesse modo, então um clique de slot só
+    // chega aqui quando já sabemos pra qual tipo de área ele é.
     private void OnExpansionSlotClicked(Vector2I gridPosition)
     {
-        GD.Print($"SLOT CLICADO! Grid: {gridPosition}");
+        if (_pendingPurchasedAreaType == null)
+            return;
 
-        _pendingAreaPosition = gridPosition;
+        GD.Print($"SLOT CLICADO! Grid: {gridPosition} | Tipo: {_pendingPurchasedAreaType}");
 
-        GD.Print(
-            $"Escolhendo tipo de área para {_pendingAreaPosition}"
-        );
+        if (AddArea(gridPosition, _pendingPurchasedAreaType.Value))
+        {
+            // Colocada a partir do inventário (não uma compra nova) - remove só 1 unidade
+            // desse tipo do inventário, já que AddArea acabou de recriar ela no grid.
+            if (_pendingPlacementFromInventory)
+                GameManager.Instance.Save.Center.UnplacedAreas.Remove(_pendingPurchasedAreaType.Value);
 
-        _areaBuildMenu.Open();
+            EndAreaPlacement();
+        }
     }
 
     public CenterArea GetAreaAtPosition(Vector2 position)
@@ -762,17 +860,158 @@ public partial class Center : Node2D
         return null;
     }
 
-    private void OnAreaTypeSelected(CenterAreaType areaType)
+    /// <summary>Áreas de treino específicas de um stat (ver CenterArea.ForcedTrainingType) só
+    /// admitem 1 Digimon treinando por vez - diferente da área de treino genérica, que aceita
+    /// quantos couberem. Usado por DigimonWorld.StopDragging pra recusar um segundo Digimon
+    /// largado na mesma área específica.</summary>
+    public bool IsSpecificTrainingAreaOccupied(CenterArea area, DigimonWorld excluding)
     {
-        GD.Print(
-            $"Construindo área {_pendingAreaPosition} " +
-            $"do tipo {areaType}"
-        );
+        if (area == null || !area.ForcedTrainingType.HasValue)
+            return false;
 
-        if (AddArea(_pendingAreaPosition, areaType))
+        return _digimonWorlds.Any(w => w != excluding && w.CurrentArea == area);
+    }
+
+    /// <summary>Aviso temporário no topo da tela (ver HUD.ShowWarning) - usado quando uma ação
+    /// do jogador no mundo do Center (ex.: arrastar um Digimon) precisa ser recusada.</summary>
+    public void ShowWarning(string message)
+    {
+        _hud?.ShowWarning(message);
+    }
+
+    private void OnAreaPurchased(CenterAreaType areaType)
+    {
+        _shopScreen.Visible = false;
+
+        StartAreaPlacement(areaType, fromInventory: false);
+    }
+
+    /// <summary>Bases (áreas dinamicamente construídas, ver Save.Center.BuiltAreas) atualmente
+    /// no grid - exclui a área Neutra fixa em (0,0) de Center.tscn, que nunca entra em
+    /// BuiltAreas e não pode ser removida. Usado por BaseEditorScreen pra listar o que dá pra
+    /// remover.</summary>
+    public List<CenterArea> GetRemovableAreas()
+    {
+        var built = GameManager.Instance.Save.Center.BuiltAreas;
+
+        return _centerAreas.Values
+            .Where(a => built.Any(b => b.GridX == a.GridPosition.X && b.GridY == a.GridPosition.Y))
+            .OrderBy(a => a.GridPosition.X)
+            .ThenBy(a => a.GridPosition.Y)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Remove uma base do grid de volta pro inventário (Save.Center.UnplacedAreas) - o tipo
+    /// não é perdido, só deixa de ocupar um hexágono, e pode ser colocado de novo (ver
+    /// StartAreaPlacementFromInventory) sem custo, já que já foi pago na compra original.
+    /// Recusa a área Neutra fixa (nunca está em BuiltAreas) e qualquer área com um Digimon
+    /// em cima agora (removeria o node debaixo dele, deixando uma referência inválida em
+    /// DigimonWorld._currentArea).
+    /// </summary>
+    public SystemResult RemoveArea(CenterArea area)
+    {
+        if (area == null)
+            return SystemResult.Fail("Área inválida.");
+
+        var savedData = GameManager.Instance.Save.Center.BuiltAreas
+            .FirstOrDefault(a => a.GridX == area.GridPosition.X && a.GridY == area.GridPosition.Y);
+
+        if (savedData == null)
+            return SystemResult.Fail("Essa área não pode ser removida.");
+
+        if (_digimonWorlds.Any(w => area.IsPointInside(w.GlobalPosition)))
+            return SystemResult.Fail("Não é possível remover uma área com um Digimon nela.");
+
+        GameManager.Instance.Save.Center.BuiltAreas.Remove(savedData);
+        GameManager.Instance.Save.Center.UnplacedAreas.Add(area.AreaType);
+
+        _centerAreas.Remove(area.GridPosition);
+        area.QueueFree();
+
+        return SystemResult.Ok("Base removida - agora está no inventário.");
+    }
+
+    /// <summary>Recoloca uma base do inventário (ver Save.Center.UnplacedAreas) no grid - mesmo
+    /// modo de posicionamento da compra na loja, só que sem cobrar Bits (a diferença é resolvida
+    /// em EndAreaPlacement, que também reabre o BaseEditorScreen ao concluir).</summary>
+    public void StartAreaPlacementFromInventory(CenterAreaType areaType)
+    {
+        StartAreaPlacement(areaType, fromInventory: true);
+    }
+
+    /// <summary>
+    /// Modo de posicionamento de uma área (recém-comprada na loja ou recolocada do
+    /// inventário de bases): some com Digimons/comida/coco/ovos (só as áreas ficam visíveis)
+    /// e destaca em quais hexágonos livres ao redor da base atual dá pra colocar a área nova -
+    /// clicar em um deles conclui (ver OnExpansionSlotClicked). Substitui o antigo fluxo
+    /// (clicar num hexágono sempre visível e escolher o tipo ali na hora, de graça).
+    /// </summary>
+    private void StartAreaPlacement(CenterAreaType areaType, bool fromInventory)
+    {
+        _pendingPurchasedAreaType = areaType;
+        _pendingPlacementFromInventory = fromInventory;
+
+        SetWorldElementsVisible(false);
+
+        RefreshExpansionSlotVisuals();
+    }
+
+    private void EndAreaPlacement()
+    {
+        _pendingPurchasedAreaType = null;
+
+        if (_expansionSlotsVisual != null)
         {
-            RefreshExpansionSlotVisuals();
+            _expansionSlotsVisual.Free();
+            _expansionSlotsVisual = null;
         }
+
+        SetWorldElementsVisible(true);
+
+        // Colocar do inventário sempre parte do BaseEditorScreen (ver OnPlacePressed, que o
+        // esconde antes de entrar no modo de posicionamento) - reabre ele em seguida, já
+        // atualizado, pra continuar gerenciando outras bases sem precisar reabrir manualmente.
+        if (_pendingPlacementFromInventory)
+        {
+            _pendingPlacementFromInventory = false;
+            OpenBaseEditor();
+        }
+    }
+
+    public void OpenBaseEditor()
+    {
+        _baseEditorScreen.Open(this);
+    }
+
+    private void OnBaseEditorBackPressed()
+    {
+        _baseEditorScreen.Visible = false;
+    }
+
+    public void OpenSettings()
+    {
+        _settingsScreen.Open();
+    }
+
+    private void OnSettingsBackPressed()
+    {
+        _settingsScreen.Visible = false;
+    }
+
+    private void SetWorldElementsVisible(bool visible)
+    {
+        foreach (var digimon in _digimonWorlds)
+            digimon.Visible = visible;
+
+        foreach (var food in _foods)
+            food.Visible = visible;
+
+        foreach (var poop in _poops)
+            poop.Visible = visible;
+
+        foreach (var egg in _eggs)
+            egg.Visible = visible;
     }
 
     public void OpenShop()
@@ -787,9 +1026,84 @@ public partial class Center : Node2D
         _shopScreen.Visible = false;
     }
 
-    public void OpenTeamSelection()
+    public void OpenInventory()
     {
-        _teamSelectionScreen.RefreshUI();
+        _inventoryScreen.RefreshUI();
+
+        _inventoryScreen.Visible = true;
+    }
+
+    private void OnInventoryBackPressed()
+    {
+        _inventoryScreen.Visible = false;
+    }
+
+    public void OpenTutorial()
+    {
+        _tutorialScreen.Open();
+    }
+
+    private void OnTutorialBackPressed()
+    {
+        _tutorialScreen.Visible = false;
+    }
+
+    public void OpenEvolutionGuide()
+    {
+        _evolutionGuideScreen.Open();
+    }
+
+    private void OnEvolutionGuideBackPressed()
+    {
+        _evolutionGuideScreen.Visible = false;
+    }
+
+    /// <summary>Ponto de entrada do botão de troféu - abre a escolha entre Campeonato e
+    /// Batalha Livre, em vez de ir direto pra montagem de time.</summary>
+    public void OpenBattleTypeMenu()
+    {
+        _battleTypeScreen.Visible = true;
+    }
+
+    private void OnBattleTypeBackPressed()
+    {
+        _battleTypeScreen.Visible = false;
+    }
+
+    private void OnFreeBattleSelected()
+    {
+        _battleTypeScreen.Visible = false;
+
+        _teamSelectionReturnScreen = _battleTypeScreen;
+
+        _teamSelectionScreen.Open();
+
+        _teamSelectionScreen.Visible = true;
+    }
+
+    private void OnTournamentMenuSelected()
+    {
+        _battleTypeScreen.Visible = false;
+
+        _tournamentListScreen.RefreshUI();
+
+        _tournamentListScreen.Visible = true;
+    }
+
+    private void OnTournamentListBackPressed()
+    {
+        _tournamentListScreen.Visible = false;
+
+        _battleTypeScreen.Visible = true;
+    }
+
+    private void OnTournamentSelected(TournamentData tournament)
+    {
+        _tournamentListScreen.Visible = false;
+
+        _teamSelectionReturnScreen = _tournamentListScreen;
+
+        _teamSelectionScreen.Open(tournament);
 
         _teamSelectionScreen.Visible = true;
     }
@@ -797,6 +1111,12 @@ public partial class Center : Node2D
     private void OnTeamSelectionBackPressed()
     {
         _teamSelectionScreen.Visible = false;
+
+        if (_teamSelectionReturnScreen != null)
+        {
+            _teamSelectionReturnScreen.Visible = true;
+            _teamSelectionReturnScreen = null;
+        }
     }
 
     private void OnTeamBattleStarted()
@@ -814,11 +1134,82 @@ public partial class Center : Node2D
         _canvasLayer.Visible = true;
 
         _teamSelectionScreen.Visible = false;
+        _teamSelectionReturnScreen = null;
 
         // A arena de batalha usa sua própria Camera2D (precisa pra enquadrar a luta
         // certo, independente de onde a câmera do Center estava olhando); ao encerrar
         // a arena, garantimos que a câmera do Center volte a ser a atual.
-        GetNode<Camera2D>("Camera2D").MakeCurrent();
+        _camera.MakeCurrent();
+    }
+
+    /// <summary>
+    /// Zoom (scroll do mouse) e pan (arrastar com o botão do meio) livres da câmera do
+    /// Center - o botão do meio não é usado em mais nada no jogo, então não conflita com
+    /// arrastar Digimon (botão esquerdo) ou inspecionar (botão direito). Serve principalmente
+    /// pra dar acesso visual a partes do Center que ficam atrás de UI fixa na tela (como a
+    /// barra superior), que não acompanha a câmera.
+    /// </summary>
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (IsBlockingScreenOpen())
+            return;
+
+        if (@event is InputEventMouseButton mouseButton)
+        {
+            switch (mouseButton.ButtonIndex)
+            {
+                case MouseButton.Middle:
+                    _isPanningCamera = mouseButton.Pressed;
+                    break;
+
+                case MouseButton.WheelUp when mouseButton.Pressed:
+                    ZoomCamera(CameraZoomStep);
+                    break;
+
+                case MouseButton.WheelDown when mouseButton.Pressed:
+                    ZoomCamera(-CameraZoomStep);
+                    break;
+
+                // Modo vassoura ligado (ver ToggleBroomMode): cada clique esquerdo no Center
+                // limpa cocô/comida ali, sem desligar o modo - dá pra limpar vários seguidos.
+                case MouseButton.Left when mouseButton.Pressed && _isPlacingBroom:
+                    CleanAtPosition(GetGlobalMousePosition());
+                    break;
+            }
+
+            return;
+        }
+
+        if (@event is InputEventMouseMotion mouseMotion && _isPanningCamera)
+        {
+            _camera.Position -= mouseMotion.Relative / _camera.Zoom;
+        }
+    }
+
+    private void ZoomCamera(float delta)
+    {
+        float newZoom = Mathf.Clamp(_camera.Zoom.X + delta, MinCameraZoom, MaxCameraZoom);
+
+        _camera.Zoom = new Vector2(newZoom, newZoom);
+    }
+
+    /// <summary>Verdadeiro enquanto qualquer tela secundária (loja, seleção de time,
+    /// inventário, tutorial, etc.) está aberta por cima do Center - usado tanto pra bloquear
+    /// pan/zoom da câmera quanto pra pausar o resto do jogo (ver HUD._Process, que sincroniza
+    /// GetTree().Paused com isso a cada frame). Diálogos de confirmação (ConfirmationDialog)
+    /// não entram aqui de propósito - só telas cheias pausam o jogo atrás.</summary>
+    public bool IsBlockingScreenOpen()
+    {
+        return (_shopScreen?.Visible ?? false)
+            || (_teamSelectionScreen?.Visible ?? false)
+            || (_evolutionCapacityScreen?.Visible ?? false)
+            || (_inventoryScreen?.Visible ?? false)
+            || (_battleTypeScreen?.Visible ?? false)
+            || (_tournamentListScreen?.Visible ?? false)
+            || (_tutorialScreen?.Visible ?? false)
+            || (_evolutionGuideScreen?.Visible ?? false)
+            || (_baseEditorScreen?.Visible ?? false)
+            || (_settingsScreen?.Visible ?? false);
     }
 
     public void InspectDigimon(DigimonInstance digimon)
@@ -837,6 +1228,15 @@ public partial class Center : Node2D
         if (_foods.Count >= MaxFoods)
         {
             GD.Print("Limite de comidas atingido.");
+            return;
+        }
+
+        // A Carne colocada aqui vem do inventário (Save.Center.Meat) - sem essa checagem,
+        // dava pra colocar comida ilimitada mesmo com o estoque zerado, já que o consumo em
+        // si só acontece em PlaceFood (na confirmação, igual StartMedicinePlacement).
+        if (GameManager.Instance.Save.Center.Meat <= 0)
+        {
+            GD.Print("Você não possui Carne.");
             return;
         }
 
@@ -880,9 +1280,17 @@ public partial class Center : Node2D
         food.PositionX = _placingFood.GlobalPosition.X;
         food.PositionY = _placingFood.GlobalPosition.Y;
 
+        // Decide uma vez, aqui, se ela vai estragar rápido ou devagar (ver
+        // FoodWorld.OnHourPassed) - comida não se move depois de colocada.
+        food.PlacedInRestaurant = area.IsRestaurant();
+
         _foods.Add(_placingFood);
 
         GameManager.Instance.Save.Center.Foods.Add(food);
+
+        // Só consome a Carne do inventário aqui, na confirmação bem-sucedida - se o
+        // jogador cancelar soltando fora de uma área (acima), nada é gasto.
+        GameManager.Instance.Save.Center.Meat--;
 
         GD.Print(
             $"Carne colocada em {_placingFood.GlobalPosition}"
@@ -1013,7 +1421,21 @@ public partial class Center : Node2D
         _isPlacingMedicine = false;
     }
 
-    public void StartBroomPlacement()
+    /// <summary>
+    /// Botão da vassoura funciona como um modo (liga/desliga), não como segurar-e-soltar:
+    /// clicar liga o modo (a vassoura passa a seguir o mouse), clicar em qualquer lugar do
+    /// Center limpa cocô/comida ali (sem desligar o modo, pra dar pra limpar vários seguidos),
+    /// e clicar no botão de novo desliga.
+    /// </summary>
+    public void ToggleBroomMode()
+    {
+        if (_isPlacingBroom)
+            StopBroomMode();
+        else
+            StartBroomMode();
+    }
+
+    private void StartBroomMode()
     {
         if (_isPlacingBroom)
             return;
@@ -1032,16 +1454,24 @@ public partial class Center : Node2D
 
         _isPlacingBroom = true;
 
-        GD.Print("Iniciando limpeza.");
+        GD.Print("Modo de limpeza ativado.");
     }
 
-    public void UseBroom()
+    private void StopBroomMode()
     {
-        if (!_isPlacingBroom || _placingBroom == null)
-            return;
+        if (_placingBroom != null)
+        {
+            _placingBroom.QueueFree();
+            _placingBroom = null;
+        }
 
-        Vector2 position = _placingBroom.GlobalPosition;
+        _isPlacingBroom = false;
 
+        GD.Print("Modo de limpeza desativado.");
+    }
+
+    private void CleanAtPosition(Vector2 position)
+    {
         PoopWorld poop = GetPoopAtPosition(position);
 
         if (poop != null)
@@ -1049,23 +1479,18 @@ public partial class Center : Node2D
             RemovePoop(poop);
 
             GD.Print("Coco limpo.");
+
+            return;
         }
-        else
+
+        FoodWorld food = GetFoodAtPosition(position);
+
+        if (food != null)
         {
-            FoodWorld food = GetFoodAtPosition(position);
+            RemoveFood(food);
 
-            if (food != null)
-            {
-                RemoveFood(food);
-
-                GD.Print("Carne removida com a vassoura.");
-            }
+            GD.Print("Carne removida com a vassoura.");
         }
-
-        _placingBroom.QueueFree();
-
-        _placingBroom = null;
-        _isPlacingBroom = false;
     }
 
     private PoopWorld GetPoopAtPosition(Vector2 position)
@@ -1172,6 +1597,96 @@ public partial class Center : Node2D
         egg.PositionY = position.Y;
 
         SpawnEgg(egg);
+    }
+
+    // O ovo inicial (EggSystem.CreateInitialEgg) não passa pelo fluxo de compra da loja -
+    // sem isso, ele só ganhava um EggWorld visual quando a cena recarregava e RestoreEggs()
+    // reconstruía a partir do save, ficando invisível até o jogo ser fechado e reaberto.
+    private void OnEggCreated(EggData egg)
+    {
+        if (_eggs.Any(e => e.GetEgg() == egg))
+            return;
+
+        Vector2 position = GetRandomAreaPosition();
+
+        egg.PositionX = position.X;
+        egg.PositionY = position.Y;
+
+        SpawnEgg(egg);
+    }
+
+    // Se já tem um aviso aberto (pra esse Digimon ou outro), ignora - a checagem de
+    // evolução roda de novo em breve (treino/dia/batalha) e reabre o aviso pra quem
+    // ainda estiver bloqueado nessa hora, sem empilhar telas por cima uma da outra.
+    private void OnEvolutionBlockedByCapacity(DigimonInstance digimon, DigimonData targetForm, int deficit)
+    {
+        if (_evolutionCapacityScreen.Visible)
+            return;
+
+        _evolutionCapacityScreen.Open(digimon, targetForm, deficit);
+    }
+
+    /// <summary>
+    /// Enfileira a animação de evolução de um Digimon (chamado por DigimonWorld.OnEvolved).
+    /// Só uma toca por vez - se vários Digimons evoluírem no mesmo instante (ex.: o time
+    /// inteiro depois de uma vitória em batalha), cada um espera sua vez em vez de tocar
+    /// junto. O resto do jogo fica pausado enquanto a fila não esvaziar.
+    /// </summary>
+    public void EnqueueEvolution(DigimonData oldForm, DigimonData newForm, DigimonWorld world)
+    {
+        _evolutionQueue.Enqueue((oldForm, newForm, world));
+
+        if (!_isProcessingEvolutionQueue)
+            _ = ProcessEvolutionQueue();
+    }
+
+    private async Task ProcessEvolutionQueue()
+    {
+        _isProcessingEvolutionQueue = true;
+
+        GameManager.Instance.RequestPause("evolution");
+
+        while (_evolutionQueue.Count > 0)
+        {
+            var (oldForm, newForm, world) = _evolutionQueue.Dequeue();
+
+            await _evolutionOverlay.Play(oldForm, newForm);
+
+            // O Digimon (ou até a própria cena) pode ter deixado de existir enquanto a
+            // animação tocava - ex.: deletado na tela de capacidade de outra evolução que
+            // furou a fila entre uma animação e outra.
+            if (GodotObject.IsInstanceValid(world))
+                world.ApplyEvolvedSprite(newForm);
+        }
+
+        GameManager.Instance.ReleasePause("evolution");
+
+        _isProcessingEvolutionQueue = false;
+    }
+
+    // O modelo (CenterService.RemoveDigimon, disparado via GameManager.DeleteDigimon) já
+    // tirou o Digimon do save - sem isso, o DigimonWorld visual continuaria existindo e
+    // andando por aí, referenciando um Digimon que não existe mais no Center.
+    private void OnDigimonDeleted(DigimonInstance digimon)
+    {
+        var digimonWorld = _digimonWorlds.FirstOrDefault(w => w._digimon == digimon);
+
+        if (digimonWorld == null)
+            return;
+
+        _digimonWorlds.Remove(digimonWorld);
+
+        digimonWorld.QueueFree();
+    }
+
+    // GameManager.SkipSleep avança o relógio sem tempo real de verdade passar - os timers
+    // de _Process de cada DigimonWorld (regeneração de HP, área suja) não tickam sozinhos
+    // nesse meio tempo, então precisam desse empurrão explícito pra não "perder" o que
+    // teriam acumulado esperando de verdade.
+    private void OnSleepSkipped(double secondsSkipped)
+    {
+        foreach (var digimonWorld in _digimonWorlds)
+            digimonWorld.CatchUpPassiveTime(secondsSkipped);
     }
 
     private void OnEggHatched(EggData egg, DigimonInstance digimon)

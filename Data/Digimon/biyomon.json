@@ -1,0 +1,20 @@
+{
+  "id": 59,
+  "code": "biyomon",
+  "name": "Biyomon",
+  "stage": "Rookie",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 76,
+    "physicalDamage": 42,
+    "physicalDefense": 14,
+    "specialDamage": 9,
+    "specialDefense": 16,
+    "speed": 35
+  }
+}

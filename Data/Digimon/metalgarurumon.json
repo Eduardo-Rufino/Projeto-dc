@@ -1,0 +1,20 @@
+{
+  "id": 53,
+  "code": "metalgarurumon",
+  "name": "MetalGarurumon",
+  "stage": "Mega",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 745,
+    "physicalDamage": 219,
+    "physicalDefense": 140,
+    "specialDamage": 219,
+    "specialDefense": 110,
+    "speed": 94
+  }
+}

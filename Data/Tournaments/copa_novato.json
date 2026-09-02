@@ -1,0 +1,10 @@
+{
+  "Id": 1,
+  "Name": "Copa Novato",
+  "Description": "Duelo 1x1 introdutório contra um Agumon.",
+  "RecommendedLevel": 5,
+  "Opponents": [
+    { "DigimonId": 1, "Level": 6 }
+  ],
+  "CapacityReward": 2
+}

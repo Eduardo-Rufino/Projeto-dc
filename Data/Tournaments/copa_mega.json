@@ -1,0 +1,12 @@
+{
+  "Id": 8,
+  "Name": "Copa Mega",
+  "Description": "Os Digidestined em suas formas Mega mais icônicas - WarGreymon na linha de frente, HerculesKabuterimon como tanque e Rosemon à distância. O desafio mais difícil do Center, por enquanto.",
+  "RecommendedLevel": 32,
+  "Opponents": [
+    { "DigimonId": 52, "Level": 33 },
+    { "DigimonId": 74, "Level": 33 },
+    { "DigimonId": 75, "Level": 33 }
+  ],
+  "CapacityReward": 15
+}

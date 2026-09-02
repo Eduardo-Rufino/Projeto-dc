@@ -9,7 +9,10 @@ namespace ProjetoDC.Scripts.Systems.Battle
     /// </summary>
     public partial class AttackProjectile : Node2D
     {
-        private const float TravelSpeed = 300f;
+        // Público pra quem disparou poder calcular quanto tempo o voo leva (usado pra saber
+        // quanta margem de movimento incidental o alvo teve durante o trajeto, ao decidir se
+        // um golpe foi esquivado).
+        public const float TravelSpeed = 300f;
         private const float ArrivalThreshold = 6f;
 
         private Sprite2D _sprite;

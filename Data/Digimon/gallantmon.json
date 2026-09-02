@@ -1,0 +1,20 @@
+{
+  "id": 54,
+  "code": "gallantmon",
+  "name": "Gallantmon",
+  "stage": "Mega",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 818,
+    "physicalDamage": 298,
+    "physicalDefense": 164,
+    "specialDamage": 60,
+    "specialDefense": 105,
+    "speed": 119
+  }
+}

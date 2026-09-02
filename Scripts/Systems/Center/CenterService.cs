@@ -53,12 +53,21 @@ namespace ProjetoDC.Scripts.Systems.Center
             _center.RemoveEgg(egg);
         }
 
-        public bool CanAddDigimon(DigimonInstance digimon)
+        /// <summary>
+        /// True se houver capacidade pra adicionar <paramref name="digimon"/>. Quando ele
+        /// está substituindo um ovo que está chocando (<paramref name="freeingEgg"/>), a
+        /// capacidade que esse ovo já reservava é descontada primeiro - senão a troca
+        /// exigiria capacidade em dobro (a do ovo + a do Digimon novo) pra uma operação que
+        /// não deveria pedir nada além do que o ovo já estava ocupando.
+        /// </summary>
+        public bool CanAddDigimon(DigimonInstance digimon, EggData freeingEgg = null)
         {
             if (digimon == null)
                 return false;
 
-            return _center.CapacityUsed + digimon.CapacityCost <= _center.CapacityLimit;
+            int reservedToFree = freeingEgg?.CapacityCost ?? 0;
+
+            return _center.CapacityUsed - reservedToFree + digimon.CapacityCost <= _center.CapacityLimit;
         }
     }
 }

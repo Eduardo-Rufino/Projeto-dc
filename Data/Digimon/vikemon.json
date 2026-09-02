@@ -1,0 +1,20 @@
+{
+  "id": 68,
+  "code": "vikemon",
+  "name": "Vikemon",
+  "stage": "Mega",
+  "role": "Tank",
+  "Element": "Water",
+  "Attribute": "Data",
+  "EggType": "Water",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 850,
+    "physicalDamage": 255,
+    "physicalDefense": 230,
+    "specialDamage": 40,
+    "specialDefense": 135,
+    "speed": 85
+  }
+}

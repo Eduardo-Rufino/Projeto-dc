@@ -6,6 +6,7 @@ using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.Systems.Battle;
 using ProjetoDC.Scripts.Systems.Results;
+using ProjetoDC.Scripts.Systems.Training;
 using ProjetoDC.Scripts.UI;
 using System;
 
@@ -36,10 +37,37 @@ public partial class DigimonWorld : Node2D
     private const int WokenWhileSleepingHappinessPenalty = 4;
     private const int FailedTrainingDisciplinePenalty = 1;
 
+    // Dormir no Dormitório: além do bônus de Disciplina que já existia (uma vez, ao começar
+    // a dormir), agora cada HORA dormida lá dá Felicidade e um extra de recuperação de
+    // Stamina por cima da recuperação normal do sono (DigimonInstance.AdvanceHour).
+    private const int DormitorySleepHourlyHappinessBonus = 2;
+    private const int DormitoryExtraStaminaRecovery = 3;
+
+    // Dormir fora do Dormitório: a primeira hora é de graça (sem penalidade) - só a partir
+    // da segunda hora seguida fora é que começa a perder Felicidade, crescendo a cada hora
+    // extra mas numa escala cada vez menor (raiz quadrada, não linear).
+    private const int OutsideDormitoryPenaltyScale = 2;
+
+    // Comer comida colocada no Refeitório rende um pouco mais de saciedade por mordida;
+    // comer comida estragada (ver Food.IsSpoiled/FoodWorld) machuca Felicidade/Disciplina e
+    // arrisca deixar doente - por mordida, então comer bastante acumula.
+    private const float RestaurantFeedBonusMultiplier = 1.1f;
+    private const int SpoiledFoodHappinessPenalty = 3;
+    private const int SpoiledFoodDisciplinePenalty = 2;
+
     private static readonly Color TrainingGainColor = new(1f, 0.85f, 0.2f);
     private double _trainingTimer;
     private const double TrainingInterval = 5.0;
     private bool _isTrainingAnimation;
+    private DigimonStatusIndicator _trainingIndicator;
+    private DigimonStatusIndicator _sleepIndicator;
+    private DigimonStatusIndicator _sickIndicator;
+
+    // Compartilhado entre todas as instâncias: garante que só um Digimon seja arrastado
+    // por vez, mesmo se dois estiverem próximos o bastante pra um clique atingir a
+    // ClickArea dos dois (o Godot chama InputEvent em toda Area2D sobreposta sob o
+    // cursor, não só na mais "de cima").
+    private static DigimonWorld _draggingInstance;
 
     private bool _isDragging;
     private Vector2 _dragOffset;
@@ -56,6 +84,22 @@ public partial class DigimonWorld : Node2D
     private double _idleTimer;
 
     public DigimonInstance _digimon { get; private set; }
+
+    /// <summary>Área que esse Digimon ocupa agora - usada por Center.
+    /// IsSpecificTrainingAreaOccupied pra impedir dois Digimons na mesma área de treino
+    /// específica de um stat (ver StopDragging).</summary>
+    public CenterArea CurrentArea => _currentArea;
+
+    public override void _ExitTree()
+    {
+        // Segurança: se esse Digimon for removido da árvore no meio de um arraste (troca
+        // de cena, etc.), libera o "lock" pra não travar o arraste de todo mundo pra sempre.
+        if (_draggingInstance == this)
+            _draggingInstance = null;
+
+        if (GameManager.Instance?.ClockSystem != null)
+            GameManager.Instance.ClockSystem.HourPassed -= OnDormitoryHourPassed;
+    }
 
     public override void _Ready()
     {
@@ -87,6 +131,9 @@ public partial class DigimonWorld : Node2D
         _digimon.ActivityChanged += OnActivityChanged;
         _digimon.HealthStateChanged += OnHealthStateChanged;
         _digimon.Evolved += OnEvolved;
+
+        GameManager.Instance.ClockSystem.HourPassed -= OnDormitoryHourPassed;
+        GameManager.Instance.ClockSystem.HourPassed += OnDormitoryHourPassed;
 
         GD.Print(
             $"ASSINANDO EVENTO: {_digimon.BaseData.Name}"
@@ -128,6 +175,8 @@ public partial class DigimonWorld : Node2D
         GD.Print(
             $"Atualizando visual: {_digimon.BaseData.Name} | {_digimon.Activity}"
         );
+
+        SyncStatusIndicators();
 
         if (_digimon.HealthState == HealthState.Sick)
         {
@@ -188,6 +237,13 @@ public partial class DigimonWorld : Node2D
         if (_digimon == null)
             return;
 
+        // Mantém a posição salva sempre em dia (não só num "momento de assentar" específico)
+        // - o jogo pode ser fechado a qualquer momento (inclusive no meio de um arrasto ou
+        // andando), e sem isso o Digimon sempre reaparecia na área inicial ao recarregar o
+        // save, em vez de onde o jogador tinha deixado.
+        _digimon.PositionX = GlobalPosition.X;
+        _digimon.PositionY = GlobalPosition.Y;
+
         if (_isDragging)
         {
             ProcessDragging();
@@ -228,7 +284,7 @@ public partial class DigimonWorld : Node2D
             return;
         }
 
-        if (_digimon.Hunger <= 30 && _targetFood == null)
+        if (_digimon.Hunger <= 30 && _targetFood == null && !_isTrainingAnimation)
         {
             if (CheckFood())
             {
@@ -259,13 +315,16 @@ public partial class DigimonWorld : Node2D
                 }
             }
 
-            _idleTimer -= delta;
-
-            if (_idleTimer <= 0)
+            if (!_isTrainingAnimation)
             {
-                if (!CheckFood())
+                _idleTimer -= delta;
+
+                if (_idleTimer <= 0)
                 {
-                    ChooseNewDestination();
+                    if (!CheckFood())
+                    {
+                        ChooseNewDestination();
+                    }
                 }
             }
 
@@ -396,7 +455,25 @@ public partial class DigimonWorld : Node2D
             return;
         }
 
-        _digimon.Feed(eaten);
+        if (food.IsSpoiled)
+        {
+            _digimon.Feed(eaten);
+
+            _digimon.ChangeHappiness(-SpoiledFoodHappinessPenalty);
+            _digimon.ChangeDiscipline(-SpoiledFoodDisciplinePenalty);
+
+            _digimon.TryBecomeSickFromSpoiledFood();
+
+            GD.Print($"{_digimon.BaseData.Name} comeu comida estragada!");
+        }
+        else
+        {
+            int feedAmount = food.PlacedInRestaurant
+                ? Mathf.RoundToInt(eaten * RestaurantFeedBonusMultiplier)
+                : eaten;
+
+            _digimon.Feed(feedAmount);
+        }
 
         GD.Print($"{_digimon.BaseData.Name} comeu {eaten}.");
         GD.Print($"Nutrição restante: {food.RemainingNutrition}");
@@ -461,6 +538,44 @@ public partial class DigimonWorld : Node2D
         _digimon.RegenerateHealth(percentage);
     }
 
+    /// <summary>
+    /// Aplica de uma vez os efeitos que normalmente tickam em tempo real via _Process
+    /// (regeneração de HP a cada HpRegenInterval, penalidade de área suja a cada
+    /// DirtyAreaCheckInterval) - chamado quando GameManager.SkipSleep avança o relógio sem
+    /// tempo real de verdade passar, senão o Digimon perderia toda a regeneração/penalidade
+    /// que teria acumulado dormindo em tempo real (o relógio de jogo avança, mas esses dois
+    /// timers, sendo baseados no delta de _Process, ficariam parados - GD.Print segue o
+    /// mesmo padrão de log de RegenerateHealth/CheckDirtyArea normais).
+    ///
+    /// Não mexe em coco/comida/treino/movimento: coco já fica parado dormindo (_poopTimer só
+    /// conta com Activity != Sleeping) e o resto não se aplica a um Digimon dormindo, então
+    /// não precisam de "catch-up" nenhum - só esses dois timers rodam incondicionalmente,
+    /// mesmo dormindo.
+    /// </summary>
+    public void CatchUpPassiveTime(double seconds)
+    {
+        if (_digimon == null)
+            return;
+
+        _hpRegenTimer -= seconds;
+
+        while (_hpRegenTimer <= 0)
+        {
+            RegenerateHealth();
+
+            _hpRegenTimer += HpRegenInterval;
+        }
+
+        _dirtyAreaTimer -= seconds;
+
+        while (_dirtyAreaTimer <= 0)
+        {
+            CheckDirtyArea();
+
+            _dirtyAreaTimer += DirtyAreaCheckInterval;
+        }
+    }
+
     /// <summary>Mostra um indicador flutuante (igual ao de dano em batalha) pra cada stat
     /// que o treino aumentou - normalmente só um por treino, já que cada tipo de treino
     /// afeta um stat só.</summary>
@@ -483,6 +598,48 @@ public partial class DigimonWorld : Node2D
 
         if (result.HealthPointsGained != 0)
             ShowStatGainIndicator($"+{result.HealthPointsGained} HP");
+    }
+
+    /// <summary>Garante que os balões de dormindo/doente estejam mostrando ou não de
+    /// acordo com o estado atual do Digimon (chamado sempre que o visual é atualizado,
+    /// cobrindo tanto mudanças em tempo real quanto o estado já carregado do save).
+    /// Doente tem prioridade visual sobre dormindo, assim como o sprite já prioriza.</summary>
+    private void SyncStatusIndicators()
+    {
+        bool shouldShowSick = _digimon.HealthState == HealthState.Sick;
+        bool shouldShowSleep = !shouldShowSick && _digimon.Activity == DigimonActivity.Sleeping;
+
+        SetIndicatorVisible(ref _sickIndicator, shouldShowSick, StatusIndicatorKind.Sick);
+        SetIndicatorVisible(ref _sleepIndicator, shouldShowSleep, StatusIndicatorKind.Sleeping);
+    }
+
+    private void SetIndicatorVisible(ref DigimonStatusIndicator indicator, bool shouldShow, StatusIndicatorKind kind)
+    {
+        if (shouldShow && indicator == null)
+        {
+            indicator = ShowStatusIndicator(kind);
+        }
+        else if (!shouldShow && indicator != null)
+        {
+            indicator.FadeOutAndFree();
+            indicator = null;
+        }
+    }
+
+    /// <summary>Mostra o balão com o ícone correspondente ao estado sobre a cabeça do
+    /// Digimon. É removido (com FadeOutAndFree) quando o estado termina.
+    /// Filho do próprio DigimonWorld (não do pai) pra acompanhar o Digimon automaticamente
+    /// caso ele seja arrastado enquanto dormindo/doente.</summary>
+    private DigimonStatusIndicator ShowStatusIndicator(StatusIndicatorKind kind)
+    {
+        var scene = GD.Load<PackedScene>("res://Scenes/Center/StatusIndicator.tscn");
+        var indicator = scene.Instantiate<DigimonStatusIndicator>();
+
+        AddChild(indicator);
+
+        indicator.Initialize(new Vector2(0, -38f), kind);
+
+        return indicator;
     }
 
     private void ShowStatGainIndicator(string text)
@@ -554,6 +711,11 @@ public partial class DigimonWorld : Node2D
         if (!_digimon.CanBeDragged())
             return;
 
+        // Já tem outro Digimon sendo arrastado (mesmo clique pegando duas ClickArea
+        // sobrepostas) - ignora, só o primeiro a pedir continua.
+        if (_draggingInstance != null)
+            return;
+
         if (_digimon.Activity == DigimonActivity.Sleeping)
         {
             _digimon.ChangeHappiness(-WokenWhileSleepingHappinessPenalty);
@@ -563,6 +725,12 @@ public partial class DigimonWorld : Node2D
         _dragStartArea = _center.GetAreaAtPosition(GlobalPosition);
 
         _isDragging = true;
+        _draggingInstance = this;
+
+        // Fica por cima dos outros Digimons (todos em z_index 0) enquanto é arrastado -
+        // senão a ordem de desenho seguia só a ordem em que cada um entrou na árvore,
+        // deixando quem estava sendo arrastado por baixo de quem nasceu depois dele.
+        ZIndex = 1;
 
         _positionBeforeDrag = GlobalPosition;
 
@@ -583,6 +751,11 @@ public partial class DigimonWorld : Node2D
 
         _isDragging = false;
 
+        ZIndex = 0;
+
+        if (_draggingInstance == this)
+            _draggingInstance = null;
+
         CenterArea targetArea = _center.GetAreaAtPosition(GlobalPosition);
 
         if (targetArea == null)
@@ -591,6 +764,24 @@ public partial class DigimonWorld : Node2D
                 $"{_digimon.BaseData.Name} foi solto fora de uma CenterArea. " +
                 $"Voltando para a posição anterior."
             );
+
+            GlobalPosition = _dragStartPosition;
+            _currentArea = _dragStartArea;
+
+            return;
+        }
+
+        // Área de treino específica de um stat só admite 1 Digimon treinando por vez (ver
+        // Center.IsSpecificTrainingAreaOccupied) - recusa o segundo, devolvendo ele pra
+        // posição de onde começou a ser arrastado, igual ao caso de soltar fora de uma área.
+        if (_center.IsSpecificTrainingAreaOccupied(targetArea, this))
+        {
+            GD.Print(
+                $"{_digimon.BaseData.Name} não pode entrar em {targetArea.GridPosition}: " +
+                "área de treino específica já ocupada."
+            );
+
+            _center.ShowWarning("Essa área de treino específica já está sendo usada por outro Digimon.");
 
             GlobalPosition = _dragStartPosition;
             _currentArea = _dragStartArea;
@@ -667,15 +858,28 @@ public partial class DigimonWorld : Node2D
             return;
         }
 
-        TrainingType[] trainingTypes =
-            Enum.GetValues<TrainingType>();
+        // Área de treino específica de um stat (ver CenterAreaType) força sempre esse stat,
+        // com um bônus leve sobre o resultado - a área genérica continua sorteando entre
+        // todos os stats, sem bônus.
+        TrainingType? forcedType = _currentArea?.ForcedTrainingType;
 
-        int randomIndex = GD.RandRange(
-            0,
-            trainingTypes.Length - 1
-        );
+        TrainingType type;
+        float gainMultiplier;
 
-        TrainingType type = trainingTypes[randomIndex];
+        if (forcedType.HasValue)
+        {
+            type = forcedType.Value;
+            gainMultiplier = TrainingSystem.SpecificAreaBonusMultiplier;
+        }
+        else
+        {
+            TrainingType[] trainingTypes = Enum.GetValues<TrainingType>();
+
+            int randomIndex = GD.RandRange(0, trainingTypes.Length - 1);
+
+            type = trainingTypes[randomIndex];
+            gainMultiplier = 1f;
+        }
 
         GD.Print(
             $"{_digimon.BaseData.Name} iniciou treinamento de {type}."
@@ -683,7 +887,8 @@ public partial class DigimonWorld : Node2D
 
         var result = trainingSystem.Execute(
             _digimon,
-            type
+            type,
+            gainMultiplier
         );
 
         if (!result.Success)
@@ -711,17 +916,22 @@ public partial class DigimonWorld : Node2D
         // Agora o estado lógico também passa a ser Training.
         _digimon.StartTraining();
 
+        _trainingIndicator = ShowStatusIndicator(StatusIndicatorKind.Training);
+
         // ==========================================
         // ANIMAÇÃO
         // ==========================================
 
         int trainingLoops = GD.RandRange(1, 2);
 
-        await _sprite.PlayTrainingSequence(trainingLoops);
+        bool finishedNormally = await _sprite.PlayTrainingSequence(trainingLoops);
 
         // ==========================================
         // APLICA O RESULTADO
         // ==========================================
+
+        _trainingIndicator?.FadeOutAndFree();
+        _trainingIndicator = null;
 
         _digimon.ApplyTrainingResult(result);
 
@@ -741,8 +951,12 @@ public partial class DigimonWorld : Node2D
 
         _trainingTimer = TrainingInterval;
 
-        // Volta a andar normalmente pela área.
-        ChooseNewDestination();
+        // Se a sequência foi interrompida (ex.: o Digimon dormiu no meio do treino, trocando
+        // o sprite por baixo), não força ele a voltar a andar por cima do que interrompeu -
+        // UpdateVisualState()/ChooseNewDestination() já vão rodar de novo naturalmente quando
+        // essa outra atividade terminar (ex.: acordar).
+        if (finishedNormally && _digimon.CanMove())
+            ChooseNewDestination();
     }
 
     public bool IsPointInside(Vector2 position)
@@ -761,7 +975,69 @@ public partial class DigimonWorld : Node2D
         }
     }
 
-    private void OnEvolved(DigimonData newForm)
+    /// <summary>
+    /// A cada hora de jogo, se o Digimon estiver dormindo: dormir no Dormitório dá
+    /// Felicidade e um extra de recuperação de Stamina (por cima da recuperação normal do
+    /// sono, que já acontece em DigimonInstance.AdvanceHour antes desse evento, chamado por
+    /// GameManager); dormir fora do Dormitório é de graça na primeira hora, mas a partir da
+    /// segunda hora seguida começa a perder Felicidade, crescendo a cada hora extra numa
+    /// escala cada vez menor. Não sendo hora de sono (acordado), zera a contagem de horas
+    /// fora - a próxima vez que dormir fora do Dormitório começa a contagem do zero.
+    /// </summary>
+    private void OnDormitoryHourPassed()
+    {
+        if (_digimon == null)
+            return;
+
+        if (_digimon.Activity != DigimonActivity.Sleeping)
+        {
+            _digimon.HoursSleptOutsideDormitory = 0;
+            return;
+        }
+
+        bool inDormitory = _currentArea != null && _currentArea.IsDormitory();
+
+        if (inDormitory)
+        {
+            _digimon.HoursSleptOutsideDormitory = 0;
+
+            _digimon.ChangeHappiness(DormitorySleepHourlyHappinessBonus);
+            _digimon.RecoverStamina(DormitoryExtraStaminaRecovery);
+
+            return;
+        }
+
+        _digimon.HoursSleptOutsideDormitory++;
+
+        // Primeira hora fora é de graça - só penaliza a partir da segunda.
+        if (_digimon.HoursSleptOutsideDormitory <= 1)
+            return;
+
+        int extraHours = _digimon.HoursSleptOutsideDormitory - 1;
+
+        int penalty = Mathf.CeilToInt(
+            OutsideDormitoryPenaltyScale * Mathf.Sqrt(extraHours)
+        );
+
+        _digimon.ChangeHappiness(-penalty);
+    }
+
+    // A animação em si (centralizada na tela, com o resto do jogo pausado) roda no
+    // EvolutionOverlay - aqui só para de andar e entra na fila do Center (que garante só
+    // uma animação de evolução por vez, mesmo se vários Digimons evoluírem juntos, ex.:
+    // depois de uma batalha em time). O sprite/estado local só troca quando a animação
+    // dessa evolução específica terminar (ver ApplyEvolvedSprite).
+    private void OnEvolved(DigimonData oldForm, DigimonData newForm)
+    {
+        _isWalking = false;
+        _sprite.SetWalking(false);
+
+        _center.EnqueueEvolution(oldForm, newForm, this);
+    }
+
+    /// <summary>Chamado pelo Center quando a animação de evolução (EvolutionOverlay) dessa
+    /// instância termina - só então o sprite/visual local troca pra forma nova.</summary>
+    public void ApplyEvolvedSprite(DigimonData newForm)
     {
         _sprite.SetDigimon(newForm.Code);
 

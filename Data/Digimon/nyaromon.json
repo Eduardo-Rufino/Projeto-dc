@@ -1,0 +1,20 @@
+{
+  "id": 69,
+  "code": "nyaromon",
+  "name": "Nyaromon",
+  "stage": "Baby",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Light",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 22,
+    "physicalDamage": 2,
+    "physicalDefense": 4,
+    "specialDamage": 11,
+    "specialDefense": 4,
+    "speed": 9
+  }
+}

@@ -11,11 +11,11 @@
   "SupportType": "Buffer",
 
   "BaseStats": {
-    "healthPoints": 175,
-    "physicalDamage": 24,
-    "physicalDefense": 28,
-    "specialDamage": 60,
-    "specialDefense": 30,
-    "speed": 16
+    "healthPoints": 230,
+    "physicalDamage": 12,
+    "physicalDefense": 50,
+    "specialDamage": 19,
+    "specialDefense": 50,
+    "speed": 61
   }
 }

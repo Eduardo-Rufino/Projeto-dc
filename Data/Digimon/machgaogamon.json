@@ -1,0 +1,20 @@
+{
+  "id": 48,
+  "code": "machgaogamon",
+  "name": "MachGaogamon",
+  "stage": "Ultimate",
+  "role": "Warrior",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 445,
+    "physicalDamage": 162,
+    "physicalDefense": 85,
+    "specialDamage": 34,
+    "specialDefense": 61,
+    "speed": 85
+  }
+}

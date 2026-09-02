@@ -7,11 +7,23 @@ namespace ProjetoDC.Scripts.Systems.Training
 {
     public class TrainingSystem
     {
+        // HP ganha um múltiplo dos outros stats (a vida sempre teve um valor absoluto bem
+        // maior que ATK/DEF/etc, então 1:1 deixaria HP andando de menos) - era 10x, jogadores
+        // treinando só HP acumulavam vida desproporcional ao resto do time. Reduzido, mas
+        // ainda maior que os outros stats de propósito.
+        private const int HealthPointsGainMultiplier = 6;
+
+        // Bônus das áreas de treino específicas por stat (ver CenterArea.GetForcedTrainingType)
+        // sobre o ganho da área de treino genérica - "levemente mais status", não um upgrade
+        // que torne a área inicial obsoleta.
+        public const float SpecificAreaBonusMultiplier = 1.15f;
+
         private readonly RandomNumberGenerator _rng = new();
 
         public TrainingResult Execute(
             DigimonInstance digimon,
-            TrainingType type)
+            TrainingType type,
+            float gainMultiplier = 1f)
         {
             var result = new TrainingResult();
 
@@ -33,27 +45,27 @@ namespace ProjetoDC.Scripts.Systems.Training
             switch (type)
             {
                 case TrainingType.HealthPoints:
-                    result.HealthPointsGained = 10 * trainingResult;
+                    result.HealthPointsGained = ApplyGainMultiplier(HealthPointsGainMultiplier * trainingResult, gainMultiplier);
                     break;
 
                 case TrainingType.Attack:
-                    result.PhysicDamageGained = trainingResult;
+                    result.PhysicDamageGained = ApplyGainMultiplier(trainingResult, gainMultiplier);
                     break;
 
                 case TrainingType.Defense:
-                    result.PhysicDefenseGained = trainingResult;
+                    result.PhysicDefenseGained = ApplyGainMultiplier(trainingResult, gainMultiplier);
                     break;
 
                 case TrainingType.Speed:
-                    result.SpeedGained = trainingResult;
+                    result.SpeedGained = ApplyGainMultiplier(trainingResult, gainMultiplier);
                     break;
 
                 case TrainingType.SpecialAttack:
-                    result.SpecialDamageGained = trainingResult;
+                    result.SpecialDamageGained = ApplyGainMultiplier(trainingResult, gainMultiplier);
                     break;
 
                 case TrainingType.SpecialDefense:
-                    result.SpecialDefenseGained = trainingResult;
+                    result.SpecialDefenseGained = ApplyGainMultiplier(trainingResult, gainMultiplier);
                     break;
             }
 
@@ -67,6 +79,11 @@ namespace ProjetoDC.Scripts.Systems.Training
             );
 
             return result;
+        }
+
+        private static int ApplyGainMultiplier(int baseGain, float multiplier)
+        {
+            return Mathf.RoundToInt(baseGain * multiplier);
         }
 
         private int RollTrainingResult()

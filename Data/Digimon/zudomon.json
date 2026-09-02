@@ -1,0 +1,20 @@
+{
+  "id": 67,
+  "code": "zudomon",
+  "name": "Zudomon",
+  "stage": "Ultimate",
+  "role": "Tank",
+  "Element": "Water",
+  "Attribute": "Data",
+  "EggType": "Water",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 500,
+    "physicalDamage": 150,
+    "physicalDefense": 135,
+    "specialDamage": 25,
+    "specialDefense": 80,
+    "speed": 50
+  }
+}

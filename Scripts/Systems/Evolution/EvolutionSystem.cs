@@ -1,7 +1,9 @@
 using Godot;
+using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.Systems.Results;
 using ProjetoDC.Scripts.UI;
 using System;
 using System.Collections.Generic;
@@ -17,7 +19,17 @@ namespace ProjetoDC.Scripts.Systems.Evolution
         private static readonly Random _random = new Random();
 
 
-        public static bool TryToEvolve(DigimonInstance digimon)
+        /// <summary>
+        /// Tenta evoluir o Digimon. <paramref name="capacityUsed"/>/<paramref name="capacityLimit"/>
+        /// vêm do Center (CenterState.CapacityUsed/CapacityLimit) - uma evolução só é aplicada
+        /// se a capacidade extra que a nova forma ocupa (em relação ao estágio atual) couber;
+        /// senão retorna BlockedByCapacity sem alterar o Digimon, pra quem chamou poder avisar
+        /// o jogador (ver GameManager.TryToEvolve/EvolutionBlockedByCapacity).
+        /// </summary>
+        public static EvolutionAttemptResult TryToEvolve(
+            DigimonInstance digimon,
+            int capacityUsed,
+            int capacityLimit)
         {
             GD.Print($"Tentando evoluir {digimon.BaseData.Name}");
             var evolutions = DatabaseManager.Instance
@@ -27,7 +39,7 @@ namespace ProjetoDC.Scripts.Systems.Evolution
 
             if (evolutions == null || evolutions.Count == 0)
             {
-                return false;
+                return EvolutionAttemptResult.NotEligible();
             }
 
             var validEvolutions = new List<EvolutionData>();
@@ -49,7 +61,7 @@ namespace ProjetoDC.Scripts.Systems.Evolution
 
             if (validEvolutions.Count == 0)
             {
-                return false;
+                return EvolutionAttemptResult.NotEligible();
             }
 
             var bestEvolution = SelectBestEvolution(validEvolutions, digimon);
@@ -58,14 +70,32 @@ namespace ProjetoDC.Scripts.Systems.Evolution
 
             if(newForm == null)
             {
-                return false;
+                return EvolutionAttemptResult.NotEligible();
+            }
+
+            int requiredCapacity = DigimonInstance.GetCapacityCostForStage(newForm.Stage);
+            int capacityDelta = requiredCapacity - digimon.CapacityCost;
+            int projectedUsed = capacityUsed + capacityDelta;
+
+            if (projectedUsed > capacityLimit)
+            {
+                GD.Print(
+                    $"{digimon.BaseData.Name} pronto pra evoluir pra {newForm.Name}, " +
+                    $"mas falta capacidade ({projectedUsed}/{capacityLimit})."
+                );
+
+                return EvolutionAttemptResult.BlockedByCapacity(
+                    newForm,
+                    requiredCapacity,
+                    projectedUsed - capacityLimit
+                );
             }
 
             GD.Print($"Evoluindo {digimon.BaseData.Name} -> {newForm.Name}");
 
             digimon.Evolve(newForm, bestEvolution.StatMultiplier);
 
-            return true;
+            return EvolutionAttemptResult.Evolved(newForm, requiredCapacity);
         }
 
         private static bool MeetsRequirements(DigimonInstance digimon, EvolutionData evolution)

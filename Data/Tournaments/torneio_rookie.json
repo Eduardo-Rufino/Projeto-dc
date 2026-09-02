@@ -1,0 +1,12 @@
+{
+  "Id": 2,
+  "Name": "Torneio Rookie",
+  "Description": "Esquadrão equilibrado de Rookies - Tentomon na linha de frente, Lalamon no suporte e Terriermon à distância.",
+  "RecommendedLevel": 8,
+  "Opponents": [
+    { "DigimonId": 3, "Level": 8 },
+    { "DigimonId": 12, "Level": 8 },
+    { "DigimonId": 8, "Level": 8 }
+  ],
+  "CapacityReward": 4
+}
