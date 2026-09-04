@@ -1,0 +1,20 @@
+{
+  "id": 108,
+  "code": "goromon",
+  "name": "Goromon",
+  "stage": "InTraining",
+  "role": "Tank",
+  "Element": "Earth",
+  "Attribute": "Virus",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 50,
+    "physicalDamage": 19,
+    "physicalDefense": 20,
+    "specialDamage": 8,
+    "specialDefense": 12,
+    "speed": 10
+  }
+}

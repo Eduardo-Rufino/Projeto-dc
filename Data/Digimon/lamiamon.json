@@ -1,0 +1,20 @@
+{
+  "id": 86,
+  "code": "lamiamon",
+  "name": "Lamiamon",
+  "stage": "Ultimate",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 350,
+    "physicalDamage": 56,
+    "physicalDefense": 62,
+    "specialDamage": 168,
+    "specialDefense": 66,
+    "speed": 118
+  }
+}

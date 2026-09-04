@@ -1,0 +1,20 @@
+{
+  "id": 141,
+  "code": "aeroveedramon",
+  "name": "AeroVeedramon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Vacine",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 370,
+    "physicalDamage": 150,
+    "physicalDefense": 80,
+    "specialDamage": 55,
+    "specialDefense": 75,
+    "speed": 135
+  }
+}

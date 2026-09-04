@@ -1,0 +1,20 @@
+{
+  "id": 150,
+  "code": "dorugamon",
+  "name": "Dorugamon",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 195,
+    "physicalDamage": 88,
+    "physicalDefense": 60,
+    "specialDamage": 35,
+    "specialDefense": 45,
+    "speed": 80
+  }
+}

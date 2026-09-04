@@ -1,0 +1,20 @@
+{
+  "id": 144,
+  "code": "kentaurusmon",
+  "name": "Kentaurusmon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 720,
+    "physicalDamage": 120,
+    "physicalDefense": 150,
+    "specialDamage": 220,
+    "specialDefense": 170,
+    "speed": 130
+  }
+}

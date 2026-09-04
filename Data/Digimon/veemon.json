@@ -1,0 +1,20 @@
+{
+  "id": 139,
+  "code": "veemon",
+  "name": "Veemon",
+  "stage": "Rookie",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Vacine",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 78,
+    "physicalDamage": 36,
+    "physicalDefense": 26,
+    "specialDamage": 16,
+    "specialDefense": 20,
+    "speed": 44
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": 146,
+  "code": "gladimon",
+  "name": "Gladimon",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Neutral",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 205,
+    "physicalDamage": 100,
+    "physicalDefense": 70,
+    "specialDamage": 30,
+    "specialDefense": 42,
+    "speed": 68
+  }
+}

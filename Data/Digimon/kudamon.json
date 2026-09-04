@@ -1,0 +1,20 @@
+{
+  "id": 129,
+  "code": "kudamon",
+  "name": "Kudamon",
+  "stage": "Rookie",
+  "role": "Ranged",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Special",
+  
+  "BaseStats": {
+    "healthPoints": 75,
+    "physicalDamage": 20,
+    "physicalDefense": 22,
+    "specialDamage": 45,
+    "specialDefense": 25,
+    "speed": 55
+  }
+}

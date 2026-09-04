@@ -1,0 +1,20 @@
+{
+  "id": 123,
+  "code": "belphemon_rage",
+  "name": "Belphemon Rage Mode",
+  "stage": "Mega",
+  "role": "Warrior",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 750,
+    "physicalDamage": 210,
+    "physicalDefense": 140,
+    "specialDamage": 60,
+    "specialDefense": 90,
+    "speed": 75
+  }
+}

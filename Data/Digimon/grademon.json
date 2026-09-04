@@ -1,0 +1,20 @@
+{
+  "id": 154,
+  "code": "grademon",
+  "name": "Grademon",
+  "stage": "Ultimate",
+  "role": "Tank",
+  "Element": "Earth",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 410,
+    "physicalDamage": 175,
+    "physicalDefense": 120,
+    "specialDamage": 35,
+    "specialDefense": 70,
+    "speed": 75
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": 142,
+  "code": "ulforceveedramon",
+  "name": "UlforceVeedramon",
+  "stage": "Mega",
+  "role": "Assassin",
+  "Element": "Light",
+  "Attribute": "Free",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 680,
+    "physicalDamage": 245,
+    "physicalDefense": 120,
+    "specialDamage": 80,
+    "specialDefense": 115,
+    "speed": 175
+  }
+}

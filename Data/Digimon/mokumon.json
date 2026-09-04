@@ -1,0 +1,20 @@
+{
+  "id": 100,
+  "code": "mokumon",
+  "name": "Mokumon",
+  "stage": "Baby",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 20,
+    "physicalDamage": 6,
+    "physicalDefense": 7,
+    "specialDamage": 9,
+    "specialDefense": 7,
+    "speed": 6
+  }
+}

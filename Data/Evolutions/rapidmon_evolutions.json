@@ -5,7 +5,6 @@
     "requiredLevel": 30,
     "requiredAgeInDays": 8,
     "statMultiplier": 1.7,
-
     "requiredStats": {
       "healthPoints": 544,
       "physicalDamage": 254,

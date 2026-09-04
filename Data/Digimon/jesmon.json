@@ -1,0 +1,20 @@
+{
+  "id": 166,
+  "code": "jesmon",
+  "name": "Jesmon",
+  "stage": "Mega",
+  "role": "Assassin",
+  "Element": "Light",
+  "Attribute": "Unknown",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 710,
+    "physicalDamage": 250,
+    "physicalDefense": 135,
+    "specialDamage": 160,
+    "specialDefense": 125,
+    "speed": 180
+  }
+}

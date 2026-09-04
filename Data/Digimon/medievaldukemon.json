@@ -1,0 +1,20 @@
+{
+  "id": 99,
+  "code": "medievaldukemon",
+  "name": "Medieval Dukemon",
+  "stage": "Mega",
+  "role": "Warrior",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 780,
+    "physicalDamage": 270,
+    "physicalDefense": 150,
+    "specialDamage": 50,
+    "specialDefense": 120,
+    "speed": 110
+  }
+}

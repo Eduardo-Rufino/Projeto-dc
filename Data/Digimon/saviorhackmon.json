@@ -1,0 +1,20 @@
+{
+  "id": 165,
+  "code": "saviorhackmon",
+  "name": "SaviorHackmon",
+  "stage": "Ultimate",
+  "role": "Assassin",
+  "Element": "Light",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 375,
+    "physicalDamage": 145,
+    "physicalDefense": 90,
+    "specialDamage": 115,
+    "specialDefense": 85,
+    "speed": 130
+  }
+}

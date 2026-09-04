@@ -1,0 +1,20 @@
+{
+  "id": 124,
+  "code": "lucemon",
+  "name": "Lucemon",
+  "stage": "Rookie",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Data",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 70,
+    "physicalDamage": 30,
+    "physicalDefense": 25,
+    "specialDamage": 55,
+    "specialDefense": 30,
+    "speed": 48
+  }
+}

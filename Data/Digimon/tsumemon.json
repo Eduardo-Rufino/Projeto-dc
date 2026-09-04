@@ -1,0 +1,20 @@
+{
+  "id": 115,
+  "code": "tsumemon",
+  "name": "Tsumemon",
+  "stage": "InTraining",
+  "role": "Ranged",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 42,
+    "physicalDamage": 10,
+    "physicalDefense": 11,
+    "specialDamage": 20,
+    "specialDefense": 12,
+    "speed": 17
+  }
+}

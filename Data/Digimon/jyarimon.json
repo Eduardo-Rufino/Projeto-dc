@@ -1,0 +1,20 @@
+{
+  "id": 83,
+  "code": "jyarimon",
+  "name": "Jyarimon",
+  "stage": "Baby",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 24,
+    "physicalDamage": 9,
+    "physicalDefense": 9,
+    "specialDamage": 6,
+    "specialDefense": 6,
+    "speed": 7
+  }
+}

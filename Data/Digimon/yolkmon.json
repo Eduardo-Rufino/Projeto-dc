@@ -1,0 +1,20 @@
+{
+  "id": 76,
+  "code": "yolkmon",
+  "name": "Yolkmon",
+  "stage": "Baby",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 22,
+    "physicalDamage": 4,
+    "physicalDefense": 6,
+    "specialDamage": 11,
+    "specialDefense": 6,
+    "speed": 9
+  }
+}

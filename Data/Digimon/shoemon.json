@@ -1,0 +1,21 @@
+{
+  "id": 91,
+  "code": "shoemon",
+  "name": "Shoemon",
+  "stage": "Rookie",
+  "role": "Support",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+  "SupportType": "Buffer",
+
+  "BaseStats": {
+    "healthPoints": 72,
+    "physicalDamage": 12,
+    "physicalDefense": 23,
+    "specialDamage": 40,
+    "specialDefense": 25,
+    "speed": 28
+  }
+}

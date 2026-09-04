@@ -1,0 +1,20 @@
+{
+  "id": 121,
+  "code": "lucemon_satan",
+  "name": "Lucemon Satan Mode",
+  "stage": "Mega",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Unknown",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 650,
+    "physicalDamage": 70,
+    "physicalDefense": 100,
+    "specialDamage": 250,
+    "specialDefense": 130,
+    "speed": 155
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": 104,
+  "code": "fantomon",
+  "name": "Fantomon",
+  "stage": "Ultimate",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 345,
+    "physicalDamage": 42,
+    "physicalDefense": 56,
+    "specialDamage": 165,
+    "specialDefense": 62,
+    "speed": 120
+  }
+}

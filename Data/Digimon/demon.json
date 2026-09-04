@@ -1,0 +1,20 @@
+{
+  "id": 105,
+  "code": "demon",
+  "name": "Demon",
+  "stage": "Mega",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Data",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 620,
+    "physicalDamage": 65,
+    "physicalDefense": 98,
+    "specialDamage": 240,
+    "specialDefense": 105,
+    "speed": 150
+  }
+}

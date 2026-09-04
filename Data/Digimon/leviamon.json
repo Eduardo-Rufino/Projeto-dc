@@ -1,0 +1,20 @@
+{
+  "id": 88,
+  "code": "leviamon",
+  "name": "Leviamon",
+  "stage": "Mega",
+  "role": "Tank",
+  "Element": "Dark",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 700,
+    "physicalDamage": 190,
+    "physicalDefense": 152,
+    "specialDamage": 90,
+    "specialDefense": 122,
+    "speed": 95
+  }
+}

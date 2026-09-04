@@ -1,0 +1,20 @@
+{
+  "id": 103,
+  "code": "bakemon",
+  "name": "Bakemon",
+  "stage": "Champion",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 165,
+    "physicalDamage": 28,
+    "physicalDefense": 34,
+    "specialDamage": 112,
+    "specialDefense": 36,
+    "speed": 80
+  }
+}

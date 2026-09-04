@@ -1,0 +1,20 @@
+{
+  "id": 152,
+  "code": "alphamon",
+  "name": "Alphamon",
+  "stage": "Mega",
+  "role": "Assassin",
+  "Element": "Light",
+  "Attribute": "Unknown",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 700,
+    "physicalDamage": 240,
+    "physicalDefense": 140,
+    "specialDamage": 90,
+    "specialDefense": 130,
+    "speed": 160
+  }
+}

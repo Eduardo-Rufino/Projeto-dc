@@ -1,0 +1,20 @@
+{
+  "id": 126,
+  "code": "phascomon",
+  "name": "Phascomon",
+  "stage": "Rookie",
+  "role": "Tank",
+  "Element": "Dark",
+  "Attribute": "Data",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 85,
+    "physicalDamage": 28,
+    "physicalDefense": 35,
+    "specialDamage": 20,
+    "specialDefense": 30,
+    "speed": 20
+  }
+}

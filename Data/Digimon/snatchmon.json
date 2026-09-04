@@ -1,0 +1,20 @@
+{
+  "id": 117,
+  "code": "snatchmon",
+  "name": "Snatchmon",
+  "stage": "Champion",
+  "role": "Ranged",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 170,
+    "physicalDamage": 30,
+    "physicalDefense": 38,
+    "specialDamage": 105,
+    "specialDefense": 42,
+    "speed": 78
+  }
+}

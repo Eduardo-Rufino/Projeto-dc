@@ -1,0 +1,20 @@
+{
+  "id": 101,
+  "code": "petimeramon",
+  "name": "PetiMeramon",
+  "stage": "InTraining",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 44,
+    "physicalDamage": 11,
+    "physicalDefense": 13,
+    "specialDamage": 19,
+    "specialDefense": 13,
+    "speed": 13
+  }
+}

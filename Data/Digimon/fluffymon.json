@@ -1,0 +1,20 @@
+{
+  "id": 77,
+  "code": "fluffymon",
+  "name": "Fluffymon",
+  "stage": "InTraining",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 46,
+    "physicalDamage": 8,
+    "physicalDefense": 11,
+    "specialDamage": 21,
+    "specialDefense": 11,
+    "speed": 19
+  }
+}

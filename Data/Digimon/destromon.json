@@ -1,0 +1,20 @@
+{
+  "id": 118,
+  "code": "destromon",
+  "name": "Destromon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 355,
+    "physicalDamage": 48,
+    "physicalDefense": 62,
+    "specialDamage": 160,
+    "specialDefense": 68,
+    "speed": 115
+  }
+}

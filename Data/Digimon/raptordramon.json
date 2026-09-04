@@ -1,0 +1,20 @@
+{
+  "id": 153,
+  "code": "raptordramon",
+  "name": "Raptordramon",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Earth",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 210,
+    "physicalDamage": 100,
+    "physicalDefense": 65,
+    "specialDamage": 20,
+    "specialDefense": 35,
+    "speed": 65
+  }
+}

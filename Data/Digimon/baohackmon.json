@@ -1,0 +1,20 @@
+{
+  "id": 164,
+  "code": "baohackmon",
+  "name": "BaoHackmon",
+  "stage": "Champion",
+  "role": "Assassin",
+  "Element": "Neutral",
+  "Attribute": "Data",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 195,
+    "physicalDamage": 85,
+    "physicalDefense": 60,
+    "specialDamage": 65,
+    "specialDefense": 55,
+    "speed": 85
+  }
+}

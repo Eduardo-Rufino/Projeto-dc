@@ -1,0 +1,21 @@
+{
+  "id": 94,
+  "code": "cendrillmon",
+  "name": "Cendrillmon",
+  "stage": "Mega",
+  "role": "Support",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+  "SupportType": "Buffer",
+
+  "BaseStats": {
+    "healthPoints": 590,
+    "physicalDamage": 55,
+    "physicalDefense": 95,
+    "specialDamage": 220,
+    "specialDefense": 115,
+    "speed": 165
+  }
+}

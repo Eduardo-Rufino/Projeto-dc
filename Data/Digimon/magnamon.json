@@ -1,0 +1,20 @@
+{
+  "id": 143,
+  "code": "magnamon",
+  "name": "Magnamon",
+  "stage": "Mega",
+  "role": "Warrior",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 720,
+    "physicalDamage": 235,
+    "physicalDefense": 175,
+    "specialDamage": 70,
+    "specialDefense": 150,
+    "speed": 100
+  }
+}

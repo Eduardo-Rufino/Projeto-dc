@@ -1,0 +1,20 @@
+{
+  "id": 125,
+  "code": "lucemon_falldown",
+  "name": "Lucemon Falldown Mode",
+  "stage": "Ultimate",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 380,
+    "physicalDamage": 90,
+    "physicalDefense": 70,
+    "specialDamage": 175,
+    "specialDefense": 85,
+    "speed": 100
+  }
+}

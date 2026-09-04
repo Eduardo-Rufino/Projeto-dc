@@ -1,0 +1,21 @@
+{
+  "id": 90,
+  "code": "kyaromon",
+  "name": "Kyaromon",
+  "stage": "InTraining",
+  "role": "Support",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+  "SupportType": "Buffer",
+
+  "BaseStats": {
+    "healthPoints": 44,
+    "physicalDamage": 8,
+    "physicalDefense": 15,
+    "specialDamage": 18,
+    "specialDefense": 15,
+    "speed": 12
+  }
+}

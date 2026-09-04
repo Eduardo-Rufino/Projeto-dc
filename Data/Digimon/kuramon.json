@@ -1,0 +1,20 @@
+{
+  "id": 114,
+  "code": "kuramon",
+  "name": "Kuramon",
+  "stage": "Baby",
+  "role": "Ranged",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 20,
+    "physicalDamage": 5,
+    "physicalDefense": 6,
+    "specialDamage": 10,
+    "specialDefense": 6,
+    "speed": 8
+  }
+}

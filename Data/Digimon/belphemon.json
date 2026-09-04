@@ -1,0 +1,20 @@
+{
+  "id": 128,
+  "code": "belphemon",
+  "name": "Belphemon Sleep Mode",
+  "stage": "Mega",
+  "role": "Tank",
+  "Element": "Dark",
+  "Attribute": "Data",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 850,
+    "physicalDamage": 130,
+    "physicalDefense": 190,
+    "specialDamage": 40,
+    "specialDefense": 160,
+    "speed": 50
+  }
+}

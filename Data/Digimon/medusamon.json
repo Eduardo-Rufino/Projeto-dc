@@ -1,0 +1,20 @@
+{
+  "id": 87,
+  "code": "medusamon",
+  "name": "Medusamon",
+  "stage": "Mega",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 600,
+    "physicalDamage": 70,
+    "physicalDefense": 96,
+    "specialDamage": 255,
+    "specialDefense": 100,
+    "speed": 145
+  }
+}

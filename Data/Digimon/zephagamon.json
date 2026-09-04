@@ -1,0 +1,20 @@
+{
+  "id": 81,
+  "code": "zephagamon",
+  "name": "Zephagamon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 640,
+    "physicalDamage": 150,
+    "physicalDefense": 120,
+    "specialDamage": 230,
+    "specialDefense": 118,
+    "speed": 150
+  }
+}

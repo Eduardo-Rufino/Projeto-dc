@@ -1,0 +1,20 @@
+{
+  "id": 110,
+  "code": "tortamon",
+  "name": "Tortamon",
+  "stage": "Champion",
+  "role": "Tank",
+  "Element": "Earth",
+  "Attribute": "Virus",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 245,
+    "physicalDamage": 95,
+    "physicalDefense": 88,
+    "specialDamage": 20,
+    "specialDefense": 55,
+    "speed": 38
+  }
+}

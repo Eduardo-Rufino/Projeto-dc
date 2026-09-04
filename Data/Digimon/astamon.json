@@ -1,0 +1,20 @@
+{
+  "id": 127,
+  "code": "astamon",
+  "name": "Astamon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 360,
+    "physicalDamage": 140,
+    "physicalDefense": 60,
+    "specialDamage": 60,
+    "specialDefense": 55,
+    "speed": 110
+  }
+}

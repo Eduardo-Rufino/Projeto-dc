@@ -1,0 +1,21 @@
+{
+  "id": 92,
+  "code": "shoeshoemon",
+  "name": "ShoeShoemon",
+  "stage": "Champion",
+  "role": "Support",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+  "SupportType": "Buffer",
+
+  "BaseStats": {
+    "healthPoints": 205,
+    "physicalDamage": 25,
+    "physicalDefense": 59,
+    "specialDamage": 85,
+    "specialDefense": 63,
+    "speed": 48
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": 132,
+  "code": "dracomon",
+  "name": "Dracomon",
+  "stage": "Rookie",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 80,
+    "physicalDamage": 38,
+    "physicalDefense": 28,
+    "specialDamage": 18,
+    "specialDefense": 22,
+    "speed": 40
+  }
+}

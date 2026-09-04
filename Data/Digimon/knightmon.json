@@ -1,0 +1,20 @@
+{
+  "id": 147,
+  "code": "knightmon",
+  "name": "Knightmon",
+  "stage": "Ultimate",
+  "role": "Tank",
+  "Element": "Neutral",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 380,
+    "physicalDamage": 160,
+    "physicalDefense": 120,
+    "specialDamage": 45,
+    "specialDefense": 80,
+    "speed": 85
+  }
+}

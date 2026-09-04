@@ -1,0 +1,20 @@
+{
+  "id": 102,
+  "code": "ghostmon",
+  "name": "Ghostmon",
+  "stage": "Rookie",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 62,
+    "physicalDamage": 14,
+    "physicalDefense": 14,
+    "specialDamage": 55,
+    "specialDefense": 16,
+    "speed": 48
+  }
+}

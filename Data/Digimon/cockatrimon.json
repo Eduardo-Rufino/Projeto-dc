@@ -1,0 +1,20 @@
+{
+  "id": 97,
+  "code": "cockatrimon",
+  "name": "Cockatrimon",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 210,
+    "physicalDamage": 110,
+    "physicalDefense": 42,
+    "specialDamage": 20,
+    "specialDefense": 38,
+    "speed": 70
+  }
+}

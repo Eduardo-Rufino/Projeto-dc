@@ -1,0 +1,21 @@
+{
+  "id": 95,
+  "code": "lilithmon",
+  "name": "Lilithmon",
+  "stage": "Mega",
+  "role": "Support",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+  "SupportType": "Healer",
+
+  "BaseStats": {
+    "healthPoints": 560,
+    "physicalDamage": 48,
+    "physicalDefense": 110,
+    "specialDamage": 205,
+    "specialDefense": 135,
+    "speed": 120
+  }
+}

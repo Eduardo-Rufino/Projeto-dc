@@ -1,0 +1,20 @@
+{
+  "id": 134,
+  "code": "groundramon",
+  "name": "Groundramon",
+  "stage": "Ultimate",
+  "role": "Tank",
+  "Element": "Earth",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 400,
+    "physicalDamage": 150,
+    "physicalDefense": 140,
+    "specialDamage": 40,
+    "specialDefense": 80,
+    "speed": 50
+  }
+}

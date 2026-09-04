@@ -1,0 +1,20 @@
+{
+  "id": 106,
+  "code": "beelzebumon",
+  "name": "Beelzebumon",
+  "stage": "Mega",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 600,
+    "physicalDamage": 100,
+    "physicalDefense": 92,
+    "specialDamage": 235,
+    "specialDefense": 98,
+    "speed": 140
+  }
+}

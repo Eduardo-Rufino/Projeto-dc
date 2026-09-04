@@ -1,0 +1,20 @@
+{
+  "id": 113,
+  "code": "boltmon",
+  "name": "Boltmon",
+  "stage": "Mega",
+  "role": "Tank",
+  "Element": "Earth",
+  "Attribute": "Virus",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 720,
+    "physicalDamage": 260,
+    "physicalDefense": 190,
+    "specialDamage": 70,
+    "specialDefense": 150,
+    "speed": 100
+  }
+}

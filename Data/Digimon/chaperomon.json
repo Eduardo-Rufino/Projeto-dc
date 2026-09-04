@@ -1,0 +1,21 @@
+{
+  "id": 93,
+  "code": "chaperomon",
+  "name": "Chaperomon",
+  "stage": "Ultimate",
+  "role": "Support",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+  "SupportType": "Buffer",
+
+  "BaseStats": {
+    "healthPoints": 380,
+    "physicalDamage": 38,
+    "physicalDefense": 79,
+    "specialDamage": 148,
+    "specialDefense": 89,
+    "speed": 70
+  }
+}

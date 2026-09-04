@@ -1,0 +1,20 @@
+{
+  "id": 82,
+  "code": "pinochimon",
+  "name": "Pinochimon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 610,
+    "physicalDamage": 90,
+    "physicalDefense": 100,
+    "specialDamage": 265,
+    "specialDefense": 110,
+    "speed": 190
+  }
+}

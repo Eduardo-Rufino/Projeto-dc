@@ -1,0 +1,20 @@
+{
+  "id": 85,
+  "code": "dimetromon",
+  "name": "Dimetromon",
+  "stage": "Champion",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 175,
+    "physicalDamage": 46,
+    "physicalDefense": 42,
+    "specialDamage": 118,
+    "specialDefense": 40,
+    "speed": 82
+  }
+}

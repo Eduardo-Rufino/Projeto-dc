@@ -1,0 +1,20 @@
+{
+  "id": 78,
+  "code": "pteromon",
+  "name": "Pteromon",
+  "stage": "Rookie",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 68,
+    "physicalDamage": 12,
+    "physicalDefense": 17,
+    "specialDamage": 58,
+    "specialDefense": 19,
+    "speed": 50
+  }
+}

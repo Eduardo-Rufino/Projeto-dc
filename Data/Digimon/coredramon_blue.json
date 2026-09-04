@@ -1,0 +1,20 @@
+{
+  "id": 136,
+  "code": "coredramon_blue",
+  "name": "Coredramon (Blue)",
+  "stage": "Champion",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 180,
+    "physicalDamage": 75,
+    "physicalDefense": 55,
+    "specialDamage": 50,
+    "specialDefense": 50,
+    "speed": 90
+  }
+}

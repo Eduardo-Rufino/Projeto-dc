@@ -1,0 +1,20 @@
+{
+  "id": 131,
+  "code": "chirinmon",
+  "name": "Chirinmon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Beast",
+  "AttackType": "Special",
+  
+  "BaseStats": {
+    "healthPoints": 360,
+    "physicalDamage": 70,
+    "physicalDefense": 85,
+    "specialDamage": 165,
+    "specialDefense": 100,
+    "speed": 115
+  }
+}

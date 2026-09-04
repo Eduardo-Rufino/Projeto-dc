@@ -1,0 +1,20 @@
+{
+  "id": 157,
+  "code": "dexdorugreymon",
+  "name": "DexDorugreymon",
+  "stage": "Ultimate",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 365,
+    "physicalDamage": 155,
+    "physicalDefense": 85,
+    "specialDamage": 70,
+    "specialDefense": 70,
+    "speed": 120
+  }
+}

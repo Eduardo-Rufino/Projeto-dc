@@ -1,0 +1,20 @@
+{
+  "id": 122,
+  "code": "barbamon",
+  "name": "Barbamon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 640,
+    "physicalDamage": 55,
+    "physicalDefense": 130,
+    "specialDamage": 220,
+    "specialDefense": 150,
+    "speed": 90
+  }
+}

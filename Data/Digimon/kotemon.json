@@ -1,0 +1,20 @@
+{
+  "id": 145,
+  "code": "kotemon",
+  "name": "Kotemon",
+  "stage": "Rookie",
+  "role": "Warrior",
+  "Element": "Neutral",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 82,
+    "physicalDamage": 40,
+    "physicalDefense": 30,
+    "specialDamage": 14,
+    "specialDefense": 18,
+    "speed": 42
+  }
+}

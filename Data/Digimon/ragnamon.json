@@ -1,0 +1,20 @@
+{
+  "id": 119,
+  "code": "ragnamon",
+  "name": "Ragnamon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 630,
+    "physicalDamage": 80,
+    "physicalDefense": 100,
+    "specialDamage": 245,
+    "specialDefense": 108,
+    "speed": 148
+  }
+}

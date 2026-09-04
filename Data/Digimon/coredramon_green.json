@@ -1,0 +1,20 @@
+{
+  "id": 133,
+  "code": "coredramon_green",
+  "name": "Coredramon (Green)",
+  "stage": "Champion",
+  "role": "Warrior",
+  "Element": "Earth",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 200,
+    "physicalDamage": 85,
+    "physicalDefense": 70,
+    "specialDamage": 30,
+    "specialDefense": 45,
+    "speed": 60
+  }
+}

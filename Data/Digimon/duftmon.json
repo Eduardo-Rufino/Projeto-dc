@@ -1,0 +1,20 @@
+{
+  "id": 161,
+  "code": "duftmon",
+  "name": "Duftmon",
+  "stage": "Mega",
+  "role": "Assassin",
+  "Element": "Neutral",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 630,
+    "physicalDamage": 215,
+    "physicalDefense": 130,
+    "specialDamage": 95,
+    "specialDefense": 110,
+    "speed": 155
+  }
+}

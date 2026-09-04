@@ -1,0 +1,20 @@
+{
+  "id": 156,
+  "code": "dexdorugamon",
+  "name": "DexDorugamon",
+  "stage": "Champion",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 185,
+    "physicalDamage": 92,
+    "physicalDefense": 55,
+    "specialDamage": 38,
+    "specialDefense": 40,
+    "speed": 88
+  }
+}

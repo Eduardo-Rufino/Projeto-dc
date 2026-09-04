@@ -1,0 +1,20 @@
+{
+  "id": 79,
+  "code": "galemon",
+  "name": "Galemon",
+  "stage": "Champion",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 195,
+    "physicalDamage": 26,
+    "physicalDefense": 40,
+    "specialDamage": 120,
+    "specialDefense": 46,
+    "speed": 88
+  }
+}

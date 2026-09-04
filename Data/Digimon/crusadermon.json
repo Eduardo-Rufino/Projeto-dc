@@ -1,0 +1,20 @@
+{
+  "id": 148,
+  "code": "crusadermon",
+  "name": "Crusadermon",
+  "stage": "Mega",
+  "role": "Warrior",
+  "Element": "Neutral",
+  "Attribute": "Virus",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+  
+  "BaseStats": {
+    "healthPoints": 660,
+    "physicalDamage": 225,
+    "physicalDefense": 160,
+    "specialDamage": 60,
+    "specialDefense": 110,
+    "speed": 120
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": 163,
+  "code": "hackmon",
+  "name": "Hackmon",
+  "stage": "Rookie",
+  "role": "Assassin",
+  "Element": "Neutral",
+  "Attribute": "Data",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 74,
+    "physicalDamage": 32,
+    "physicalDefense": 24,
+    "specialDamage": 26,
+    "specialDefense": 24,
+    "speed": 50
+  }
+}

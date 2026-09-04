@@ -1,0 +1,20 @@
+{
+  "id": 80,
+  "code": "grandgalemon",
+  "name": "Grand Galemon",
+  "stage": "Ultimate",
+  "role": "Ranged",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Special",
+
+  "BaseStats": {
+    "healthPoints": 360,
+    "physicalDamage": 40,
+    "physicalDefense": 60,
+    "specialDamage": 175,
+    "specialDefense": 70,
+    "speed": 128
+  }
+}
