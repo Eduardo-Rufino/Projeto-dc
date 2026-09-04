@@ -1,0 +1,13 @@
+{
+  "Id": 4,
+  "Name": "Impmon",
+  "Code": "impmon",
+  "DialogueLines": [
+    "Ei, você aí. Não, não quero briga, quero negociar.",
+    "Ando colecionando chifre de Gabumon. Não pergunta por quê. Traga uns pra mim e eu pago bem."
+  ],
+  "QuestId": 4,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

@@ -1,0 +1,13 @@
+{
+  "Id": 4,
+  "Name": "Chifres pro Impmon",
+  "Description": "Colete 2 Chifres de Gabumon (dropados por Gabumon selvagens derrotados) e entregue ao Impmon.",
+  "GiverNpcId": 4,
+  "ObjectiveType": "CollectItem",
+  "ObjectiveTargetId": 3,
+  "ObjectiveCount": 2,
+  "RewardBits": 300,
+  "RewardCapacity": 0,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

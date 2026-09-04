@@ -61,6 +61,44 @@ namespace ProjetoDC.Scripts.Models.World
         /// GameManager.ApplyTournamentCapacityRewardIfNeeded).</summary>
         public List<int> ClearedTournamentIds { get; set; } = new();
 
+        /// <summary>ItemPickupData.UniqueId (dentro de um ExplorationMapData) já coletados -
+        /// esses pickups não voltam a aparecer na área (ver ExplorationArea).</summary>
+        public List<int> CollectedItemPickupIds { get; set; } = new();
+
+        /// <summary>QuestData.Id já entregues pelo menos uma vez - mesma ideia de
+        /// ClearedTournamentIds, mas pra quests de exploração.</summary>
+        public List<int> CompletedQuestIds { get; set; } = new();
+
+        /// <summary>QuestData.Id aceitos e ainda não entregues.</summary>
+        public List<int> ActiveQuestIds { get; set; } = new();
+
+        /// <summary>Progresso de uma quest aceita (QuestData.Id → contagem atual em direção a
+        /// QuestData.ObjectiveCount) - só existe entrada aqui enquanto a quest está em
+        /// ActiveQuestIds.</summary>
+        public Dictionary<int, int> QuestProgress { get; set; } = new();
+
+        /// <summary>NpcData.Id de NPCs recrutáveis (ver NpcData.IsRecruitable) já recrutados -
+        /// preenchido ao entregar a quest de recrutamento (GameManager.TryTurnInQuest), mas
+        /// ainda não consumido por nenhum efeito real dentro do Center. Fica engatilhado pra
+        /// quando esse sistema for implementado.</summary>
+        public List<int> RecruitedNpcIds { get; set; } = new();
+
+        /// <summary>DigimonData.Id de espécies que o jogador já teve no Center pelo menos uma
+        /// vez (chocou, comprou, ou evoluiu pra essa forma) - usado pela EncyclopediaScreen
+        /// pra decidir entre mostrar a espécie normalmente ou só como silhueta. Marcado em
+        /// AddDigimon (aquisição) e em GameManager.TryToEvolve (evoluir pra uma forma nova
+        /// também conta como "adquirida").</summary>
+        public List<int> DiscoveredDigimonIds { get; set; } = new();
+
+        /// <summary>Marca uma espécie como já vista/adquirida pelo menos uma vez (ver
+        /// DiscoveredDigimonIds) - idempotente, seguro de chamar toda vez que um Digimon
+        /// dessa espécie entra no Center ou evolui pra ela.</summary>
+        public void MarkDigimonDiscovered(int digimonId)
+        {
+            if (!DiscoveredDigimonIds.Contains(digimonId))
+                DiscoveredDigimonIds.Add(digimonId);
+        }
+
         public CenterState() {
             // Um save novo começa com um colchão mínimo de recursos - o suficiente pra não
             // deixar o jogador sem Bits/Carne/Remédio caso o ovo inicial choque um Digimon
@@ -143,6 +181,7 @@ namespace ProjetoDC.Scripts.Models.World
                 return;
             }
             Digimons.Add(digimon);
+            MarkDigimonDiscovered(digimon.BaseData.Id);
         }
 
         public void RemoveDigimon(DigimonInstance digimon)

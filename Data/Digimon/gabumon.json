@@ -16,5 +16,9 @@
     "specialDamage": 9,
     "specialDefense": 16,
     "speed": 35
-  }
+  },
+
+  "Drops": [
+    { "ItemId": 3, "Quantity": 1, "ChancePercent": 40 }
+  ]
 }

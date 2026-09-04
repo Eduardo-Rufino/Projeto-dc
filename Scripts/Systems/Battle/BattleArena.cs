@@ -303,6 +303,17 @@ namespace ProjetoDC.Scripts.Systems.Battle
                             reward.CapacityGained = tournament.CapacityReward;
                             reward.BonusBitsGained = tournament.BitsReward;
                         }
+
+                        // Sorteia (uma única vez - ver GameManager.ResolveWildEncounterDrops)
+                        // os drops do selvagem derrotado, pra já aparecer na prévia. A
+                        // aplicação de verdade (ApplyTeamBattleReward, quando o jogador
+                        // clicar OK) reaproveita esse mesmo sorteio, não sorteia de novo.
+                        if (GameManager.Instance.BattleFromExploration)
+                        {
+                            reward.DropDescriptions = GameManager.Instance.ResolveWildEncounterDrops()
+                                .Select(drop => $"{drop.Quantity}x {drop.Item.Name}")
+                                .ToList();
+                        }
                     }
                     else if (_pendingResult == BattleResult.EnemyWon)
                     {

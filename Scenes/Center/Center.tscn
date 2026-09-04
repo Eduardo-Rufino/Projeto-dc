@@ -14,6 +14,10 @@
 [ext_resource type="PackedScene" path="res://Scenes/Center/EvolutionGuideScreen.tscn" id="2_evoguide"]
 [ext_resource type="PackedScene" path="res://Scenes/Center/BaseEditorScreen.tscn" id="2_basedit"]
 [ext_resource type="PackedScene" path="res://Scenes/Center/SettingsScreen.tscn" id="2_settings"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/EncyclopediaScreen.tscn" id="2_encyclopedia"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/PatchNotesScreen.tscn" id="2_patchnotes"]
+[ext_resource type="PackedScene" path="res://Scenes/Exploration/ExplorationListScreen.tscn" id="2_explist"]
+[ext_resource type="PackedScene" path="res://Scenes/Exploration/ExplorationDigimonPickScreen.tscn" id="2_exppick"]
 [ext_resource type="PackedScene" path="res://Scenes/Battle/BattleTypeScreen.tscn" id="2_battletype"]
 [ext_resource type="PackedScene" path="res://Scenes/Battle/TournamentListScreen.tscn" id="2_tournamentlist"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="3_csbr3"]
@@ -612,7 +616,8 @@ offset_top = 3.0
 offset_right = 618.0
 offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
-text = "✉"
+tooltip_text = "Enciclopédia"
+text = "📘"
 
 [node name="TrophyButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=809423945]
 layout_mode = 0
@@ -630,6 +635,7 @@ offset_top = 3.0
 offset_right = 754.0
 offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+tooltip_text = "Explorar"
 text = "🌎"
 
 [node name="SettingsButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=1487720285]
@@ -650,6 +656,16 @@ offset_right = 890.0
 offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
 text = "🚪"
+
+[node name="PatchNotesButton" type="Button" parent="CanvasLayer/HUD/ControlBar"]
+layout_mode = 0
+offset_left = 894.0
+offset_top = 3.0
+offset_right = 958.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+tooltip_text = "Notas de Atualização"
+text = "📋"
 
 [node name="WarningToast" type="Panel" parent="CanvasLayer/HUD"]
 visible = false
@@ -704,6 +720,9 @@ visible = false
 [node name="TutorialScreen" parent="CanvasLayer" instance=ExtResource("2_tutorial")]
 visible = false
 
+[node name="PatchNotesScreen" parent="CanvasLayer" instance=ExtResource("2_patchnotes")]
+visible = false
+
 [node name="EvolutionGuideScreen" parent="CanvasLayer" instance=ExtResource("2_evoguide")]
 visible = false
 
@@ -711,6 +730,15 @@ visible = false
 visible = false
 
 [node name="SettingsScreen" parent="CanvasLayer" instance=ExtResource("2_settings")]
+visible = false
+
+[node name="ExplorationListScreen" parent="CanvasLayer" instance=ExtResource("2_explist")]
+visible = false
+
+[node name="ExplorationDigimonPickScreen" parent="CanvasLayer" instance=ExtResource("2_exppick")]
+visible = false
+
+[node name="EncyclopediaScreen" parent="CanvasLayer" instance=ExtResource("2_encyclopedia")]
 visible = false
 
 [node name="CenterAreas" type="Node2D" parent="." unique_id=1618977558]

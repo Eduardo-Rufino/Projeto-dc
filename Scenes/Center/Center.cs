@@ -68,9 +68,13 @@ public partial class Center : Node2D
     private EvolutionOverlay _evolutionOverlay;
     private InventoryScreen _inventoryScreen;
     private TutorialScreen _tutorialScreen;
+    private PatchNotesScreen _patchNotesScreen;
     private EvolutionGuideScreen _evolutionGuideScreen;
     private BaseEditorScreen _baseEditorScreen;
     private SettingsScreen _settingsScreen;
+    private ExplorationListScreen _explorationListScreen;
+    private ExplorationDigimonPickScreen _explorationPickScreen;
+    private EncyclopediaScreen _encyclopediaScreen;
     private CanvasLayer _canvasLayer;
 
     // Garante só uma animação de evolução por vez: se vários Digimons evoluírem juntos
@@ -169,6 +173,9 @@ public partial class Center : Node2D
         _tutorialScreen = GetNode<TutorialScreen>("CanvasLayer/TutorialScreen");
         _tutorialScreen.BackPressed += OnTutorialBackPressed;
 
+        _patchNotesScreen = GetNode<PatchNotesScreen>("CanvasLayer/PatchNotesScreen");
+        _patchNotesScreen.BackPressed += OnPatchNotesBackPressed;
+
         _evolutionGuideScreen = GetNode<EvolutionGuideScreen>("CanvasLayer/EvolutionGuideScreen");
         _evolutionGuideScreen.BackPressed += OnEvolutionGuideBackPressed;
 
@@ -177,6 +184,16 @@ public partial class Center : Node2D
 
         _settingsScreen = GetNode<SettingsScreen>("CanvasLayer/SettingsScreen");
         _settingsScreen.BackPressed += OnSettingsBackPressed;
+
+        _explorationListScreen = GetNode<ExplorationListScreen>("CanvasLayer/ExplorationListScreen");
+        _explorationListScreen.BackPressed += OnExplorationListBackPressed;
+        _explorationListScreen.MapSelected += OnExplorationMapSelected;
+
+        _explorationPickScreen = GetNode<ExplorationDigimonPickScreen>("CanvasLayer/ExplorationDigimonPickScreen");
+        _explorationPickScreen.BackPressed += OnExplorationPickBackPressed;
+
+        _encyclopediaScreen = GetNode<EncyclopediaScreen>("CanvasLayer/EncyclopediaScreen");
+        _encyclopediaScreen.BackPressed += OnEncyclopediaBackPressed;
 
         GameManager.Instance.EvolutionBlockedByCapacity -= OnEvolutionBlockedByCapacity;
         GameManager.Instance.EvolutionBlockedByCapacity += OnEvolutionBlockedByCapacity;
@@ -198,6 +215,12 @@ public partial class Center : Node2D
 
         GameManager.Instance.TeamBattleStarted -= OnTeamBattleStarted;
         GameManager.Instance.TeamBattleStarted += OnTeamBattleStarted;
+
+        GameManager.Instance.ExplorationStarted -= OnExplorationStarted;
+        GameManager.Instance.ExplorationStarted += OnExplorationStarted;
+
+        GameManager.Instance.ExplorationFinished -= OnExplorationFinished;
+        GameManager.Instance.ExplorationFinished += OnExplorationFinished;
 
         _canvasLayer = GetNode<CanvasLayer>("CanvasLayer");
 
@@ -223,6 +246,64 @@ public partial class Center : Node2D
         RestoreFoods();
         RestorePoops();
         RestoreEggs();
+
+        // Hook de teste: abre uma tela específica assim que o Center termina de carregar,
+        // via variável de ambiente DEBUG_OPEN_SCREEN - não tem efeito nenhum se ela não
+        // estiver setada (não usado no jogo normal). Existe porque não há automação de
+        // clique disponível pra essa engine (ver .claude/skills/run-projeto-dc/SKILL.md),
+        // então é assim que uma sessão de agente consegue abrir uma tela específica pra
+        // tirar screenshot sem interação manual.
+        string debugScreen = OS.GetEnvironment("DEBUG_OPEN_SCREEN");
+        if (!string.IsNullOrEmpty(debugScreen))
+            CallDeferred(nameof(DebugOpenScreen), debugScreen);
+    }
+
+    /// <summary>Ver o comentário sobre DEBUG_OPEN_SCREEN em _Ready() acima. Cada case usa
+    /// dados de exemplo (primeiro Digimon do roster, primeiro mapa cadastrado, etc.) só pra
+    /// ter algo pra mostrar - não representa nenhum estado real de jogo.</summary>
+    private void DebugOpenScreen(string name)
+    {
+        switch (name)
+        {
+            case "encyclopedia":
+                OpenEncyclopedia();
+                break;
+            case "inventory":
+                OpenInventory();
+                break;
+            case "team":
+                _teamSelectionScreen.Open();
+                _teamSelectionScreen.Visible = true;
+                break;
+            case "evolutioncapacity":
+                var digimon = GameManager.Instance.Save.Center.Digimons.FirstOrDefault();
+                var targetForm = DatabaseManager.Instance.GetAllDigimons().FirstOrDefault();
+                if (digimon != null && targetForm != null)
+                    _evolutionCapacityScreen.Open(digimon, targetForm, 5);
+                break;
+            case "explorationpick":
+                var map = DatabaseManager.Instance.GetAllExplorationMaps().FirstOrDefault();
+                if (map != null)
+                {
+                    _explorationPickScreen.Open(map);
+                    _explorationPickScreen.Visible = true;
+                }
+                break;
+            case "explorationarea":
+                var explorationMap = DatabaseManager.Instance.GetAllExplorationMaps().FirstOrDefault();
+                var explorer = GameManager.Instance.Save.Center.Digimons.FirstOrDefault();
+                if (explorationMap != null && explorer != null)
+                    GameManager.Instance.StartExploration(explorer, explorationMap);
+                break;
+            case "tutorial":
+                _tutorialScreen.Open();
+                _tutorialScreen.Visible = true;
+                break;
+            case "patchnotes":
+                _patchNotesScreen.Open();
+                _patchNotesScreen.Visible = true;
+                break;
+        }
     }
 
     public override void _ExitTree()
@@ -237,6 +318,8 @@ public partial class Center : Node2D
         {
             GameManager.Instance.TeamBattleFinished -= OnTeamBattleFinished;
             GameManager.Instance.TeamBattleStarted -= OnTeamBattleStarted;
+            GameManager.Instance.ExplorationStarted -= OnExplorationStarted;
+            GameManager.Instance.ExplorationFinished -= OnExplorationFinished;
             GameManager.Instance.EvolutionBlockedByCapacity -= OnEvolutionBlockedByCapacity;
             GameManager.Instance.DigimonDeleted -= OnDigimonDeleted;
             GameManager.Instance.SleepSkipped -= OnSleepSkipped;
@@ -860,6 +943,22 @@ public partial class Center : Node2D
         return null;
     }
 
+    /// <summary>Primeira área construída desse tipo, ou null se não houver nenhuma - usado
+    /// por DigimonWorld.TryStartAutoTraining pra achar a área de treino específica que um
+    /// NPC recrutado bonifica (ver GameManager.HasRecruitedTrainingBonus). Se o jogador
+    /// construiu mais de uma área do mesmo tipo, só a primeira encontrada vale de destino
+    /// autônomo - não distribui entre elas.</summary>
+    public CenterArea GetAreaOfType(CenterAreaType areaType)
+    {
+        foreach (var area in _centerAreas.Values)
+        {
+            if (area.AreaType == areaType)
+                return area;
+        }
+
+        return null;
+    }
+
     /// <summary>Áreas de treino específicas de um stat (ver CenterArea.ForcedTrainingType) só
     /// admitem 1 Digimon treinando por vez - diferente da área de treino genérica, que aceita
     /// quantos couberem. Usado por DigimonWorld.StopDragging pra recusar um segundo Digimon
@@ -999,6 +1098,54 @@ public partial class Center : Node2D
         _settingsScreen.Visible = false;
     }
 
+    /// <summary>Ponto de entrada do botão de globo (🌎, ver HUD.OnExplorationButtonPressed) -
+    /// lista as áreas de exploração cadastradas.</summary>
+    public void OpenExplorationList()
+    {
+        _explorationListScreen.RefreshUI();
+        _explorationListScreen.Visible = true;
+    }
+
+    private void OnExplorationListBackPressed()
+    {
+        _explorationListScreen.Visible = false;
+    }
+
+    private void OnExplorationMapSelected(ExplorationMapData map)
+    {
+        _explorationListScreen.Visible = false;
+
+        _explorationPickScreen.Open(map);
+        _explorationPickScreen.Visible = true;
+    }
+
+    private void OnExplorationPickBackPressed()
+    {
+        _explorationPickScreen.Visible = false;
+
+        _explorationListScreen.Visible = true;
+    }
+
+    private void OnExplorationStarted()
+    {
+        // Mesma lógica de esconder o Center durante uma batalha (ver OnTeamBattleStarted) -
+        // a área de exploração é uma cena separada por cima, então o Center continua
+        // existindo/simulando (pausado, ver GameManager.StartExploration), só não deve
+        // aparecer nem ser clicável.
+        _explorationPickScreen.Visible = false;
+
+        Visible = false;
+        _canvasLayer.Visible = false;
+    }
+
+    private void OnExplorationFinished()
+    {
+        Visible = true;
+        _canvasLayer.Visible = true;
+
+        _camera.MakeCurrent();
+    }
+
     private void SetWorldElementsVisible(bool visible)
     {
         foreach (var digimon in _digimonWorlds)
@@ -1048,6 +1195,16 @@ public partial class Center : Node2D
         _tutorialScreen.Visible = false;
     }
 
+    public void OpenPatchNotes()
+    {
+        _patchNotesScreen.Open();
+    }
+
+    private void OnPatchNotesBackPressed()
+    {
+        _patchNotesScreen.Visible = false;
+    }
+
     public void OpenEvolutionGuide()
     {
         _evolutionGuideScreen.Open();
@@ -1056,6 +1213,16 @@ public partial class Center : Node2D
     private void OnEvolutionGuideBackPressed()
     {
         _evolutionGuideScreen.Visible = false;
+    }
+
+    public void OpenEncyclopedia()
+    {
+        _encyclopediaScreen.Open();
+    }
+
+    private void OnEncyclopediaBackPressed()
+    {
+        _encyclopediaScreen.Visible = false;
     }
 
     /// <summary>Ponto de entrada do botão de troféu - abre a escolha entre Campeonato e
@@ -1121,6 +1288,12 @@ public partial class Center : Node2D
 
     private void OnTeamBattleStarted()
     {
+        // Selvagem de exploração: o Center já está escondido desde que a área de exploração
+        // abriu (ver OnExplorationMapSelected/GameManager.StartExploration) - quem cuida de
+        // esconder/mostrar em volta dessa batalha é a própria ExplorationArea, não o Center.
+        if (GameManager.Instance.BattleFromExploration)
+            return;
+
         // Esconde o Center inteiro (mundo + HUD) durante o combate, igual à tela de
         // seleção de time - a arena de batalha é uma cena separada por cima, então o
         // Center continua existindo/simulando, só não deve aparecer nem ser clicável.
@@ -1130,6 +1303,9 @@ public partial class Center : Node2D
 
     private void OnTeamBattleFinished(BattleResult result)
     {
+        if (GameManager.Instance.BattleFromExploration)
+            return;
+
         Visible = true;
         _canvasLayer.Visible = true;
 
@@ -1207,9 +1383,13 @@ public partial class Center : Node2D
             || (_battleTypeScreen?.Visible ?? false)
             || (_tournamentListScreen?.Visible ?? false)
             || (_tutorialScreen?.Visible ?? false)
+            || (_patchNotesScreen?.Visible ?? false)
             || (_evolutionGuideScreen?.Visible ?? false)
             || (_baseEditorScreen?.Visible ?? false)
-            || (_settingsScreen?.Visible ?? false);
+            || (_settingsScreen?.Visible ?? false)
+            || (_explorationListScreen?.Visible ?? false)
+            || (_explorationPickScreen?.Visible ?? false)
+            || (_encyclopediaScreen?.Visible ?? false);
     }
 
     public void InspectDigimon(DigimonInstance digimon)

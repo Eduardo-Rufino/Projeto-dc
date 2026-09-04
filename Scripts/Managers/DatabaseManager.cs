@@ -23,11 +23,17 @@ namespace ProjetoDC.Scripts.Managers
             LoadEvolutions();
             LoadItems();
             LoadTournaments();
+            LoadNpcs();
+            LoadQuests();
+            LoadExplorationMaps();
         }
 
         private const string DigimonFolder = "res://Data/Digimon/";
         private const string ItemFolder = "res://Data/Itens/";
         private const string TournamentFolder = "res://Data/Tournaments/";
+        private const string NpcFolder = "res://Data/NPCs/";
+        private const string QuestFolder = "res://Data/Quests/";
+        private const string MapFolder = "res://Data/Maps/";
 
         private Dictionary<int, DigimonData> digimons = new();
 
@@ -36,6 +42,12 @@ namespace ProjetoDC.Scripts.Managers
         private Dictionary<int, ItemData> items = new();
 
         private Dictionary<int, TournamentData> tournaments = new();
+
+        private Dictionary<int, NpcData> npcs = new();
+
+        private Dictionary<int, QuestData> quests = new();
+
+        private Dictionary<int, ExplorationMapData> explorationMaps = new();
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
@@ -408,6 +420,268 @@ namespace ProjetoDC.Scripts.Managers
         public IEnumerable<TournamentData> GetAllTournaments()
         {
             return tournaments.Values.OrderBy(t => t.Id);
+        }
+
+        /// <summary>
+        /// Carrega os arquivos JSON de NPCs (Data/NPCs/*.json), mesmo padrão de
+        /// LoadDigimons/LoadItems/LoadTournaments - um arquivo por NPC.
+        /// </summary>
+        public void LoadNpcs()
+        {
+            string path = NpcFolder;
+
+            using var dir = DirAccess.Open(path);
+
+            if (dir == null)
+            {
+                GD.PrintErr("Pasta de NPCs não encontrada!");
+                return;
+            }
+
+            dir.ListDirBegin();
+
+            string fileName = dir.GetNext();
+
+            while (fileName != "")
+            {
+                if (fileName == "." || fileName == "..")
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                if (!fileName.EndsWith(".json"))
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string fullPath = path + fileName;
+
+                using var file = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
+
+                if (file == null)
+                {
+                    GD.PrintErr("Erro ao abrir: " + fullPath);
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string json = file.GetAsText();
+
+                try
+                {
+                    NpcData npc = JsonSerializer.Deserialize<NpcData>(json, JsonOptions);
+
+                    if (npcs.ContainsKey(npc.Id))
+                    {
+                        GD.PrintErr("ID de NPC duplicado: " + npc.Id);
+                    }
+                    else
+                    {
+                        npcs.Add(npc.Id, npc);
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                }
+
+                fileName = dir.GetNext();
+            }
+
+            GD.Print("NPCs carregados: " + npcs.Count);
+        }
+
+        /// <summary>Retorna o <see cref="NpcData"/> pelo ID, ou null se não encontrado.</summary>
+        public NpcData GetNpc(int id)
+        {
+            if (npcs.TryGetValue(id, out var npc))
+                return npc;
+
+            GD.PrintErr("NPC não encontrado: " + id);
+            return null;
+        }
+
+        /// <summary>Retorna todos os NPCs carregados, ordenados por ID.</summary>
+        public IEnumerable<NpcData> GetAllNpcs()
+        {
+            return npcs.Values.OrderBy(n => n.Id);
+        }
+
+        /// <summary>
+        /// Carrega os arquivos JSON de quests (Data/Quests/*.json), mesmo padrão de
+        /// LoadDigimons/LoadItems/LoadTournaments - um arquivo por quest.
+        /// </summary>
+        public void LoadQuests()
+        {
+            string path = QuestFolder;
+
+            using var dir = DirAccess.Open(path);
+
+            if (dir == null)
+            {
+                GD.PrintErr("Pasta de quests não encontrada!");
+                return;
+            }
+
+            dir.ListDirBegin();
+
+            string fileName = dir.GetNext();
+
+            while (fileName != "")
+            {
+                if (fileName == "." || fileName == "..")
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                if (!fileName.EndsWith(".json"))
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string fullPath = path + fileName;
+
+                using var file = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
+
+                if (file == null)
+                {
+                    GD.PrintErr("Erro ao abrir: " + fullPath);
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string json = file.GetAsText();
+
+                try
+                {
+                    QuestData quest = JsonSerializer.Deserialize<QuestData>(json, JsonOptions);
+
+                    if (quests.ContainsKey(quest.Id))
+                    {
+                        GD.PrintErr("ID de quest duplicado: " + quest.Id);
+                    }
+                    else
+                    {
+                        quests.Add(quest.Id, quest);
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                }
+
+                fileName = dir.GetNext();
+            }
+
+            GD.Print("Quests carregadas: " + quests.Count);
+        }
+
+        /// <summary>Retorna o <see cref="QuestData"/> pelo ID, ou null se não encontrado.</summary>
+        public QuestData GetQuest(int id)
+        {
+            if (quests.TryGetValue(id, out var quest))
+                return quest;
+
+            GD.PrintErr("Quest não encontrada: " + id);
+            return null;
+        }
+
+        /// <summary>Retorna todas as quests carregadas, ordenadas por ID.</summary>
+        public IEnumerable<QuestData> GetAllQuests()
+        {
+            return quests.Values.OrderBy(q => q.Id);
+        }
+
+        /// <summary>
+        /// Carrega os arquivos JSON de áreas de exploração (Data/Maps/*.json), mesmo padrão
+        /// de LoadDigimons/LoadItems/LoadTournaments - um arquivo por área.
+        /// </summary>
+        public void LoadExplorationMaps()
+        {
+            string path = MapFolder;
+
+            using var dir = DirAccess.Open(path);
+
+            if (dir == null)
+            {
+                GD.PrintErr("Pasta de áreas de exploração não encontrada!");
+                return;
+            }
+
+            dir.ListDirBegin();
+
+            string fileName = dir.GetNext();
+
+            while (fileName != "")
+            {
+                if (fileName == "." || fileName == "..")
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                if (!fileName.EndsWith(".json"))
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string fullPath = path + fileName;
+
+                using var file = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
+
+                if (file == null)
+                {
+                    GD.PrintErr("Erro ao abrir: " + fullPath);
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string json = file.GetAsText();
+
+                try
+                {
+                    ExplorationMapData map = JsonSerializer.Deserialize<ExplorationMapData>(json, JsonOptions);
+
+                    if (explorationMaps.ContainsKey(map.Id))
+                    {
+                        GD.PrintErr("ID de área de exploração duplicado: " + map.Id);
+                    }
+                    else
+                    {
+                        explorationMaps.Add(map.Id, map);
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                }
+
+                fileName = dir.GetNext();
+            }
+
+            GD.Print("Áreas de exploração carregadas: " + explorationMaps.Count);
+        }
+
+        /// <summary>Retorna o <see cref="ExplorationMapData"/> pelo ID, ou null se não
+        /// encontrado.</summary>
+        public ExplorationMapData GetExplorationMap(int id)
+        {
+            if (explorationMaps.TryGetValue(id, out var map))
+                return map;
+
+            GD.PrintErr("Área de exploração não encontrada: " + id);
+            return null;
+        }
+
+        /// <summary>Retorna todas as áreas de exploração carregadas, ordenadas por ID.</summary>
+        public IEnumerable<ExplorationMapData> GetAllExplorationMaps()
+        {
+            return explorationMaps.Values.OrderBy(m => m.Id);
         }
     }
 }

@@ -1,0 +1,14 @@
+{
+  "Id": 5,
+  "Name": "Palmon",
+  "Code": "palmon",
+  "DialogueLines": [
+    "Ah! Não... não esperava visita aqui atrás.",
+    "Eu me escondo desse jeito por um motivo - selvagem nenhum incomoda quem ninguém encontra.",
+    "Se você conseguiu chegar até aqui sem se perder, já mostrou que sabe se virar na floresta. Ajude a afastar alguns selvagens da minha trilha e eu vejo se confio em vir pro seu Center."
+  ],
+  "QuestId": 5,
+  "IsRecruitable": true,
+  "RecruitmentPerkDescription": "Todo dia, deixa 1 ou 2 Carnes de graça no Center - Palmon sempre soube achar comida na floresta, e agora colhe um pouco pra vocês também.",
+  "RecruitmentTrainingAreaType": null
+}

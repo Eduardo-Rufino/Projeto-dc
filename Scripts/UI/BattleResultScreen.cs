@@ -55,7 +55,8 @@ namespace ProjetoDC.Scripts.UI
                     _rewardLabel.Text = reward != null
                         ? $"+{reward.Experience} XP por membro | +{reward.Bits} Bits" +
                           (reward.CapacityGained > 0 ? $" | +{reward.CapacityGained} Capacidade!" : "") +
-                          (reward.BonusBitsGained > 0 ? $" | +{reward.BonusBitsGained} Bits de bônus!" : "")
+                          (reward.BonusBitsGained > 0 ? $" | +{reward.BonusBitsGained} Bits de bônus!" : "") +
+                          (reward.DropDescriptions.Count > 0 ? $" | Itens: {string.Join(", ", reward.DropDescriptions)}" : "")
                         : "Parabéns!";
                     break;
 

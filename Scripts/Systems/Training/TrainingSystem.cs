@@ -18,6 +18,12 @@ namespace ProjetoDC.Scripts.Systems.Training
         // que torne a área inicial obsoleta.
         public const float SpecificAreaBonusMultiplier = 1.15f;
 
+        // Bônus extra de um NPC recrutado cuja especialidade (NpcData.
+        // RecruitmentTrainingAreaType) bate com a área de treino específica em uso - empilha
+        // multiplicando em cima de SpecificAreaBonusMultiplier (ver DigimonWorld.
+        // ProcessTraining/GameManager.HasRecruitedTrainingBonus), não substitui.
+        public const float RecruitedNpcBonusMultiplier = 1.15f;
+
         private readonly RandomNumberGenerator _rng = new();
 
         public TrainingResult Execute(

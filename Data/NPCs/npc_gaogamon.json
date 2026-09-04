@@ -1,0 +1,13 @@
+{
+  "Id": 2,
+  "Name": "Gaogamon",
+  "Code": "gaogamon",
+  "DialogueLines": [
+    "Sinto o cheiro de um treinador de verdade. Poucos chegam até esse canto da floresta.",
+    "Passei anos treinando Ataque sozinho por aqui. Se você provar que manja de batalha, posso pensar em ajudar no seu Center."
+  ],
+  "QuestId": 2,
+  "IsRecruitable": true,
+  "RecruitmentPerkDescription": "Aumenta a efetividade das áreas de treino específico de Ataque, e os Digimon do Center passam a ter chance de ir treinar Ataque sozinhos, sem precisar ser arrastados até lá.",
+  "RecruitmentTrainingAreaType": "TrainingAttack"
+}

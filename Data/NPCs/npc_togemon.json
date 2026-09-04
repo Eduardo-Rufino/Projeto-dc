@@ -1,0 +1,13 @@
+{
+  "Id": 3,
+  "Name": "Togemon",
+  "Code": "togemon",
+  "DialogueLines": [
+    "Ninguém atravessa essa parte da floresta sem esbarrar nos meus espinhos.",
+    "Defesa é o que me mantém de pé até hoje. Enfrente alguns selvagens pra eu ver do que você é feita, e talvez eu vá pro seu Center ensinar isso."
+  ],
+  "QuestId": 3,
+  "IsRecruitable": true,
+  "RecruitmentPerkDescription": "Aumenta a efetividade das áreas de treino específico de Defesa, e os Digimon do Center passam a ter chance de ir treinar Defesa sozinhos, sem precisar ser arrastados até lá.",
+  "RecruitmentTrainingAreaType": "TrainingDefense"
+}

@@ -1,0 +1,13 @@
+{
+  "Id": 2,
+  "Name": "Prove seu Valor (Ataque)",
+  "Description": "Derrote 2 Digimon selvagens nessa área pra mostrar que sabe batalhar.",
+  "GiverNpcId": 2,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 2,
+  "RewardBits": 400,
+  "RewardCapacity": 0,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

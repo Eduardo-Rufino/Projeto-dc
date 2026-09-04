@@ -1,0 +1,31 @@
+{
+  "Id": 1,
+  "Name": "Floresta Inicial",
+  "Description": "Uma floresta tranquila logo nos arredores do Center - boa pra treinar contra Digimon selvagens e ganhar experiência. Bem grande, então vale a pena explorar todo canto - alguns moradores não ficam à vista de qualquer um.",
+  "RecommendedLevel": 6,
+  "WildPool": [1, 2, 9],
+  "WildLevelMin": 5,
+  "WildLevelMax": 8,
+  "WildSpawnPoints": [
+    { "X": 750, "Y": 550 },
+    { "X": 1550, "Y": 1050 },
+    { "X": 2550, "Y": 1700 },
+    { "X": 1870, "Y": 460 },
+    { "X": 1790, "Y": 1740 },
+    { "X": 1330, "Y": 1650 },
+    { "X": 2870, "Y": 1050 },
+    { "X": 2650, "Y": 1150 }
+  ],
+  "Npcs": [
+    { "NpcId": 1, "X": 650, "Y": 950, "Hidden": false },
+    { "NpcId": 2, "X": 2040, "Y": 300, "Hidden": true },
+    { "NpcId": 3, "X": 1970, "Y": 1920, "Hidden": true },
+    { "NpcId": 4, "X": 3080, "Y": 1150, "Hidden": true },
+    { "NpcId": 5, "X": 1150, "Y": 1800, "Hidden": true },
+    { "NpcId": 6, "X": 1200, "Y": 650, "Hidden": true }
+  ],
+  "ItemPickups": [
+    { "UniqueId": 1, "ItemId": 1, "Quantity": 3, "X": 1450, "Y": 1150 },
+    { "UniqueId": 2, "ItemId": 2, "Quantity": 1, "X": 2950, "Y": 1050 }
+  ]
+}

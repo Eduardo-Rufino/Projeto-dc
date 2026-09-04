@@ -8,6 +8,19 @@
   <ItemGroup>
     <Content Include="Data\Itens\meat.json" />
     <Content Include="Data\Itens\medicine.json" />
+    <Content Include="Data\Itens\gabumon_horn.json" />
+    <Content Include="Data\NPCs\npc_exemplo.json" />
+    <Content Include="Data\NPCs\npc_gaogamon.json" />
+    <Content Include="Data\NPCs\npc_togemon.json" />
+    <Content Include="Data\NPCs\npc_impmon.json" />
+    <Content Include="Data\NPCs\npc_palmon.json" />
+    <Content Include="Data\NPCs\npc_tortamon.json" />
+    <Content Include="Data\Quests\quest_exemplo.json" />
+    <Content Include="Data\Quests\quest_prove_ataque.json" />
+    <Content Include="Data\Quests\quest_prove_defesa.json" />
+    <Content Include="Data\Quests\quest_chifres.json" />
+    <Content Include="Data\Quests\quest_trilha_palmon.json" />
+    <Content Include="Data\Maps\floresta_inicial.json" />
     <Content Include="Data\Tournaments\copa_novato.json" />
     <Content Include="Data\Tournaments\torneio_rookie.json" />
     <Content Include="Data\Tournaments\desafio_champion.json" />
@@ -316,6 +329,7 @@
     <Folder Include="Data\Training\" />
     <Folder Include="Data\Buildings\" />
     <Folder Include="Data\NPCs\" />
+    <Folder Include="Data\Quests\" />
     <Folder Include="Data\Tournaments\" />
     <Folder Include="Data\Eggs\" />
     <Folder Include="Scenes\Battle\" />

@@ -27,10 +27,13 @@ namespace ProjetoDC.Scripts.UI
             ("🏗️ Editor de Bases", EditorDeBasesBody),
             ("🥊 Batalha", BatalhaBody),
             ("🏆 Campeonatos x Batalha Livre", CampeonatosBody),
+            ("🌎 Exploração", ExploracaoBody),
+            ("🤝 NPCs Recrutados", NpcsRecrutadosBody),
             ("✨ Evolução", EvolucaoBody),
             ("🥚 Ovos", OvosBody),
             ("❤️ Necessidades do Digimon", NecessidadesBody),
             ("🎒 Inventário", InventarioBody),
+            ("📖 Enciclopédia", EnciclopediaBody),
             ("🕐 Relógio e Sono", RelogioBody),
             ("✏️ Renomear Digimon", RenomearBody),
         };
@@ -189,6 +192,36 @@ namespace ProjetoDC.Scripts.UI
             "recompensa única de aumento permanente na Capacidade do Center (a forma principal de progressão do jogo por " +
             "enquanto), recebida apenas na primeira vez que aquele campeonato é vencido.";
 
+        private const string ExploracaoBody =
+            "Clique no botão de globo 🌎 na barra de controle pra ver as áreas de exploração " +
+            "disponíveis. Escolha uma área e depois 1 Digimon do seu Center pra explorar (só 1 " +
+            "por vez, não o time inteiro).\n\n" +
+            "Dentro da área, ande com WASD/setas ou clicando no chão. A câmera segue o Digimon " +
+            "e só mostra o que já foi explorado - o mapa é bem maior que a tela.\n\n" +
+            "[b]Selvagens[/b]: aparecem espalhados pela área e passam a perseguir você se " +
+            "chegar perto o bastante. Encostar neles inicia uma batalha 1x1 sozinho, sem " +
+            "precisar clicar; vencer dá experiência (sem o bônus de área de treino específica) " +
+            "e pode derrubar itens. Clicar num selvagem de longe não inicia a luta à distância " +
+            "- só manda o Digimon andar até lá; a interação de verdade só acontece perto.\n\n" +
+            "[b]NPCs[/b]: clique de perto pra conversar (mesma regra de distância dos " +
+            "selvagens). Alguns só têm papo, outros oferecem uma quest (derrotar selvagens ou " +
+            "coletar itens) - aceite, cumpra o objetivo e volte pra entregar e receber a " +
+            "recompensa. Alguns NPCs ficam escondidos de propósito, cercados de árvores ou " +
+            "perto de um selvagem que guarda o caminho até eles - vale a pena explorar todo " +
+            "canto do mapa.\n\n" +
+            "[b]Itens no chão[/b]: clique de perto pra coletar - somam direto no Inventário do " +
+            "Center e não voltam a aparecer depois.";
+
+        private const string NpcsRecrutadosBody =
+            "Alguns NPCs de áreas de exploração podem ser recrutados: entregue a quest deles " +
+            "e, se forem recrutáveis, passam a beneficiar o Center de longe, mesmo sem aparecer " +
+            "fisicamente nele - o efeito de cada um é descrito no próprio diálogo, antes de " +
+            "aceitar a quest.\n\n" +
+            "Alguns bonificam ainda mais uma área de treino específica (empilhando com o bônus " +
+            "que a área já dá sozinha) e fazem Digimons ociosos irem treinar lá por conta " +
+            "própria de vez em quando, sem precisar arrastar. Outros deixam recursos de graça " +
+            "no Center todo dia.";
+
         private const string EvolucaoBody =
             "Cada Digimon pode evoluir quando atinge o nível mínimo, a idade mínima (em dias) e os stats mínimos exigidos " +
             "pela próxima forma. Quando isso acontece, uma animação centraliza o Digimon na tela e pausa o resto do jogo " +
@@ -216,6 +249,13 @@ namespace ProjetoDC.Scripts.UI
         private const string InventarioBody =
             "O botão de mochila abre o Inventário: mostra todo item conhecido pelo jogo (comida, remédio, e outros " +
             "itens futuros) com ícone e quantidade atual. Passe o mouse sobre um item pra ver o nome completo e a descrição.";
+
+        private const string EnciclopediaBody =
+            "O botão 📖 na barra de controle mostra todas as espécies de Digimon do jogo, " +
+            "agrupadas por estágio evolutivo. Espécies que você já teve no Center pelo menos " +
+            "uma vez (chocando, comprando ou evoluindo pra elas) aparecem com sprite, nome e " +
+            "função normalmente; as que você nunca teve mostram só uma silhueta com \"???\". " +
+            "A busca por nome só funciona entre as espécies já descobertas.";
 
         private const string RelogioBody =
             "O relógio na barra superior mostra a hora atual (incluindo um relógio analógico) e o dia/calendário do jogo, " +

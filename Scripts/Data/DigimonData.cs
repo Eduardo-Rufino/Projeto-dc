@@ -65,5 +65,10 @@ namespace ProjetoDC.Scripts.Data
         /// Obtém ou define os stats base do Digimon.
         /// </summary>
         public BaseStats BaseStats { get; set; } = new();
+
+        /// <summary>Itens que essa espécie pode soltar ao ser derrotada num encontro selvagem
+        /// de exploração (ver GameManager.ApplyWildEncounterDrops) - vazio por padrão, só
+        /// precisa ser preenchido nas espécies que realmente tenham drop.</summary>
+        public List<DigimonDropData> Drops { get; set; } = new();
     }
 }

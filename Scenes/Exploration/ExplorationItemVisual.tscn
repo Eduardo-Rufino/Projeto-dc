@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gameplay/ExplorationItemVisual.cs" id="1_item"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_click"]
+size = Vector2(32, 32)
+
+[node name="ExplorationItemVisual" type="Node2D"]
+script = ExtResource("1_item")
+
+[node name="Icon" type="TextureRect" parent="."]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="ClickArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea"]
+shape = SubResource("RectangleShape2D_click")

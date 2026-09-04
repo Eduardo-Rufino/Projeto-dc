@@ -1,0 +1,13 @@
+{
+  "Id": 1,
+  "Name": "Limpeza da Floresta",
+  "Description": "Derrote 3 Digimon selvagens nessa área.",
+  "GiverNpcId": 1,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 3,
+  "RewardBits": 500,
+  "RewardCapacity": 2,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

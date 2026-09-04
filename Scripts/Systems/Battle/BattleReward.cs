@@ -18,5 +18,10 @@ namespace ProjetoDC.Scripts.Systems.Battle
         /// <summary>Bits de bônus de campeonato (TournamentData.BitsReward), à parte dos Bits
         /// normais da batalha em Bits - mesma regra do CapacityGained (só na primeira vitória).</summary>
         public int BonusBitsGained { get; set; }
+
+        /// <summary>Itens que caíram de um encontro selvagem de exploração (ver DigimonData.
+        /// Drops / GameManager.ResolveWildEncounterDrops), já formatados pra exibição (ex.:
+        /// "1x Chifre de Gabumon") - vazio fora de exploração ou quando nada cai.</summary>
+        public List<string> DropDescriptions { get; set; } = new();
     }
 }

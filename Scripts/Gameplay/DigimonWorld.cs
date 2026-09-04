@@ -79,6 +79,18 @@ public partial class DigimonWorld : Node2D
 
     private bool _isWalking;
 
+    // Área que esse Digimon está andando até por conta própria (ver TryStartAutoTraining) -
+    // diferente do resto do vagueio ocioso (ChooseNewDestination), que anda dentro da MESMA
+    // área. Não nulo só enquanto _isWalking por causa de um auto-treino em andamento;
+    // ReachDestination consome (SetArea + limpa) ao chegar.
+    private CenterArea _pendingAutoTrainArea;
+
+    // Chance, a cada vez que o timer de ócio vence, de um Digimon fora de treino decidir
+    // andar sozinho até uma área de treino específica cujo bônus foi liberado por um NPC
+    // recrutado (ver GameManager.HasRecruitedTrainingBonus) - não é garantido, é só "de vez
+    // em quando" (ver NpcData.RecruitmentPerkDescription da Gaogamon/Togemon).
+    private const float AutoTrainingChance = 0.08f;
+
     private float _speed = 40f;
 
     private double _idleTimer;
@@ -321,7 +333,7 @@ public partial class DigimonWorld : Node2D
 
                 if (_idleTimer <= 0)
                 {
-                    if (!CheckFood())
+                    if (!CheckFood() && !TryStartAutoTraining())
                     {
                         ChooseNewDestination();
                     }
@@ -395,6 +407,55 @@ public partial class DigimonWorld : Node2D
             $"{_digimon.BaseData.Name} indo para {_targetPosition} " +
             $"dentro da área {currentArea.GridPosition}"
         );
+    }
+
+    /// <summary>
+    /// Tenta mandar esse Digimon andar sozinho até a área de treino específica de um NPC
+    /// recrutado (ver GameManager.HasRecruitedTrainingBonus/NpcData.
+    /// RecruitmentTrainingAreaType) - só considera quando o Digimon não está numa área de
+    /// treino nenhuma (não tira ninguém de onde o jogador colocou de propósito) e respeita
+    /// AutoTrainingChance/IsSpecificTrainingAreaOccupied, os mesmos limites de sempre. Retorna
+    /// true (e começa a andar) se decidiu ir; ChooseNewDestination assume o vagueio normal
+    /// quando retorna false.
+    /// </summary>
+    private bool TryStartAutoTraining()
+    {
+        if (_currentArea != null && _currentArea.IsTrainingArea())
+            return false;
+
+        if (_digimon.Stamina < 10)
+            return false;
+
+        if (_center == null || GD.Randf() > AutoTrainingChance)
+            return false;
+
+        foreach (var npc in DatabaseManager.Instance.GetAllNpcs())
+        {
+            if (!npc.RecruitmentTrainingAreaType.HasValue)
+                continue;
+
+            if (!GameManager.Instance.Save.Center.RecruitedNpcIds.Contains(npc.Id))
+                continue;
+
+            CenterArea targetArea = _center.GetAreaOfType(npc.RecruitmentTrainingAreaType.Value);
+
+            if (targetArea == null || _center.IsSpecificTrainingAreaOccupied(targetArea, this))
+                continue;
+
+            _pendingAutoTrainArea = targetArea;
+            _targetPosition = targetArea.GetRandomPointInside();
+            _isWalking = true;
+            _sprite.SetWalking(true);
+
+            GD.Print(
+                $"{_digimon.BaseData.Name} foi treinar sozinho em {targetArea.GridPosition} " +
+                $"(bônus de {npc.Name})."
+            );
+
+            return true;
+        }
+
+        return false;
     }
 
     private bool CheckFood()
@@ -667,6 +728,28 @@ public partial class DigimonWorld : Node2D
             return;
         }
 
+        if (_pendingAutoTrainArea != null)
+        {
+            CenterArea area = _pendingAutoTrainArea;
+            _pendingAutoTrainArea = null;
+
+            // Reconfere validade/ocupação na chegada, não só na largada (ver
+            // TryStartAutoTraining) - o trajeto até aqui leva tempo real, e nesse meio tempo
+            // a área pode ter sido removida (BaseEditorScreen) ou ocupada por outro Digimon
+            // que decidiu ir treinar sozinho pro mesmo lugar antes de chegar. Cai pro ócio
+            // normal em vez de forçar (SetArea nem checa ocupação sozinho).
+            if (!GodotObject.IsInstanceValid(area) || _center.IsSpecificTrainingAreaOccupied(area, this))
+            {
+                _idleTimer = GD.RandRange(2.0, 5.0);
+
+                return;
+            }
+
+            SetArea(area);
+
+            return;
+        }
+
         _idleTimer = GD.RandRange(2.0, 5.0);
 
         GD.Print($"{_digimon.BaseData.Name} chegou ao destino.");
@@ -870,6 +953,12 @@ public partial class DigimonWorld : Node2D
         {
             type = forcedType.Value;
             gainMultiplier = TrainingSystem.SpecificAreaBonusMultiplier;
+
+            // Empilha por cima do bônus de área específica se um NPC recrutado for
+            // especialista nela (ver GameManager.HasRecruitedTrainingBonus) - ex.: Gaogamon
+            // recrutada bonifica ainda mais quem treina Ataque na área específica de Ataque.
+            if (GameManager.Instance.HasRecruitedTrainingBonus(_currentArea.AreaType))
+                gainMultiplier *= TrainingSystem.RecruitedNpcBonusMultiplier;
         }
         else
         {

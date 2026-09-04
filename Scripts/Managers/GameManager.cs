@@ -39,6 +39,18 @@ namespace ProjetoDC.Scripts.Managers
         public event Action<BattleResult> TeamBattleFinished;
         public event Action TeamBattleStarted;
 
+        /// <summary>True enquanto a batalha em andamento foi disparada de dentro de uma área
+        /// de exploração (ver StartWildEncounter), não da tela de batalha do Center - Center e
+        /// ExplorationArea escutam TeamBattleStarted/TeamBattleFinished e usam isso pra saber
+        /// qual dos dois deve reagir (esconder/mostrar), já que só um dos dois pode ter sido
+        /// a origem. Só é confiável durante a própria invocação de TeamBattleStarted/Finished -
+        /// é resetado logo depois (ver OnTeamBattleFinished).</summary>
+        public bool BattleFromExploration { get; private set; }
+
+        private int? _activeWildEncounterDigimonId;
+
+        private static readonly Random _random = new();
+
         /// <summary>Disparado quando um Digimon atende os requisitos de evolução mas o
         /// Center não tem capacidade livre pra nova forma - carrega o Digimon bloqueado, a
         /// forma que ele evoluiria e quanto falta de capacidade. Não dispara de novo pro
@@ -54,6 +66,17 @@ namespace ProjetoDC.Scripts.Managers
 
         /// <summary>Estado puro da batalha 3x3 ativa (nulo fora de batalha).</summary>
         public BattleMatch BattleMatch { get; private set; }
+
+        /// <summary>True do início de LaunchBattle até a arena avisar que terminou - StartX
+        /// (batalha livre, campeonato, encontro selvagem) recusam iniciar uma nova batalha
+        /// enquanto isso for true. Existe porque um clique perdido consegue vazar pra um
+        /// elemento clicável escondido atrás da arena de batalha (ex.: outro selvagem na área
+        /// de exploração, que continua processando input mesmo invisível) e disparar uma
+        /// segunda LaunchBattle por cima da primeira - duas BattleMatch/BattleArena vivas ao
+        /// mesmo tempo corrompem BattleFromExploration e o time em PlayerBattleTeam/
+        /// EnemyBattleTeam (compartilhados, não por batalha), deixando o jogo preso mostrando
+        /// pedaços da exploração e do Center juntos.</summary>
+        public bool IsBattleActive => BattleMatch != null;
 
         /// <summary>Motivos independentes que podem estar pedindo pra pausar a árvore ao
         /// mesmo tempo (batalha, animação de evolução, tela secundária aberta na HUD, etc.) -
@@ -111,6 +134,18 @@ namespace ProjetoDC.Scripts.Managers
                     foreach (var d in Save.Center.Digimons)
                     {
                         GD.Print($"{d.BaseData?.Name} - Lv {d.Level}");
+                    }
+
+                    // Saves de antes da Enciclopédia (CenterState.DiscoveredDigimonIds)
+                    // existir não tinham nada marcado como descoberto - sem isso, toda
+                    // espécie que o jogador já tinha antes desse sistema existir apareceria
+                    // como "???" pra sempre, mesmo com o Digimon parado bem ali no Center.
+                    // MarkDigimonDiscovered é idempotente, seguro de rodar toda vez que o
+                    // save carrega.
+                    foreach (var d in Save.Center.Digimons)
+                    {
+                        if (d.BaseData != null)
+                            Save.Center.MarkDigimonDiscovered(d.BaseData.Id);
                     }
                 }
             }
@@ -220,7 +255,48 @@ namespace ProjetoDC.Scripts.Managers
             }
 
             EggSystem.AdvanceDay(CenterService);
+            ApplyRecruitedNpcDailyBonuses();
             SaveGame();
+        }
+
+        // Id da Palmon (ver Data/NPCs/npc_palmon.json) - hardcoded porque hoje é o único NPC
+        // recrutável com bônus diário; se mais NPCs ganharem bônus desse tipo, isso merece
+        // virar dado em NpcData ao invés de const aqui.
+        private const int PalmonNpcId = 5;
+        private const int PalmonDailyMeatMin = 1;
+        private const int PalmonDailyMeatMax = 2;
+
+        /// <summary>Efeitos passivos de NPCs recrutados que tickam uma vez por dia (ver
+        /// CenterState.RecruitedNpcIds) - hoje só a Palmon, que deixa Carne de graça no
+        /// Center todo dia (não precisa ser alimentada/comprada). O bônus de treino de
+        /// Gaogamon/Togemon não mora aqui - é aplicado por tick de treino, ver
+        /// HasRecruitedTrainingBonus/DigimonWorld.ProcessTraining.</summary>
+        private void ApplyRecruitedNpcDailyBonuses()
+        {
+            if (!Save.Center.RecruitedNpcIds.Contains(PalmonNpcId))
+                return;
+
+            int freeMeat = _random.Next(PalmonDailyMeatMin, PalmonDailyMeatMax + 1);
+
+            Save.Center.Meat += freeMeat;
+
+            GD.Print($"Palmon deixou {freeMeat} Carne(s) de graça no Center.");
+        }
+
+        /// <summary>True se algum NPC recrutado (ver CenterState.RecruitedNpcIds) tem
+        /// RecruitmentTrainingAreaType igual a essa área - usado por DigimonWorld.
+        /// ProcessTraining pra empilhar RecruitedNpcBonusMultiplier em cima do bônus normal
+        /// de área específica, e por DigimonWorld.TryStartAutoTraining pra saber que área vale
+        /// a pena ir treinar sozinho.</summary>
+        public bool HasRecruitedTrainingBonus(CenterAreaType areaType)
+        {
+            foreach (var npc in DatabaseManager.Instance.GetAllNpcs())
+            {
+                if (npc.RecruitmentTrainingAreaType == areaType && Save.Center.RecruitedNpcIds.Contains(npc.Id))
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>Se o botão de pular sono deveria estar habilitado agora - usado pela HUD.
@@ -395,6 +471,7 @@ namespace ProjetoDC.Scripts.Managers
             {
                 case EvolutionOutcome.Evolved:
                     digimon.EvolutionCapacityWarningDismissed = false;
+                    Save.Center.MarkDigimonDiscovered(attempt.TargetForm.Id);
                     return true;
 
                 case EvolutionOutcome.BlockedByCapacity:
@@ -435,6 +512,12 @@ namespace ProjetoDC.Scripts.Managers
         /// </summary>
         public void StartTeamBattle(List<DigimonInstance> playerTeam)
         {
+            if (IsBattleActive)
+            {
+                GD.PrintErr("StartTeamBattle: já existe uma batalha em andamento, ignorando.");
+                return;
+            }
+
             if (playerTeam == null || (playerTeam.Count != 1 && playerTeam.Count != 3))
             {
                 GD.PrintErr("StartTeamBattle exige 1 Digimon (1x1) ou 3 Digimons (3x3).");
@@ -450,6 +533,7 @@ namespace ProjetoDC.Scripts.Managers
             }
 
             ActiveTournament = null;
+            BattleFromExploration = false;
 
             LaunchBattle(playerTeam, enemyTeam);
         }
@@ -462,6 +546,12 @@ namespace ProjetoDC.Scripts.Managers
         /// </summary>
         public void StartTournamentBattle(TournamentData tournament, List<DigimonInstance> playerTeam)
         {
+            if (IsBattleActive)
+            {
+                GD.PrintErr("StartTournamentBattle: já existe uma batalha em andamento, ignorando.");
+                return;
+            }
+
             if (tournament == null)
                 return;
 
@@ -480,8 +570,52 @@ namespace ProjetoDC.Scripts.Managers
             }
 
             ActiveTournament = tournament;
+            BattleFromExploration = false;
 
             LaunchBattle(playerTeam, enemyTeam);
+        }
+
+        /// <summary>
+        /// Inicia um combate 1x1 contra um selvagem encontrado numa área de exploração (ver
+        /// ExplorationArea/WildEncounterSpawn) - diferente de campeonato, não aplica nenhum
+        /// bônus de treino no oponente (selvagens devem continuar fáceis de grindar, é a
+        /// principal fonte de XP fora de treino/batalha livre). Vitória avança o progresso de
+        /// qualquer quest DefeatWild compatível (ver ApplyWildEncounterQuestProgress).
+        /// </summary>
+        public void StartWildEncounter(DigimonInstance explorer, int wildDigimonId, int level)
+        {
+            if (IsBattleActive)
+            {
+                GD.PrintErr("StartWildEncounter: já existe uma batalha em andamento, ignorando.");
+                return;
+            }
+
+            if (explorer == null)
+                return;
+
+            var data = DatabaseManager.Instance.GetDigimon(wildDigimonId);
+
+            if (data == null)
+            {
+                GD.PrintErr($"StartWildEncounter: Digimon {wildDigimonId} não encontrado.");
+                return;
+            }
+
+            var wild = new DigimonInstance(data);
+
+            while (wild.Level < level)
+            {
+                wild.GainExperience(wild.ExperienceToNextLevel);
+            }
+
+            wild.RestoreHealth();
+
+            ActiveTournament = null;
+            BattleFromExploration = true;
+            _activeWildEncounterDigimonId = wildDigimonId;
+            _resolvedWildEncounterDrops = null;
+
+            LaunchBattle(new List<DigimonInstance> { explorer }, new List<DigimonInstance> { wild });
         }
 
         private List<DigimonInstance> BuildTournamentEnemyTeam(TournamentData tournament)
@@ -560,7 +694,14 @@ namespace ProjetoDC.Scripts.Managers
 
             BattleMatch = null;
 
+            // BattleFromExploration precisa continuar valendo até aqui - é o que diz pra
+            // Center.cs/ExplorationArea qual dos dois deve voltar a se mostrar (ver
+            // Center.OnTeamBattleStarted/Finished). Só reseta depois que os dois já reagiram.
             TeamBattleFinished?.Invoke(result);
+
+            BattleFromExploration = false;
+            _activeWildEncounterDigimonId = null;
+            _resolvedWildEncounterDrops = null;
         }
 
         /// <summary>
@@ -643,7 +784,118 @@ namespace ProjetoDC.Scripts.Managers
 
             ApplyTournamentRewardIfNeeded();
 
+            if (BattleFromExploration && _activeWildEncounterDigimonId.HasValue)
+            {
+                ApplyWildEncounterQuestProgress(_activeWildEncounterDigimonId.Value);
+                ApplyResolvedWildEncounterDrops();
+            }
+
             ActiveTournament = null;
+        }
+
+        /// <summary>
+        /// Depois de vencer um encontro selvagem (ver StartWildEncounter), avança o progresso
+        /// de qualquer quest DefeatWild aceita cujo alvo bata com o Digimon derrotado
+        /// (ObjectiveTargetId 0 = qualquer selvagem conta). Completar a contagem não entrega a
+        /// quest sozinho, só deixa pronta - a entrega acontece ao voltar no NPC (ver
+        /// TryTurnInQuest).
+        /// </summary>
+        private void ApplyWildEncounterQuestProgress(int defeatedDigimonId)
+        {
+            foreach (var questId in Save.Center.ActiveQuestIds)
+            {
+                var quest = DatabaseManager.Instance.GetQuest(questId);
+
+                if (quest == null || quest.ObjectiveType != QuestObjectiveType.DefeatWild)
+                    continue;
+
+                if (quest.ObjectiveTargetId != 0 && quest.ObjectiveTargetId != defeatedDigimonId)
+                    continue;
+
+                int current = Save.Center.QuestProgress.GetValueOrDefault(questId);
+
+                Save.Center.QuestProgress[questId] = Math.Min(current + 1, quest.ObjectiveCount);
+            }
+        }
+
+        // Resultado do sorteio de drops do encontro selvagem em andamento - resolvido uma
+        // única vez (ver ResolveWildEncounterDrops) porque a prévia de recompensa (BattleArena,
+        // mostrada antes do jogador clicar OK) e a aplicação de verdade (aqui embaixo)
+        // precisam concordar no que caiu. Sortear duas vezes independentes mostraria um item
+        // na prévia e daria outro (ou nenhum) de verdade.
+        private List<(ItemData Item, int Quantity)> _resolvedWildEncounterDrops;
+
+        /// <summary>
+        /// Sorteia (na primeira chamada) os drops da espécie selvagem derrotada no encontro em
+        /// andamento (ver DigimonData.Drops - lookup pela espécie "de ficha" no banco, não pelo
+        /// BaseData clonado da instância, que não carrega Drops) e devolve o resultado. Chamadas
+        /// seguintes reaproveitam o mesmo sorteio - não aplica nada sozinho, só resolve o
+        /// "o que caiu" pra quem chamar (prévia ou aplicação de verdade) decidir o que fazer.
+        /// </summary>
+        public List<(ItemData Item, int Quantity)> ResolveWildEncounterDrops()
+        {
+            if (_resolvedWildEncounterDrops != null)
+                return _resolvedWildEncounterDrops;
+
+            _resolvedWildEncounterDrops = new List<(ItemData, int)>();
+
+            if (!BattleFromExploration || !_activeWildEncounterDigimonId.HasValue)
+                return _resolvedWildEncounterDrops;
+
+            var data = DatabaseManager.Instance.GetDigimon(_activeWildEncounterDigimonId.Value);
+
+            if (data == null)
+                return _resolvedWildEncounterDrops;
+
+            foreach (var drop in data.Drops)
+            {
+                if (_random.NextDouble() * 100.0 >= drop.ChancePercent)
+                    continue;
+
+                var itemData = DatabaseManager.Instance.GetItem(drop.ItemId);
+
+                if (itemData == null)
+                    continue;
+
+                _resolvedWildEncounterDrops.Add((itemData, drop.Quantity));
+            }
+
+            return _resolvedWildEncounterDrops;
+        }
+
+        /// <summary>Aplica de verdade o sorteio de ResolveWildEncounterDrops - soma cada item no
+        /// inventário do Center e avança quest CollectItem compatível.</summary>
+        private void ApplyResolvedWildEncounterDrops()
+        {
+            foreach (var (item, quantity) in ResolveWildEncounterDrops())
+            {
+                Save.Center.AddItemQuantity(item.Id, quantity);
+
+                ApplyCollectItemQuestProgress(item.Id);
+
+                GD.Print($"Drop: {item.Name} x{quantity}.");
+            }
+        }
+
+        /// <summary>Avança quest CollectItem ativa compatível com um item que acabou de entrar
+        /// no inventário - usado tanto por item coletado no chão da exploração (ver
+        /// CollectExplorationItem) quanto por drop de selvagem (ver ApplyWildEncounterDrops).</summary>
+        private void ApplyCollectItemQuestProgress(int itemId)
+        {
+            foreach (var questId in Save.Center.ActiveQuestIds)
+            {
+                var quest = DatabaseManager.Instance.GetQuest(questId);
+
+                if (quest == null || quest.ObjectiveType != QuestObjectiveType.CollectItem)
+                    continue;
+
+                if (quest.ObjectiveTargetId != itemId)
+                    continue;
+
+                int current = Save.Center.QuestProgress.GetValueOrDefault(questId);
+
+                Save.Center.QuestProgress[questId] = Math.Min(current + 1, quest.ObjectiveCount);
+            }
         }
 
         /// <summary>
@@ -673,6 +925,164 @@ namespace ProjetoDC.Scripts.Managers
                 $"Campeonato '{ActiveTournament.Name}' concluído! " +
                 $"+{ActiveTournament.CapacityReward} de capacidade | +{ActiveTournament.BitsReward} Bits de bônus."
             );
+        }
+
+        /// <summary>Área de exploração atualmente aberta, ou nula fora de exploração - setada
+        /// por StartExploration, zerada por EndExploration.</summary>
+        public ExplorationArea ActiveExplorationArea { get; private set; }
+
+        /// <summary>True enquanto uma área de exploração está aberta - StartExploration recusa
+        /// abrir uma nova enquanto isso for true, mesma proteção (e mesmo motivo, ver
+        /// IsBattleActive) usada em StartTeamBattle/StartTournamentBattle/StartWildEncounter:
+        /// um clique perdido vazando pro ExplorationDigimonPickScreen escondido atrás da área
+        /// recém-aberta chamaria StartExploration de novo, empilhando uma segunda ExplorationArea
+        /// por cima e perdendo a referência da primeira em ActiveExplorationArea.</summary>
+        public bool IsExploring => ActiveExplorationArea != null;
+
+        public event Action ExplorationStarted;
+        public event Action ExplorationFinished;
+
+        /// <summary>
+        /// Abre uma área de exploração com o Digimon escolhido (só 1 por vez - ver
+        /// game_idea.txt) - mesmo padrão de LaunchBattle: sobe a cena por cima do Center e
+        /// pausa o resto do jogo. ExplorationArea.Init sorteia os selvagens da área a partir
+        /// de ExplorationMapData.WildPool.
+        /// </summary>
+        public void StartExploration(DigimonInstance explorer, ExplorationMapData map)
+        {
+            if (IsExploring)
+            {
+                GD.PrintErr("StartExploration: já existe uma exploração em andamento, ignorando.");
+                return;
+            }
+
+            if (explorer == null || map == null)
+                return;
+
+            ExplorationStarted?.Invoke();
+
+            var areaScene = GD.Load<PackedScene>("res://Scenes/Exploration/ExplorationArea.tscn");
+            var area = areaScene.Instantiate<ExplorationArea>();
+
+            area.ProcessMode = ProcessModeEnum.Always;
+
+            GetTree().Root.AddChild(area);
+
+            RequestPause("exploration");
+
+            area.Init(explorer, map);
+
+            ActiveExplorationArea = area;
+        }
+
+        /// <summary>Sai da área de exploração de volta pro Center - chamado pelo botão de
+        /// saída da própria ExplorationArea.</summary>
+        public void EndExploration()
+        {
+            if (ActiveExplorationArea != null)
+            {
+                ActiveExplorationArea.QueueFree();
+                ActiveExplorationArea = null;
+            }
+
+            ReleasePause("exploration");
+
+            ExplorationFinished?.Invoke();
+        }
+
+        /// <summary>
+        /// Coleta um item do chão numa área de exploração - soma no inventário do Center e
+        /// marca o pickup como coletado (não volta a aparecer nessa área, ver
+        /// CenterState.CollectedItemPickupIds). Avança quest CollectItem compatível.
+        /// </summary>
+        public SystemResult CollectExplorationItem(ItemPickupData pickup)
+        {
+            if (pickup == null)
+                return SystemResult.Fail("Item inválido.");
+
+            if (Save.Center.CollectedItemPickupIds.Contains(pickup.UniqueId))
+                return SystemResult.Fail("Esse item já foi coletado.");
+
+            Save.Center.AddItemQuantity(pickup.ItemId, pickup.Quantity);
+            Save.Center.CollectedItemPickupIds.Add(pickup.UniqueId);
+
+            ApplyCollectItemQuestProgress(pickup.ItemId);
+
+            return SystemResult.Ok();
+        }
+
+        public SystemResult TryAcceptQuest(int questId)
+        {
+            var quest = DatabaseManager.Instance.GetQuest(questId);
+
+            if (quest == null)
+                return SystemResult.Fail("Quest não encontrada.");
+
+            if (Save.Center.CompletedQuestIds.Contains(questId))
+                return SystemResult.Fail("Você já completou essa quest.");
+
+            if (Save.Center.ActiveQuestIds.Contains(questId))
+                return SystemResult.Fail("Você já aceitou essa quest.");
+
+            Save.Center.ActiveQuestIds.Add(questId);
+            Save.Center.QuestProgress[questId] = 0;
+
+            return SystemResult.Ok();
+        }
+
+        /// <summary>Progresso atual de uma quest aceita em direção ao objetivo (0 se não foi
+        /// aceita ainda).</summary>
+        public int GetQuestProgress(int questId)
+        {
+            return Save.Center.QuestProgress.GetValueOrDefault(questId);
+        }
+
+        public bool IsQuestReadyToTurnIn(int questId)
+        {
+            var quest = DatabaseManager.Instance.GetQuest(questId);
+
+            if (quest == null || !Save.Center.ActiveQuestIds.Contains(questId))
+                return false;
+
+            return GetQuestProgress(questId) >= quest.ObjectiveCount;
+        }
+
+        /// <summary>Entrega uma quest pronta (ver IsQuestReadyToTurnIn) - aplica a recompensa
+        /// (Bits/Capacidade/item) e marca como completa.</summary>
+        public SystemResult TryTurnInQuest(int questId)
+        {
+            var quest = DatabaseManager.Instance.GetQuest(questId);
+
+            if (quest == null)
+                return SystemResult.Fail("Quest não encontrada.");
+
+            if (!IsQuestReadyToTurnIn(questId))
+                return SystemResult.Fail("O objetivo dessa quest ainda não foi cumprido.");
+
+            Save.Center.ActiveQuestIds.Remove(questId);
+            Save.Center.QuestProgress.Remove(questId);
+            Save.Center.CompletedQuestIds.Add(questId);
+
+            if (quest.RewardBits > 0)
+                Save.Center.AddBits(quest.RewardBits);
+
+            if (quest.RewardCapacity > 0)
+                Save.Center.AddCapacity(quest.RewardCapacity);
+
+            if (quest.RewardItemId > 0 && quest.RewardItemQuantity > 0)
+                Save.Center.AddItemQuantity(quest.RewardItemId, quest.RewardItemQuantity);
+
+            // NPC recrutável: entregar a quest dele conta como "provou seu valor" e o recruta
+            // pro Center (ver NpcData.IsRecruitable/CenterState.RecruitedNpcIds) - efeitos
+            // reais consultam essa lista sob demanda (GameManager.HasRecruitedTrainingBonus/
+            // ApplyRecruitedNpcDailyBonuses, DigimonWorld.TryStartAutoTraining), não precisam
+            // ser disparados daqui.
+            var giverNpc = DatabaseManager.Instance.GetNpc(quest.GiverNpcId);
+
+            if (giverNpc != null && giverNpc.IsRecruitable && !Save.Center.RecruitedNpcIds.Contains(giverNpc.Id))
+                Save.Center.RecruitedNpcIds.Add(giverNpc.Id);
+
+            return SystemResult.Ok();
         }
 
         public SystemResult BuyMeat()

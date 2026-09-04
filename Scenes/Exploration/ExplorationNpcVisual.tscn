@@ -1,0 +1,68 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gameplay/ExplorationNpcVisual.cs" id="1_npc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_click"]
+size = Vector2(48, 48)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nameplate"]
+bg_color = Color(0.10980392, 0.23529412, 0.36862746, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34509805, 0.6039216, 0.8901961, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="ExplorationNpcVisual" type="Node2D"]
+script = ExtResource("1_npc")
+
+[node name="MarkerLabel" type="Label" parent="."]
+offset_left = -20.0
+offset_top = -88.0
+offset_right = 20.0
+offset_bottom = -62.0
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+mouse_filter = 2
+text = "💬"
+
+[node name="Portrait" type="TextureRect" parent="."]
+offset_left = -24.0
+offset_top = -58.0
+offset_right = 24.0
+offset_bottom = -10.0
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="NamePanel" type="Panel" parent="."]
+offset_left = -55.0
+offset_top = -6.0
+offset_right = 55.0
+offset_bottom = 16.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nameplate")
+
+[node name="NameLabel" type="Label" parent="NamePanel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "NPC"
+
+[node name="ClickArea" type="Area2D" parent="."]
+position = Vector2(0, -34)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea"]
+shape = SubResource("RectangleShape2D_click")

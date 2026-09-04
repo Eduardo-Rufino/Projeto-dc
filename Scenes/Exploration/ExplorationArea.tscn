@@ -1,0 +1,92 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gameplay/ExplorationArea.cs" id="1_area"]
+[ext_resource type="PackedScene" path="res://Scenes/Exploration/DialogueScreen.tscn" id="2_dialogue"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.1882353, 0.21176471, 0.23921569, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_label"]
+bg_color = Color(0.1254902, 0.14509805, 0.16862746, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 12
+content_margin_top = 6
+content_margin_right = 12
+content_margin_bottom = 6
+
+[node name="ExplorationArea" type="Node2D"]
+script = ExtResource("1_area")
+
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Background" type="ColorRect" parent="BackgroundLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.14, 0.22, 0.13, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+current = true
+
+[node name="Boundary" type="Polygon2D" parent="."]
+color = Color(0.18, 0.32, 0.17, 1)
+polygon = PackedVector2Array(0, 0, 3400, 0, 3400, 2200, 0, 2200)
+
+[node name="ExplorerSpawnPoint" type="Marker2D" parent="."]
+position = Vector2(300, 900)
+
+[node name="SpawnsContainer" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MapNamePanel" type="Panel" parent="CanvasLayer"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 216.0
+offset_bottom = 48.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_label")
+
+[node name="MapNameLabel" type="Label" parent="CanvasLayer/MapNamePanel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+vertical_alignment = 1
+text = "Área"
+
+[node name="ExitButton" type="Button" parent="CanvasLayer"]
+offset_left = 1180.0
+offset_top = 16.0
+offset_right = 1264.0
+offset_bottom = 48.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "🚪 Sair"
+
+[node name="DialogueScreen" parent="CanvasLayer" instance=ExtResource("2_dialogue")]
+visible = false

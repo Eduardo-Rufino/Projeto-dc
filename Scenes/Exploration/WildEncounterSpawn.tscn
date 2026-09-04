@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gameplay/WildEncounterSpawn.cs" id="1_wild"]
+[ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="2_sprite"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_click"]
+size = Vector2(48, 48)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 13.0
+
+[node name="WildEncounterSpawn" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_wild")
+
+[node name="DigimonSprite" parent="." instance=ExtResource("2_sprite")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="ClickArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea"]
+shape = SubResource("RectangleShape2D_click")

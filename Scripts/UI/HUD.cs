@@ -52,6 +52,9 @@ namespace ProjetoDC.Scripts.UI
         private Button _evolutionGuideButton;
         private Button _baseEditorButton;
         private Button _settingsButton;
+        private Button _explorationButton;
+        private Button _encyclopediaButton;
+        private Button _patchNotesButton;
         private ConfirmationDialog _exitConfirmDialog;
 
         private Control _digimonStatusPage1;
@@ -288,6 +291,12 @@ namespace ProjetoDC.Scripts.UI
 
             _settingsButton.Pressed += OnSettingsButtonPressed;
 
+            _explorationButton = GetNode<Button>(
+                "ControlBar/WorldButton"
+            );
+
+            _explorationButton.Pressed += OnExplorationButtonPressed;
+
             _exitButton = GetNode<Button>(
                 "ControlBar/ExitButton"
             );
@@ -317,6 +326,18 @@ namespace ProjetoDC.Scripts.UI
             );
 
             _baseEditorButton.Pressed += OnBaseEditorButtonPressed;
+
+            _encyclopediaButton = GetNode<Button>(
+                "ControlBar/MailButton"
+            );
+
+            _encyclopediaButton.Pressed += OnEncyclopediaButtonPressed;
+
+            _patchNotesButton = GetNode<Button>(
+                "ControlBar/PatchNotesButton"
+            );
+
+            _patchNotesButton.Pressed += OnPatchNotesButtonPressed;
 
             // O GameManager pode ainda estar terminando sua inicialização.
             CallDeferred(nameof(ConnectToGameManager));
@@ -762,6 +783,11 @@ namespace ProjetoDC.Scripts.UI
             _center.OpenTutorial();
         }
 
+        private void OnPatchNotesButtonPressed()
+        {
+            _center.OpenPatchNotes();
+        }
+
         private void OnEvolutionGuideButtonPressed()
         {
             _center.OpenEvolutionGuide();
@@ -772,9 +798,19 @@ namespace ProjetoDC.Scripts.UI
             _center.OpenBaseEditor();
         }
 
+        private void OnEncyclopediaButtonPressed()
+        {
+            _center.OpenEncyclopedia();
+        }
+
         private void OnSettingsButtonPressed()
         {
             _center.OpenSettings();
+        }
+
+        private void OnExplorationButtonPressed()
+        {
+            _center.OpenExplorationList();
         }
 
         private void OnDeleteDigimonButtonPressed()

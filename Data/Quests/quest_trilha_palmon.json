@@ -1,0 +1,13 @@
+{
+  "Id": 5,
+  "Name": "A Trilha da Palmon",
+  "Description": "Derrote 2 Digimon selvagens nessa área pra afastá-los da trilha escondida da Palmon.",
+  "GiverNpcId": 5,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 2,
+  "RewardBits": 350,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}
