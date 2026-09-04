@@ -125,6 +125,7 @@ text = "Você não tem nenhum Digimon no Center pra batalhar."
 [node name="ScrollContainer" type="ScrollContainer" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
 [node name="GridContainer" type="GridContainer" parent="Window/MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2

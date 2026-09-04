@@ -99,6 +99,7 @@ text = "Nenhum item cadastrado ainda."
 [node name="ItemsScroll" type="ScrollContainer" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
 [node name="ItemsContainer" type="GridContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll"]
 layout_mode = 2

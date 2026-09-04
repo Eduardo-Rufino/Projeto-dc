@@ -26,7 +26,9 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(1240, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 horizontal_alignment = 1
 autowrap_mode = 2
 text = "Digimon pronto pra evoluir, mas sem capacidade no Center."
@@ -39,6 +41,7 @@ text = "Capacidade selecionada pra liberar: 0/0"
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2
