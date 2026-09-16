@@ -2,6 +2,7 @@ using Godot;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.Systems.Passives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,24 @@ namespace ProjetoDC.Scripts.Systems.Battle
         // desnecessários quando o time gerado já está razoavelmente parelho).
         private const double PowerToleranceRatio = 0.15;
 
+        // O time inimigo não mira mais o MESMO poder total do jogador - mira uma fração dele,
+        // pra Batalha Livre ficar ganhável por padrão em vez de um confronto ~50/50 (relatado
+        // pelo jogador: mesmo já corrigido o teto de defesa por vantagem de tipo, ver
+        // CapEnemyDefense, os inimigos gerados ainda pareciam muito superiores). Ajustar aqui
+        // pra tunar a dificuldade geral da Batalha Livre.
+        private const double EnemyPowerTargetRatio = 0.75;
+
         // Piso do reescalonamento, pra nunca gerar um time absurdamente fraco de uma vez só
-        // (evita spikes de dificuldade). Sem teto pra cima: o time inimigo precisa
-        // acompanhar o poder do time do jogador mesmo depois de muito treino/evolução, senão
-        // as batalhas ficam triviais no fim de jogo (era o comportamento antigo, com teto de
-        // 1.6x).
-        private const double MinScaleRatio = 0.6;
+        // (evita spikes de dificuldade). Baixado de 0.6 pra 0.35 porque o piso antigo impedia
+        // o reescalonamento de alcançar o alvo (mesmo com EnemyPowerTargetRatio) sempre que o
+        // sorteio aleatório de espécie (GenerateEnemies, sem peso nenhum por poder) calhava
+        // numa espécie com poder bruto muito acima do time do jogador - o inimigo ficava preso
+        // em 60% do PRÓPRIO poder original, não 60% do poder do jogador, então podia continuar
+        // muito mais forte que o time do jogador mesmo depois de "balanceado". Sem teto pra
+        // cima: o time inimigo precisa acompanhar o poder do time do jogador mesmo depois de
+        // muito treino/evolução, senão as batalhas ficam triviais no fim de jogo (era o
+        // comportamento antigo, com teto de 1.6x).
+        private const double MinScaleRatio = 0.35;
 
         private readonly Random _random = new();
 
@@ -38,6 +51,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
                 foreach (var data in candidates)
                 {
                     var enemy = new DigimonInstance(data);
+
+                    // Inimigo de Batalha Livre sorteia passiva igual a um Digimon do
+                    // jogador (ver PASSIVAS_SPEC.md R5) - sem isso, EnemyGenerator nunca
+                    // compensaria o poder extra que uma passiva dá.
+                    enemy.PassiveId = PassiveSystem.RollRandomPassive(data);
 
                     // Nunca acima do nível do jogador - não faz sentido o time inimigo
                     // começar com vantagem de nível que o jogador não teve chance de
@@ -115,7 +133,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
             if (enemyPower <= 0)
                 return;
 
-            double ratio = playerPower / enemyPower;
+            double ratio = (playerPower * EnemyPowerTargetRatio) / enemyPower;
 
             if (Math.Abs(1.0 - ratio) < PowerToleranceRatio)
                 return;
@@ -138,8 +156,23 @@ namespace ProjetoDC.Scripts.Systems.Battle
         // importa quanto treinou. BalanceTeamPower (soma linear de stats) não enxerga essa
         // não-linearidade. Esse teto garante que a defesa do inimigo nunca deixe o jogador
         // preso nesse piso.
-        private const double MaxDefenseToAttackRatio = 0.85;
+        // Baixado de 0.85 pra 0.65: mesmo num confronto de tipo neutro (sem o alívio de
+        // TypeAdvantageCalculator abaixo), o jogador precisa sobrar uma fração maior do
+        // ATK depois da subtração pra Batalha Livre não ficar impossível de vencer -
+        // relatado pelo jogador mesmo depois do primeiro ajuste (relief por vantagem de
+        // tipo).
+        private const double MaxDefenseToAttackRatio = 0.65;
 
+        // O teto acima é calibrado pra um confronto neutro (multiplicador de tipo 1x) - sem
+        // ajuste, um jogador com vantagem real de tipo (ver TypeAdvantageCalculator) esbarra
+        // no MESMO teto de um confronto neutro, e o ATK-DEF que sobra depois da subtração
+        // acaba sendo tão pequeno que o multiplicador de tipo deixa de fazer diferença
+        // prática (confirmado ao vivo: Agumon com vantagem 1.3x contra um Tank gerado ainda
+        // trocava dano quase igual dos dois lados). Divide o teto pelo multiplicador médio
+        // que o time do jogador tem contra ESSE inimigo, então uma vantagem de tipo real
+        // aperta a defesa permitida e volta a valer a pena. Só aperta (nunca afrouxa): com
+        // desvantagem de tipo (mult < 1) o teto continua o de sempre, pra não piorar ainda
+        // mais um confronto que já é ruim pro jogador.
         private void CapEnemyDefense(List<DigimonInstance> playerTeam, List<DigimonInstance> enemyTeam)
         {
             if (playerTeam.Count == 0 || enemyTeam.Count == 0)
@@ -148,11 +181,17 @@ namespace ProjetoDC.Scripts.Systems.Battle
             double avgPhysicalAttack = playerTeam.Average(d => d.CurrentStats.PhysicalDamage);
             double avgSpecialAttack = playerTeam.Average(d => d.CurrentStats.SpecialDamage);
 
-            int maxPhysicalDefense = Math.Max(1, (int)(avgPhysicalAttack * MaxDefenseToAttackRatio));
-            int maxSpecialDefense = Math.Max(1, (int)(avgSpecialAttack * MaxDefenseToAttackRatio));
-
             foreach (var enemy in enemyTeam)
             {
+                double avgTypeMultiplier = playerTeam.Average(
+                    p => TypeAdvantageCalculator.GetDamageMultiplier(p.BaseData, enemy.BaseData)
+                );
+
+                double typeRelief = Math.Max(1.0, avgTypeMultiplier);
+
+                int maxPhysicalDefense = Math.Max(1, (int)(avgPhysicalAttack * MaxDefenseToAttackRatio / typeRelief));
+                int maxSpecialDefense = Math.Max(1, (int)(avgSpecialAttack * MaxDefenseToAttackRatio / typeRelief));
+
                 enemy.CurrentStats.PhysicalDefense = Math.Min(
                     enemy.CurrentStats.PhysicalDefense, maxPhysicalDefense
                 );

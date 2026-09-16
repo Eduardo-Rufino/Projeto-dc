@@ -16,11 +16,14 @@
 [ext_resource type="PackedScene" path="res://Scenes/Center/SettingsScreen.tscn" id="2_settings"]
 [ext_resource type="PackedScene" path="res://Scenes/Center/EncyclopediaScreen.tscn" id="2_encyclopedia"]
 [ext_resource type="PackedScene" path="res://Scenes/Center/PatchNotesScreen.tscn" id="2_patchnotes"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/DigimonDeathScreen.tscn" id="2_digimondeath"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/DigimonDetailScreen.tscn" id="2_digimondetail"]
 [ext_resource type="PackedScene" path="res://Scenes/Exploration/ExplorationListScreen.tscn" id="2_explist"]
 [ext_resource type="PackedScene" path="res://Scenes/Exploration/ExplorationDigimonPickScreen.tscn" id="2_exppick"]
 [ext_resource type="PackedScene" path="res://Scenes/Battle/BattleTypeScreen.tscn" id="2_battletype"]
 [ext_resource type="PackedScene" path="res://Scenes/Battle/TournamentListScreen.tscn" id="2_tournamentlist"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="3_csbr3"]
+[ext_resource type="Texture2D" uid="uid://dvmynr18ibstu" path="res://Assets/Sprites/Food/energetico.png" id="4_energetico"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scj13"]
 bg_color = Color(0.1254902, 0.14509805, 0.16862746, 1)
@@ -388,6 +391,14 @@ size_flags_vertical = 4
 theme_override_font_sizes/font_size = 12
 text = "▶"
 
+[node name="InfoButton" type="Button" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel/HBoxContainer"]
+custom_minimum_size = Vector2(18, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 12
+tooltip_text = "Mais informações"
+text = "ℹ"
+
 [node name="SelectedDigimon" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=657801898]
 anchors_preset = 0
 offset_left = 1020.0
@@ -667,6 +678,41 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
 tooltip_text = "Notas de Atualização"
 text = "📋"
 
+[node name="FoodPickerPopup" type="PanelContainer" parent="CanvasLayer/HUD"]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 172.0
+offset_right = 154.0
+offset_bottom = 244.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/HUD/FoodPickerPopup"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD/FoodPickerPopup/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MeatOptionButton" type="Button" parent="CanvasLayer/HUD/FoodPickerPopup/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+tooltip_text = "Carne - segure e arraste pra colocar no Center"
+text = "🍖"
+
+[node name="StaminaSnackOptionButton" type="Button" parent="CanvasLayer/HUD/FoodPickerPopup/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+tooltip_text = "Energético - segure e arraste pra colocar no Center, os Digimons comem sozinhos quando a Stamina estiver baixa"
+icon = ExtResource("4_energetico")
+expand_icon = true
+
 [node name="WarningToast" type="Panel" parent="CanvasLayer/HUD"]
 visible = false
 layout_mode = 1
@@ -723,6 +769,9 @@ visible = false
 [node name="PatchNotesScreen" parent="CanvasLayer" instance=ExtResource("2_patchnotes")]
 visible = false
 
+[node name="DigimonDeathScreen" parent="CanvasLayer" instance=ExtResource("2_digimondeath")]
+visible = false
+
 [node name="EvolutionGuideScreen" parent="CanvasLayer" instance=ExtResource("2_evoguide")]
 visible = false
 
@@ -739,6 +788,9 @@ visible = false
 visible = false
 
 [node name="EncyclopediaScreen" parent="CanvasLayer" instance=ExtResource("2_encyclopedia")]
+visible = false
+
+[node name="DigimonDetailScreen" parent="CanvasLayer" instance=ExtResource("2_digimondetail")]
 visible = false
 
 [node name="CenterAreas" type="Node2D" parent="." unique_id=1618977558]

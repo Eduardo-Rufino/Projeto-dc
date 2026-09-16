@@ -69,12 +69,14 @@ public partial class Center : Node2D
     private InventoryScreen _inventoryScreen;
     private TutorialScreen _tutorialScreen;
     private PatchNotesScreen _patchNotesScreen;
+    private DigimonDeathScreen _digimonDeathScreen;
     private EvolutionGuideScreen _evolutionGuideScreen;
     private BaseEditorScreen _baseEditorScreen;
     private SettingsScreen _settingsScreen;
     private ExplorationListScreen _explorationListScreen;
     private ExplorationDigimonPickScreen _explorationPickScreen;
     private EncyclopediaScreen _encyclopediaScreen;
+    private DigimonDetailScreen _digimonDetailScreen;
     private CanvasLayer _canvasLayer;
 
     // Garante só uma animação de evolução por vez: se vários Digimons evoluírem juntos
@@ -176,6 +178,8 @@ public partial class Center : Node2D
         _patchNotesScreen = GetNode<PatchNotesScreen>("CanvasLayer/PatchNotesScreen");
         _patchNotesScreen.BackPressed += OnPatchNotesBackPressed;
 
+        _digimonDeathScreen = GetNode<DigimonDeathScreen>("CanvasLayer/DigimonDeathScreen");
+
         _evolutionGuideScreen = GetNode<EvolutionGuideScreen>("CanvasLayer/EvolutionGuideScreen");
         _evolutionGuideScreen.BackPressed += OnEvolutionGuideBackPressed;
 
@@ -195,11 +199,17 @@ public partial class Center : Node2D
         _encyclopediaScreen = GetNode<EncyclopediaScreen>("CanvasLayer/EncyclopediaScreen");
         _encyclopediaScreen.BackPressed += OnEncyclopediaBackPressed;
 
+        _digimonDetailScreen = GetNode<DigimonDetailScreen>("CanvasLayer/DigimonDetailScreen");
+        _digimonDetailScreen.BackPressed += OnDigimonDetailBackPressed;
+
         GameManager.Instance.EvolutionBlockedByCapacity -= OnEvolutionBlockedByCapacity;
         GameManager.Instance.EvolutionBlockedByCapacity += OnEvolutionBlockedByCapacity;
 
         GameManager.Instance.DigimonDeleted -= OnDigimonDeleted;
         GameManager.Instance.DigimonDeleted += OnDigimonDeleted;
+
+        GameManager.Instance.DigimonDied -= OnDigimonDied;
+        GameManager.Instance.DigimonDied += OnDigimonDied;
 
         GameManager.Instance.SleepSkipped -= OnSleepSkipped;
         GameManager.Instance.SleepSkipped += OnSleepSkipped;
@@ -256,6 +266,40 @@ public partial class Center : Node2D
         string debugScreen = OS.GetEnvironment("DEBUG_OPEN_SCREEN");
         if (!string.IsNullOrEmpty(debugScreen))
             CallDeferred(nameof(DebugOpenScreen), debugScreen);
+
+        // Mesmo esquema acima, mas pra rodar a bateria de verificação manual do Sistema de
+        // Passivas (ver PassiveSystemDebugTests) via log em vez de abrir uma tela - variável
+        // de ambiente separada porque não tem UI nenhuma envolvida.
+        if (!string.IsNullOrEmpty(OS.GetEnvironment("DEBUG_TEST_PASSIVES")))
+            ProjetoDC.Scripts.Systems.Passives.PassiveSystemDebugTests.Run();
+
+        // Mesmo esquema acima: reproduz ao vivo o impasse relatado de Suporte vs Suporte
+        // (ver GameManager.DebugStartSupportDeadlockBattle/BattleUnit._supportFallbackAttack) -
+        // um duelo 1x1 entre dois Suportes do mesmo SupportType não tinha como terminar antes
+        // desse fix, já que nenhum dos dois causava dano.
+        string debugBattle = OS.GetEnvironment("DEBUG_TEST_BATTLE");
+
+        if (!string.IsNullOrEmpty(debugBattle) && debugBattle.StartsWith("support_deadlock_"))
+        {
+            _debugSupportDeadlockType = debugBattle.Substring("support_deadlock_".Length);
+            CallDeferred(nameof(DebugStartSupportDeadlockBattle));
+        }
+
+    }
+
+    private string _debugSupportDeadlockType;
+
+    private void DebugStartSupportDeadlockBattle()
+    {
+        var supportType = _debugSupportDeadlockType switch
+        {
+            "healer" => ProjetoDC.Enums.SupportType.Healer,
+            "buffer" => ProjetoDC.Enums.SupportType.Buffer,
+            "debuffer" => ProjetoDC.Enums.SupportType.Debuffer,
+            _ => ProjetoDC.Enums.SupportType.Buffer,
+        };
+
+        GameManager.Instance.DebugStartSupportDeadlockBattle(supportType);
     }
 
     /// <summary>Ver o comentário sobre DEBUG_OPEN_SCREEN em _Ready() acima. Cada case usa
@@ -281,6 +325,30 @@ public partial class Center : Node2D
                 if (digimon != null && targetForm != null)
                     _evolutionCapacityScreen.Open(digimon, targetForm, 5);
                 break;
+            case "evolutionguide":
+                _evolutionGuideScreen.Open();
+                break;
+            case "encyclopediasets":
+                OpenEncyclopedia();
+                _encyclopediaScreen.DebugShowSetsTab();
+                break;
+            case "shop":
+                OpenShop();
+                break;
+            case "shopeggtypes":
+                _shopScreen.Visible = true;
+                _shopScreen.DebugOpenEggTypePopup();
+                break;
+            case "digimondeath":
+                _digimonDeathScreen.Notify(
+                    "Agumon morreu de velhice, sem ter evoluído a tempo. (mensagem de teste)"
+                );
+                break;
+            case "digimondetail":
+                var detailTarget = GameManager.Instance.Save.Center.Digimons.FirstOrDefault();
+                if (detailTarget != null)
+                    OpenDigimonDetail(detailTarget);
+                break;
             case "explorationpick":
                 var map = DatabaseManager.Instance.GetAllExplorationMaps().FirstOrDefault();
                 if (map != null)
@@ -303,6 +371,18 @@ public partial class Center : Node2D
                 _patchNotesScreen.Open();
                 _patchNotesScreen.Visible = true;
                 break;
+            case "battle":
+                // Duelo/3x3 livre com o time real do save (não um cenário fabricado como os
+                // outros cases) - existe pra exercitar o pipeline de dano/crítico/passivas/
+                // bônus de conjunto (ver DamageCalculator) de ponta a ponta num teste
+                // automatizado, sem precisar simular clique. A recompensa (XP/Bits) só é
+                // aplicada quando o jogador clica "OK" na tela de resultado (ver
+                // BattleArena.OnResultOkPressed) - fechar o jogo antes disso não persiste
+                // XP/Bits (o dano recebido em combate, esse sim, já é aplicado ao vivo).
+                var battleTeam = GameManager.Instance.Save.Center.Digimons.Take(3).ToList();
+                if (battleTeam.Count > 0)
+                    GameManager.Instance.StartTeamBattle(battleTeam);
+                break;
         }
     }
 
@@ -322,6 +402,7 @@ public partial class Center : Node2D
             GameManager.Instance.ExplorationFinished -= OnExplorationFinished;
             GameManager.Instance.EvolutionBlockedByCapacity -= OnEvolutionBlockedByCapacity;
             GameManager.Instance.DigimonDeleted -= OnDigimonDeleted;
+            GameManager.Instance.DigimonDied -= OnDigimonDied;
             GameManager.Instance.SleepSkipped -= OnSleepSkipped;
         }
     }
@@ -416,8 +497,6 @@ public partial class Center : Node2D
         DigimonInstance digimon,
         Vector2 position)
     {
-        GD.Print($"Criando DigimonWorld: {digimon.BaseData.Name}");
-
         var instance = _digimonScene.Instantiate<DigimonWorld>();
 
         _digimonsContainer.AddChild(instance);
@@ -437,8 +516,6 @@ public partial class Center : Node2D
             GD.PrintErr($"{digimon.BaseData.Name} nasceu fora de uma CenterArea");
         }
 
-        GD.Print($"Spawn em {instance.GlobalPosition}");
-
         _digimonWorlds.Add(instance);
 
         return instance;
@@ -446,8 +523,6 @@ public partial class Center : Node2D
 
     private void SpawnFood()
     {
-        GD.Print("Criando comida!");
-
         var food = _foodScene.Instantiate<Node2D>();
 
         AddChild(food);
@@ -482,8 +557,6 @@ public partial class Center : Node2D
         _foods.Add(world);
 
         GameManager.Instance.Save.Center.Foods.Add(food);
-
-        GD.Print($"Comida criada em: {world.GlobalPosition}");
     }
 
     private void RestoreFoods()
@@ -527,8 +600,6 @@ public partial class Center : Node2D
             GameManager.Instance.Save.Center.Foods.Remove(foodData);
 
         food.QueueFree();
-
-        GD.Print($"Comidas restantes: {_foods.Count}");
     }
 
     public FoodWorld GetAvailableFood()
@@ -553,7 +624,7 @@ public partial class Center : Node2D
         return false;
     }
 
-    public FoodWorld GetNearestFood(Vector2 position, CenterArea area)
+    public FoodWorld GetNearestFood(Vector2 position, CenterArea area, FoodType type = FoodType.Meat)
     {
         FoodWorld nearestFood = null;
         float nearestDistance = float.MaxValue;
@@ -564,6 +635,9 @@ public partial class Center : Node2D
         foreach (var food in _foods)
         {
             if (!food.HasFood())
+                continue;
+
+            if (food.GetFood().Type != type)
                 continue;
 
             CenterArea foodArea = GetAreaAtPosition(food.GlobalPosition);
@@ -613,8 +687,6 @@ public partial class Center : Node2D
 
         _poops.Add(poop);
 
-        GD.Print($"Coco criado em {position}.");
-
         return poop;
     }
 
@@ -657,8 +729,6 @@ public partial class Center : Node2D
         }
 
         poop.QueueFree();
-
-        GD.Print($"Cocos restantes: {_poops.Count}");
     }
 
     private void RewardQuickCleaning(Poop poopData, Vector2 position)
@@ -697,10 +767,6 @@ public partial class Center : Node2D
         AddChild(area);
 
         area.Position = new Vector2(647, 366);
-
-        GD.Print(
-            $"CenterArea instanciada: {area.Name} | Grid: {area.GridPosition} | Posição: {area.Position}"
-        );
     }
 
     /// <summary>Todas as áreas do Center atualmente registradas (posição no grid + tipo) -
@@ -762,10 +828,6 @@ public partial class Center : Node2D
             if (child is CenterArea area)
             {
                 _centerAreas[area.GridPosition] = area;
-
-                GD.Print(
-                    $"Área registrada: {area.Name} | Grid: {area.GridPosition}"
-                );
             }
         }
     }
@@ -833,10 +895,6 @@ public partial class Center : Node2D
         area.Position = GridToWorldPosition(gridPosition);
 
         _centerAreas[gridPosition] = area;
-
-        GD.Print(
-            $"Nova área criada: {area.Name} | Grid: {gridPosition} | Position: {area.Position}"
-        );
     }
 
     private void RefreshExpansionSlots()
@@ -850,13 +908,6 @@ public partial class Center : Node2D
             _expansionSlots.Add(
                 new CenterExpansionSlot(position)
             );
-        }
-
-        GD.Print("=== SLOTS DE EXPANSÃO ===");
-
-        foreach (var slot in _expansionSlots)
-        {
-            GD.Print($"Slot disponível: {slot.GridPosition}");
         }
     }
 
@@ -892,10 +943,6 @@ public partial class Center : Node2D
             visual.SlotClicked += OnExpansionSlotClicked;
 
             _expansionSlotsVisual.AddChild(visual);
-
-            GD.Print(
-                $"Visual do slot criado: {slot.GridPosition} -> {visual.Position}"
-            );
         }
     }
 
@@ -918,8 +965,6 @@ public partial class Center : Node2D
     {
         if (_pendingPurchasedAreaType == null)
             return;
-
-        GD.Print($"SLOT CLICADO! Grid: {gridPosition} | Tipo: {_pendingPurchasedAreaType}");
 
         if (AddArea(gridPosition, _pendingPurchasedAreaType.Value))
         {
@@ -1225,6 +1270,19 @@ public partial class Center : Node2D
         _encyclopediaScreen.Visible = false;
     }
 
+    /// <summary>Ponto de entrada do botão "ℹ" na barra de status do Digimon (ver
+    /// HUD.OnDigimonInfoButtonPressed) - detalhes que não cabem na barra principal (Role,
+    /// Atributo, Elemento, etc.) e a passiva (ver PASSIVAS_SPEC.md).</summary>
+    public void OpenDigimonDetail(DigimonInstance digimon)
+    {
+        _digimonDetailScreen.Open(digimon);
+    }
+
+    private void OnDigimonDetailBackPressed()
+    {
+        _digimonDetailScreen.Visible = false;
+    }
+
     /// <summary>Ponto de entrada do botão de troféu - abre a escolha entre Campeonato e
     /// Batalha Livre, em vez de ir direto pra montagem de time.</summary>
     public void OpenBattleTypeMenu()
@@ -1389,7 +1447,9 @@ public partial class Center : Node2D
             || (_settingsScreen?.Visible ?? false)
             || (_explorationListScreen?.Visible ?? false)
             || (_explorationPickScreen?.Visible ?? false)
-            || (_encyclopediaScreen?.Visible ?? false);
+            || (_encyclopediaScreen?.Visible ?? false)
+            || (_digimonDetailScreen?.Visible ?? false)
+            || (_digimonDeathScreen?.Visible ?? false);
     }
 
     public void InspectDigimon(DigimonInstance digimon)
@@ -1400,16 +1460,24 @@ public partial class Center : Node2D
         _hud.InspectDigimon(digimon);
     }
 
-    public void StartFoodPlacement()
+    private bool CanStartPlacingFood()
     {
         if (_isPlacingFood)
-            return;
+            return false;
 
         if (_foods.Count >= MaxFoods)
         {
             GD.Print("Limite de comidas atingido.");
-            return;
+            return false;
         }
+
+        return true;
+    }
+
+    public void StartFoodPlacement()
+    {
+        if (!CanStartPlacingFood())
+            return;
 
         // A Carne colocada aqui vem do inventário (Save.Center.Meat) - sem essa checagem,
         // dava pra colocar comida ilimitada mesmo com o estoque zerado, já que o consumo em
@@ -1420,19 +1488,44 @@ public partial class Center : Node2D
             return;
         }
 
+        BeginPlacingFood(new Food("Carne", 20, FoodType.Meat));
+    }
+
+    /// <summary>Mesmo esquema de StartFoodPlacement acima, só que pro Energético (ver
+    /// GameManager.BuyStaminaSnack) - MaxNutrition igual a MaxStamina (100) de propósito, pra
+    /// um Digimon sozinho comendo tudo recuperar a Stamina inteira (ver DigimonWorld.
+    /// ProcessEating); se mais de um comer junto, a mesma mordida compartilhada de sempre
+    /// (Food.Consume) naturalmente divide entre eles.</summary>
+    public void StartStaminaSnackPlacement()
+    {
+        if (!CanStartPlacingFood())
+            return;
+
+        if (GameManager.Instance.Save.Center.StaminaSnacks <= 0)
+        {
+            GD.Print("Você não possui Energético.");
+            return;
+        }
+
+        BeginPlacingFood(new Food("Energético", 100, FoodType.StaminaSnack));
+    }
+
+    private void BeginPlacingFood(Food food)
+    {
         _placingFood = _foodScene.Instantiate<FoodWorld>();
 
         _digimonsContainer.AddChild(_placingFood);
 
-        _placingFood.Initialize(
-            new Food("Carne", 20)
-        );
+        _placingFood.Initialize(food);
 
         _placingFood.SetPlacementMode(true);
 
         _isPlacingFood = true;
     }
 
+    /// <summary>Confirma a colocação do que estiver em andamento (Carne ou Energético - ver
+    /// StartFoodPlacement/StartStaminaSnackPlacement) - qual estoque desconta depende só do
+    /// Food.Type já guardado no objeto, sem precisar saber qual dos dois Start disparou.</summary>
     public void PlaceFood()
     {
         if (_placingFood == null)
@@ -1461,40 +1554,23 @@ public partial class Center : Node2D
         food.PositionY = _placingFood.GlobalPosition.Y;
 
         // Decide uma vez, aqui, se ela vai estragar rápido ou devagar (ver
-        // FoodWorld.OnHourPassed) - comida não se move depois de colocada.
+        // FoodWorld.OnHourPassed) - comida não se move depois de colocada. Sem efeito pro
+        // Energético, que não estraga.
         food.PlacedInRestaurant = area.IsRestaurant();
 
         _foods.Add(_placingFood);
 
         GameManager.Instance.Save.Center.Foods.Add(food);
 
-        // Só consome a Carne do inventário aqui, na confirmação bem-sucedida - se o
-        // jogador cancelar soltando fora de uma área (acima), nada é gasto.
-        GameManager.Instance.Save.Center.Meat--;
-
-        GD.Print(
-            $"Carne colocada em {_placingFood.GlobalPosition}"
-        );
+        // Só consome o item do inventário aqui, na confirmação bem-sucedida - se o jogador
+        // cancelar soltando fora de uma área (acima), nada é gasto.
+        if (food.Type == FoodType.StaminaSnack)
+            GameManager.Instance.Save.Center.StaminaSnacks--;
+        else
+            GameManager.Instance.Save.Center.Meat--;
 
         _placingFood = null;
         _isPlacingFood = false;
-    }
-
-    private void TestAreaOccupancy()
-    {
-        GD.Print($"(0, 0) ocupado? {IsAreaOccupied(new Vector2I(0, 0))}");
-        GD.Print($"(1, 0) ocupado? {IsAreaOccupied(new Vector2I(1, 0))}");
-        GD.Print($"(1, -1) ocupado? {IsAreaOccupied(new Vector2I(1, -1))}");
-    }
-
-    private void TestAvailableNeighbors()
-    {
-        var available = GetAvailableNeighbors(Vector2I.Zero);
-
-        foreach (var position in available)
-        {
-            GD.Print($"Espaço disponível ao redor do centro: {position}");
-        }
     }
 
     private DigimonWorld GetDigimonAtPosition(Vector2 position)
@@ -1541,8 +1617,6 @@ public partial class Center : Node2D
         _placingMedicine.SetPlacementMode(true);
 
         _isPlacingMedicine = true;
-
-        GD.Print("Iniciando posicionamento de medicamento.");
     }
 
     public void PlaceMedicine()
@@ -1633,8 +1707,6 @@ public partial class Center : Node2D
         _placingBroom.SetPlacementMode(true);
 
         _isPlacingBroom = true;
-
-        GD.Print("Modo de limpeza ativado.");
     }
 
     private void StopBroomMode()
@@ -1646,8 +1718,6 @@ public partial class Center : Node2D
         }
 
         _isPlacingBroom = false;
-
-        GD.Print("Modo de limpeza desativado.");
     }
 
     private void CleanAtPosition(Vector2 position)
@@ -1658,8 +1728,6 @@ public partial class Center : Node2D
         {
             RemovePoop(poop);
 
-            GD.Print("Coco limpo.");
-
             return;
         }
 
@@ -1668,8 +1736,6 @@ public partial class Center : Node2D
         if (food != null)
         {
             RemoveFood(food);
-
-            GD.Print("Carne removida com a vassoura.");
         }
     }
 
@@ -1745,8 +1811,6 @@ public partial class Center : Node2D
         world.Initialize(egg);
 
         _eggs.Add(world);
-
-        GD.Print($"Ovo posicionado em {world.GlobalPosition}.");
 
         return world;
     }
@@ -1857,6 +1921,15 @@ public partial class Center : Node2D
         _digimonWorlds.Remove(digimonWorld);
 
         digimonWorld.QueueFree();
+    }
+
+    // Igual a OnDigimonDeleted (o mesmo DigimonDeleted já dispara junto - ver
+    // GameManager.KillDigimon) só que aqui é sobre avisar o jogador do motivo, não sobre
+    // limpar o visual - a tela enfileira sozinha se mais de uma morte acontecer perto uma da
+    // outra.
+    private void OnDigimonDied(DigimonInstance digimon, string cause)
+    {
+        _digimonDeathScreen.Notify(cause);
     }
 
     // GameManager.SkipSleep avança o relógio sem tempo real de verdade passar - os timers

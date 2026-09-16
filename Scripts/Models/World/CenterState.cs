@@ -38,6 +38,15 @@ namespace ProjetoDC.Scripts.Models.World
             set => SetItemQuantity(ItemIds.Medicine, value);
         }
 
+        /// <summary>Mesmo esquema de Meat/Medicine acima, só que pro Energético (ver
+        /// GameManager.BuyStaminaSnack/Center.StartStaminaSnackPlacement) - começa em 0 (não
+        /// entra no colchão inicial de CenterState(), é um item caro, comprado depois).</summary>
+        public int StaminaSnacks
+        {
+            get => GetItemQuantity(ItemIds.StaminaSnack);
+            set => SetItemQuantity(ItemIds.StaminaSnack, value);
+        }
+
         // Ovos reservam capacidade igual ao Digimon Baby que vão gerar (EggData.CapacityCost) -
         // senão o jogador podia comprar ovos sem limite e lotar o Center de uma vez só quando
         // todos chocassem.
@@ -82,6 +91,15 @@ namespace ProjetoDC.Scripts.Models.World
         /// ainda não consumido por nenhum efeito real dentro do Center. Fica engatilhado pra
         /// quando esse sistema for implementado.</summary>
         public List<int> RecruitedNpcIds { get; set; } = new();
+
+        /// <summary>True depois que GameManager.ApplyAgeCapMigration já rodou pra esse save -
+        /// evita rodar de novo em todo boot (senão um Digimon que envelhecesse legitimamente
+        /// além do teto do estágio, depois do sistema de morte por velhice já existir, nunca
+        /// conseguiria morrer - a migração reviveria a idade dele toda vez que o jogo
+        /// abrisse). Falso por padrão de propósito: um save salvo antes desse campo existir
+        /// desserializa sem essa chave no JSON e cai aqui, disparando a migração exatamente
+        /// uma vez na primeira carga depois da atualização.</summary>
+        public bool AgeCapMigrationApplied { get; set; }
 
         /// <summary>DigimonData.Id de espécies que o jogador já teve no Center pelo menos uma
         /// vez (chocou, comprou, ou evoluiu pra essa forma) - usado pela EncyclopediaScreen

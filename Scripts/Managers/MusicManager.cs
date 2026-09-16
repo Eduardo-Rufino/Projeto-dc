@@ -25,6 +25,11 @@ namespace ProjetoDC.Scripts.Managers
         // é esse + o ganho do slider (ver ApplyVolume).
         private const float BaseMusicVolumeDb = -12f;
 
+        // A faixa de batalha vem masterizada bem mais alta que a do Center no arquivo de
+        // origem - mesmo com o mesmo VolumeDb nos dois, ela tocava perceptivelmente mais
+        // alto. Esse desconto extra (só nela) equilibra as duas.
+        private const float BattleMusicVolumeOffsetDb = -6f;
+
         // Abaixo disso o slider é tratado como mudo (evita depender de Mathf.LinearToDb(0),
         // que tende a -infinito).
         private const float MutedThreshold = 0.001f;
@@ -74,9 +79,15 @@ namespace ProjetoDC.Scripts.Managers
 
         private void ApplyVolume()
         {
-            _player.VolumeDb = _volumeLinear <= MutedThreshold
-                ? MutedVolumeDb
-                : BaseMusicVolumeDb + Mathf.LinearToDb(_volumeLinear);
+            if (_volumeLinear <= MutedThreshold)
+            {
+                _player.VolumeDb = MutedVolumeDb;
+                return;
+            }
+
+            float offset = _player.Stream == _battleMusic ? BattleMusicVolumeOffsetDb : 0f;
+
+            _player.VolumeDb = BaseMusicVolumeDb + offset + Mathf.LinearToDb(_volumeLinear);
         }
 
         private void LoadSettings()
@@ -133,6 +144,7 @@ namespace ProjetoDC.Scripts.Managers
                 return;
 
             _player.Stream = stream;
+            ApplyVolume();
             _player.Play();
         }
 

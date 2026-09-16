@@ -4,6 +4,7 @@ using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Systems.Center;
+using ProjetoDC.Scripts.Systems.Passives;
 using System;
 using System.Linq;
 
@@ -115,12 +116,6 @@ namespace ProjetoDC.Scripts.Systems.Eggs
                 {
                     egg.IncubationProgress++;
 
-                    GD.Print(
-                        $"Ovo inicial {egg.BaseDigimonId}: " +
-                        $"{egg.IncubationProgress}/{egg.IncubationTime} horas"
-                    );
-
-
                     if (egg.IncubationProgress >= egg.IncubationTime)
                     {
                         egg.IsReady = true;
@@ -152,12 +147,6 @@ namespace ProjetoDC.Scripts.Systems.Eggs
                 if (!egg.IsReady)
                 {
                     egg.IncubationProgress++;
-
-                    GD.Print(
-                        $"Ovo {egg.BaseDigimonId}: " +
-                        $"{egg.IncubationProgress}/{egg.IncubationTime} dias"
-                    );
-
 
                     if (egg.IncubationProgress >= egg.IncubationTime)
                     {
@@ -194,6 +183,11 @@ namespace ProjetoDC.Scripts.Systems.Eggs
 
 
             var digimon = new DigimonInstance(digimonData);
+
+            // Sorteia a passiva de nascimento (ver PASSIVAS_SPEC.md seção 1) - digimonData
+            // aqui é a espécie "de ficha" vinda do banco (tem o pool), não um BaseData
+            // clonado.
+            digimon.PassiveId = PassiveSystem.RollRandomPassive(digimonData);
 
 
             // O próprio ovo já reserva CapacityCost (ver EggData.CapacityCost) - sem
@@ -232,7 +226,6 @@ namespace ProjetoDC.Scripts.Systems.Eggs
 
 
             GD.Print($"{digimon.BaseData.Name} nasceu!");
-            GD.Print($"Nasceu {digimon.BaseData.Name} - Hash: {digimon.GetHashCode()}");
 
             EggHatched?.Invoke(egg, digimon);
 

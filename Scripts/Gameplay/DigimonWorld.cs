@@ -130,14 +130,6 @@ public partial class DigimonWorld : Node2D
 
         _poopTimer = PoopIntervalSeconds;
 
-        GD.Print(
-            $"VISUAL RECEBEU {_digimon.BaseData.Name} HASH: {_digimon.GetHashCode()}"
-        );
-
-        GD.Print(
-            $"ANTES DO EVENTO: {_digimon.BaseData.Name} - {_digimon.Activity}"
-        );
-
         _sprite.SetDigimon(digimon.BaseData.Code);
 
         _digimon.ActivityChanged += OnActivityChanged;
@@ -147,25 +139,11 @@ public partial class DigimonWorld : Node2D
         GameManager.Instance.ClockSystem.HourPassed -= OnDormitoryHourPassed;
         GameManager.Instance.ClockSystem.HourPassed += OnDormitoryHourPassed;
 
-        GD.Print(
-            $"ASSINANDO EVENTO: {_digimon.BaseData.Name}"
-        );
-
         CallDeferred(nameof(UpdateVisualState));
-
-        GD.Print(
-            $"{digimon.BaseData.Name} | Estado: {digimon.HealthState} | Atividade: {digimon.Activity}"
-        );
-
-        
     }
 
     private void OnActivityChanged(DigimonActivity activity)
     {
-        GD.Print(
-            $"EVENTO RECEBIDO: {_digimon.BaseData.Name} -> {activity}"
-        );
-
         UpdateVisualState();
 
         if (activity == DigimonActivity.Sleeping &&
@@ -184,10 +162,6 @@ public partial class DigimonWorld : Node2D
 
     private void UpdateVisualState()
     {
-        GD.Print(
-            $"Atualizando visual: {_digimon.BaseData.Name} | {_digimon.Activity}"
-        );
-
         SyncStatusIndicators();
 
         if (_digimon.HealthState == HealthState.Sick)
@@ -225,18 +199,10 @@ public partial class DigimonWorld : Node2D
     {
         _currentArea = area;
 
-        GD.Print(
-            $"{_digimon.BaseData.Name} entrou na área {_currentArea.GridPosition}"
-        );
-
         if (_currentArea.IsTrainingArea())
         {
             _trainingTimer = TrainingInterval;
             _idleTimer = 0;
-
-            GD.Print(
-                $"{_digimon.BaseData.Name} está em uma área de treinamento."
-            );
         }
     }
 
@@ -304,6 +270,14 @@ public partial class DigimonWorld : Node2D
             }
         }
 
+        if (_digimon.WantsStaminaSnack() && _targetFood == null && !_isTrainingAnimation)
+        {
+            if (CheckStaminaSnack())
+            {
+                _isWalking = true;
+            }
+        }
+
         if (!_digimon.CanMove())
         {
             _isWalking = false;
@@ -333,7 +307,7 @@ public partial class DigimonWorld : Node2D
 
                 if (_idleTimer <= 0)
                 {
-                    if (!CheckFood() && !TryStartAutoTraining())
+                    if (!CheckFood() && !CheckStaminaSnack() && !TryStartAutoTraining())
                     {
                         ChooseNewDestination();
                     }
@@ -402,11 +376,6 @@ public partial class DigimonWorld : Node2D
 
         _isWalking = true;
         _sprite.SetWalking(true);
-
-        GD.Print(
-            $"{_digimon.BaseData.Name} indo para {_targetPosition} " +
-            $"dentro da área {currentArea.GridPosition}"
-        );
     }
 
     /// <summary>
@@ -437,6 +406,9 @@ public partial class DigimonWorld : Node2D
             if (!GameManager.Instance.Save.Center.RecruitedNpcIds.Contains(npc.Id))
                 continue;
 
+            if (!_digimon.IsAutoTrainingAllowed(npc.RecruitmentTrainingAreaType.Value))
+                continue;
+
             CenterArea targetArea = _center.GetAreaOfType(npc.RecruitmentTrainingAreaType.Value);
 
             if (targetArea == null || _center.IsSpecificTrainingAreaOccupied(targetArea, this))
@@ -446,11 +418,6 @@ public partial class DigimonWorld : Node2D
             _targetPosition = targetArea.GetRandomPointInside();
             _isWalking = true;
             _sprite.SetWalking(true);
-
-            GD.Print(
-                $"{_digimon.BaseData.Name} foi treinar sozinho em {targetArea.GridPosition} " +
-                $"(bônus de {npc.Name})."
-            );
 
             return true;
         }
@@ -482,9 +449,36 @@ public partial class DigimonWorld : Node2D
         _targetPosition = _targetFood.GlobalPosition;
         _isWalking = true;
 
-        GD.Print(
-            $"{_digimon.BaseData.Name} encontrou comida em {food.GlobalPosition}"
+        return true;
+    }
+
+    /// <summary>Mesmo esquema de CheckFood acima, pro Energético (ver Food.Type/
+    /// DigimonInstance.WantsStaminaSnack) - reaproveita o mesmo _targetFood (é só um FoodWorld
+    /// qualquer, ProcessEating decide o que fazer com base no Type dele).</summary>
+    private bool CheckStaminaSnack()
+    {
+        if (_targetFood != null)
+            return true;
+
+        if (_center == null)
+            return false;
+
+        if (!_digimon.WantsStaminaSnack())
+            return false;
+
+        var food = _center.GetNearestFood(
+            GlobalPosition,
+            _currentArea,
+            FoodType.StaminaSnack
         );
+
+        if (food == null)
+            return false;
+
+        _targetFood = food;
+
+        _targetPosition = _targetFood.GlobalPosition;
+        _isWalking = true;
 
         return true;
     }
@@ -516,7 +510,17 @@ public partial class DigimonWorld : Node2D
             return;
         }
 
-        if (food.IsSpoiled)
+        bool isFull;
+
+        if (food.Type == FoodType.StaminaSnack)
+        {
+            // Energético não estraga e não dá bônus de Refeitório (não é comida de verdade) -
+            // só recupera Stamina direto, mordida por mordida, igual Feed faz com Fome.
+            _digimon.RecoverStamina(eaten);
+
+            isFull = _digimon.IsStaminaFull();
+        }
+        else if (food.IsSpoiled)
         {
             _digimon.Feed(eaten);
 
@@ -526,6 +530,8 @@ public partial class DigimonWorld : Node2D
             _digimon.TryBecomeSickFromSpoiledFood();
 
             GD.Print($"{_digimon.BaseData.Name} comeu comida estragada!");
+
+            isFull = _digimon.IsFull();
         }
         else
         {
@@ -534,20 +540,17 @@ public partial class DigimonWorld : Node2D
                 : eaten;
 
             _digimon.Feed(feedAmount);
-        }
 
-        GD.Print($"{_digimon.BaseData.Name} comeu {eaten}.");
-        GD.Print($"Nutrição restante: {food.RemainingNutrition}");
+            isFull = _digimon.IsFull();
+        }
 
         if (food.IsEmpty())
         {
-            GD.Print("A comida acabou.");
-
             if (GodotObject.IsInstanceValid(_targetFood))
                 _center.RemoveFood(_targetFood);
         }
 
-        if(!food.IsEmpty() && !_digimon.IsFull())
+        if(!food.IsEmpty() && !isFull)
         {
             _eatTimer = 1.0;
             return;
@@ -565,10 +568,6 @@ public partial class DigimonWorld : Node2D
         _poopTimer = PoopIntervalSeconds;
 
         _center.SpawnPoop(GlobalPosition);
-
-        GD.Print(
-            $"{_digimon.BaseData.Name} fez coco em {GlobalPosition}."
-        );
     }
 
     private void CheckDirtyArea()
@@ -577,15 +576,18 @@ public partial class DigimonWorld : Node2D
             return;
 
         if (!_center.AreaHasPoop(_currentArea))
+        {
+            // Ambiente limpou (ou o Digimon saiu dela) - zera a sequência, mesmo padrão de
+            // "some enquanto está bom" já usado por HoursSleptOutsideDormitory.
+            _digimon.DirtyEnvironmentStreak = 0;
             return;
+        }
 
         _digimon.ChangeHappiness(-DirtyAreaHappinessPenalty);
         _digimon.ChangeDiscipline(-DirtyAreaDisciplinePenalty);
+        _digimon.DirtyEnvironmentStreak++;
 
-        GD.Print(
-            $"{_digimon.BaseData.Name} está num ambiente sujo. " +
-            $"Felicidade: {_digimon.Happiness} | Disciplina: {_digimon.Discipline}"
-        );
+        GameManager.Instance.EvaluateDirtyEnvironmentDeathRisk(_digimon);
     }
 
     private void RegenerateHealth()
@@ -721,8 +723,6 @@ public partial class DigimonWorld : Node2D
 
         if (_targetFood != null)
         {
-            GD.Print($"{_digimon.BaseData.Name} chegou na comida.");
-
             StartEating();
 
             return;
@@ -751,8 +751,6 @@ public partial class DigimonWorld : Node2D
         }
 
         _idleTimer = GD.RandRange(2.0, 5.0);
-
-        GD.Print($"{_digimon.BaseData.Name} chegou ao destino.");
     }
 
     private void StartEating()
@@ -762,10 +760,6 @@ public partial class DigimonWorld : Node2D
         _eatTimer = 1.0;
 
         _digimon.StartEating();
-
-        GD.Print(
-            $"{_digimon.BaseData.Name} começou a comer."
-        );
     }
 
     private void OnClickAreaInputEvent(
@@ -821,10 +815,6 @@ public partial class DigimonWorld : Node2D
 
         _isWalking = false;
         _sprite.SetWalking(false);
-
-        GD.Print(
-            $"{_digimon.BaseData.Name} começou a ser arrastado."
-        );
     }
 
     private void StopDragging()
@@ -873,18 +863,6 @@ public partial class DigimonWorld : Node2D
         }
 
         _currentArea = targetArea;
-
-        GD.Print(
-            $"{_digimon.BaseData.Name} parou de ser arrastado em {GlobalPosition}"
-        );
-
-        GD.Print(
-            $"{_digimon.BaseData.Name} agora está na área {_currentArea.GridPosition}"
-        );
-
-        GD.Print(
-            $"{_digimon.BaseData.Name} está em área de treino? {IsInTrainingArea()}"
-        );
     }
 
     public override void _Input(InputEvent @event)
@@ -912,20 +890,6 @@ public partial class DigimonWorld : Node2D
 
         if (_digimon.HealthState == HealthState.Sick)
             return;
-
-        GD.Print(
-            $"[TREINO] {_digimon.BaseData.Name} | " +
-            $"Stamina: {_digimon.Stamina}/{_digimon.MaxStamina} | " +
-            $"Health: {_digimon.HealthState} | " +
-            $"Activity: {_digimon.Activity}"
-        );
-
-        GD.Print(
-            $"[TREINO] {_digimon.BaseData.Name} | " +
-            $"Área: {_currentArea?.GridPosition} | " +
-            $"É treino: {_currentArea?.IsTrainingArea()} | " +
-            $"Stamina: {_digimon.Stamina}/{_digimon.MaxStamina}"
-        );
 
         if (_digimon.Stamina < 10)
         {
@@ -970,10 +934,6 @@ public partial class DigimonWorld : Node2D
             gainMultiplier = 1f;
         }
 
-        GD.Print(
-            $"{_digimon.BaseData.Name} iniciou treinamento de {type}."
-        );
-
         var result = trainingSystem.Execute(
             _digimon,
             type,
@@ -982,11 +942,6 @@ public partial class DigimonWorld : Node2D
 
         if (!result.Success)
         {
-            GD.Print(
-                $"{_digimon.BaseData.Name} não conseguiu treinar. " +
-                $"Motivo: {result.Reason}"
-            );
-
             _digimon.ChangeDiscipline(-FailedTrainingDisciplinePenalty);
 
             _trainingTimer = TrainingInterval;
@@ -1025,10 +980,6 @@ public partial class DigimonWorld : Node2D
         _digimon.ApplyTrainingResult(result);
 
         ShowTrainingGainIndicators(result);
-
-        GD.Print(
-            $"{_digimon.BaseData.Name} terminou o treinamento de {type}."
-        );
 
         // ==========================================
         // FIM DO TREINAMENTO

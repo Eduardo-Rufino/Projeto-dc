@@ -31,11 +31,8 @@ namespace ProjetoDC.Scripts.Systems.Evolution
             int capacityUsed,
             int capacityLimit)
         {
-            GD.Print($"Tentando evoluir {digimon.BaseData.Name}");
             var evolutions = DatabaseManager.Instance
                 .GetEvolutionsFrom(digimon.BaseData.Id);
-
-            GD.Print($"Evoluções encontradas: {evolutions?.Count ?? 0}");
 
             if (evolutions == null || evolutions.Count == 0)
             {
@@ -46,16 +43,12 @@ namespace ProjetoDC.Scripts.Systems.Evolution
 
             foreach (var evo in evolutions)
             {
-                GD.Print($"Testando evolução para {evo.ToDigimonId}");
+                if (digimon.IsEvolutionBlocked(evo.ToDigimonId))
+                    continue;
 
                 if (MeetsRequirements(digimon, evo))
                 {
-                    GD.Print("Requisitos atendidos.");
                     validEvolutions.Add(evo);
-                }
-                else
-                {
-                    GD.Print("Requisitos NÃO atendidos.");
                 }
             }
 
@@ -79,19 +72,12 @@ namespace ProjetoDC.Scripts.Systems.Evolution
 
             if (projectedUsed > capacityLimit)
             {
-                GD.Print(
-                    $"{digimon.BaseData.Name} pronto pra evoluir pra {newForm.Name}, " +
-                    $"mas falta capacidade ({projectedUsed}/{capacityLimit})."
-                );
-
                 return EvolutionAttemptResult.BlockedByCapacity(
                     newForm,
                     requiredCapacity,
                     projectedUsed - capacityLimit
                 );
             }
-
-            GD.Print($"Evoluindo {digimon.BaseData.Name} -> {newForm.Name}");
 
             digimon.Evolve(newForm, bestEvolution.StatMultiplier);
 
@@ -102,44 +88,26 @@ namespace ProjetoDC.Scripts.Systems.Evolution
         {
             var req = evolution.RequiredStats;
 
-            GD.Print(evolution.RequiredStats == null);
-
             if (digimon.Level < evolution.RequiredLevel)
-            {
-                GD.Print($"Level insuficiente: {digimon.Level}/{evolution.RequiredLevel}");
                 return false;
-            }
 
             if (digimon.AgeInDays < evolution.RequiredAgeInDays)
-            {
-                GD.Print($"Idade insuficiente: {digimon.AgeInDays}/{evolution.RequiredAgeInDays}");
                 return false;
-            }
 
             if (req == null)
             {
                 GD.PrintErr($"Evolução sem requerimentos: {evolution.ToDigimonId}");
                 return false;
             }
-                
 
             if (digimon.CurrentStats.HealthPoints < req.HealthPoints)
-            {
-                GD.Print($"HP insuficiente: {digimon.MaxHealthPoints}/{evolution.RequiredStats.HealthPoints}");
                 return false;
-            }
 
             if (digimon.CurrentStats.PhysicalDamage < req.PhysicalDamage)
-            {
-                GD.Print($"Ataque fisico insuficiente: {digimon.CurrentStats.PhysicalDamage}/{evolution.RequiredStats.PhysicalDamage}");
                 return false;
-            }
 
             if (digimon.CurrentStats.PhysicalDefense < req.PhysicalDefense)
-            {
-                GD.Print($"Defesa fisica insuficiente: {digimon.CurrentStats.PhysicalDefense}/{evolution.RequiredStats.PhysicalDefense}");
                 return false;
-            }
 
             if (digimon.CurrentStats.SpecialDamage < req.SpecialDamage)
                 return false;
@@ -148,10 +116,25 @@ namespace ProjetoDC.Scripts.Systems.Evolution
                 return false;
 
             if (digimon.CurrentStats.Speed < req.Speed)
-            {
-                GD.Print($"Velocidade insuficiente: {digimon.CurrentStats.Speed}/{evolution.RequiredStats.Speed}");
                 return false;
-            }
+
+            if (digimon.BattlesFought < evolution.RequiredBattles)
+                return false;
+
+            if (evolution.RequiredWinRate > 0 && digimon.WinRate < evolution.RequiredWinRate)
+                return false;
+
+            if (digimon.Discipline < evolution.MinDiscipline)
+                return false;
+
+            if (digimon.Discipline > evolution.MaxDiscipline)
+                return false;
+
+            if (digimon.Happiness < evolution.MinHappiness)
+                return false;
+
+            if (digimon.Happiness > evolution.MaxHappiness)
+                return false;
 
             return true;
         }
@@ -160,18 +143,30 @@ namespace ProjetoDC.Scripts.Systems.Evolution
         {
             var stats = evolution.RequiredStats;
 
-            if (stats == null)
-                return evolution.RequiredLevel + evolution.RequiredAgeInDays;
+            int score = evolution.RequiredLevel + evolution.RequiredAgeInDays;
 
-            return 
-                evolution.RequiredLevel +
-                evolution.RequiredAgeInDays +
-                stats.HealthPoints +
-                stats.PhysicalDamage +
-                stats.PhysicalDefense +
-                stats.SpecialDamage +
-                stats.SpecialDefense +
-                stats.Speed;
+            if (stats != null)
+            {
+                score +=
+                    stats.HealthPoints +
+                    stats.PhysicalDamage +
+                    stats.PhysicalDefense +
+                    stats.SpecialDamage +
+                    stats.SpecialDefense +
+                    stats.Speed;
+            }
+
+            // Requisitos de batalhas/win-rate/disciplina/felicidade também contam pro placar -
+            // entre duas evoluções simultaneamente válidas (ex.: uma delas era bloqueada até
+            // agora), a mais exigente continua vencendo o desempate em SelectBestEvolution.
+            score += evolution.RequiredBattles;
+            score += (int)(evolution.RequiredWinRate * 100);
+            score += evolution.MinDiscipline;
+            score += 100 - evolution.MaxDiscipline;
+            score += evolution.MinHappiness;
+            score += 100 - evolution.MaxHappiness;
+
+            return score;
         }
 
         public static EvolutionData SelectBestEvolution(List<EvolutionData> evolutions, DigimonInstance digimon)
@@ -181,7 +176,6 @@ namespace ProjetoDC.Scripts.Systems.Evolution
             foreach(var evo in evolutions)
             {
                 int score = CalculateEvolutionScore(evo);
-                GD.Print($"Evo {evo.ToDigimonId} score = {score}");
                 scored.Add((evo, score));
             }
 
