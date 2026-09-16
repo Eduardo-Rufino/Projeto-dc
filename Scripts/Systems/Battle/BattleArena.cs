@@ -100,6 +100,46 @@ namespace ProjetoDC.Scripts.Systems.Battle
             {
                 _combatAreas[i].Position = HexPositions[i];
             }
+
+            CreateArenaBackground();
+        }
+
+        // A arte (Assets/Sprites/CenterAreas/arena_batalha.png) já retrata os 3 hexágonos
+        // de combate lado a lado como uma peça só - por isso é aplicada uma única vez,
+        // escalada pra cobrir exatamente a união dos 3 hexágonos reais (calculada a partir
+        // dos vértices de cada um, não um valor fixo - continua alinhada mesmo se
+        // HexagonRadius ou HexPositions mudarem), em vez de repetida em cada hexágono.
+        private void CreateArenaBackground()
+        {
+            var texture = GD.Load<Texture2D>("res://Assets/Sprites/CenterAreas/arena_batalha.png");
+
+            if (texture == null || _combatAreas.Count == 0)
+                return;
+
+            Rect2 bounds = _combatAreas[0].GetGlobalHexagonBounds();
+
+            foreach (var area in _combatAreas.Skip(1))
+            {
+                bounds = bounds.Merge(area.GetGlobalHexagonBounds());
+            }
+
+            var background = new Sprite2D
+            {
+                Name = "ArenaBackground",
+                Texture = texture,
+                // Mesmo z_index que a ilustração de hexágono do Center (CenterArea.
+                // CreateAreaIllustration): acima do preenchimento branco do Polygon2D de
+                // cada hexágono (Visual, z_index -10), abaixo dos Digimons (z_index 0).
+                ZIndex = -5,
+                TextureFilter = TextureFilterEnum.Nearest,
+                Position = bounds.Position + bounds.Size / 2f,
+                Scale = new Vector2(
+                    bounds.Size.X / texture.GetWidth(),
+                    bounds.Size.Y / texture.GetHeight()
+                ),
+            };
+
+            GetNode<Node2D>("CombatAreas").AddChild(background);
         }
 
         /// <summary>Centro geométrico da arena (média das 3 áreas hexagonais) - por construção

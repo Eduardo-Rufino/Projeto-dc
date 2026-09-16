@@ -15,9 +15,6 @@ namespace ProjetoDC.Scripts.Models.World
         private Polygon2D _polygon;
         private readonly RandomNumberGenerator _rng = new();
 
-        [Export]
-        public float DebugBorderWidth { get; set; } = 3f;
-
         // A arena de batalha reaproveita CenterArea pros hexágonos de combate, mas ali o
         // tipo é sempre irrelevante pro jogador (não é o Center de verdade) - desliga a
         // letra indicadora nesse caso (ver BattleArena.tscn).
@@ -32,26 +29,11 @@ namespace ProjetoDC.Scripts.Models.World
                 "Visual/Polygon2D"
             );
 
-            CreateDebugBorder();
-
-            if (ShowTypeLabel)
+            // Ilustração de verdade (ver GetAreaIllustrationPath) substitui o ícone
+            // desenhado por código pra quem já tem arte - qualquer AreaType futuro sem
+            // ilustração ainda cai no ícone antigo (CreateAreaIcon) como fallback.
+            if (ShowTypeLabel && !CreateAreaIllustration())
                 CreateAreaIcon();
-
-            GD.Print(
-                $"CenterArea criada: {Name} | Tipo {AreaType} | Grid: {GridPosition} | Position: {Position}"
-            );
-
-            var neighbors = CenterGrid.GetNeighbors(GridPosition);
-
-            foreach (var neighbor in neighbors)
-            {
-                GD.Print($"Vizinhos possíveis: {neighbor}");
-            }
-
-            if (GridPosition == Vector2I.Zero)
-            {
-                TestRandomPoints();
-            }
         }
 
         public Vector2 GetRandomPointInside()
@@ -109,6 +91,17 @@ namespace ProjetoDC.Scripts.Models.World
             );
         }
 
+        /// <summary>Retangulo (em espaço global) que envolve exatamente o hexágono - usado
+        /// pela arena de batalha (ver BattleArena.CreateArenaBackground) pra alinhar uma
+        /// ilustração única que cobre os 3 hexágonos de combate de uma vez, em vez de uma
+        /// por hexágono.</summary>
+        public Rect2 GetGlobalHexagonBounds()
+        {
+            Rect2 localBounds = GetPolygonBounds(_polygon.Polygon);
+
+            return new Rect2(GlobalPosition + localBounds.Position, localBounds.Size);
+        }
+
         private Rect2 GetPolygonBounds(Vector2[] polygon)
         {
             Vector2 min = polygon[0];
@@ -127,33 +120,6 @@ namespace ProjetoDC.Scripts.Models.World
                 min,
                 max - min
             );
-        }
-
-        public void TestRandomPoints()
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                Vector2 point = GetRandomPointInside();
-
-                GD.Print(
-                    $"Ponto aleatório dentro da área {GridPosition}: {point}"
-                );
-            }
-        }
-
-        private void CreateDebugBorder()
-        {
-            var border = new Line2D();
-
-            border.Name = "DebugBorder";
-            border.Width = DebugBorderWidth;
-            border.DefaultColor = GetAreaColor(AreaType);
-            border.Closed = true;
-            border.ZIndex = 10;
-
-            border.Points = _polygon.Polygon;
-
-            AddChild(border);
         }
 
         /// <summary>Cor associada a cada tipo de área - usada na borda/ícone do hexágono
@@ -184,10 +150,70 @@ namespace ProjetoDC.Scripts.Models.World
             };
         }
 
+        private const string IllustrationBasePath = "res://Assets/Sprites/CenterAreas/";
+
+        /// <summary>Ilustração de verdade de cada tipo de área (ver Assets/Sprites/CenterAreas) -
+        /// hexágonos pré-recortados no mesmo formato do hexágono do jogo (achatado nos lados
+        /// esquerdo/direito, ver CenterAreaVisual.CreateHexagon), então basta escalar pro
+        /// tamanho certo, sem crop nem UV manual.</summary>
+        public static string GetAreaIllustrationPath(CenterAreaType areaType) => areaType switch
+        {
+            CenterAreaType.Neutral => IllustrationBasePath + "hex_free.png",
+            CenterAreaType.Training => IllustrationBasePath + "hex_treinamento.png",
+            CenterAreaType.Dormitory => IllustrationBasePath + "hex_dormitorio.png",
+            CenterAreaType.Restaurant => IllustrationBasePath + "hex_refeitorio.png",
+            CenterAreaType.Hospital => IllustrationBasePath + "hex_hospital.png",
+            CenterAreaType.TrainingHealthPoints => IllustrationBasePath + "hex_hp.png",
+            CenterAreaType.TrainingAttack => IllustrationBasePath + "hex_ataque_fisico.png",
+            CenterAreaType.TrainingDefense => IllustrationBasePath + "hex_defesa_fisica.png",
+            CenterAreaType.TrainingSpecialAttack => IllustrationBasePath + "hex_ataque_especial.png",
+            CenterAreaType.TrainingSpecialDefense => IllustrationBasePath + "hex_defesa_especial.png",
+            CenterAreaType.TrainingSpeed => IllustrationBasePath + "hex_velocidade.png",
+            _ => null,
+        };
+
+        /// <summary>Cria o Sprite2D da ilustração de verdade, escalado pra cobrir exatamente o
+        /// hexágono (calculado a partir dos vértices reais do Polygon2D, não um valor fixo -
+        /// funciona mesmo se HexagonRadius mudar). Retorna false (sem criar nada) se esse
+        /// AreaType ainda não tem ilustração, pra quem chamou saber que precisa cair no ícone
+        /// antigo.</summary>
+        private bool CreateAreaIllustration()
+        {
+            string path = GetAreaIllustrationPath(AreaType);
+
+            if (string.IsNullOrEmpty(path) || !ResourceLoader.Exists(path))
+                return false;
+
+            var texture = GD.Load<Texture2D>(path);
+
+            if (texture == null || texture.GetWidth() <= 0 || texture.GetHeight() <= 0)
+                return false;
+
+            Rect2 bounds = GetPolygonBounds(_polygon.Polygon);
+
+            var sprite = new Sprite2D
+            {
+                Name = "AreaIllustration",
+                Texture = texture,
+                // Mesmo z_index do ícone antigo (acima do preenchimento branco do Polygon2D
+                // em Visual, z_index -10; abaixo dos Digimons, z_index 0 por padrão).
+                ZIndex = -5,
+                TextureFilter = TextureFilterEnum.Nearest,
+                Scale = new Vector2(
+                    bounds.Size.X / texture.GetWidth(),
+                    bounds.Size.Y / texture.GetHeight()
+                ),
+            };
+
+            AddChild(sprite);
+
+            return true;
+        }
+
         /// <summary>
         /// Indicador visual simples e desenhado por código (sem asset externo) do tipo da
-        /// área, no meio do hexágono - placeholder/teste (ver AreaTypeIcon) até ter arte de
-        /// verdade.
+        /// área, no meio do hexágono - fallback pra qualquer AreaType sem ilustração de
+        /// verdade ainda (ver CreateAreaIllustration/GetAreaIllustrationPath).
         /// </summary>
         private void CreateAreaIcon()
         {
