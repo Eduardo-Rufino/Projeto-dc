@@ -1,11 +1,6 @@
 [gd_scene format=3 uid="uid://pr5s0dygmvkt"]
 
 [ext_resource type="Script" uid="uid://b2bbno1kjaoy1" path="res://Scripts/UI/ShopScreen.cs" id="1_vrsw4"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/DigiTamas/Digitama.png" id="2_digitama"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_egg"]
-atlas = ExtResource("2_digitama")
-region = Rect2(0, 0, 16, 16)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dim"]
 bg_color = Color(0.03137255, 0.03529412, 0.043137256, 0.6)
@@ -122,6 +117,7 @@ layout_mode = 2
 [node name="ItemsScroll" type="ScrollContainer" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
 [node name="ItemsContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll"]
 layout_mode = 2
@@ -249,13 +245,11 @@ theme_override_constants/margin_bottom = 8
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="IconTexture" type="TextureRect" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
-custom_minimum_size = Vector2(26, 26)
+[node name="IconLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 4
-texture_filter = 1
-texture = SubResource("AtlasTexture_egg")
-stretch_mode = 5
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "🥚"
 
 [node name="InfoContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
 layout_mode = 2
@@ -271,7 +265,7 @@ text = "Digiovo"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
 theme_override_font_sizes/font_size = 10
-text = "Digimon Baby aleatório"
+text = "Escolha o tipo ao comprar"
 
 [node name="ItemSpacer" type="Control" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
 layout_mode = 2
@@ -281,7 +275,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 12
-text = "500 Bits"
+text = "A partir de 500 Bits"
 
 [node name="BuyEggButton" type="Button" parent="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/EggRow/Pad/HBoxContainer"]
 custom_minimum_size = Vector2(84, 0)
@@ -837,6 +831,155 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 text = "Voltar"
+
+[node name="EggTypePopup" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="Panel" parent="EggTypePopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dim")
+
+[node name="Window" type="Panel" parent="EggTypePopup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -280.0
+offset_right = 230.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_window")
+
+[node name="MarginContainer" type="MarginContainer" parent="EggTypePopup/Window"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EggTypePopup/Window/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="EggTypePopup/Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "🥚 Escolher Digiovo"
+
+[node name="HintLabel" type="Label" parent="EggTypePopup/Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 2
+text = "Um tipo específico garante o EggType, mas custa 3x mais - o Digimon Baby exato dentro do tipo continua sendo sorteado."
+
+[node name="HSeparator" type="HSeparator" parent="EggTypePopup/Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RandomRow" type="PanelContainer" parent="EggTypePopup/Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_item")
+
+[node name="Pad" type="MarginContainer" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/RandomRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/RandomRow/Pad"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/RandomRow/Pad/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "🎲"
+
+[node name="InfoContainer" type="VBoxContainer" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/RandomRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 0
+
+[node name="RandomItemLabel" type="Label" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/RandomRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Aleatório"
+
+[node name="RandomSubLabel" type="Label" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/RandomRow/Pad/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 10
+text = "Qualquer tipo de Digiovo"
+
+[node name="ItemSpacer" type="Control" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/RandomRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RandomPriceLabel" type="Label" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/RandomRow/Pad/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
+text = "500 Bits"
+
+[node name="BuyRandomEggButton" type="Button" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/RandomRow/Pad/HBoxContainer"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Comprar"
+
+[node name="HSeparator2" type="HSeparator" parent="EggTypePopup/Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TypesScroll" type="ScrollContainer" parent="EggTypePopup/Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="TypesContainer" type="VBoxContainer" parent="EggTypePopup/Window/MarginContainer/VBoxContainer/TypesScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="EggTypeMessageLabel" type="Label" parent="EggTypePopup/Window/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.4, 0.35, 1)
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+autowrap_mode = 2
+text = ""
+
+[node name="HSeparator3" type="HSeparator" parent="EggTypePopup/Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CancelEggTypeButton" type="Button" parent="EggTypePopup/Window/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Cancelar"
 
 [connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MeatRow/Pad/HBoxContainer/BuyMeatButton" to="." method="OnBuyMeatPressed"]
 [connection signal="pressed" from="Window/MarginContainer/VBoxContainer/ItemsScroll/ItemsContainer/MedicineRow/Pad/HBoxContainer/BuyMedicineButton" to="." method="OnBuyMedicinePressed"]

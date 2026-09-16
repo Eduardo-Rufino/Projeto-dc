@@ -1,0 +1,6 @@
+{
+  "Id": 4,
+  "Name": "Energético",
+  "Description": "Coloque no Center pra os Digimons recuperarem Stamina sozinhos. Sozinho, um Digimon recupera a Stamina toda - se mais de um comer junto, a Stamina é dividida entre eles.",
+  "IconPath": "res://Assets/Sprites/Food/energetico.png"
+}

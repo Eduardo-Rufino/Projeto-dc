@@ -1,4 +1,5 @@
 using Godot;
+using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 
@@ -7,12 +8,14 @@ namespace ProjetoDC.Scripts.World;
 public partial class FoodWorld : Node2D
 {
     // Fora do Refeitório, estraga rápido; dentro, demora bem mais (~1 dia de jogo) - ver
-    // Center.PlaceFood, que decide qual das duas vale pra essa comida na hora de colocar.
+    // Center.PlaceFood, que decide qual das duas vale pra essa comida na hora de colocar. Só
+    // vale pra Carne (ver OnHourPassed) - Energético não estraga.
     private const int SpoilHoursOutsideRestaurant = 6;
     private const int SpoilHoursInRestaurant = 24;
 
     private const string FreshTexturePath = "res://Assets/Sprites/Food/beef on bone raw.png";
     private const string SpoiledTexturePath = "res://Assets/Sprites/Food/beef_on_bone_spoiled_heavy.png";
+    private const string StaminaSnackTexturePath = "res://Assets/Sprites/Food/energetico.png";
 
     private Food _food;
     private Sprite2D _sprite;
@@ -57,10 +60,14 @@ public partial class FoodWorld : Node2D
 
     /// <summary>A cada hora de jogo, envelhece a comida até ela estragar (o limite depende
     /// de ter sido colocada no Refeitório ou não - ver as consts no topo) e troca o sprite
-    /// pro de carne estragada. Comida já vazia/estragada não precisa mais contar.</summary>
+    /// pro de carne estragada. Comida já vazia/estragada não precisa mais contar. Energético
+    /// não estraga (é suplemento, não comida perecível) - sai fora sem envelhecer.</summary>
     private void OnHourPassed()
     {
         if (_food == null || _food.IsEmpty() || _food.IsSpoiled)
+            return;
+
+        if (_food.Type != FoodType.Meat)
             return;
 
         _food.HoursSincePlaced++;
@@ -84,7 +91,11 @@ public partial class FoodWorld : Node2D
         if (_sprite == null || _food == null)
             return;
 
-        string path = _food.IsSpoiled ? SpoiledTexturePath : FreshTexturePath;
+        string path = _food.Type switch
+        {
+            FoodType.StaminaSnack => StaminaSnackTexturePath,
+            _ => _food.IsSpoiled ? SpoiledTexturePath : FreshTexturePath,
+        };
 
         if (ResourceLoader.Exists(path))
             _sprite.Texture = GD.Load<Texture2D>(path);

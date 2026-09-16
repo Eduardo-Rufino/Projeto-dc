@@ -1,10 +1,16 @@
 using Godot;
+using ProjetoDC.Enums;
 
 namespace ProjetoDC.Scripts.Gameplay;
 
 public class Food
 {
     public string Name { get; set; }
+
+    /// <summary>O que essa comida restaura em quem come (Fome ou Stamina) - ver
+    /// DigimonWorld.ProcessEating. Meat por padrão (0) pra saves antigos, sem esse campo no
+    /// JSON, desserializarem como Carne normalmente.</summary>
+    public FoodType Type { get; set; } = FoodType.Meat;
 
     public int RemainingNutrition { get; set; }
 
@@ -29,9 +35,10 @@ public class Food
 
     public Food() { }
 
-    public Food(string name, int nutrition)
+    public Food(string name, int nutrition, FoodType type = FoodType.Meat)
     {
         Name = name;
+        Type = type;
 
         MaxNutrition = nutrition;
         RemainingNutrition = nutrition;
@@ -48,8 +55,6 @@ public class Food
         int consumed = Mathf.Min(amount, RemainingNutrition);
 
         RemainingNutrition -= consumed;
-
-        GD.Print($"{Name}: consumiu {consumed}. Restante: {RemainingNutrition}");
 
         return consumed;
     }

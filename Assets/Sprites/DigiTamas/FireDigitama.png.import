@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c8dupr0uoet61"
-path="res://.godot/imported/Digitama.png-ad1577dba9550d88710be73a123a1663.ctex"
+uid="uid://khynwbpi8j6h"
+path="res://.godot/imported/FireDigitama.png-2914a65d87af2bda1337e85935f44767.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/DigiTamas/Digitama.png"
-dest_files=["res://.godot/imported/Digitama.png-ad1577dba9550d88710be73a123a1663.ctex"]
+source_file="res://Assets/Sprites/DigiTamas/FireDigitama.png"
+dest_files=["res://.godot/imported/FireDigitama.png-2914a65d87af2bda1337e85935f44767.ctex"]
 
 [params]
 
