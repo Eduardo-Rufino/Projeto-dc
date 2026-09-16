@@ -13,7 +13,20 @@ namespace ProjetoDC.Scripts.Models.World
         public Vector2I GridPosition { get; set; } = Vector2I.Zero;
 
         private Polygon2D _polygon;
+        private Vector2[] _walkablePolygon;
         private readonly RandomNumberGenerator _rng = new();
+
+        // Toda ilustração de área (ver GetAreaIllustrationPath) desenha paredes só nas 3
+        // arestas de cima do hexágono (mesmo template em todas: hex_free, hex_treinamento,
+        // hex_dormitorio etc.) - a parede de fundo (aresta horizontal do topo) e as duas
+        // paredes laterais (arestas diagonais até as pontas esquerda/direita, mais finas por
+        // causa da perspectiva em 3/4 do desenho). As 3 arestas de baixo não têm parede - o
+        // chão vai até a borda do hexágono ali. Valores medidos direto nos pixels dos sprites
+        // (ver Assets/Sprites/CenterAreas). Usados só pra restringir onde um Digimon pode
+        // andar/ser solto (_walkablePolygon), nunca pro tamanho da ilustração em si (que
+        // continua cobrindo o hexágono inteiro).
+        private const float WallDepthTop = 75f;
+        private const float WallDepthSide = 38f;
 
         // A arena de batalha reaproveita CenterArea pros hexágonos de combate, mas ali o
         // tipo é sempre irrelevante pro jogador (não é o Center de verdade) - desliga a
@@ -29,6 +42,8 @@ namespace ProjetoDC.Scripts.Models.World
                 "Visual/Polygon2D"
             );
 
+            _walkablePolygon = ComputeWalkablePolygon(_polygon.Polygon);
+
             // Ilustração de verdade (ver GetAreaIllustrationPath) substitui o ícone
             // desenhado por código pra quem já tem arte - qualquer AreaType futuro sem
             // ilustração ainda cai no ícone antigo (CreateAreaIcon) como fallback.
@@ -38,9 +53,9 @@ namespace ProjetoDC.Scripts.Models.World
 
         public Vector2 GetRandomPointInside()
         {
-            var polygon = _polygon.Polygon;
+            var polygon = _walkablePolygon;
 
-            if (polygon.Length == 0)
+            if (polygon == null || polygon.Length == 0)
             {
                 GD.PrintErr(
                     $"CenterArea {Name} não possui Polygon2D configurado."
@@ -78,17 +93,104 @@ namespace ProjetoDC.Scripts.Models.World
             return GlobalPosition;
         }
 
+        /// <summary>Verdadeiro se o ponto está dentro da área andável (hexágono sem as
+        /// paredes de cima - ver WallDepthTop/WallDepthSide/ComputeWalkablePolygon), não do
+        /// hexágono inteiro.</summary>
         public bool IsPointInside(Vector2 globalPosition)
         {
-            if (_polygon == null)
+            if (_walkablePolygon == null || _walkablePolygon.Length == 0)
                 return false;
 
             Vector2 localPoint = ToLocal(globalPosition);
 
             return Geometry2D.IsPointInPolygon(
                 localPoint,
-                _polygon.Polygon
+                _walkablePolygon
             );
+        }
+
+        /// <summary>Encolhe as 3 arestas de cima do hexágono (parede de fundo + paredes
+        /// laterais - ver WallDepthTop/WallDepthSide) pra dentro, preservando as 3 de baixo
+        /// como estão - usado por GetRandomPointInside/IsPointInside pra impedir Digimons de
+        /// andar ou serem soltos em cima de qualquer parte da parede desenhada na ilustração
+        /// da área. GetPolygonBounds/GetGlobalHexagonBounds continuam usando o hexágono
+        /// inteiro (_polygon.Polygon), só o andável é menor. Assume a ordem de vértices de
+        /// CenterAreaVisual.CreateHexagon (ângulo 60*i a partir de i=0 na ponta direita): v0
+        /// direita, v1 inferior-direita, v2 inferior-esquerda, v3 esquerda, v4
+        /// superior-esquerda, v5 superior-direita - se essa geração mudar, os índices aqui
+        /// precisam acompanhar.</summary>
+        private Vector2[] ComputeWalkablePolygon(Vector2[] polygon)
+        {
+            if (polygon.Length != 6)
+                return polygon;
+
+            float[] edgeDepths = { 0f, 0f, 0f, WallDepthSide, WallDepthTop, WallDepthSide };
+
+            return InsetPolygonEdges(polygon, edgeDepths);
+        }
+
+        /// <summary>Encolhe cada aresta i (de polygon[i] a polygon[i+1]) pra dentro pela
+        /// distância edgeDepths[i], recalculando cada vértice como a interseção das duas
+        /// arestas (deslocada ou não) que se encontram nele - arestas com profundidade 0
+        /// ficam no lugar. "Pra dentro" é decidido comparando com o centroide, então funciona
+        /// independente do sentido de enrolamento do polígono.</summary>
+        private static Vector2[] InsetPolygonEdges(Vector2[] polygon, float[] edgeDepths)
+        {
+            int count = polygon.Length;
+
+            Vector2 centroid = Vector2.Zero;
+
+            foreach (Vector2 point in polygon)
+                centroid += point;
+
+            centroid /= count;
+
+            var lines = new (Vector2 Point, Vector2 Direction)[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                Vector2 a = polygon[i];
+                Vector2 b = polygon[(i + 1) % count];
+
+                Vector2 direction = (b - a).Normalized();
+                Vector2 normal = new Vector2(-direction.Y, direction.X);
+
+                if ((centroid - (a + b) / 2f).Dot(normal) < 0f)
+                    normal = -normal;
+
+                lines[i] = (a + normal * edgeDepths[i], direction);
+            }
+
+            var result = new Vector2[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                int previous = (i - 1 + count) % count;
+
+                result[i] = IntersectLines(lines[previous], lines[i]);
+            }
+
+            return result;
+        }
+
+        /// <summary>Ponto de interseção entre duas retas (ponto + direção) - usado por
+        /// InsetPolygonEdges pra achar o vértice novo onde duas arestas (deslocadas ou não)
+        /// se encontram. Retas paralelas (não deveria acontecer entre arestas adjacentes de
+        /// um hexágono convexo) caem de volta no ponto de "a".</summary>
+        private static Vector2 IntersectLines(
+            (Vector2 Point, Vector2 Direction) a,
+            (Vector2 Point, Vector2 Direction) b)
+        {
+            float denominator = a.Direction.X * b.Direction.Y - a.Direction.Y * b.Direction.X;
+
+            if (Mathf.Abs(denominator) < 0.0001f)
+                return a.Point;
+
+            Vector2 diff = b.Point - a.Point;
+
+            float t = (diff.X * b.Direction.Y - diff.Y * b.Direction.X) / denominator;
+
+            return a.Point + a.Direction * t;
         }
 
         /// <summary>Retangulo (em espaço global) que envolve exatamente o hexágono - usado
