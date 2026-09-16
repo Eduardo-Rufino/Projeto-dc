@@ -1,0 +1,14 @@
+{
+  "Id": 7,
+  "Name": "Wizardmon",
+  "Code": "wizardmon",
+  "DialogueLines": [
+    "Sinto o destino de vários Digimon passando por perto de você. Alguns caminhos que eles seguirão... nem você escolheu.",
+    "Eu vejo as linhas de evolução antes delas acontecerem. Prove que sabe proteger quem já é seu, e eu te ensino a fechar os caminhos que você não quer.",
+    "Afaste alguns selvagens daqui e considere isso feito."
+  ],
+  "QuestId": 6,
+  "IsRecruitable": true,
+  "RecruitmentPerkDescription": "Permite bloquear, Digimon por Digimon, quais evoluções específicas você não quer que aconteçam - o Digimon simplesmente não evolui por aquele caminho até você desbloqueá-lo de novo (ver Guia de Evolução).",
+  "RecruitmentTrainingAreaType": null
+}

@@ -22,7 +22,8 @@
     { "NpcId": 3, "X": 1970, "Y": 1920, "Hidden": true },
     { "NpcId": 4, "X": 3080, "Y": 1150, "Hidden": true },
     { "NpcId": 5, "X": 1150, "Y": 1800, "Hidden": true },
-    { "NpcId": 6, "X": 1200, "Y": 650, "Hidden": true }
+    { "NpcId": 6, "X": 1200, "Y": 650, "Hidden": true },
+    { "NpcId": 7, "X": 2400, "Y": 1850, "Hidden": true }
   ],
   "ItemPickups": [
     { "UniqueId": 1, "ItemId": 1, "Quantity": 3, "X": 1450, "Y": 1150 },
