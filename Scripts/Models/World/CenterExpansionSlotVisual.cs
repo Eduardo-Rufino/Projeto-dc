@@ -31,14 +31,6 @@ public partial class CenterExpansionSlotVisual : Node2D
             if (mouseEvent.ButtonIndex == MouseButton.Left &&
                 mouseEvent.Pressed)
             {
-                GD.Print(
-                    $"SLOT CLICADO! " +
-                    $"Grid: {GridPosition} | " +
-                    $"InstanceID: {GetInstanceId()} | " +
-                    $"Name: {Name} | " +
-                    $"Shape: {shapeIdx}"
-                );
-
                 SlotClicked?.Invoke(GridPosition);
             }
         }

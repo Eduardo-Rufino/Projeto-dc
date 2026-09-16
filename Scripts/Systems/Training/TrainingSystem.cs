@@ -78,12 +78,6 @@ namespace ProjetoDC.Scripts.Systems.Training
             result.StaminaCost = 10;
             result.ExpGained = 5;
 
-            GD.Print(
-                $"Treino: {digimon.BaseData.Name} | " +
-                $"Tipo: {type} | " +
-                $"Resultado: {trainingResult}"
-            );
-
             return result;
         }
 

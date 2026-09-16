@@ -72,8 +72,6 @@ namespace ProjetoDC.Scripts.UI
             InitializeUIComponents();
 
             RefreshUI();
-
-            GD.Print("TrainingCenter iniciado.");
         }
 
         public void RefreshUI()
@@ -181,8 +179,6 @@ namespace ProjetoDC.Scripts.UI
             _clockLabel = GetNodeOrNull<Label>($"{dayPath}ClockLabel");
             if (_clockLabel == null)
                 GD.PrintErr("ClockLabel não encontrado!");
-            else
-                GD.Print("ClockLabel encontrado.");
             //_bitsLabel = GetNodeOrNull<Label>($"{basePath}BitsLabel");
             _advanceDayButton = GetNodeOrNull<Button>($"{dayPath}AdvanceDayButton");
 

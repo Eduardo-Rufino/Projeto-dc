@@ -27,14 +27,6 @@ namespace ProjetoDC.Scripts.UI
             SetAnchorsPreset(LayoutPreset.FullRect);
             SetOffsetsPreset(LayoutPreset.FullRect);
 
-            GD.Print(_resultLabel);
-            GD.Print(_rewardLabel);
-            GD.Print(_okButton);
-
-            GD.Print($"Size: {Size}");
-            GD.Print($"Position: {Position}");
-            GD.Print($"Visible: {Visible}");
-
             ZIndex = 100;
 
             _okButton.Pressed += OnOkPressed;

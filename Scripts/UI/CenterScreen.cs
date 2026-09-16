@@ -161,8 +161,6 @@ namespace ProjetoDC.Scripts.UI
             _clockLabel = GetNodeOrNull<Label>($"{dayPath}ClockLabel");
             if (_clockLabel == null)
                 GD.PrintErr("ClockLabel não encontrado!");
-            else
-                GD.Print("ClockLabel encontrado.");
             _advanceDayButton = GetNodeOrNull<Button>($"{dayPath}AdvanceDayButton");
 
             var buttonPath = $"{basePath}HBoxContainer/";
@@ -257,8 +255,6 @@ namespace ProjetoDC.Scripts.UI
 
             if (Game.PlayerDigimon != null)
             {
-                GD.Print($"Center Player Hash: {Game.PlayerDigimon.GetHashCode()}");
-                GD.Print($"Center XP: {Game.PlayerDigimon.Experience}");
                 //TODO: Atualizar a lista apenas quando um digimon evoluir, for adicionado ou removido, para evitar refresh desnecessário
                 RefreshDigimonList();
             }

@@ -22,8 +22,6 @@ namespace ProjetoDC.Scripts.Models.World
         public void AdvanceDay(int days = 1)
         {
             CurrentDay += days;
-
-            GD.Print($"Dia atual: {CurrentDay}");
         }
     }
 }
