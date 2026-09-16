@@ -38,7 +38,14 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private Node2D _enemySpawnPoints;
         private Node2D _unitsContainer;
         private BattleResultScreen _resultScreen;
+        private BattlePauseScreen _pauseScreen;
+        private Button _pauseButton;
         private List<CenterArea> _combatAreas;
+
+        // Congela a luta (Match.Tick para de rodar - ver _Process) enquanto o menu de pausa
+        // está aberto. Só pode ser aberto antes do resultado ser decidido (ver
+        // TogglePauseMenu/OpenPauseMenu) - depois disso o botão de pausa é desabilitado.
+        private bool _menuOpen;
 
         private readonly Dictionary<BattleCombatant, BattleUnit> _unitsByCombatant = new();
 
@@ -81,6 +88,13 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             _resultScreen = GetNode<BattleResultScreen>("CanvasLayer/BattleResultScreen");
             _resultScreen.OkPressed += OnResultOkPressed;
+
+            _pauseScreen = GetNode<BattlePauseScreen>("CanvasLayer/BattlePauseScreen");
+            _pauseScreen.ResumePressed += ClosePauseMenu;
+            _pauseScreen.SurrenderConfirmed += OnSurrenderConfirmed;
+
+            _pauseButton = GetNode<Button>("CanvasLayer/PauseButton");
+            _pauseButton.Pressed += OpenPauseMenu;
 
             _selectedUnitPanel = GetNode<Control>("CanvasLayer/SelectedUnitPanel");
             _selectedUnitPortrait = GetNode<TextureRect>("CanvasLayer/SelectedUnitPanel/VBoxContainer/Portrait");
@@ -218,10 +232,62 @@ namespace ProjetoDC.Scripts.Systems.Battle
         /// </summary>
         public override void _UnhandledInput(InputEvent @event)
         {
+            if (@event.IsActionPressed("ui_cancel"))
+            {
+                TogglePauseMenu();
+                return;
+            }
+
+            if (_menuOpen)
+                return;
+
             if (@event is not InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
                 return;
 
             HandleUnitSelectionClick(GetGlobalMousePosition());
+        }
+
+        /// <summary>Abre/fecha o menu de pausa com Esc (ver PauseButton pro clique) - sem
+        /// efeito depois que o resultado da luta já foi decidido (ver _battleEnded), pra não
+        /// dar pra "pausar" uma luta que já acabou.</summary>
+        private void TogglePauseMenu()
+        {
+            if (_battleEnded)
+                return;
+
+            if (_menuOpen)
+                ClosePauseMenu();
+            else
+                OpenPauseMenu();
+        }
+
+        private void OpenPauseMenu()
+        {
+            if (_battleEnded || _menuOpen)
+                return;
+
+            _menuOpen = true;
+
+            _pauseScreen.Open();
+        }
+
+        private void ClosePauseMenu()
+        {
+            _menuOpen = false;
+
+            _pauseScreen.Close();
+        }
+
+        /// <summary>Jogador confirmou a desistência no menu de pausa (ver BattlePauseScreen) -
+        /// encerra a luta contando como derrota (BattleResult.EnemyWon), com as mesmas
+        /// consequências de perder pra valer (GameManager.ApplyTeamBattleReward). Existe pra
+        /// destravar o jogador de lutas que nunca terminam sozinhas (dois Digimons muito
+        /// tanques trocando dano indefinidamente sem nenhum dos dois cair).</summary>
+        private void OnSurrenderConfirmed()
+        {
+            ClosePauseMenu();
+
+            EndBattle(BattleResult.EnemyWon);
         }
 
         private void HandleUnitSelectionClick(Vector2 worldPosition)
@@ -302,6 +368,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
                 UpdateSelectedUnitPanel();
 
             if (Match == null || _resultShown)
+                return;
+
+            // Congela a luta inteira (combate e a contagem do delay pós-luta) enquanto o
+            // menu de pausa está aberto - ver TogglePauseMenu/OpenPauseMenu.
+            if (_menuOpen)
                 return;
 
             if (_battleEnded)
@@ -392,9 +463,20 @@ namespace ProjetoDC.Scripts.Systems.Battle
             if (result == BattleResult.Ongoing)
                 return;
 
+            EndBattle(result);
+        }
+
+        /// <summary>Marca a luta como decidida (naturalmente, via Match.CheckResult, ou por
+        /// desistência - ver OnSurrenderConfirmed) e dispara a mesma sequência de fim de luta
+        /// nos dois casos: animação de vitória do time vencedor, delay (ResultDelaySeconds) e
+        /// depois a tela de resultado.</summary>
+        private void EndBattle(BattleResult result)
+        {
             _battleEnded = true;
             _pendingResult = result;
             _resultDelayRemaining = ResultDelaySeconds;
+
+            _pauseButton.Disabled = true;
 
             PlayVictoryAnimation(result);
         }

@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/Systems/Battle/BattleArena.cs" id="1_arena"]
 [ext_resource type="PackedScene" uid="uid://c5mnilcm2vrfn" path="res://Scenes/Battle/BattleResultScreen.tscn" id="2_result"]
 [ext_resource type="PackedScene" uid="uid://bpdm1djccv738" path="res://Scenes/Center/Areas/CenterArea.tscn" id="3_hex"]
+[ext_resource type="PackedScene" path="res://Scenes/Battle/BattlePauseScreen.tscn" id="4_pause"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selectedcard"]
 bg_color = Color(0.1254902, 0.14509805, 0.16862746, 0.92)
@@ -82,6 +83,21 @@ position = Vector2(750, 143)
 
 [node name="BattleResultScreen" parent="CanvasLayer" instance=ExtResource("2_result")]
 visible = false
+
+[node name="BattlePauseScreen" parent="CanvasLayer" instance=ExtResource("4_pause")]
+visible = false
+
+[node name="PauseButton" type="Button" parent="CanvasLayer"]
+layout_mode = 0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -100.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 56.0
+grow_horizontal = 0
+text = "Pausa"
 
 [node name="SelectedUnitPanel" type="PanelContainer" parent="CanvasLayer"]
 visible = false
