@@ -13,7 +13,9 @@
       "specialDamage": 17,
       "specialDefense": 0,
       "speed": 60
-    }
+    },
+
+    "minHappiness": 55
   },
   {
     "fromDigimonId": 4,
@@ -29,6 +31,8 @@
       "specialDamage": 0,
       "specialDefense": 0,
       "speed": 60
-    }
+    },
+
+    "maxDiscipline": 35
   }
 ]

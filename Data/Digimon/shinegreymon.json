@@ -1,0 +1,24 @@
+{
+    "id": 168,
+    "code": "shinegreymon",
+    "name": "ShineGreymon",
+    "stage": "Mega",
+    "role": "Warrior",
+    "Element": "Fire",
+    "Attribute": "Vacine",
+    "EggType": "Dragon",
+    "AttackType": "Physical",
+    "BaseStats": {
+        "healthPoints": 819,
+        "physicalDamage": 299,
+        "physicalDefense": 180,
+        "specialDamage": 61,
+        "specialDefense": 117,
+        "speed": 91
+    },
+    "Passives": [
+        "FuriaCrescente",
+        "Investida",
+        "GolpePesado"
+    ]
+}

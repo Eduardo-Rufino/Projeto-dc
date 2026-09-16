@@ -24,11 +24,13 @@
 
     "requiredStats": {
       "healthPoints": 0,
-      "physicalDamage": 17,
+      "physicalDamage": 100,
       "physicalDefense": 0,
       "specialDamage": 0,
       "specialDefense": 0,
-      "speed": 60
-    }
+      "speed": 95
+    },
+
+    "maxDiscipline": 30
   }
 ]

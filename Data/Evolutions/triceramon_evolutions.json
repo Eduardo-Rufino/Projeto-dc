@@ -29,6 +29,8 @@
       "specialDamage": 50,
       "specialDefense": 0,
       "speed": 100
-    }
+    },
+
+    "requiredBattles": 10
   }
 ]

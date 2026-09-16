@@ -13,7 +13,11 @@
       "specialDamage": 198,
       "specialDefense": 0,
       "speed": 85
-    }
+    },
+
+    "minHappiness": 55,
+    "requiredBattles": 12,
+    "requiredWinRate": 0.55
   },
   {
     "fromDigimonId": 39,

@@ -14,21 +14,5 @@
       "specialDefense": 0,
       "speed": 24
     }
-  },
-  {
-    "fromDigimonId": 1,
-    "toDigimonId": 22,
-    "requiredLevel": 12,
-    "requiredAgeInDays": 2,
-    "statMultiplier": 1.85,
-
-    "requiredStats": {
-      "healthPoints": 150,
-      "physicalDamage": 61,
-      "physicalDefense": 0,
-      "specialDamage": 0,
-      "specialDefense": 0,
-      "speed": 24
-    }
   }
 ]

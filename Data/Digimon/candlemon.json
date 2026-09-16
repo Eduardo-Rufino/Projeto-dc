@@ -1,0 +1,24 @@
+{
+    "id":  169,
+    "code":  "candlemon",
+    "name":  "Candlemon",
+    "stage":  "Rookie",
+    "role":  "Ranged",
+    "Element":  "Fire",
+    "Attribute":  "Virus",
+    "EggType":  "Fire",
+    "AttackType":  "Special",
+    "BaseStats":  {
+                      "healthPoints":  74,
+                      "physicalDamage":  10,
+                      "physicalDefense":  15,
+                      "specialDamage":  50,
+                      "specialDefense":  18,
+                      "speed":  34
+                  },
+    "Passives":  [
+                     "AlvoMarcado",
+                     "ProjetilPerfurante",
+                     "Predicao"
+                 ]
+}

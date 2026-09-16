@@ -8,7 +8,7 @@
   "Attribute": "Virus",
   "EggType": "Dark",
   "AttackType": "Special",
-  "SupportType": "Buffer",
+  "SupportType": "Debuffer",
 
   "BaseStats": {
     "healthPoints": 72,

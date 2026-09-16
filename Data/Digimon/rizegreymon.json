@@ -1,0 +1,24 @@
+{
+    "id": 167,
+    "code": "rizegreymon",
+    "name": "RizeGreymon",
+    "stage": "Ultimate",
+    "role": "Warrior",
+    "Element": "Fire",
+    "Attribute": "Vacine",
+    "EggType": "Dragon",
+    "AttackType": "Physical",
+    "BaseStats": {
+        "healthPoints": 460,
+        "physicalDamage": 168,
+        "physicalDefense": 101,
+        "specialDamage": 34,
+        "specialDefense": 66,
+        "speed": 51
+    },
+    "Passives": [
+        "RompeGuarda",
+        "GolpePesado",
+        "Investida"
+    ]
+}

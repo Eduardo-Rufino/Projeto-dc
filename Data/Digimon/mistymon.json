@@ -1,0 +1,24 @@
+{
+    "id":  170,
+    "code":  "mistymon",
+    "name":  "Mistymon",
+    "stage":  "Ultimate",
+    "role":  "Assassin",
+    "Element":  "Dark",
+    "Attribute":  "Data",
+    "EggType":  "Fire",
+    "AttackType":  "Physical",
+    "BaseStats":  {
+                      "healthPoints":  340,
+                      "physicalDamage":  145,
+                      "physicalDefense":  80,
+                      "specialDamage":  40,
+                      "specialDefense":  70,
+                      "speed":  170
+                  },
+    "Passives":  [
+                     "PassoFantasma",
+                     "PrecisaoLetal",
+                     "FioDaLamina"
+                 ]
+}

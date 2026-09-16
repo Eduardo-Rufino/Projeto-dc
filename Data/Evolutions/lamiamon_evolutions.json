@@ -29,6 +29,8 @@
       "specialDamage": 0,
       "specialDefense": 0,
       "speed": 140
-    }
+    },
+
+    "maxDiscipline": 30
   }
 ]

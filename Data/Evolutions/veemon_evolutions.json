@@ -27,6 +27,10 @@
       "specialDamage": 0,
       "specialDefense": 0,
       "speed": 85
-    }
+    },
+
+    "minHappiness": 55,
+    "requiredBattles": 10,
+    "requiredWinRate": 0.5
   }
 ]

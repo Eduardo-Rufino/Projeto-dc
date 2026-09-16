@@ -1,5 +1,5 @@
 {
-  "id": 22,
+  "id": 44,
   "code": "geogreymon",
   "name": "Geogreymon",
   "stage": "Champion",
@@ -12,9 +12,9 @@
   "BaseStats": {
     "healthPoints": 250,
     "physicalDamage": 96,
-    "physicalDefense": 53,
+    "physicalDefense": 58,
     "specialDamage": 19,
-    "specialDefense": 34,
-    "speed": 38
+    "specialDefense": 38,
+    "speed": 29
   }
 }

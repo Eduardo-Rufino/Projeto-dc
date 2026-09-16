@@ -13,7 +13,11 @@
       "specialDamage": 0,
       "specialDefense": 0,
       "speed": 107
-    }
+    },
+
+    "minHappiness": 55,
+    "requiredBattles": 12,
+    "requiredWinRate": 0.55
   },
   {
     "fromDigimonId": 41,
@@ -23,7 +27,7 @@
     "statMultiplier": 1.7,
 
     "requiredStats": {
-      "healthPoints": 780,
+      "healthPoints": 620,
       "physicalDamage": 230,
       "physicalDefense": 0,
       "specialDamage": 0,

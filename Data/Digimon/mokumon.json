@@ -6,7 +6,7 @@
   "role": "Assassin",
   "Element": "Dark",
   "Attribute": "Virus",
-  "EggType": "Dark",
+  "EggType": "Fire",
   "AttackType": "Special",
 
   "BaseStats": {

@@ -8,7 +8,7 @@
   "Attribute": "Data",
   "EggType": "Forest",
   "AttackType": "Special",
-  "SupportType": "Buffer",
+  "SupportType": "Debuffer",
 
   "BaseStats": {
     "healthPoints": 230,

@@ -13,7 +13,9 @@
       "specialDamage": 248,
       "specialDefense": 0,
       "speed": 180
-    }
+    },
+
+    "maxDiscipline": 30
   },
   {
     "fromDigimonId": 104,
@@ -29,6 +31,9 @@
       "specialDamage": 210,
       "specialDefense": 0,
       "speed": 140
-    }
+    },
+
+    "maxDiscipline": 30,
+    "requiredBattles": 10
   }
 ]

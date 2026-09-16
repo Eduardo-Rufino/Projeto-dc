@@ -29,6 +29,8 @@
       "specialDamage": 260,
       "specialDefense": 0,
       "speed": 190
-    }
+    },
+
+    "maxHappiness": 45
   }
 ]
