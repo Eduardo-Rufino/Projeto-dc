@@ -5,8 +5,10 @@ using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.Save;
+using ProjetoDC.Scripts.Systems.Passives;
 using ProjetoDC.Scripts.Systems.Results;
 using System;
+using System.Collections.Generic;
 
 namespace ProjetoDC.Scripts.Gameplay
 {
@@ -17,6 +19,12 @@ namespace ProjetoDC.Scripts.Gameplay
     public class DigimonInstance
     {
         public DigimonData BaseData { get; set; }
+
+        /// <summary>Passiva sorteada ao nascer ou evoluir (ver PassiveSystem.RollRandomPassive
+        /// / PASSIVAS_SPEC.md na raiz do projeto) - fixa até a próxima evolução, nunca trocada
+        /// manualmente. Null significa "nenhuma" (pool vazio na espécie atual, ou espécie
+        /// ainda não preenchida no catálogo).</summary>
+        public PassiveType? PassiveId { get; set; }
 
         /// <summary>Apelido opcional definido pelo jogador na HUD (clicando no nome do Digimon
         /// selecionado). Só afeta exibição - toda lógica interna (evolução, save, banco de
@@ -75,6 +83,100 @@ namespace ProjetoDC.Scripts.Gameplay
         /// capacidade continuar insuficiente. A tentativa de evolução em si não para: quando
         /// a capacidade for suficiente, evolui normalmente e essa flag é zerada de novo.</summary>
         public bool EvolutionCapacityWarningDismissed { get; set; }
+
+        /// <summary>DigimonData.Id de formas que esse Digimon nunca deve evoluir para,
+        /// mesmo que os requisitos sejam atendidos (ver EvolutionSystem.TryToEvolve) - só
+        /// pode ser editado depois de recrutar o Wizardmon (GameManager.SetEvolutionBlocked/
+        /// HasRecruitedEvolutionAdvisor). Deixa o jogador direcionar minimamente pra qual
+        /// forma um Digimon vai, sem escolher a evolução manualmente - se todas as evoluções
+        /// válidas de um estágio estiverem bloqueadas, o Digimon simplesmente não evolui até
+        /// o jogador desbloquear alguma.</summary>
+        public List<int> BlockedEvolutionTargetIds { get; set; } = new();
+
+        /// <summary>Total de batalhas (3x3, livres ou de campeonato) em que esse Digimon
+        /// participou como membro do time, vitória ou derrota - ver GameManager.
+        /// ApplyTeamBattleReward, que chama RecordBattleResult pra cada membro ao fim de
+        /// toda batalha. Usado por EvolutionData.RequiredBattles/RequiredWinRate.</summary>
+        public int BattlesFought { get; set; }
+
+        public int BattlesWon { get; set; }
+
+        /// <summary>Fração de vitórias (0 a 1) sobre BattlesFought - 0 se ainda não lutou
+        /// nenhuma batalha (evita divisão por zero; EvolutionData.RequiredWinRate deve vir
+        /// acompanhado de RequiredBattles > 0 pra essa checagem fazer sentido).</summary>
+        public float WinRate => BattlesFought > 0 ? (float)BattlesWon / BattlesFought : 0f;
+
+        public void RecordBattleResult(bool won)
+        {
+            BattlesFought++;
+
+            if (won)
+                BattlesWon++;
+        }
+
+        // --- Contadores de maus-tratos (ver GameManager.EvaluatePostBattleMistreatmentRisk/
+        // EvaluateDirtyEnvironmentDeathRisk/OnDayPassed) - cada um é só um acumulador simples,
+        // sem nenhum sorteio aqui dentro. A decisão de quando e com que chance isso vira morte
+        // fica centralizada no GameManager, pra não espalhar números de balanceamento por
+        // vários arquivos.
+
+        /// <summary>Dias seguidos que esse Digimon passou doente (ver HealthState) - zera
+        /// assim que é curado. Atualizado em GameManager.OnDayPassed, depois de
+        /// TryBecomeSick.</summary>
+        public int DaysSickInARow { get; set; }
+
+        /// <summary>Derrotas seguidas em batalha (time perdeu) - zera em qualquer vitória.
+        /// Ver GameManager.ApplyTeamBattleReward.</summary>
+        public int ConsecutiveBattleLosses { get; set; }
+
+        /// <summary>Quantas vezes esse Digimon específico ficou com HP 0 durante uma batalha
+        /// (nocauteado), não importa se o time como um todo venceu ou perdeu depois disso -
+        /// nunca zera (é uma contagem cumulativa de vida inteira).</summary>
+        public int TimesKnockedOutInBattle { get; set; }
+
+        /// <summary>Quantas vezes esse Digimon foi escalado pra uma batalha já com HP abaixo
+        /// de 25% do máximo (ver GameManager.LaunchBattle) - cumulativa, nunca zera.</summary>
+        public int TimesEnteredBattleAtLowHealth { get; set; }
+
+        /// <summary>Quantos ticks seguidos (DigimonWorld.CheckDirtyArea, a cada
+        /// DirtyAreaCheckInterval segundos reais) esse Digimon passou parado numa área com
+        /// cocô - zera assim que a área fica limpa ou ele sai dela.</summary>
+        public int DirtyEnvironmentStreak { get; set; }
+
+        /// <summary>Áreas de treino específico (TrainingAttack, TrainingDefense, etc. - ver
+        /// CenterAreaType) que esse Digimon NÃO deve escolher sozinho quando um NPC recrutado
+        /// libera o bônus daquele stat (ver DigimonWorld.TryStartAutoTraining/GameManager.
+        /// HasRecruitedTrainingBonus). Não afeta treino manual - o jogador ainda pode arrastar
+        /// o Digimon pra lá na mão; só bloqueia a escolha autônoma, pensada pra evitar que ele
+        /// cresça sozinho num stat que puxa pra uma evolução indesejada.</summary>
+        public List<CenterAreaType> AutoTrainingDisabledStats { get; set; } = new();
+
+        public bool IsAutoTrainingAllowed(CenterAreaType areaType) =>
+            !AutoTrainingDisabledStats.Contains(areaType);
+
+        public void SetAutoTrainingAllowed(CenterAreaType areaType, bool allowed)
+        {
+            if (allowed)
+                AutoTrainingDisabledStats.Remove(areaType);
+            else if (!AutoTrainingDisabledStats.Contains(areaType))
+                AutoTrainingDisabledStats.Add(areaType);
+        }
+
+        public bool IsEvolutionBlocked(int targetDigimonId) =>
+            BlockedEvolutionTargetIds.Contains(targetDigimonId);
+
+        public void SetEvolutionBlocked(int targetDigimonId, bool blocked)
+        {
+            if (blocked)
+            {
+                if (!BlockedEvolutionTargetIds.Contains(targetDigimonId))
+                    BlockedEvolutionTargetIds.Add(targetDigimonId);
+            }
+            else
+            {
+                BlockedEvolutionTargetIds.Remove(targetDigimonId);
+            }
+        }
 
         /// <summary>Quantas horas seguidas (na sessão de sono atual) o Digimon já dormiu
         /// fora do Dormitório - zera ao acordar ou ao passar uma hora dormindo dentro do
@@ -169,6 +271,35 @@ namespace ProjetoDC.Scripts.Gameplay
             _ => 3,
         };
 
+        /// <summary>Idade máxima (em dias, AgeInDays) que um Digimon aguenta em cada estágio
+        /// antes de morrer de velhice (ver GameManager.OnDayPassed) - o mesmo princípio dos
+        /// bichinhos virtuais clássicos: evoluir antes do prazo é o que mantém o Digimon vivo,
+        /// já que a idade nunca reseta ao evoluir (GetCapacityCostForStage também não reseta
+        /// nada, só troca com base no estágio atual). Mega/MegaPlus/Special dividem o mesmo
+        /// teto de 30 dias - "e acima" no pedido original.
+        ///
+        /// Baby/InTraining ganharam 1 dia a mais cada (eram 2/4) depois do "grande teste" de
+        /// 2026-09-13: como XP de treino é fixo (5 por sessão, ver TrainingSystem.Execute) e a
+        /// stamina regenera devagar (2-5/hora), 2 dias reais de folga (48 min de jogo, 1 min
+        /// de jogo = 1s real) é justo o suficiente pra chegar ao Nível 2 exigido SE o jogador
+        /// já souber treinar de cara - punindo sobretudo quem ainda tá lendo o tutorial no
+        /// primeiro Digimon. Rookie pra cima ficou como estava: o custo de XP cresce exponencial
+        /// (ExperienceToNextLevel *= 1.2 por nível) enquanto o treino continua dando XP fixo, e
+        /// isso é proposital - a visão do jogo é "o Center é o progresso de verdade, o Digimon é
+        /// passageiro" (ver game_idea.txt), então chegar a Mega com o MESMO Digimon deve ser
+        /// raro/difícil, não garantido.</summary>
+        public static int GetMaxAgeForStage(DigimonStage stage) => stage switch
+        {
+            DigimonStage.Baby => 3,
+            DigimonStage.InTraining => 5,
+            DigimonStage.Rookie => 9,
+            DigimonStage.Champion => 15,
+            DigimonStage.Ultimate => 22,
+            _ => 30, // Mega, MegaPlus, Special
+        };
+
+        public bool IsPastMaxAge() => AgeInDays > GetMaxAgeForStage(BaseData.Stage);
+
         public void ConsumeStamina(int amount)
         {
             Stamina -= amount;
@@ -244,14 +375,19 @@ namespace ProjetoDC.Scripts.Gameplay
         }
 
         /// <summary>
-        /// Adiciona experiência e verifica se houve level up.
+        /// Adiciona experiência e verifica se houve level up. Único ponto de entrada de XP
+        /// no jogo (treino e batalha passam por aqui) - por isso o bônus de conjunto
+        /// (SetEffectType.ExperienceGainedPercent) entra bem no topo, sem precisar duplicar
+        /// em cada chamador.
         /// </summary>
         public void GainExperience(int amount)
         {
-            Experience += amount;
+            float bonus = GameManager.Instance.GetTotalSetBonus(SetEffectType.ExperienceGainedPercent);
+
+            Experience += (int)(amount * (1f + bonus));
 
             CheckLevelup();
-        }       
+        }
 
         /// <summary>
         /// Loop que realiza level up enquanto houver experiência suficiente.
@@ -315,6 +451,12 @@ namespace ProjetoDC.Scripts.Gameplay
             MaxHealthPoints = CurrentStats.HealthPoints;
             CurrentHealthPoints = MaxHealthPoints;
 
+            // Re-sorteia a passiva pro pool da NOVA forma (ver PASSIVAS_SPEC.md seção 1: "ao
+            // nascer OU evoluir") - a Role pode mudar entre formas, então manter a passiva
+            // antiga arriscaria ficar incompatível com o pool novo. Sempre resorteia, mesmo
+            // que a Role não tenha mudado.
+            PassiveId = PassiveSystem.RollRandomPassive(newForm);
+
             GD.Print($"{newForm.Name} evoluiu! Stats atualizados!");
 
             Evolved?.Invoke(oldForm, newForm);
@@ -351,8 +493,6 @@ namespace ProjetoDC.Scripts.Gameplay
 
         private void SetActivity(DigimonActivity activity)
         {
-            GD.Print($"{BaseData.Name}: {Activity} -> {activity}");
-
             if (Activity == activity)
                 return;
 
@@ -411,10 +551,6 @@ namespace ProjetoDC.Scripts.Gameplay
         {
             ConsumeHunger();
 
-            GD.Print(
-                $"HASH GAME {BaseData.Name}: {GetHashCode()}"
-            );
-
             if (IsSleepHour(world.CurrentHour))
             {
                 StartSleeping();
@@ -427,26 +563,31 @@ namespace ProjetoDC.Scripts.Gameplay
 
                 RecoverStamina(2);
             }
-
-
-            GD.Print(
-                $"{BaseData.Name} passou uma hora. " +
-                $"Fome: {Hunger} | " +
-                $"Stamina: {Stamina}/{MaxStamina}" +
-                $"Atividade: {Activity}"
-            );
         }
 
         public void AdvanceDay()
         {
             AgeInDays++;
-
-            GD.Print($"{BaseData.Name} envelheceu. Idade: {AgeInDays} dias");
         }
+
+        // Acumulador fracionário pro bônus de conjunto (SetEffectType.
+        // HungerDecayReductionPercent) - Hunger é inteiro e cai de 1 em 1 por hora
+        // normalmente, então uma redução de 15% não dá pra aplicar direto (viraria 0 por
+        // arredondamento); acumula a fração que sobra a cada hora até fechar 1 ponto inteiro,
+        // mesmo padrão já usado pra regen contínua em BattleCombatant._pendingRegenHp.
+        private float _pendingHungerDecay;
 
         private void ConsumeHunger()
         {
-            Hunger -= 1;
+            float reduction = GameManager.Instance.GetTotalSetBonus(SetEffectType.HungerDecayReductionPercent);
+
+            _pendingHungerDecay += 1f * (1f - reduction);
+
+            int wholeDecay = (int)_pendingHungerDecay;
+
+            _pendingHungerDecay -= wholeDecay;
+
+            Hunger -= wholeDecay;
 
             if (Hunger < 0)
                 Hunger = 0;
@@ -483,6 +624,20 @@ namespace ProjetoDC.Scripts.Gameplay
         public bool IsStarving()
         {
             return Hunger <= 30;
+        }
+
+        /// <summary>Mesmo limiar de IsStarving (30), só que pra Stamina - decide quando esse
+        /// Digimon sai procurando um Energético sozinho (ver DigimonWorld.CheckStaminaSnack).
+        /// Diferente de Fome, Stamina já regenera um pouco sozinha por hora (ver AdvanceHour),
+        /// então esse item é reforço opcional, não sustento básico.</summary>
+        public bool WantsStaminaSnack()
+        {
+            return Stamina <= 30;
+        }
+
+        public bool IsStaminaFull()
+        {
+            return Stamina >= MaxStamina;
         }
 
         public void RestoreHealth()
@@ -544,13 +699,6 @@ namespace ProjetoDC.Scripts.Gameplay
 
                 GD.Print($"{BaseData.Name} ficou doente.");
             }
-
-            GD.Print(
-                $"Idade={AgeInDays} | " +
-                $"Fome={Hunger} | " +
-                $"Chance={chance} | " +
-                $"Rolagem={roll}"
-);
         }
 
         // Chance de ficar doente a cada mordida de comida estragada (ver

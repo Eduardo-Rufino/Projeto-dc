@@ -1,4 +1,5 @@
 using Godot;
+using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
 using System.Collections.Generic;
@@ -177,25 +178,78 @@ namespace ProjetoDC.Scripts.UI
                     AppendStatRequirement(sb, "Velocidade", digimon.CurrentStats.Speed, req.Speed, ref statsOk);
                 }
 
-                bool allOk = levelOk && ageOk && capacityOk && statsOk;
+                bool extraOk = true;
 
-                sb.AppendLine(
-                    allOk
-                        ? "[color=#8fd98f]Pronto pra evoluir![/color]"
-                        : "[color=#d98f8f]Ainda faltam requisitos.[/color]"
-                );
+                if (evo.RequiredBattles > 0)
+                {
+                    bool battlesOk = digimon.BattlesFought >= evo.RequiredBattles;
+                    extraOk &= battlesOk;
+                    sb.AppendLine($"{Check(battlesOk)} Batalhas: {digimon.BattlesFought}/{evo.RequiredBattles}");
+                }
 
-                _entriesContainer.AddChild(BuildEvolutionEntry(target.Code, sb.ToString()));
+                if (evo.RequiredWinRate > 0)
+                {
+                    bool winRateOk = digimon.WinRate >= evo.RequiredWinRate;
+                    extraOk &= winRateOk;
+                    sb.AppendLine($"{Check(winRateOk)} Taxa de vitória: {digimon.WinRate:P0}/{evo.RequiredWinRate:P0}");
+                }
+
+                if (evo.MinDiscipline > 0)
+                {
+                    bool disciplineMinOk = digimon.Discipline >= evo.MinDiscipline;
+                    extraOk &= disciplineMinOk;
+                    sb.AppendLine($"{Check(disciplineMinOk)} Disciplina mínima: {digimon.Discipline}/{evo.MinDiscipline}");
+                }
+
+                if (evo.MaxDiscipline < 100)
+                {
+                    bool disciplineMaxOk = digimon.Discipline <= evo.MaxDiscipline;
+                    extraOk &= disciplineMaxOk;
+                    sb.AppendLine($"{Check(disciplineMaxOk)} Disciplina máxima: {digimon.Discipline}/{evo.MaxDiscipline}");
+                }
+
+                if (evo.MinHappiness > 0)
+                {
+                    bool happinessMinOk = digimon.Happiness >= evo.MinHappiness;
+                    extraOk &= happinessMinOk;
+                    sb.AppendLine($"{Check(happinessMinOk)} Felicidade mínima: {digimon.Happiness}/{evo.MinHappiness}");
+                }
+
+                if (evo.MaxHappiness < 100)
+                {
+                    bool happinessMaxOk = digimon.Happiness <= evo.MaxHappiness;
+                    extraOk &= happinessMaxOk;
+                    sb.AppendLine($"{Check(happinessMaxOk)} Felicidade máxima: {digimon.Happiness}/{evo.MaxHappiness}");
+                }
+
+                bool allOk = levelOk && ageOk && capacityOk && statsOk && extraOk;
+
+                bool blocked = digimon.IsEvolutionBlocked(target.Id);
+
+                if (blocked)
+                {
+                    sb.AppendLine("[color=#d9a24f]🚫 Bloqueada - você marcou pra essa evolução não acontecer.[/color]");
+                }
+                else
+                {
+                    sb.AppendLine(
+                        allOk
+                            ? "[color=#8fd98f]Pronto pra evoluir![/color]"
+                            : "[color=#d98f8f]Ainda faltam requisitos.[/color]"
+                    );
+                }
+
+                _entriesContainer.AddChild(BuildEvolutionEntry(digimon, target, sb.ToString()));
             }
         }
 
-        /// <summary>Uma linha [silhueta | requisitos] por evolução possível.</summary>
-        private Control BuildEvolutionEntry(string targetCode, string requirementsText)
+        /// <summary>Uma linha [silhueta | requisitos | bloquear] por evolução possível.</summary>
+        private Control BuildEvolutionEntry(DigimonInstance digimon, DigimonData target, string requirementsText)
         {
             var row = new HBoxContainer();
             row.AddThemeConstantOverride("separation", 12);
 
-            row.AddChild(BuildSilhouette(targetCode));
+            row.AddChild(BuildSilhouette(target.Code));
 
             var label = new RichTextLabel
             {
@@ -208,7 +262,43 @@ namespace ProjetoDC.Scripts.UI
 
             row.AddChild(label);
 
+            row.AddChild(BuildBlockToggle(digimon, target));
+
             return row;
+        }
+
+        /// <summary>Checkbox "Bloquear" pra essa evolução específica (ver
+        /// DigimonInstance.BlockedEvolutionTargetIds/GameManager.SetEvolutionBlocked) - só
+        /// aparece habilitado depois de recrutar o Wizardmon (GameManager.
+        /// HasRecruitedEvolutionAdvisor); antes disso só um aviso de que existe esse
+        /// recurso.</summary>
+        private Control BuildBlockToggle(DigimonInstance digimon, DigimonData target)
+        {
+            if (!Game.HasRecruitedEvolutionAdvisor)
+            {
+                return new Label
+                {
+                    Text = "🔒 Wizardmon",
+                    TooltipText = "Recrute o Wizardmon (escondido na Floresta Inicial) pra poder " +
+                        "bloquear evoluções indesejadas.",
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
+            }
+
+            var toggle = new CheckButton
+            {
+                Text = "Bloquear",
+                ButtonPressed = digimon.IsEvolutionBlocked(target.Id),
+            };
+
+            toggle.Toggled += pressed =>
+            {
+                Game.SetEvolutionBlocked(digimon, target.Id, pressed);
+                Game.SaveGame();
+                ShowEvolutionInfo(digimon);
+            };
+
+            return toggle;
         }
 
         private TextureRect BuildSilhouette(string code)

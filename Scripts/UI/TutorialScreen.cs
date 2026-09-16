@@ -26,10 +26,12 @@ namespace ProjetoDC.Scripts.UI
             ("🏝️ Áreas do Center", AreasDoCenterBody),
             ("🏗️ Editor de Bases", EditorDeBasesBody),
             ("🥊 Batalha", BatalhaBody),
+            ("✨ Passivas", PassivasBody),
             ("🏆 Campeonatos x Batalha Livre", CampeonatosBody),
             ("🌎 Exploração", ExploracaoBody),
             ("🤝 NPCs Recrutados", NpcsRecrutadosBody),
             ("✨ Evolução", EvolucaoBody),
+            ("💀 Morte", MorteBody),
             ("🥚 Ovos", OvosBody),
             ("❤️ Necessidades do Digimon", NecessidadesBody),
             ("🎒 Inventário", InventarioBody),
@@ -180,7 +182,23 @@ namespace ProjetoDC.Scripts.UI
             "inimigo) pra ver o HP dele. Do seu time mostra o HP exato (atual/máximo); do time " +
             "inimigo mostra só uma porcentagem aproximada de vida restante.\n\n" +
             "Ao vencer, o time ganha experiência e Bits. Mesmo perdendo, cada Digimon ganha uma experiência de consolação " +
-            "(cerca de 1/5 do normal), pra não travar o progresso do jogador.";
+            "(cerca de 1/5 do normal), pra não travar o progresso do jogador.\n\n" +
+            "Cada Digimon também pode ter uma passiva ativa que soma um efeito extra na batalha - veja o tópico ✨ Passivas.";
+
+        private const string PassivasBody =
+            "Cada espécie de Digimon tem uma pool fixa de 2 a 3 passivas possíveis, definida pelo Role dela " +
+            "(Tank, Warrior, Assassin, Ranged ou uma das três variações de Suporte: Curador, Buffer e Debuffer). " +
+            "Ao nascer de um ovo ou evoluir, o Digimon sorteia 1 dessas passivas pra ficar ativa - só uma por vez.\n\n" +
+            "A passiva sorteada fica fixa até a próxima evolução, que sorteia de novo (pode repetir ou trocar). " +
+            "Não tem como escolher a passiva nem re-sortear sem evoluir.\n\n" +
+            "Cada passiva dá um efeito de combate diferente (dano extra em certas condições, cura, escudo, redução de " +
+            "cooldown, chance de crítico, entre outros). Pra ver qual passiva um Digimon tem e o que ela faz, selecione " +
+            "ele e clique no botão ℹ na barra de status - a janela de Detalhes do Digimon mostra o nome e a descrição " +
+            "completa.\n\n" +
+            "Digimons selvagens e times inimigos de Batalha Livre também sorteiam passiva, com a mesma regra. Times de " +
+            "Campeonato usam uma passiva fixa, igual aos outros stats deles.\n\n" +
+            "Digimons que você já tinha antes desse sistema existir recebem a passiva automaticamente na primeira vez " +
+            "que o save é carregado depois da atualização.";
 
         private const string CampeonatosBody =
             "Ao clicar no botão de troféu, você escolhe entre dois tipos de combate:\n\n" +
@@ -220,20 +238,58 @@ namespace ProjetoDC.Scripts.UI
             "Alguns bonificam ainda mais uma área de treino específica (empilhando com o bônus " +
             "que a área já dá sozinha) e fazem Digimons ociosos irem treinar lá por conta " +
             "própria de vez em quando, sem precisar arrastar. Outros deixam recursos de graça " +
-            "no Center todo dia.";
+            "no Center todo dia. O Wizardmon (escondido na Floresta Inicial) é diferente dos " +
+            "outros: não dá nenhum bônus automático, mas desbloqueia a opção de bloquear " +
+            "evoluções indesejadas no Guia de Evolução - veja o tópico ✨ Evolução.\n\n" +
+            "[b]Treino Autônomo[/b]: se um Digimon está indo treinar sozinho um stat que você " +
+            "não quer (e acabando puxando ele pra uma evolução indesejada), abra a tela de " +
+            "Detalhes dele (botão ℹ na barra de status) e desmarque esse stat na seção " +
+            "\"Treino Autônomo\" - ele só deixa de ir sozinho pra aquela área específica, o " +
+            "treino manual (arrastar na mão) continua funcionando normalmente.";
 
         private const string EvolucaoBody =
             "Cada Digimon pode evoluir quando atinge o nível mínimo, a idade mínima (em dias) e os stats mínimos exigidos " +
-            "pela próxima forma. Quando isso acontece, uma animação centraliza o Digimon na tela e pausa o resto do jogo " +
-            "(evoluções simultâneas de vários Digimons entram numa fila, uma de cada vez).\n\n" +
+            "pela próxima forma. Algumas evoluções também exigem número mínimo de batalhas e/ou taxa de vitória " +
+            "(evita evoluir só acumulando XP de consolação de derrotas propositais), e Disciplina ou Felicidade " +
+            "mínima/máxima (formas mais \"malignas\" só saem com Disciplina baixa; formas mais \"queridas\" pela " +
+            "fanbase exigem Felicidade alta, e algumas mais rejeitadas exigem o contrário). Quando a evolução " +
+            "acontece, uma animação centraliza o Digimon na tela e pausa o resto do jogo (evoluções simultâneas de " +
+            "vários Digimons entram numa fila, uma de cada vez).\n\n" +
             "Evoluir também custa Capacidade do Center (Digimons de estágio maior ocupam mais espaço). Se não houver " +
             "capacidade suficiente na hora, o jogo avisa e deixa você escolher entre liberar espaço (removendo outros Digimons) " +
-            "ou manter esse Digimon sem evoluir por enquanto - ele evolui automaticamente assim que houver espaço.";
+            "ou manter esse Digimon sem evoluir por enquanto - ele evolui automaticamente assim que houver espaço.\n\n" +
+            "[b]Guia de Evolução[/b]: botão ✨ na barra de controle - escolha um Digimon do roster pra ver todas as " +
+            "evoluções possíveis dele, com os requisitos de cada uma e se já foram atendidos. Depois de recrutar o " +
+            "Wizardmon (veja 🤝 NPCs Recrutados), também dá pra marcar \"Bloquear\" numa evolução específica ali " +
+            "mesmo: o Digimon nunca evolui por um caminho bloqueado, mesmo atendendo todos os requisitos - útil pra " +
+            "recusar a evolução mais fácil de propósito e esperar juntar os stats de uma alternativa mais forte. Dá " +
+            "pra marcar e desmarcar quando quiser, sem custo.";
+
+        private const string MorteBody =
+            "Digimons não vivem para sempre - cuidar bem deles (e evoluir a tempo) é o que mantém eles vivos.\n\n" +
+            "[b]Velhice[/b]: cada estágio evolutivo tem um teto de idade em dias - Baby: 3, In-Training: 5, " +
+            "Rookie: 9, Champion: 15, Ultimate: 22, Mega/Mega+/Special: 30. A idade nunca reseta ao evoluir, só o " +
+            "teto aumenta - evoluir antes do prazo é o que evita a morte por velhice, que é certa assim que a " +
+            "idade passa do teto do estágio atual.\n\n" +
+            "[b]Maus-tratos[/b]: negligência repetida também pode matar, com uma chance (não é certeza) a cada vez " +
+            "que o problema se repete:\n" +
+            "- Ficar doente por 5 dias seguidos ou mais, sem tratamento.\n" +
+            "- Perder 4 batalhas seguidas ou mais, sem vencer nenhuma no meio.\n" +
+            "- Ser nocauteado (HP zerado) em batalha 6 vezes ou mais ao longo da vida, mesmo que o time vença " +
+            "depois.\n" +
+            "- Ser escalado pra batalhar com HP abaixo de 25% do máximo, 4 vezes ou mais.\n" +
+            "- Ficar parado muito tempo seguido numa área cheia de cocô sem limpar.\n\n" +
+            "Quando um Digimon morre, um aviso explica o motivo.";
 
         private const string OvosBody =
             "Ovos ocupam Capacidade do Center do mesmo jeito que o Baby que vai nascer deles, então não dá pra acumular " +
-            "ovos infinitamente sem espaço. Compre ovos na Loja ou receba o ovo inicial no começo do jogo. Depois de um " +
-            "tempo de incubação, o ovo choca sozinho e o Baby aparece no Center.";
+            "ovos infinitamente sem espaço. Receba o ovo inicial no começo do jogo ou compre mais na Loja - só Digimon " +
+            "de estágio Baby nascem de ovo. Depois de um tempo de incubação, o ovo choca sozinho e o Baby aparece no " +
+            "Center.\n\n" +
+            "[b]Tipo do ovo[/b]: ao comprar, escolha entre \"Aleatório\" (qualquer tipo, preço normal) ou um EggType " +
+            "específico (Dragão, Fera, Água, Floresta, Fogo, Trevas ou Luz - custa 3x mais). Escolher um tipo garante " +
+            "esse EggType, mas o Baby exato dentro dele continua sendo sorteado caso haja mais de um. O sprite do ovo " +
+            "reflete o tipo de verdade - sem mistério, é sempre visível o que vai chocar.";
 
         private const string NecessidadesBody =
             "[b]Fome[/b]: cai com o tempo; alimente os Digimons colocando carne no Refeitório (ou em qualquer lugar, " +
@@ -255,7 +311,15 @@ namespace ProjetoDC.Scripts.UI
             "agrupadas por estágio evolutivo. Espécies que você já teve no Center pelo menos " +
             "uma vez (chocando, comprando ou evoluindo pra elas) aparecem com sprite, nome e " +
             "função normalmente; as que você nunca teve mostram só uma silhueta com \"???\". " +
-            "A busca por nome só funciona entre as espécies já descobertas.";
+            "A busca por nome só funciona entre as espécies já descobertas.\n\n" +
+            "[b]Conjuntos[/b]: a aba \"Conjuntos\", no topo da tela, mostra grupos temáticos de " +
+            "Digimon (ex.: Lordes Demoníacos). Cada card mostra quantos membros do grupo você " +
+            "já descobriu, com o mesmo efeito de silhueta pros que faltam - e o checkbox ao " +
+            "lado do nome fica marcado (card fica verde) quando o conjunto está completo. " +
+            "Passe o mouse sobre o nome do conjunto pra ver o efeito dele. Completar um " +
+            "conjunto dá um bônus permanente pro Center - e continua valendo mesmo que os " +
+            "Digimon daquele grupo já tenham morrido ou não estejam mais no seu time, já que o " +
+            "que conta é ter descoberto, não ter agora.";
 
         private const string RelogioBody =
             "O relógio na barra superior mostra a hora atual (incluindo um relógio analógico) e o dia/calendário do jogo, " +

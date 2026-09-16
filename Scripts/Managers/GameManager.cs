@@ -10,6 +10,7 @@ using ProjetoDC.Scripts.Systems.Center;
 using ProjetoDC.Scripts.Systems.Clock;
 using ProjetoDC.Scripts.Systems.Eggs;
 using ProjetoDC.Scripts.Systems.Evolution;
+using ProjetoDC.Scripts.Systems.Passives;
 using ProjetoDC.Scripts.Systems.Save;
 using ProjetoDC.Scripts.Systems.Training;
 using ProjetoDC.Scripts.UI;
@@ -63,6 +64,13 @@ namespace ProjetoDC.Scripts.Managers
         /// visual correspondente, senão ele continuaria andando por aí sem existir mais
         /// no save.</summary>
         public event Action<DigimonInstance> DigimonDeleted;
+
+        /// <summary>Disparado quando um Digimon morre de verdade (velhice ou maus-tratos -
+        /// ver KillDigimon), com o nome já formatado e o motivo em texto pronto pra mostrar
+        /// ao jogador. Sempre acompanhado de um DigimonDeleted (a morte também é uma remoção
+        /// permanente do Center) - quem só precisa tirar o visual escuta DigimonDeleted, quem
+        /// precisa avisar o jogador escuta este aqui.</summary>
+        public event Action<DigimonInstance, string> DigimonDied;
 
         /// <summary>Estado puro da batalha 3x3 ativa (nulo fora de batalha).</summary>
         public BattleMatch BattleMatch { get; private set; }
@@ -131,11 +139,6 @@ namespace ProjetoDC.Scripts.Managers
 
                     GD.Print($"Digimons carregados: {Save.Center.Digimons.Count}");
 
-                    foreach (var d in Save.Center.Digimons)
-                    {
-                        GD.Print($"{d.BaseData?.Name} - Lv {d.Level}");
-                    }
-
                     // Saves de antes da Enciclopédia (CenterState.DiscoveredDigimonIds)
                     // existir não tinham nada marcado como descoberto - sem isso, toda
                     // espécie que o jogador já tinha antes desse sistema existir apareceria
@@ -146,6 +149,13 @@ namespace ProjetoDC.Scripts.Managers
                     {
                         if (d.BaseData != null)
                             Save.Center.MarkDigimonDiscovered(d.BaseData.Id);
+                    }
+
+                    if (!Save.Center.AgeCapMigrationApplied)
+                    {
+                        ApplyAgeCapMigration();
+
+                        Save.Center.AgeCapMigrationApplied = true;
                     }
                 }
             }
@@ -164,10 +174,7 @@ namespace ProjetoDC.Scripts.Managers
 
             ClockSystem.HourPassed += OnHourPassed;
             ClockSystem.DayPassed += OnDayPassed;
-            ClockSystem.MinutePassed += OnMinutePassed;
 
-
-            GD.Print("GameManager inicializado!");
 
             CallDeferred(nameof(InitializeGame));
         }
@@ -200,6 +207,9 @@ namespace ProjetoDC.Scripts.Managers
         {
             CenterService = new CenterService(Save.Center);
 
+            MigrateDuplicateGeogreymon();
+            ApplyRetroactivePassives();
+
             PlayerDigimon = CenterService.GetAllDigimons().FirstOrDefault();
 
             if (PlayerDigimon != null)
@@ -210,6 +220,76 @@ namespace ProjetoDC.Scripts.Managers
             GD.Print("Save carregado com sucesso!");
 
             GameLoaded?.Invoke();
+        }
+
+        /// <summary>Migração pontual de um erro de dados: existia um "Geogreymon" duplicado
+        /// (id 22, ligado ao Agumon clássico) além do "Geogreymon" de verdade (id 44, ex-
+        /// "Geogreymon (Savers)", o único que devia existir). O id 22 foi removido do banco
+        /// (não existe mais em DatabaseManager), mas saves antigos podem ter uma instância
+        /// com BaseData ainda apontando pra ele -
+        /// remapeia pra id 44 (mesma Role/Elemento/Atributo/Estágio, então não afeta
+        /// CurrentStats/Level/HP/Passiva já sorteada, só a identidade da espécie e o sprite).
+        /// Idempotente: só mexe em quem ainda está no id 22.</summary>
+        private void MigrateDuplicateGeogreymon()
+        {
+            const int OldDuplicateGeogreymonId = 22;
+            const int RealGeogreymonId = 44;
+
+            var realGeogreymon = DatabaseManager.Instance.GetDigimon(RealGeogreymonId);
+
+            if (realGeogreymon == null)
+                return;
+
+            bool anyMigrated = false;
+
+            foreach (var d in Save.Center.Digimons)
+            {
+                if (d.BaseData != null && d.BaseData.Id == OldDuplicateGeogreymonId)
+                {
+                    d.BaseData = realGeogreymon;
+                    anyMigrated = true;
+
+                    GD.Print($"{d.DisplayName}: migrado do Geogreymon duplicado (id 22) pro Geogreymon atual (id 44).");
+                }
+            }
+
+            if (anyMigrated)
+            {
+                SaveGame();
+            }
+        }
+
+        /// <summary>Saves de antes do sistema de Passivas (ver PASSIVAS_SPEC.md) existir têm
+        /// PassiveId nulo em todo Digimon já carregado - sem isso eles ficariam pra sempre
+        /// sem passiva, já que só ovos/evoluções novas sorteiam uma. Roda em LoadExistingGame
+        /// (via CallDeferred/InitializeGame), depois de DatabaseManager._Ready() já ter
+        /// carregado as pools - nunca usa d.BaseData pra isso, que é só uma cópia congelada
+        /// de quando o save foi salvo (ver CloneBaseData) e pode não ter a pool de Passives
+        /// preenchida. Idempotente: só sorteia pra quem ainda está null.</summary>
+        private void ApplyRetroactivePassives()
+        {
+            bool anyRolled = false;
+
+            foreach (var d in Save.Center.Digimons)
+            {
+                if (d.PassiveId.HasValue || d.BaseData == null)
+                    continue;
+
+                var species = DatabaseManager.Instance.GetDigimon(d.BaseData.Id);
+
+                if (species == null)
+                    continue;
+
+                d.PassiveId = PassiveSystem.RollRandomPassive(species);
+                anyRolled = true;
+            }
+
+            if (anyRolled)
+            {
+                GD.Print("Passivas retroativas sorteadas para Digimons de save antigo.");
+
+                SaveGame();
+            }
         }
 
         // Só acelera o ClockSystem (relógio/fome/stamina/incubação/doença - tudo que anda por
@@ -229,11 +309,6 @@ namespace ProjetoDC.Scripts.Managers
             ClockSystem?.Update(delta * (IsClockSpeedDoubled ? 2.0 : 1.0));
         }
 
-        private void OnMinutePassed()
-        {
-            GD.Print($"{Save.World.CurrentDay} - {Save.World.CurrentHour:00}:{Save.World.CurrentMinute:00}");
-        }
-
         private void OnHourPassed()
         {
             foreach (var digimon in Save.Center.Digimons)
@@ -246,10 +321,20 @@ namespace ProjetoDC.Scripts.Managers
 
         private void OnDayPassed()
         {
-            foreach (var digimon in Save.Center.Digimons)
+            // Cópia da lista antes de iterar - EvaluateDailyDeathRisks pode remover o
+            // próprio Digimon do Center.Digimons (KillDigimon) no meio do loop, o que
+            // quebraria a enumeração original com InvalidOperationException.
+            foreach (var digimon in Save.Center.Digimons.ToList())
             {
                 digimon.AdvanceDay();
                 digimon.TryBecomeSick();
+
+                digimon.DaysSickInARow = digimon.HealthState == HealthState.Sick
+                    ? digimon.DaysSickInARow + 1
+                    : 0;
+
+                if (EvaluateDailyDeathRisks(digimon))
+                    continue;
 
                 TryToEvolve(digimon);
             }
@@ -298,6 +383,51 @@ namespace ProjetoDC.Scripts.Managers
 
             return false;
         }
+
+        // Id do Wizardmon (ver Data/NPCs/npc_wizardmon.json) - hardcoded pelo mesmo motivo
+        // de PalmonNpcId acima: hoje é o único NPC que desbloqueia esse perk específico.
+        private const int WizardmonNpcId = 7;
+
+        /// <summary>True depois que o Wizardmon é recrutado - só a partir daí o jogador pode
+        /// bloquear evoluções indesejadas por Digimon (ver SetEvolutionBlocked). Antes disso
+        /// a EvolutionGuideScreen mostra os toggles desabilitados/ocultos.</summary>
+        public bool HasRecruitedEvolutionAdvisor =>
+            Save.Center.RecruitedNpcIds.Contains(WizardmonNpcId);
+
+        /// <summary>Bloqueia (ou desbloqueia) uma evolução específica pra um Digimon do
+        /// roster - ver DigimonInstance.BlockedEvolutionTargetIds/EvolutionSystem.TryToEvolve,
+        /// que passa a ignorar esse alvo mesmo que os requisitos sejam atendidos. Exige o
+        /// Wizardmon recrutado (HasRecruitedEvolutionAdvisor).</summary>
+        public SystemResult SetEvolutionBlocked(DigimonInstance digimon, int targetDigimonId, bool blocked)
+        {
+            if (digimon == null)
+                return SystemResult.Fail("Nenhum Digimon selecionado.");
+
+            if (!HasRecruitedEvolutionAdvisor)
+                return SystemResult.Fail("Recrute o Wizardmon antes de poder bloquear evoluções.");
+
+            digimon.SetEvolutionBlocked(targetDigimonId, blocked);
+
+            return SystemResult.Ok();
+        }
+
+        /// <summary>True se toda a lista de espécies de um conjunto (ver DigimonSetData) já
+        /// foi descoberta pelo menos uma vez (CenterState.DiscoveredDigimonIds) - não exige
+        /// nenhuma delas estar viva agora, só ter existido no Center em algum momento. Usado
+        /// pela EncyclopediaScreen (aba Conjuntos) e por GetTotalSetDamageBonus.</summary>
+        public bool IsSetComplete(DigimonSetData set) =>
+            set.DigimonIds.All(id => Save.Center.DiscoveredDigimonIds.Contains(id));
+
+        /// <summary>Soma o EffectValue de todo conjunto completo de um dado SetEffectType -
+        /// dois conjuntos completos do mesmo tipo empilham. Usado por DamageCalculator
+        /// (FinalDamagePercent/CritChancePercent), ApplyTeamBattleReward (BitsGainedPercent)
+        /// e DigimonInstance (HungerDecayReductionPercent/ExperienceGainedPercent). É sempre
+        /// um bônus do Center, não da espécie - vale pra qualquer Digimon, não só aos
+        /// membros do conjunto.</summary>
+        public float GetTotalSetBonus(SetEffectType type) =>
+            DatabaseManager.Instance.GetAllSets()
+                .Where(s => s.EffectType == type && IsSetComplete(s))
+                .Sum(s => s.EffectValue);
 
         /// <summary>Se o botão de pular sono deveria estar habilitado agora - usado pela HUD.
         /// A janela de sono em si vive em DigimonInstance (hoje sincronizada pro Center
@@ -362,10 +492,6 @@ namespace ProjetoDC.Scripts.Managers
 
             PlayerDigimon = digimon;
 
-            GD.Print(
-                $"PlayerDigimon definido: {PlayerDigimon.BaseData.Name} Hash: {PlayerDigimon.GetHashCode()}"
-            );
-
             PlayerDigimonChanged?.Invoke();
         }
 
@@ -410,11 +536,6 @@ namespace ProjetoDC.Scripts.Managers
             }
 
             PlayerDigimon = digimon;
-
-            GD.Print(
-                $"PlayerDigimon definido: {PlayerDigimon.BaseData.Name} " +
-                $"Hash: {PlayerDigimon.GetHashCode()}"
-            );
 
             PlayerDigimonChanged?.Invoke();
         }
@@ -501,6 +622,35 @@ namespace ProjetoDC.Scripts.Managers
             EggSystem.CreateInitialEgg(CenterService);
 
             SaveSystem.SaveGame(Save);
+        }
+
+        /// <summary>Debug: reproduz o cenário relatado de Suporte vs Suporte (mesmo
+        /// SupportType dos dois lados) num 1x1, pra confirmar ao vivo que o fallback de
+        /// ataque (ver BattleUnit.SelectTarget/_supportFallbackAttack) resolve o impasse em
+        /// vez de travar pra sempre. Só usado via DEBUG_TEST_BATTLE=support_deadlock_{healer,
+        /// buffer,debuffer} (ver Center.cs).</summary>
+        public void DebugStartSupportDeadlockBattle(SupportType supportType)
+        {
+            var supports = DatabaseManager.Instance.GetAllDigimons()
+                .Where(d => d.Role == RoleType.Support && d.SupportType == supportType)
+                .Take(2)
+                .ToList();
+
+            if (supports.Count < 2)
+            {
+                GD.PrintErr($"DebugStartSupportDeadlockBattle: não há 2 Digimons {supportType} no banco.");
+                return;
+            }
+
+            GD.Print($"DEBUG: batalha de teste Suporte vs Suporte ({supportType}) - {supports[0].Name} vs {supports[1].Name}");
+
+            var playerTeam = new List<DigimonInstance> { new DigimonInstance(supports[0]) };
+            var enemyTeam = new List<DigimonInstance> { new DigimonInstance(supports[1]) };
+
+            ActiveTournament = null;
+            BattleFromExploration = false;
+
+            LaunchBattle(playerTeam, enemyTeam);
         }
 
         /// <summary>
@@ -603,6 +753,11 @@ namespace ProjetoDC.Scripts.Managers
 
             var wild = new DigimonInstance(data);
 
+            // Selvagem de exploração também sorteia passiva (ver PASSIVAS_SPEC.md R5) - mesma
+            // regra de Batalha Livre, só que fora do EnemyGenerator (esse encontro é 1x1 e
+            // monta a instância direto aqui).
+            wild.PassiveId = PassiveSystem.RollRandomPassive(data);
+
             while (wild.Level < level)
             {
                 wild.GainExperience(wild.ExperienceToNextLevel);
@@ -634,6 +789,11 @@ namespace ProjetoDC.Scripts.Managers
 
                 var enemy = new DigimonInstance(data);
 
+                // Torneio usa passiva FIXA definida por design (ver PASSIVAS_SPEC.md R5),
+                // nunca sorteada - se o campeonato não especificou, o oponente fica sem
+                // passiva (não sorteia como fallback).
+                enemy.PassiveId = opponent.PassiveId;
+
                 while (enemy.Level < opponent.Level)
                 {
                     enemy.GainExperience(enemy.ExperienceToNextLevel);
@@ -656,6 +816,16 @@ namespace ProjetoDC.Scripts.Managers
         {
             PlayerBattleTeam = playerTeam;
             EnemyBattleTeam = enemyTeam;
+
+            // Registra quem entrou fraco demais na luta (ver DigimonInstance.
+            // TimesEnteredBattleAtLowHealth) - a morte por isso só é avaliada depois, junto
+            // com o resto dos riscos de maus-tratos pós-batalha (ApplyTeamBattleReward), pra
+            // não precisar mexer no time já escalado no meio da montagem da arena.
+            foreach (var member in PlayerBattleTeam)
+            {
+                if (member.CurrentHealthPoints < member.MaxHealthPoints * LowHealthBattleThreshold)
+                    member.TimesEnteredBattleAtLowHealth++;
+            }
 
             TeamBattleStarted?.Invoke();
 
@@ -746,9 +916,18 @@ namespace ProjetoDC.Scripts.Managers
 
                 GD.Print($"Derrota! +{consolationXp} XP de consolação por membro, sem Bits.");
 
-                foreach (var member in PlayerBattleTeam)
+                foreach (var member in PlayerBattleTeam.ToList())
                 {
+                    member.RecordBattleResult(won: false);
+                    member.ConsecutiveBattleLosses++;
+
+                    if (member.CurrentHealthPoints <= 0)
+                        member.TimesKnockedOutInBattle++;
+
                     member.ChangeHappiness(-6);
+
+                    if (EvaluatePostBattleMistreatmentRisk(member))
+                        continue;
 
                     if (consolationXp > 0)
                     {
@@ -770,17 +949,28 @@ namespace ProjetoDC.Scripts.Managers
 
             GD.Print($"Vitória! +{xpGained} XP por membro | +{reward.Bits} Bits");
 
-            foreach (var member in PlayerBattleTeam)
+            foreach (var member in PlayerBattleTeam.ToList())
             {
+                member.RecordBattleResult(won: true);
+                member.ConsecutiveBattleLosses = 0;
+
+                if (member.CurrentHealthPoints <= 0)
+                    member.TimesKnockedOutInBattle++;
+
                 if (xpGained > 0)
                     member.GainExperience(xpGained);
 
                 member.ChangeHappiness(8);
 
+                if (EvaluatePostBattleMistreatmentRisk(member))
+                    continue;
+
                 TryToEvolve(member);
             }
 
-            Save.Center.AddBits(reward.Bits);
+            int bitsWithSetBonus = (int)(reward.Bits * (1f + GetTotalSetBonus(SetEffectType.BitsGainedPercent)));
+
+            Save.Center.AddBits(bitsWithSetBonus);
 
             ApplyTournamentRewardIfNeeded();
 
@@ -1107,6 +1297,19 @@ namespace ProjetoDC.Scripts.Managers
             return SystemResult.Ok();
         }
 
+        public const int StaminaSnackPrice = 2000;
+
+        public SystemResult BuyStaminaSnack()
+        {
+            if (Save.Center.Bits < StaminaSnackPrice)
+                return SystemResult.Fail("Bits insuficientes.");
+
+            Save.Center.Bits -= StaminaSnackPrice;
+            Save.Center.StaminaSnacks++;
+
+            return SystemResult.Ok();
+        }
+
         /// <summary>Custo de capacidade que o próximo ovo comprado vai reservar - todo
         /// Digimon Baby custa o mesmo (ver DigimonInstance.GetCapacityCostForStage), então
         /// basta olhar o primeiro da lista. Usado tanto por BuyEgg quanto pela loja pra
@@ -1125,9 +1328,33 @@ namespace ProjetoDC.Scripts.Managers
             return Save.Center.CapacityUsed + cost <= Save.Center.CapacityLimit;
         }
 
-        public SystemResult BuyEgg()
+        /// <summary>Preço de um ovo "aleatório" (qualquer Digimon Baby, de qualquer EggType).
+        /// Comprar um tipo específico (ver GetEggPrice/BuyEgg) custa
+        /// SpecificEggPriceMultiplier vezes mais - o jogador paga pela certeza.</summary>
+        public const int RandomEggPrice = 500;
+        public const int SpecificEggPriceMultiplier = 3;
+
+        public static int GetEggPrice(EggType? eggType) =>
+            eggType.HasValue ? RandomEggPrice * SpecificEggPriceMultiplier : RandomEggPrice;
+
+        /// <summary>Quantos Digimon Baby existem no DB pra um EggType específico - usado pela
+        /// tela de escolha de tipo (ShopScreen) pra desabilitar/avisar tipos sem nenhum Baby
+        /// cadastrado, em vez de deixar o jogador pagar 3x por um ovo que nunca vai chocar
+        /// (hoje todo EggType tem pelo menos um Baby, mas o Digimon fica pra trás quando um
+        /// EggType novo é adicionado sem Baby correspondente).</summary>
+        public int CountBabyDigimonsOfType(EggType eggType) =>
+            DatabaseManager.Instance.GetAllDigimons()
+                .Count(d => d.Stage == DigimonStage.Baby && d.EggType == eggType);
+
+        /// <summary>
+        /// Compra um ovo - <paramref name="eggType"/> nulo sorteia entre todo Digimon Baby
+        /// (preço normal); um EggType específico restringe o sorteio só aos Babies daquele
+        /// tipo (preço 3x, ver GetEggPrice). Em ambos os casos ainda é um sorteio dentro do
+        /// tipo escolhido, não um Digimon exato - só o EggType é garantido.
+        /// </summary>
+        public SystemResult BuyEgg(EggType? eggType = null)
         {
-            const int eggPrice = 500;
+            int eggPrice = GetEggPrice(eggType);
 
             if (Save.Center.Bits < eggPrice)
             {
@@ -1135,12 +1362,16 @@ namespace ProjetoDC.Scripts.Managers
             }
 
             var babyDigimons = DatabaseManager.Instance.GetAllDigimons()
-                .Where(d => d.Stage == DigimonStage.Baby)
+                .Where(d => d.Stage == DigimonStage.Baby && (!eggType.HasValue || d.EggType == eggType.Value))
                 .ToList();
 
             if (babyDigimons.Count == 0)
             {
-                return SystemResult.Fail("Nenhum Digimon Baby disponível.");
+                return SystemResult.Fail(
+                    eggType.HasValue
+                        ? $"Nenhum Digimon Baby do tipo {eggType.Value} disponível."
+                        : "Nenhum Digimon Baby disponível."
+                );
             }
 
             var chosen = babyDigimons[GD.RandRange(0, babyDigimons.Count - 1)];
@@ -1236,6 +1467,10 @@ namespace ProjetoDC.Scripts.Managers
 
             var digimon = new DigimonInstance(data);
 
+            // Trata como nascimento pra consistência - entra de verdade no Center, então
+            // deve sortear passiva igual a um Digimon chocado de ovo.
+            digimon.PassiveId = PassiveSystem.RollRandomPassive(data);
+
             CenterService.AddDigimon(digimon);
 
             GD.Print($"{data.Name} adicionado ao Center.");
@@ -1272,6 +1507,192 @@ namespace ProjetoDC.Scripts.Managers
             DigimonDeleted?.Invoke(digimon);
 
             return true;
+        }
+
+        // --- Sistema de morte (velhice e maus-tratos) ---
+        //
+        // Diferente de DeleteDigimon (ação manual do jogador, bloqueada se for o último do
+        // Center), a morte é permanente e incondicional - inclusive pro último Digimon
+        // restante, que aí passa pela mesma rede de segurança de "Center vazio" que já existe
+        // pra qualquer outro jeito de zerar o roster (EnsureCenterCanContinue cria um ovo
+        // novo). Os contadores puros (DaysSickInARow, ConsecutiveBattleLosses, etc.) moram em
+        // DigimonInstance - toda a decisão de "quando isso vira morte e com que chance" fica
+        // aqui, centralizada, pra ser fácil de rebalancear sem procurar em vários arquivos.
+
+        private const int SickDaysBeforeDeathRisk = 5;
+        private const int SickDeathChancePercent = 20;
+
+        private const int ConsecutiveLossesBeforeDeathRisk = 4;
+        private const int ConsecutiveLossDeathChancePercent = 25;
+
+        private const int BattleKnockoutsBeforeDeathRisk = 6;
+        private const int BattleKnockoutDeathChancePercent = 15;
+
+        private const int LowHealthBattleEntriesBeforeDeathRisk = 4;
+        private const int LowHealthBattleDeathChancePercent = 15;
+        private const float LowHealthBattleThreshold = 0.25f;
+
+        private const int DirtyEnvironmentStreakBeforeDeathRisk = 30;
+        private const int DirtyEnvironmentDeathChancePercent = 10;
+
+        private bool RollDeathChance(int percentChance) => _random.Next(100) < percentChance;
+
+        /// <summary>
+        /// Migração de compatibilidade (ver CenterState.AgeCapMigrationApplied), roda uma
+        /// única vez na primeira carga de um save depois do sistema de morte por velhice
+        /// existir. Sem isso, qualquer Digimon que já tivesse ultrapassado o teto de idade do
+        /// próprio estágio atual (ver DigimonInstance.GetMaxAgeForStage) morreria
+        /// instantaneamente, sem aviso nenhum, na primeira virada de dia - em vez disso, dá
+        /// uma folga de 1 dia (idade ajustada pro teto menos 1) pra evoluir a tempo.
+        /// </summary>
+        private void ApplyAgeCapMigration()
+        {
+            foreach (var digimon in Save.Center.Digimons)
+            {
+                if (digimon.BaseData == null)
+                    continue;
+
+                int maxAge = DigimonInstance.GetMaxAgeForStage(digimon.BaseData.Stage);
+
+                if (digimon.AgeInDays <= maxAge)
+                    continue;
+
+                GD.Print(
+                    $"Migração de idade: {digimon.DisplayName} estava com {digimon.AgeInDays} " +
+                    $"dia(s) (teto do estágio: {maxAge}) - ajustando pra {maxAge - 1}, uma " +
+                    "folga de última hora pra evoluir a tempo."
+                );
+
+                digimon.AgeInDays = maxAge - 1;
+            }
+        }
+
+        /// <summary>
+        /// Mata um Digimon de vez (velhice ou maus-tratos) - remove do Center, tira da
+        /// seleção do jogador se era ele, e avisa tanto quem só precisa limpar o visual
+        /// (DigimonDeleted) quanto quem precisa contar pro jogador o que aconteceu
+        /// (DigimonDied). Sempre chama EnsureCenterCanContinue depois, já que isso pode
+        /// zerar o roster inteiro (diferente de DeleteDigimon, a morte não protege o último
+        /// Digimon).
+        /// </summary>
+        private void KillDigimon(DigimonInstance digimon, string cause)
+        {
+            GD.Print($"{digimon.DisplayName} morreu: {cause}");
+
+            CenterService.RemoveDigimon(digimon);
+
+            if (PlayerDigimon == digimon)
+            {
+                PlayerDigimon = CenterService.GetAllDigimons().FirstOrDefault();
+
+                PlayerDigimonChanged?.Invoke();
+            }
+
+            DigimonDeleted?.Invoke(digimon);
+            DigimonDied?.Invoke(digimon, cause);
+
+            EnsureCenterCanContinue();
+        }
+
+        /// <summary>
+        /// Checagens de morte que rodam uma vez por dia (ver OnDayPassed): velhice (idade
+        /// além do teto do estágio atual - ver DigimonInstance.GetMaxAgeForStage, sempre
+        /// certeira) e doença prolongada sem tratamento (chance, não certeza). Retorna true
+        /// se o Digimon morreu - quem chamou deve parar de processá-lo (evoluir um Digimon
+        /// que acabou de morrer não faz sentido).
+        /// </summary>
+        private bool EvaluateDailyDeathRisks(DigimonInstance digimon)
+        {
+            if (digimon.IsPastMaxAge())
+            {
+                KillDigimon(
+                    digimon,
+                    $"{digimon.DisplayName} morreu de velhice, sem ter evoluído a tempo."
+                );
+
+                return true;
+            }
+
+            if (digimon.DaysSickInARow >= SickDaysBeforeDeathRisk &&
+                RollDeathChance(SickDeathChancePercent))
+            {
+                KillDigimon(
+                    digimon,
+                    $"{digimon.DisplayName} não resistiu depois de {digimon.DaysSickInARow} dias " +
+                    "doente sem tratamento."
+                );
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checagens de morte por maus-tratos ligadas a batalha - derrotas seguidas,
+        /// nocautes acumulados e ter sido escalado fraco demais vezes repetidas. Chamada pra
+        /// cada membro do time em ApplyTeamBattleReward, depois dos contadores já terem sido
+        /// incrementados. Retorna true se morreu.
+        /// </summary>
+        private bool EvaluatePostBattleMistreatmentRisk(DigimonInstance member)
+        {
+            if (member.ConsecutiveBattleLosses >= ConsecutiveLossesBeforeDeathRisk &&
+                RollDeathChance(ConsecutiveLossDeathChancePercent))
+            {
+                KillDigimon(
+                    member,
+                    $"{member.DisplayName} não aguentou depois de {member.ConsecutiveBattleLosses} " +
+                    "derrotas seguidas em batalha."
+                );
+
+                return true;
+            }
+
+            if (member.TimesKnockedOutInBattle >= BattleKnockoutsBeforeDeathRisk &&
+                RollDeathChance(BattleKnockoutDeathChancePercent))
+            {
+                KillDigimon(
+                    member,
+                    $"{member.DisplayName} não resistiu depois de ser nocauteado em batalha " +
+                    "tantas vezes."
+                );
+
+                return true;
+            }
+
+            if (member.TimesEnteredBattleAtLowHealth >= LowHealthBattleEntriesBeforeDeathRisk &&
+                RollDeathChance(LowHealthBattleDeathChancePercent))
+            {
+                KillDigimon(
+                    member,
+                    $"{member.DisplayName} foi mandado pra batalhar debilitado vezes demais e " +
+                    "não resistiu."
+                );
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checagem de morte por ambiente insalubre - chamada por DigimonWorld.CheckDirtyArea
+        /// a cada tick em que o Digimon segue parado numa área suja (ver
+        /// DigimonInstance.DirtyEnvironmentStreak).
+        /// </summary>
+        public void EvaluateDirtyEnvironmentDeathRisk(DigimonInstance digimon)
+        {
+            if (digimon.DirtyEnvironmentStreak < DirtyEnvironmentStreakBeforeDeathRisk)
+                return;
+
+            if (!RollDeathChance(DirtyEnvironmentDeathChancePercent))
+                return;
+
+            KillDigimon(
+                digimon,
+                $"{digimon.DisplayName} morreu depois de tempo demais largado num ambiente " +
+                "imundo, cheio de cocô."
+            );
         }
 
         public void EnsureCenterCanContinue()

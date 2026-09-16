@@ -42,6 +42,9 @@ namespace ProjetoDC.Scripts.UI
         private Label _speedLabel;
 
         private Button _feedButton;
+        private Control _foodPickerPopup;
+        private Button _meatOptionButton;
+        private Button _staminaSnackOptionButton;
         private Button _medicineButton;
         private Button _cleanButton;
         private Button _shopButton;
@@ -60,6 +63,7 @@ namespace ProjetoDC.Scripts.UI
         private Control _digimonStatusPage1;
         private Control _digimonStatusPage2;
         private Button _digimonStatusPageButton;
+        private Button _digimonInfoButton;
         private bool _digimonStatusOnPage2;
 
         private ProgressBar _hpBar;
@@ -250,6 +254,12 @@ namespace ProjetoDC.Scripts.UI
 
             _digimonStatusPageButton.Pressed += OnDigimonStatusPageButtonPressed;
 
+            _digimonInfoButton = GetNode<Button>(
+                "TopBar/DigimonStatus/Panel/HBoxContainer/InfoButton"
+            );
+
+            _digimonInfoButton.Pressed += OnDigimonInfoButtonPressed;
+
             _warningToast = GetNode<Panel>("WarningToast");
             _warningLabel = GetNode<Label>("WarningToast/Label");
 
@@ -257,8 +267,23 @@ namespace ProjetoDC.Scripts.UI
                 "ControlBar/FeedButton"
             );
 
-            _feedButton.ButtonDown += OnFeedButtonDown;
-            _feedButton.ButtonUp += OnFeedButtonUp;
+            _feedButton.Pressed += OnFeedButtonPressed;
+
+            _foodPickerPopup = GetNode<Control>("FoodPickerPopup");
+
+            _meatOptionButton = GetNode<Button>(
+                "FoodPickerPopup/MarginContainer/HBoxContainer/MeatOptionButton"
+            );
+
+            _meatOptionButton.ButtonDown += OnMeatOptionButtonDown;
+            _meatOptionButton.ButtonUp += OnFoodOptionButtonUp;
+
+            _staminaSnackOptionButton = GetNode<Button>(
+                "FoodPickerPopup/MarginContainer/HBoxContainer/StaminaSnackOptionButton"
+            );
+
+            _staminaSnackOptionButton.ButtonDown += OnStaminaSnackOptionButtonDown;
+            _staminaSnackOptionButton.ButtonUp += OnFoodOptionButtonUp;
 
             _medicineButton = GetNode<Button>(
                 "ControlBar/MedicineButton"
@@ -647,12 +672,14 @@ namespace ProjetoDC.Scripts.UI
 
                 _selectedDigimonSprite.Visible = false;
                 _deleteDigimonButton.Disabled = true;
+                _digimonInfoButton.Disabled = true;
 
                 return;
             }
 
             _selectedDigimonSprite.Visible = true;
             _deleteDigimonButton.Disabled = false;
+            _digimonInfoButton.Disabled = false;
 
             _selectedDigimonNameLabel.Text =
                 _inspectedDigimon.DisplayName;
@@ -738,14 +765,47 @@ namespace ProjetoDC.Scripts.UI
             _digimonStatusPageButton.Text = _digimonStatusOnPage2 ? "◀" : "▶";
         }
 
-        private void OnFeedButtonDown()
+        private void OnDigimonInfoButtonPressed()
+        {
+            if (_inspectedDigimon == null)
+                return;
+
+            _center.OpenDigimonDetail(_inspectedDigimon);
+        }
+
+        /// <summary>Clique simples (não segurar) no botão de comida - abre/fecha a mini
+        /// janela com as opções (Carne/Energético) logo abaixo, em vez de já começar a
+        /// arrastar Carne direto como antes (ver MeatOptionButton/StaminaSnackOptionButton
+        /// em FoodPickerPopup, que são quem realmente inicia o arraste agora).</summary>
+        private void OnFeedButtonPressed()
+        {
+            _foodPickerPopup.Visible = !_foodPickerPopup.Visible;
+        }
+
+        /// <summary>Segurar e arrastar a partir daqui funciona igual ao antigo botão de
+        /// comida direto (ver Center.StartFoodPlacement). Importante: NÃO esconder a mini
+        /// janela aqui (no down) - um Button escondido no meio do clique perde o "cabo" do
+        /// mouse e o Godot nunca dispara o ButtonUp dele depois, travando a comida em modo
+        /// de posicionamento pra sempre (ver OnFoodOptionButtonUp, que fecha a janela só
+        /// depois de confirmar a colocação).</summary>
+        private void OnMeatOptionButtonDown()
         {
             _center.StartFoodPlacement();
         }
 
-        private void OnFeedButtonUp()
+        private void OnStaminaSnackOptionButtonDown()
+        {
+            _center.StartStaminaSnackPlacement();
+        }
+
+        /// <summary>Confirmação compartilhada pelas duas opções (ver Center.PlaceFood) - o
+        /// Food.Type já guardado no objeto sendo colocado decide qual estoque desconta. Só
+        /// fecha a mini janela aqui, depois de soltar o botão (ver comentário acima).</summary>
+        private void OnFoodOptionButtonUp()
         {
             _center.PlaceFood();
+
+            _foodPickerPopup.Visible = false;
         }
 
         private void OnMedicineButtonDown()

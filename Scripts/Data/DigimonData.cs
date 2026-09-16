@@ -70,5 +70,14 @@ namespace ProjetoDC.Scripts.Data
         /// de exploração (ver GameManager.ApplyWildEncounterDrops) - vazio por padrão, só
         /// precisa ser preenchido nas espécies que realmente tenham drop.</summary>
         public List<DigimonDropData> Drops { get; set; } = new();
+
+        /// <summary>Pool de passivas possíveis dessa espécie (2 ou 3, ver PASSIVAS_SPEC.md na
+        /// raiz do projeto, seção 1) - ao nascer ou evoluir, a instância sorteia exatamente 1
+        /// passiva desse pool (ver PassiveSystem.RollRandomPassive) e ela não muda depois até
+        /// a próxima evolução. Vazio por padrão até a espécie ser preenchida - igual a Drops,
+        /// a leitura deve ser feita na espécie "de ficha" via DatabaseManager.GetDigimon, não
+        /// no BaseData clonado de uma DigimonInstance (ver DigimonInstance.CloneBaseData, que
+        /// não copia esse campo pelo mesmo motivo).</summary>
+        public List<PassiveType> Passives { get; set; } = new();
     }
 }
