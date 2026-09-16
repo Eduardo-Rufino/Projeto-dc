@@ -1,0 +1,7 @@
+{
+  "id": "Folego",
+  "name": "Fôlego",
+  "description": "Regenera 0.6% do HP máximo por segundo, com decaimento em lutas longas.",
+  "role": "Tank",
+  "supportTypes": []
+}

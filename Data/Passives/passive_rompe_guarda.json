@@ -1,0 +1,7 @@
+{
+  "id": "RompeGuarda",
+  "name": "Rompe-Guarda",
+  "description": "Ignora 25% da DEF do alvo, com o ganho limitado a +40% do dano base.",
+  "role": "Warrior",
+  "supportTypes": []
+}

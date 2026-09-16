@@ -1,0 +1,7 @@
+{
+  "id": "ProvocacaoInsistente",
+  "name": "Provocação Insistente",
+  "description": "Taunt a cada 6.5s em vez de 8s.",
+  "role": "Tank",
+  "supportTypes": []
+}

@@ -1,0 +1,8 @@
+{
+  "Id": 4,
+  "Name": "Parceiros do Data Squad",
+  "EffectDescription": "Conjunto completo: +10% nos Bits ganhos ao vencer uma batalha.",
+  "EffectType": "BitsGainedPercent",
+  "EffectValue": 0.10,
+  "DigimonIds": [11, 5, 12]
+}

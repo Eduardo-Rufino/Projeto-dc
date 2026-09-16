@@ -1,0 +1,7 @@
+{
+  "id": "MaosFirmes",
+  "name": "Mãos Firmes",
+  "description": "Cura 15% -> 19% do HP máximo, curva de decaimento original inalterada.",
+  "role": "Support",
+  "supportTypes": ["Healer"]
+}

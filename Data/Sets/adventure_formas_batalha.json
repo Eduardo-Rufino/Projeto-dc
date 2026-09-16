@@ -1,0 +1,8 @@
+{
+  "Id": 5,
+  "Name": "Adventure - Formas de Batalha",
+  "EffectDescription": "Conjunto completo: +8 pontos percentuais na chance de crítico em batalha, pra qualquer Digimon do time.",
+  "EffectType": "CritChancePercent",
+  "EffectValue": 0.08,
+  "DigimonIds": [13, 14, 60, 15, 17, 66, 16, 72]
+}

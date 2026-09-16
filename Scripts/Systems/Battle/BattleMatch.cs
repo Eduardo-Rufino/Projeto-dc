@@ -23,15 +23,17 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
         public int ResolveAttack(BattleCombatant attacker, BattleCombatant defender)
         {
-            return DamageCalculator.ResolveAttack(attacker, defender);
+            // Sede de Batalha (ver PASSIVAS_SPEC.md R2) precisa do tempo real de luta pra
+            // saber o quanto a cura já decaiu.
+            return DamageCalculator.ResolveAttack(attacker, defender, ElapsedSeconds);
         }
 
         public void Tick(double delta)
         {
             ElapsedSeconds += delta;
 
-            PlayerTeam.Tick(delta);
-            EnemyTeam.Tick(delta);
+            PlayerTeam.Tick(delta, ElapsedSeconds);
+            EnemyTeam.Tick(delta, ElapsedSeconds);
         }
 
         public BattleResult CheckResult()

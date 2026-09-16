@@ -1,0 +1,7 @@
+{
+  "id": "PrecisaoLetal",
+  "name": "Precisão Letal",
+  "description": "Crítico 10% -> 22%.",
+  "role": "Assassin",
+  "supportTypes": []
+}

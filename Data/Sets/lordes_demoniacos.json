@@ -1,0 +1,8 @@
+{
+  "Id": 1,
+  "Name": "Lordes Demoníacos",
+  "EffectDescription": "Conjunto completo: +10% de dano final em batalha pra qualquer Digimon do time, mesmo que nenhum deles esteja vivo no momento.",
+  "EffectType": "FinalDamagePercent",
+  "EffectValue": 0.10,
+  "DigimonIds": [121, 122, 123, 106, 88, 95, 105]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "Investida",
+  "name": "Investida",
+  "description": "Cooldown do dash 6s -> 4s e o primeiro golpe após um dash causa +60% de dano final.",
+  "role": "Warrior",
+  "supportTypes": []
+}

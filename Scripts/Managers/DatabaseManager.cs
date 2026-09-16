@@ -1,4 +1,5 @@
 using Godot;
+using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace ProjetoDC.Scripts.Managers
             LoadNpcs();
             LoadQuests();
             LoadExplorationMaps();
+            LoadPassives();
+            LoadSets();
         }
 
         private const string DigimonFolder = "res://Data/Digimon/";
@@ -34,6 +37,8 @@ namespace ProjetoDC.Scripts.Managers
         private const string NpcFolder = "res://Data/NPCs/";
         private const string QuestFolder = "res://Data/Quests/";
         private const string MapFolder = "res://Data/Maps/";
+        private const string PassiveFolder = "res://Data/Passives/";
+        private const string SetFolder = "res://Data/Sets/";
 
         private Dictionary<int, DigimonData> digimons = new();
 
@@ -48,6 +53,10 @@ namespace ProjetoDC.Scripts.Managers
         private Dictionary<int, QuestData> quests = new();
 
         private Dictionary<int, ExplorationMapData> explorationMaps = new();
+
+        private Dictionary<PassiveType, PassiveData> passives = new();
+
+        private Dictionary<int, DigimonSetData> sets = new();
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
@@ -205,16 +214,8 @@ namespace ProjetoDC.Scripts.Managers
                 if (evolutionList != null)
                 {
                     evolutions.AddRange(evolutionList);
-                    GD.Print($"Evoluções carregadas de {fileName}:");
-                    
-                    foreach (var evo in evolutionList)
-                    {
-                        string fromName = GetDigimonName(evo.FromDigimonId);
-                        string toName = GetDigimonName(evo.ToDigimonId);
-                        GD.Print($"  → {fromName} evolui para {toName} (Nível {evo.RequiredLevel})");
-                    }
                 }
-                
+
                 fileName = dir.GetNext();
             }
 
@@ -226,26 +227,7 @@ namespace ProjetoDC.Scripts.Managers
         /// </summary>
         public List<EvolutionData> GetEvolutionsFrom(int digimonId)
         {
-            var evoList = evolutions.Where(e => e.FromDigimonId == digimonId).ToList();
-            
-            string digimonName = GetDigimonName(digimonId);
-            GD.Print($"Evoluções possíveis para {digimonName}: {evoList.Count}");
-            
-            foreach (var evo in evoList)
-            {
-                string toName = GetDigimonName(evo.ToDigimonId);
-            }
-            
-            return evoList;
-        }
-
-        /// <summary>
-        /// Recupera o nome do digimon pelo ID, usado apenas para logs/legibilidade.
-        /// </summary>
-        private string GetDigimonName(int id)
-        {
-            var digimon = GetDigimon(id);
-            return digimon?.Name ?? $"Desconhecido (ID {id})";
+            return evolutions.Where(e => e.FromDigimonId == digimonId).ToList();
         }
 
         /// <summary>
@@ -682,6 +664,171 @@ namespace ProjetoDC.Scripts.Managers
         public IEnumerable<ExplorationMapData> GetAllExplorationMaps()
         {
             return explorationMaps.Values.OrderBy(m => m.Id);
+        }
+
+        /// <summary>
+        /// Carrega os arquivos JSON de passivas (Data/Passives/*.json, ver PASSIVAS_SPEC.md
+        /// na raiz do projeto), mesmo padrão de LoadDigimons/LoadItems/LoadNpcs - um arquivo
+        /// por passiva.
+        /// </summary>
+        public void LoadPassives()
+        {
+            string path = PassiveFolder;
+
+            using var dir = DirAccess.Open(path);
+
+            if (dir == null)
+            {
+                GD.PrintErr("Pasta de passivas não encontrada!");
+                return;
+            }
+
+            dir.ListDirBegin();
+
+            string fileName = dir.GetNext();
+
+            while (fileName != "")
+            {
+                if (fileName == "." || fileName == "..")
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                if (!fileName.EndsWith(".json"))
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string fullPath = path + fileName;
+
+                using var file = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
+
+                if (file == null)
+                {
+                    GD.PrintErr("Erro ao abrir: " + fullPath);
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string json = file.GetAsText();
+
+                try
+                {
+                    PassiveData passive = JsonSerializer.Deserialize<PassiveData>(json, JsonOptions);
+
+                    if (passives.ContainsKey(passive.Id))
+                    {
+                        GD.PrintErr("ID de passiva duplicado: " + passive.Id);
+                    }
+                    else
+                    {
+                        passives.Add(passive.Id, passive);
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                }
+
+                fileName = dir.GetNext();
+            }
+
+            GD.Print("Passivas carregadas: " + passives.Count);
+        }
+
+        /// <summary>Retorna o <see cref="PassiveData"/> pelo ID, ou null se não encontrado.</summary>
+        public PassiveData GetPassive(PassiveType id)
+        {
+            if (passives.TryGetValue(id, out var passive))
+                return passive;
+
+            GD.PrintErr("Passiva não encontrada: " + id);
+            return null;
+        }
+
+        /// <summary>Retorna todas as passivas carregadas, ordenadas por ID.</summary>
+        public IEnumerable<PassiveData> GetAllPassives()
+        {
+            return passives.Values.OrderBy(p => p.Id);
+        }
+
+        /// <summary>Carrega os "conjuntos" de Digimon (ver DigimonSetData) - grupos temáticos
+        /// que dão bônus permanente ao Center quando toda a lista já foi descoberta pelo
+        /// menos uma vez (EncyclopediaScreen mostra a aba de Conjuntos, GameManager decide o
+        /// bônus).</summary>
+        public void LoadSets()
+        {
+            string path = SetFolder;
+
+            using var dir = DirAccess.Open(path);
+
+            if (dir == null)
+            {
+                GD.PrintErr("Pasta de conjuntos não encontrada!");
+                return;
+            }
+
+            dir.ListDirBegin();
+
+            string fileName = dir.GetNext();
+
+            while (fileName != "")
+            {
+                if (fileName == "." || fileName == "..")
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                if (!fileName.EndsWith(".json"))
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string fullPath = path + fileName;
+
+                using var file = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
+
+                if (file == null)
+                {
+                    GD.PrintErr("Erro ao abrir: " + fullPath);
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string json = file.GetAsText();
+
+                try
+                {
+                    DigimonSetData set = JsonSerializer.Deserialize<DigimonSetData>(json, JsonOptions);
+
+                    if (sets.ContainsKey(set.Id))
+                    {
+                        GD.PrintErr("ID de conjunto duplicado: " + set.Id);
+                    }
+                    else
+                    {
+                        sets.Add(set.Id, set);
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                }
+
+                fileName = dir.GetNext();
+            }
+
+            GD.Print("Conjuntos carregados: " + sets.Count);
+        }
+
+        /// <summary>Retorna todos os conjuntos carregados, ordenados por ID.</summary>
+        public IEnumerable<DigimonSetData> GetAllSets()
+        {
+            return sets.Values.OrderBy(s => s.Id);
         }
     }
 }

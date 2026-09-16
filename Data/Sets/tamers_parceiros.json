@@ -1,0 +1,8 @@
+{
+  "Id": 3,
+  "Name": "Parceiros do Tamers",
+  "EffectDescription": "Conjunto completo: a Fome de qualquer Digimon do Center cai 15% mais devagar.",
+  "EffectType": "HungerDecayReductionPercent",
+  "EffectValue": 0.15,
+  "DigimonIds": [7, 8, 9, 10]
+}

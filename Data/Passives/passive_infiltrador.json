@@ -1,0 +1,7 @@
+{
+  "id": "Infiltrador",
+  "name": "Infiltrador",
+  "description": "Penalidade de Role na pontuação de alvo passa de x70 para x130.",
+  "role": "Assassin",
+  "supportTypes": []
+}

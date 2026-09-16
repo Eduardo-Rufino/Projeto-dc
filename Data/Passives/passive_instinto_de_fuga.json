@@ -1,0 +1,7 @@
+{
+  "id": "InstintoDeFuga",
+  "name": "Instinto de Fuga",
+  "description": "Ganha o kiting que hoje só o Debuffer tem.",
+  "role": "Support",
+  "supportTypes": ["Healer", "Buffer"]
+}

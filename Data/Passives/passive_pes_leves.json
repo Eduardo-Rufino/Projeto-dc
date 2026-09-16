@@ -1,0 +1,7 @@
+{
+  "id": "PesLeves",
+  "name": "Pés Leves",
+  "description": "Raio de fuga 130 -> 190 e +8% de velocidade de movimento ao fugir.",
+  "role": "Ranged",
+  "supportTypes": []
+}

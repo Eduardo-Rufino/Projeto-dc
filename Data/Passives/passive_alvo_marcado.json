@@ -1,0 +1,7 @@
+{
+  "id": "AlvoMarcado",
+  "name": "Alvo Marcado",
+  "description": "A cada 4º acerto, -12% de Speed no alvo por 5s.",
+  "role": "Ranged",
+  "supportTypes": []
+}

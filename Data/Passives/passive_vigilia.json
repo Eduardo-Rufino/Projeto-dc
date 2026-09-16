@@ -1,0 +1,7 @@
+{
+  "id": "Vigilia",
+  "name": "Vigília",
+  "description": "Sem ninguém ferido, aplica escudo de 8% do HP máximo no aliado sem escudo. Um escudo por aliado, não renova até ser consumido.",
+  "role": "Support",
+  "supportTypes": ["Healer"]
+}

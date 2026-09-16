@@ -1,0 +1,7 @@
+{
+  "id": "MarcaDupla",
+  "name": "Marca Dupla",
+  "description": "Debuffa os dois maiores atacantes inimigos com -14% cada.",
+  "role": "Support",
+  "supportTypes": ["Debuffer"]
+}

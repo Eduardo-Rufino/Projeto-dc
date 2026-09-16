@@ -1,0 +1,7 @@
+{
+  "id": "GolpePesado",
+  "name": "Golpe Pesado",
+  "description": "A cada 4º ataque, +50% de dano final em área pequena ao redor do alvo.",
+  "role": "Warrior",
+  "supportTypes": []
+}

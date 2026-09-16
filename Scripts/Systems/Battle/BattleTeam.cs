@@ -22,11 +22,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
         public bool IsDefeated =>
             Members.All(m => m.IsDead);
 
-        public void Tick(double delta)
+        public void Tick(double delta, double elapsedSeconds)
         {
             foreach (var member in Members)
             {
-                member.Tick(delta);
+                member.Tick(delta, elapsedSeconds);
             }
         }
     }

@@ -1,0 +1,7 @@
+{
+  "id": "FuriaCrescente",
+  "name": "Fúria Crescente",
+  "description": "+5% de dano final por golpe acertado, até 5 pilhas, decai após 3s sem atacar.",
+  "role": "Warrior",
+  "supportTypes": []
+}

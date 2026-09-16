@@ -1,0 +1,7 @@
+{
+  "id": "SedeDeBatalha",
+  "name": "Sede de Batalha",
+  "description": "Cura 20% do dano final causado, com decaimento em lutas longas.",
+  "role": "Warrior",
+  "supportTypes": []
+}

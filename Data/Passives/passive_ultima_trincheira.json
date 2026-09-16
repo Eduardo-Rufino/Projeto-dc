@@ -1,0 +1,7 @@
+{
+  "id": "UltimaTrincheira",
+  "name": "Última Trincheira",
+  "description": "Abaixo de 40% de HP, -50% no dano final por 5s, uma vez por luta.",
+  "role": "Tank",
+  "supportTypes": []
+}

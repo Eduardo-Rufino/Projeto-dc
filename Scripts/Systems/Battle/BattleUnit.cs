@@ -34,6 +34,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
         // Distância que o alvo pode ter andado do ponto onde o projétil foi mirado
         // pra ser considerado uma esquiva (sem dano aplicado).
         private const float ProjectileDodgeDistance = 40f;
+        private const float PredicaoDodgeDistanceMultiplier = 0.5f;
 
         private const double TankCooldown = 1.6;
         private const double WarriorCooldown = 1.4;
@@ -43,24 +44,28 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private const double BuffDebuffCooldown = 3.0;
 
         private const float HealPercentage = 0.15f;
+        private const float MaosFirmesHealPercentage = 0.19f;
+        private const float VigiliaShieldPercentage = 0.08f;
         private const float BuffDebuffPercentage = 0.2f;
         private const double BuffDebuffDuration = 6.0;
 
-        // Depois desse tanto de luta, a cura começa a perder eficácia, piorando mais a cada
-        // HealDecayInterval segundos - sem isso, um Healer sozinho (principalmente num 1x1,
-        // sem ninguém pra dividir o dano) pode curar mais rápido do que o oponente consegue
-        // causar dano, tornando a luta literalmente impossível de vencer. Nunca cai abaixo
-        // de MinHealEffectiveness - a cura fica cada vez menos decisiva, mas nunca inútil.
-        private const double HealDecayGraceSeconds = 30.0;
-        private const double HealDecayInterval = 5.0;
-        private const float HealDecayPerStep = 0.15f;
-        private const float MinHealEffectiveness = 0.2f;
+        // Aura Vital (Support, ver PASSIVAS_SPEC.md): regen contínua num raio - a spec não
+        // dá um raio nem um percentual explícitos ("regeneração passiva num raio"), então
+        // reaproveita SupportRange (150, o próprio alcance de engajamento do Support) como
+        // raio e a mesma taxa de Fôlego (0.6%/s) como percentual - default razoável, não um
+        // número da spec sendo ajustado.
+        private const float AuraVitalRegenPercentPerSecond = 0.006f;
 
         // A Speed real do combate: o cooldown de ação escala pela razão entre a Speed do
         // atacante e a do alvo (2x mais rápido = ataca ~2x mais vezes no mesmo intervalo),
         // mas nunca fica mais rápido que esse piso - evita golpes múltiplos no mesmo segundo
         // quando a diferença de Speed é enorme.
         private const double MinAttackCooldown = 0.5;
+
+        // Fixação (Ranged) - ver ComputeEffectiveCooldown. 4 pilhas x 0.06s = -0.24s, o teto
+        // que a spec descreve.
+        private const double FixacaoCooldownReductionPerHit = 0.06;
+        private const int FixacaoMaxCooldownReductionStacks = 4;
 
         // Influência leve do stat de Speed na velocidade de movimento (a Role continua
         // mandando na velocidade base) - clamp de ±15% em cima do valor da Role.
@@ -94,11 +99,14 @@ namespace ProjetoDC.Scripts.Systems.Battle
         // seu alvo de ataque - é o que faz ele se reposicionar pra fugir de quem está
         // avançando, em vez de só manter distância do alvo escolhido.
         private const float RangedDangerRadius = 130f;
+        private const float PesLevesRangedDangerRadius = 190f;
+        private const float PesLevesFleeSpeedMultiplier = 1.08f;
 
         // Assassin/Ranged escolhem alvo por uma pontuação (distância + uma penalidade por
         // Role), não por uma regra rígida - assim um Tank bem perto/no alcance ainda pode
         // ser atacado (não é ignorado), mas um DPS a uma distância parecida é preferido.
         private const float TargetPriorityPenaltyStep = 70f;
+        private const float InfiltradorTargetPriorityPenaltyStep = 130f;
         private const double RetargetInterval = 3.0;
 
         // Dash do melee (Warrior/Tank): quando o alvo está fora do alcance corpo a corpo mas
@@ -112,6 +120,10 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private const float MeleeDashSpeedMultiplier = 5f;
         private const double MeleeDashDuration = 0.2;
         private const double MeleeDashCooldown = 6.0;
+
+        // Investida (Warrior) e Passo Fantasma (Assassin) encurtam o cooldown do próprio
+        // dash - ver PASSIVAS_SPEC.md.
+        private const double FasterDashCooldown = 4.0;
 
         private double _dashCooldownRemaining;
         private double _dashTimeRemaining;
@@ -128,6 +140,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
         // Support não é afetado, já que ele não "ataca" ninguém) a mirar nele, abrindo
         // espaço pro DPS/suporte aliado fugir de quem estava perseguindo eles.
         private const double TauntInterval = 8.0;
+        private const double ProvocacaoInsistenteTauntInterval = 6.5;
         private const double TauntDuration = 4.0;
         private const float TauntRadius = 220f;
 
@@ -168,6 +181,15 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private bool _isActing;
         private bool _isDead;
 
+        /// <summary>True quando um Suporte (Healer/Buffer/Debuffer) não tem mais nenhuma
+        /// ação de suporte útil pra fazer no alvo escolhido por SelectTarget (curar/dar
+        /// escudo sem ninguém ferido/sem escudo, ou buffar/debuffar um alvo que já está no
+        /// teto de pilhas) - nesse caso ele ataca normalmente em vez de ficar reaplicando um
+        /// efeito sem valor pra sempre. Sem isso, dois Suportes puros (ex.: Buffer vs Buffer)
+        /// nunca causam dano um no outro e a luta 1x1 não tem como terminar. Setado por
+        /// SelectTarget, consumido uma vez por ApplyAction logo em seguida.</summary>
+        private bool _supportFallbackAttack;
+
         private float _speed;
         private float _range;
         private double _actionCooldown;
@@ -207,7 +229,8 @@ namespace ProjetoDC.Scripts.Systems.Battle
             _orbitAngularSpeed = GD.Randf() < 0.5f ? angularSpeed : -angularSpeed;
 
             // Sorteia o primeiro taunt pra não sincronizar Tanks dos dois lados.
-            _tauntTimer = GD.RandRange(TauntInterval * 0.5, TauntInterval);
+            double tauntInterval = GetTauntInterval();
+            _tauntTimer = GD.RandRange(tauntInterval * 0.5, tauntInterval);
 
             ConfigureByRole();
 
@@ -284,6 +307,16 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             double effectiveCooldown = _actionCooldown / speedRatio;
 
+            // Fixação (Ranged, ver PASSIVAS_SPEC.md): cada acerto consecutivo (sem esquiva no
+            // meio - ver PerformAction) desconta um valor FIXO de segundos, até um teto de
+            // pilhas - desconto aplicado depois da escala por Speed, não em cima dela, porque
+            // a spec fala em segundos, não em %.
+            if (_combatant.Digimon.PassiveId == PassiveType.Fixacao)
+            {
+                int stacks = Math.Min(FixacaoMaxCooldownReductionStacks, _combatant.FixacaoConsecutiveHits);
+                effectiveCooldown -= FixacaoCooldownReductionPerHit * stacks;
+            }
+
             return Math.Max(effectiveCooldown, MinAttackCooldown);
         }
 
@@ -312,11 +345,17 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
                 if (_tauntTimer <= 0)
                 {
-                    _tauntTimer = TauntInterval;
+                    _tauntTimer = GetTauntInterval();
 
                     PerformTaunt();
                 }
             }
+
+            // Aura Vital (Support, ver PASSIVAS_SPEC.md) - regen contínua num raio ao redor
+            // dessa unidade, independente de estar atacando/se movendo/em cooldown (por isso
+            // roda aqui, antes do "if (_isActing) return" abaixo).
+            if (_combatant.Digimon.PassiveId == PassiveType.AuraVital)
+                ApplyAuraVitalRegen(delta);
 
             if (_isActing)
                 return;
@@ -338,6 +377,9 @@ namespace ProjetoDC.Scripts.Systems.Battle
                     _forcedTargetRemaining = 0;
                 }
             }
+
+            if (_forcedTargetRemaining <= 0)
+                _combatant.TauntedBy = null;
 
             if (_forcedTargetRemaining <= 0)
             {
@@ -380,7 +422,13 @@ namespace ProjetoDC.Scripts.Systems.Battle
                 distance <= MeleeDashRange)
             {
                 _dashTimeRemaining = MeleeDashDuration;
-                _dashCooldownRemaining = MeleeDashCooldown;
+                _dashCooldownRemaining = GetDashCooldown();
+
+                // Investida (Warrior, ver PASSIVAS_SPEC.md) - o bônus de dano em si vive em
+                // DamageCalculator.ApplyAttackerPassives, que consome essa flag no próximo
+                // golpe acertado.
+                if (_combatant.Digimon.PassiveId == PassiveType.Investida)
+                    _combatant.InvestidaPendingBonus = true;
             }
 
             MoveTowardTarget(targetUnit.GlobalPosition, distance, delta);
@@ -394,20 +442,27 @@ namespace ProjetoDC.Scripts.Systems.Battle
         /// <summary>
         /// Só quem sempre mira um inimigo (nunca um aliado) foge quando o alvo chega perto
         /// demais. Healer e Buffer miram aliados - fugir do próprio aliado não faz sentido,
-        /// então eles só se aproximam até o alcance e param. Ranged tem sua própria lógica
-        /// de posicionamento (ComputeRangedPosition), que reage a qualquer ameaça próxima,
-        /// não só ao alvo de ataque.
+        /// então eles só se aproximam até o alcance e param (a menos que tenham Instinto de
+        /// Fuga - ver PASSIVAS_SPEC.md - que estende esse kiting pra eles também; a fuga
+        /// respeitar o alcance do aliado já vem de graça, o bloco abaixo usa _range/_target
+        /// igual pra qualquer Role). Ranged tem sua própria lógica de posicionamento
+        /// (ComputeRangedPosition), que reage a qualquer ameaça próxima, não só ao alvo de
+        /// ataque.
         /// </summary>
         private bool UsesKiting =>
             _combatant.Digimon.BaseData.Role == RoleType.Support &&
-            _combatant.Digimon.BaseData.SupportType == SupportType.Debuffer;
+            (_combatant.Digimon.BaseData.SupportType == SupportType.Debuffer ||
+             _combatant.Digimon.PassiveId == PassiveType.InstintoDeFuga);
 
         /// <summary>Papéis que usam MeleeRange (alcance 40) - só eles recebem o dash, já que
         /// Assassin (range menor, mas o mais rápido do jogo) não sofre do mesmo problema de
-        /// nunca alcançar um Ranged fugindo.</summary>
+        /// nunca alcançar um Ranged fugindo. Passo Fantasma (ver PASSIVAS_SPEC.md) é a
+        /// exceção deliberada: concede o dash a um Assassin específico mesmo sem esse
+        /// problema, só pra fechar o gap inicial mais rápido.</summary>
         private bool IsMeleeRole =>
             _combatant.Digimon.BaseData.Role == RoleType.Warrior ||
-            _combatant.Digimon.BaseData.Role == RoleType.Tank;
+            _combatant.Digimon.BaseData.Role == RoleType.Tank ||
+            _combatant.Digimon.PassiveId == PassiveType.PassoFantasma;
 
         private void MoveTowardTarget(Vector2 targetPosition, float distance, double delta)
         {
@@ -425,7 +480,9 @@ namespace ProjetoDC.Scripts.Systems.Battle
             }
             else if (_combatant.Digimon.BaseData.Role == RoleType.Ranged)
             {
-                desiredPosition = ComputeRangedPosition(targetPosition, distance, delta);
+                desiredPosition = _combatant.Digimon.PassiveId == PassiveType.PosturaFirme
+                    ? ComputeStandGroundPosition(targetPosition, distance, delta)
+                    : ComputeRangedPosition(targetPosition, distance, delta);
             }
             else if (UsesKiting)
             {
@@ -539,6 +596,17 @@ namespace ProjetoDC.Scripts.Systems.Battle
             );
         }
 
+        /// <summary>Postura Firme (Ranged, ver PASSIVAS_SPEC.md): desliga órbita E fuga por
+        /// completo - só se aproxima até o alcance e para ali, sem se importar com nenhuma
+        /// ameaça próxima. O dano final maior compensa a exposição.</summary>
+        private Vector2 ComputeStandGroundPosition(Vector2 targetPosition, float distance, double delta)
+        {
+            if (distance > _range)
+                return GlobalPosition.MoveToward(targetPosition, (float)(_speed * delta));
+
+            return GlobalPosition;
+        }
+
         /// <summary>
         /// Posicionamento do Ranged: enquanto ainda não chegou no alcance do próprio alvo,
         /// prioriza se afastar de qualquer inimigo que esteja perto demais (não só do alvo
@@ -549,6 +617,20 @@ namespace ProjetoDC.Scripts.Systems.Battle
         /// permanente, sem nunca mais voltar a atacar. Nesse caso o único gatilho de fuga
         /// que resta é ficar perto demais do próprio alvo (minDistance, abaixo).
         /// </summary>
+        /// <summary>Pés Leves (Ranged) amplia o raio de fuga - ver PASSIVAS_SPEC.md.</summary>
+        private float GetRangedDangerRadius() =>
+            _combatant.Digimon.PassiveId == PassiveType.PesLeves
+                ? PesLevesRangedDangerRadius
+                : RangedDangerRadius;
+
+        /// <summary>Pés Leves (Ranged) acelera especificamente o movimento de FUGA (R4 da
+        /// spec: velocidade_movimento, não stat_Speed) - só usado nos passos "away" abaixo,
+        /// nunca na aproximação/órbita normal.</summary>
+        private float GetFleeSpeed() =>
+            _combatant.Digimon.PassiveId == PassiveType.PesLeves
+                ? _speed * PesLevesFleeSpeedMultiplier
+                : _speed;
+
         private Vector2 ComputeRangedPosition(Vector2 targetPosition, float distanceToTarget, double delta)
         {
             bool alreadyInRangeOfTarget = distanceToTarget <= _range;
@@ -561,11 +643,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
                 {
                     float threatDistance = GlobalPosition.DistanceTo(nearestThreat.GlobalPosition);
 
-                    if (threatDistance < RangedDangerRadius)
+                    if (threatDistance < GetRangedDangerRadius())
                     {
                         Vector2 away = (GlobalPosition - nearestThreat.GlobalPosition).Normalized();
 
-                        return GlobalPosition + away * (float)(_speed * delta);
+                        return GlobalPosition + away * (float)(GetFleeSpeed() * delta);
                     }
                 }
             }
@@ -576,7 +658,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
             {
                 Vector2 away = (GlobalPosition - targetPosition).Normalized();
 
-                return GlobalPosition + away * (float)(_speed * delta);
+                return GlobalPosition + away * (float)(GetFleeSpeed() * delta);
             }
 
             if (distanceToTarget > _range)
@@ -607,13 +689,61 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             var digimon = _combatant.Digimon;
 
-            if (digimon.BaseData.Role == RoleType.Support &&
-                digimon.BaseData.SupportType == SupportType.Healer)
-            {
-                return target.HpPercentage < 1f;
-            }
+            // Enquanto não estiver no fallback de ataque (ver _supportFallbackAttack), um
+            // Suporte só continua "travado" no alvo atual enquanto a ação de suporte nele
+            // ainda fizer sentido - assim que deixar de fazer (curou até encher, ou o buff/
+            // debuff bateu no teto de pilhas), força uma nova SelectTarget em vez de ficar
+            // reaplicando a mesma ação sem efeito novo pra sempre.
+            if (digimon.BaseData.Role == RoleType.Support && !_supportFallbackAttack)
+                return IsSupportActionStillUseful(target);
 
             return true;
+        }
+
+        /// <summary>Se a ação de suporte (curar/dar escudo/buffar/debuffar) em
+        /// <paramref name="target"/> ainda teria algum efeito novo - usado tanto por
+        /// SelectTarget (decidir se cai no fallback de ataque) quanto por IsTargetValid
+        /// (forçar reavaliação assim que deixar de valer a pena). Sem essa checagem
+        /// compartilhada, um Suporte travava no primeiro alvo escolhido pro resto da luta
+        /// inteira (Support não usa UsesDynamicTargeting como Tank/Assassin/Ranged).
+        ///
+        /// Buffer/Debuffer usam a COMPOSIÇÃO do time como critério (tem alguém que causa
+        /// dano direto?), não o estado momentâneo das pilhas de buff/debuff - pilhas decaem
+        /// sozinhas com o tempo (ver AddEffect/BuffDebuffDuration, mais longa que o
+        /// cooldown, mas não o bastante pra nunca cair de novo abaixo do teto), então usar
+        /// "já está no teto agora" como sinal fazia o Suporte alternar pra sempre entre
+        /// atacar e voltar a buffar toda vez que uma pilha antiga expirava - exatamente o
+        /// impasse relatado de Suporte vs Suporte no 1x1, que nunca se resolvia porque o
+        /// ataque nunca virava um compromisso.</summary>
+        private bool IsSupportActionStillUseful(BattleCombatant target)
+        {
+            var digimon = _combatant.Digimon;
+
+            switch (digimon.BaseData.SupportType)
+            {
+                case SupportType.Healer:
+                    if (target.HpPercentage < 1f)
+                        return true;
+
+                    // Vigília (ver PASSIVAS_SPEC.md): sem ninguém ferido, o alvo escolhido é
+                    // quem não tem escudo - continua útil enquanto isso for verdade.
+                    if (digimon.PassiveId == PassiveType.Vigilia)
+                        return target.ShieldAmount <= 0;
+
+                    return false;
+
+                case SupportType.Buffer:
+                case SupportType.Debuffer:
+                    // Buffar aliado ou debuffar inimigo só compensa se o PRÓPRIO time tiver
+                    // alguém pra converter isso em dano de verdade - senão nunca compensa,
+                    // não importa quantas pilhas o alvo já tem.
+                    BattleTeam allyTeam = _isPlayerSide ? _arena.Match.PlayerTeam : _arena.Match.EnemyTeam;
+
+                    return allyTeam.AliveMembers.Any(m => m.Digimon.BaseData.Role != RoleType.Support);
+
+                default:
+                    return true;
+            }
         }
 
         /// <summary>
@@ -621,6 +751,43 @@ namespace ProjetoDC.Scripts.Systems.Battle
         /// Support, que não ataca) a mirar nele por um tempo, dando espaço pro DPS/suporte
         /// aliado escapar de quem estava perseguindo eles.
         /// </summary>
+        /// <summary>Provocação Insistente (Tank) reduz o intervalo entre Taunts - ver
+        /// PASSIVAS_SPEC.md.</summary>
+        private double GetTauntInterval() =>
+            _combatant.Digimon.PassiveId == PassiveType.ProvocacaoInsistente
+                ? ProvocacaoInsistenteTauntInterval
+                : TauntInterval;
+
+        /// <summary>Investida (Warrior) e Passo Fantasma (Assassin) encurtam o próprio
+        /// cooldown de dash - ver PASSIVAS_SPEC.md.</summary>
+        private double GetDashCooldown() =>
+            _combatant.Digimon.PassiveId == PassiveType.Investida ||
+            _combatant.Digimon.PassiveId == PassiveType.PassoFantasma
+                ? FasterDashCooldown
+                : MeleeDashCooldown;
+
+        /// <summary>Aura Vital (Support, ver PASSIVAS_SPEC.md): regenera todo aliado vivo
+        /// dentro de SupportRange dessa unidade (incluindo ela mesma, trivialmente dentro do
+        /// próprio raio) - ver o comentário em AuraVitalRegenPercentPerSecond sobre a
+        /// ausência de raio/percentual explícitos na spec.</summary>
+        private void ApplyAuraVitalRegen(double delta)
+        {
+            BattleTeam allyTeam = _isPlayerSide ? _arena.Match.PlayerTeam : _arena.Match.EnemyTeam;
+
+            foreach (var ally in allyTeam.AliveMembers)
+            {
+                BattleUnit allyUnit = _arena.GetUnitFor(ally);
+
+                if (allyUnit == null)
+                    continue;
+
+                if (GlobalPosition.DistanceTo(allyUnit.GlobalPosition) > SupportRange)
+                    continue;
+
+                ally.ApplyContinuousRegen(AuraVitalRegenPercentPerSecond, delta, _arena.Match.ElapsedSeconds);
+            }
+        }
+
         private void PerformTaunt()
         {
             BattleTeam enemyTeam = _isPlayerSide ? _arena.Match.EnemyTeam : _arena.Match.PlayerTeam;
@@ -640,8 +807,6 @@ namespace ProjetoDC.Scripts.Systems.Battle
                     enemyUnit.ApplyTaunt(_combatant, TauntDuration);
                 }
             }
-
-            GD.Print($"{_combatant.Digimon.BaseData.Name} provocou os inimigos próximos!");
         }
 
         /// <summary>Força essa unidade a mirar em <paramref name="taunter"/> por
@@ -651,6 +816,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
             _forcedTarget = taunter;
             _forcedTargetRemaining = duration;
             _target = taunter;
+
+            // Grito de Guerra (Tank, ver PASSIVAS_SPEC.md) lê isso via DamageCalculator, que
+            // só enxerga BattleCombatant - _forcedTarget/_forcedTargetRemaining (aqui em
+            // cima) não bastam porque são privados desse BattleUnit.
+            _combatant.TauntedBy = taunter;
         }
 
         private BattleCombatant SelectTarget()
@@ -664,25 +834,75 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             if (digimon.BaseData.Role == RoleType.Support)
             {
+                _supportFallbackAttack = false;
+
                 switch (digimon.BaseData.SupportType)
                 {
                     case SupportType.Healer:
-                        // Sem ninguém ferido, o Healer fica parado (não ataca -
-                        // ApplyAction() sempre cura o alvo escolhido, nunca causa dano).
-                        return allyTeam.AliveMembers
+                        var hurtAlly = allyTeam.AliveMembers
                             .Where(m => m.HpPercentage < 1f)
                             .OrderBy(m => m.HpPercentage)
                             .FirstOrDefault();
 
+                        if (hurtAlly != null)
+                            return hurtAlly;
+
+                        // Vigília (ver PASSIVAS_SPEC.md): sem ninguém ferido, em vez de
+                        // atacar, dá escudo pro primeiro aliado ainda sem um (ver
+                        // ApplyVigiliaShield/IsSupportActionStillUseful).
+                        if (digimon.PassiveId == PassiveType.Vigilia)
+                        {
+                            var shieldless = allyTeam.AliveMembers
+                                .Where(m => m.ShieldAmount <= 0)
+                                .FirstOrDefault();
+
+                            if (shieldless != null)
+                                return shieldless;
+                        }
+
+                        // Nada pra curar nem dar escudo - sem isso o Healer ficaria parado
+                        // pra sempre (contra outro Suporte puro, a luta nunca terminaria).
+                        // Ataca normalmente em vez disso.
+                        _supportFallbackAttack = true;
+
+                        return NearestOf(aliveEnemies);
+
                     case SupportType.Buffer:
-                        return allyTeam.AliveMembers
-                            .OrderByDescending(m => m.GetEffectiveStat(m.AttackStat))
-                            .FirstOrDefault();
+                        {
+                            var buffTarget = allyTeam.AliveMembers
+                                .OrderByDescending(m => m.GetEffectiveStat(m.AttackStat))
+                                .FirstOrDefault();
+
+                            if (buffTarget == null)
+                                return null;
+
+                            if (IsSupportActionStillUseful(buffTarget))
+                                return buffTarget;
+
+                            // O próprio time não tem ninguém pra converter esse buff em dano
+                            // (ver IsSupportActionStillUseful) - sem isso, um Buffer contra
+                            // outro Suporte puro ficaria buffando pra sempre e a luta 1x1
+                            // nunca terminaria.
+                            _supportFallbackAttack = true;
+
+                            return NearestOf(aliveEnemies);
+                        }
 
                     case SupportType.Debuffer:
-                        return aliveEnemies
-                            .OrderByDescending(m => m.GetEffectiveStat(m.AttackStat))
-                            .FirstOrDefault();
+                        {
+                            var debuffTarget = aliveEnemies
+                                .OrderByDescending(m => m.GetEffectiveStat(m.AttackStat))
+                                .FirstOrDefault();
+
+                            if (debuffTarget == null)
+                                return null;
+
+                            // O alvo já é um inimigo (Debuffer nunca mira aliado) - no
+                            // fallback, ataca esse mesmo alvo em vez de escolher outro.
+                            _supportFallbackAttack = !IsSupportActionStillUseful(debuffTarget);
+
+                            return debuffTarget;
+                        }
                 }
             }
 
@@ -730,11 +950,21 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
         /// <summary>Roles cujo alvo ideal muda com a posição de todo mundo no campo (Tank
         /// guardando o backline, Assassin/Ranged pontuando por distância+Role) - reavaliam
-        /// o alvo periodicamente, não só quando o atual morre.</summary>
+        /// o alvo periodicamente, não só quando o atual morre. Fixação (Ranged, ver
+        /// PASSIVAS_SPEC.md) é a exceção: trava no alvo escolhido na primeira seleção (que já
+        /// prioriza o Support/Ranged inimigo, ver GetTargetScore) até ele morrer - o teto de
+        /// segurança StuckChaseTimeout (mais abaixo, fora desse método) continua valendo
+        /// mesmo assim, não é "reavaliar" no sentido estratégico, é só evitar perseguição
+        /// impossível pra sempre. Support também entra aqui pelo mesmo motivo de fundo: sem
+        /// reavaliação periódica, IsTargetValid sozinho não bastava pra perceber a tempo que
+        /// um buff/debuff bateu no teto de pilhas (ver IsSupportActionStillUseful) e cair no
+        /// fallback de ataque - é assim que o impasse de Suporte vs Suporte era resolvido.</summary>
         private bool UsesDynamicTargeting =>
-            _combatant.Digimon.BaseData.Role == RoleType.Tank ||
-            _combatant.Digimon.BaseData.Role == RoleType.Assassin ||
-            _combatant.Digimon.BaseData.Role == RoleType.Ranged;
+            _combatant.Digimon.PassiveId != PassiveType.Fixacao &&
+            (_combatant.Digimon.BaseData.Role == RoleType.Tank ||
+             _combatant.Digimon.BaseData.Role == RoleType.Assassin ||
+             _combatant.Digimon.BaseData.Role == RoleType.Ranged ||
+             _combatant.Digimon.BaseData.Role == RoleType.Support);
 
         /// <summary>
         /// Pontuação de alvo pra Assassin/Ranged: distância real + uma penalidade por Role
@@ -745,7 +975,12 @@ namespace ProjetoDC.Scripts.Systems.Battle
         private float GetTargetScore(BattleCombatant candidate, Vector2 candidateUnitPosition)
         {
             float distance = GlobalPosition.DistanceTo(candidateUnitPosition);
-            float penalty = GetTargetPriority(candidate.Digimon.BaseData.Role) * TargetPriorityPenaltyStep;
+
+            float penaltyStep = _combatant.Digimon.PassiveId == PassiveType.Infiltrador
+                ? InfiltradorTargetPriorityPenaltyStep
+                : TargetPriorityPenaltyStep;
+
+            float penalty = GetTargetPriority(candidate.Digimon.BaseData.Role) * penaltyStep;
 
             return distance + penalty;
         }
@@ -840,11 +1075,19 @@ namespace ProjetoDC.Scripts.Systems.Battle
                     // fácil da marca, contando como "esquiva" um golpe que claramente acertou.
                     float flightDistance = GlobalPosition.DistanceTo(aimedPosition);
                     float flightSeconds = flightDistance / AttackProjectile.TravelSpeed;
-                    float dodgeThreshold = ProjectileDodgeDistance + targetUnit.Speed * flightSeconds;
+
+                    float dodgeDistance = _combatant.Digimon.PassiveId == PassiveType.Predicao
+                        ? ProjectileDodgeDistance * PredicaoDodgeDistanceMultiplier
+                        : ProjectileDodgeDistance;
+
+                    float dodgeThreshold = dodgeDistance + targetUnit.Speed * flightSeconds;
 
                     if (targetUnit.GlobalPosition.DistanceTo(aimedPosition) > dodgeThreshold)
                     {
-                        GD.Print($"{_target.Digimon.BaseData.Name} desviou do ataque à distância!");
+                        // Fixação (Ranged, ver PASSIVAS_SPEC.md): esquiva quebra a sequência
+                        // de acertos consecutivos que reduz o cooldown.
+                        if (_combatant.Digimon.PassiveId == PassiveType.Fixacao)
+                            _combatant.FixacaoConsecutiveHits = 0;
 
                         _isActing = false;
                         return;
@@ -946,23 +1189,54 @@ namespace ProjetoDC.Scripts.Systems.Battle
             if (targetUnit == null)
                 return;
 
-            if (digimon.BaseData.Role == RoleType.Support)
+            // _supportFallbackAttack (ver SelectTarget) sinaliza que não sobrou nenhuma ação
+            // de suporte útil pro alvo escolhido - cai direto pro ataque normal (fora deste
+            // if) em vez de curar/buffar/debuffar de novo à toa.
+            if (digimon.BaseData.Role == RoleType.Support && !_supportFallbackAttack)
             {
                 switch (digimon.BaseData.SupportType)
                 {
                     case SupportType.Healer:
-                        int healed = ApplyHeal();
-                        targetUnit.ShowFloatingText($"+{healed}", HealColor);
+                        // _target sem estar ferido só acontece via o fallback de Vigília em
+                        // SelectTarget (o caminho normal só escolhe quem está ferido) -
+                        // seguro usar isso como sinal de "é escudo, não cura".
+                        if (digimon.PassiveId == PassiveType.Vigilia && _target.HpPercentage >= 1f)
+                        {
+                            ApplyVigiliaShield(targetUnit);
+                        }
+                        else
+                        {
+                            int healed = ApplyHeal();
+                            targetUnit.ShowFloatingText($"+{healed}", HealColor);
+                        }
                         return;
 
                     case SupportType.Buffer:
-                        _target.AddEffect(_target.AttackStat, BuffDebuffPercentage, BuffDebuffDuration);
-                        targetUnit.ShowFloatingText($"+{GetStatAbbreviation(_target.AttackStat)}", BuffColor);
+                        if (digimon.PassiveId == PassiveType.DuplaVoz)
+                        {
+                            ApplyDuplaVozBuff();
+                        }
+                        else if (digimon.PassiveId == PassiveType.Ressonancia)
+                        {
+                            ApplyRessonanciaBuff(targetUnit);
+                        }
+                        else
+                        {
+                            _target.AddEffect(_target.AttackStat, BuffDebuffPercentage, BuffDebuffDuration);
+                            targetUnit.ShowFloatingText($"+{GetStatAbbreviation(_target.AttackStat)}", BuffColor);
+                        }
                         return;
 
                     case SupportType.Debuffer:
-                        _target.AddEffect(_target.AttackStat, -BuffDebuffPercentage, BuffDebuffDuration);
-                        targetUnit.ShowFloatingText($"-{GetStatAbbreviation(_target.AttackStat)}", DebuffColor);
+                        if (digimon.PassiveId == PassiveType.MarcaDupla)
+                        {
+                            ApplyMarcaDuplaDebuff();
+                        }
+                        else
+                        {
+                            _target.AddEffect(_target.AttackStat, -BuffDebuffPercentage, BuffDebuffDuration);
+                            targetUnit.ShowFloatingText($"-{GetStatAbbreviation(_target.AttackStat)}", DebuffColor);
+                        }
                         return;
                 }
             }
@@ -991,6 +1265,108 @@ namespace ProjetoDC.Scripts.Systems.Battle
             {
                 _ = targetUnit.PlayHitReaction();
             }
+
+            // Golpe Pesado (Warrior, ver PASSIVAS_SPEC.md) - DamageCalculator.
+            // ApplyAttackerPassives já aplicou o bônus de dano nesse golpe e zerou o
+            // contador; aqui só falta o splash em área, que precisa de posição/time inimigo
+            // (fora do alcance de BattleCombatant/DamageCalculator).
+            if (_combatant.Digimon.PassiveId == PassiveType.GolpePesado && _combatant.GolpePesadoHitCounter == 0)
+            {
+                ApplyGolpePesadoSplash(damage, targetUnit.GlobalPosition);
+            }
+
+            // Projétil Perfurante (Ranged, ver PASSIVAS_SPEC.md) - o alvo principal já tomou
+            // o dano cheio via ResolveAttack; aqui só falta o segundo inimigo atravessado.
+            if (_combatant.Digimon.PassiveId == PassiveType.ProjetilPerfurante)
+            {
+                ApplyProjetilPerfurante(damage, targetUnit);
+            }
+        }
+
+        // "Área pequena" não tem um número na spec - 70 escolhido entre o alcance de melee
+        // (40) e o raio de Taunt (220): maior que o alcance de um único alvo, sem cobrir a
+        // arena inteira.
+        private const float GolpePesadoAreaRadius = 70f;
+
+        /// <summary>Golpe Pesado (Warrior): splash do golpe bonificado pros inimigos vivos
+        /// perto do alvo principal (que já tomou o dano cheio via ResolveAttack, não é
+        /// atingido de novo aqui). Aplica o dano direto (TakeDamage), sem reentrar em
+        /// ResolveAttack - um splash não deveria re-rolar variância/crítico/passivas por
+        /// conta própria.</summary>
+        private void ApplyGolpePesadoSplash(int damage, Vector2 targetPosition)
+        {
+            BattleTeam enemyTeam = _isPlayerSide ? _arena.Match.EnemyTeam : _arena.Match.PlayerTeam;
+
+            foreach (var enemy in enemyTeam.AliveMembers)
+            {
+                if (enemy == _target)
+                    continue;
+
+                BattleUnit enemyUnit = _arena.GetUnitFor(enemy);
+
+                if (enemyUnit == null)
+                    continue;
+
+                if (enemyUnit.GlobalPosition.DistanceTo(targetPosition) > GolpePesadoAreaRadius)
+                    continue;
+
+                enemy.Digimon.TakeDamage(damage);
+                enemyUnit.ShowFloatingText($"-{damage}", DamageColor);
+
+                if (enemy.IsDead)
+                    enemyUnit.Die();
+                else
+                    _ = enemyUnit.PlayHitReaction();
+            }
+        }
+
+        private const float ProjetilPerfuranteDamagePercentage = 0.50f;
+
+        /// <summary>Projétil Perfurante (Ranged): atravessa o alvo principal (que já tomou o
+        /// dano cheio via ResolveAttack) e atinge o inimigo vivo mais próximo dele por
+        /// metade do dano - mesmo padrão do splash de Golpe Pesado (TakeDamage direto, sem
+        /// reentrar em ResolveAttack), só que num único segundo alvo em vez de todos numa
+        /// área.</summary>
+        private void ApplyProjetilPerfurante(int damage, BattleUnit primaryTargetUnit)
+        {
+            BattleTeam enemyTeam = _isPlayerSide ? _arena.Match.EnemyTeam : _arena.Match.PlayerTeam;
+
+            BattleCombatant secondCombatant = null;
+            BattleUnit secondUnit = null;
+            float bestDistance = float.MaxValue;
+
+            foreach (var enemy in enemyTeam.AliveMembers)
+            {
+                if (enemy == _target)
+                    continue;
+
+                BattleUnit enemyUnit = _arena.GetUnitFor(enemy);
+
+                if (enemyUnit == null)
+                    continue;
+
+                float distance = enemyUnit.GlobalPosition.DistanceTo(primaryTargetUnit.GlobalPosition);
+
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    secondCombatant = enemy;
+                    secondUnit = enemyUnit;
+                }
+            }
+
+            if (secondCombatant == null)
+                return;
+
+            int pierceDamage = Math.Max(1, (int)(damage * ProjetilPerfuranteDamagePercentage));
+
+            secondCombatant.Digimon.TakeDamage(pierceDamage);
+            secondUnit.ShowFloatingText($"-{pierceDamage}", DamageColor);
+
+            if (secondCombatant.IsDead)
+                secondUnit.Die();
+            else
+                _ = secondUnit.PlayHitReaction();
         }
 
         /// <summary>Mostra um texto flutuante (dano, cura, buff/debuff) acima dessa unidade.</summary>
@@ -1002,6 +1378,68 @@ namespace ProjetoDC.Scripts.Systems.Battle
             _arena.AddToWorld(indicator);
 
             indicator.Initialize(GlobalPosition + new Vector2(0, -20f), text, color);
+        }
+
+        private const float DuplaVozPercentage = 0.12f;
+        private const float MarcaDuplaPercentage = -0.14f;
+        private const int RessonanciaMaxStacks = 3;
+        private const float RessonanciaThirdStackPercentage = 0.10f;
+
+        /// <summary>Dupla Voz (Buffer, ver PASSIVAS_SPEC.md): buffa os dois maiores
+        /// atacantes aliados (não só _target, que já é o primeiro) em vez de um só com o
+        /// dobro do percentual.</summary>
+        private void ApplyDuplaVozBuff()
+        {
+            BattleTeam allyTeam = _isPlayerSide ? _arena.Match.PlayerTeam : _arena.Match.EnemyTeam;
+
+            var topTwo = allyTeam.AliveMembers
+                .OrderByDescending(m => m.GetEffectiveStat(m.AttackStat))
+                .Take(2);
+
+            foreach (var ally in topTwo)
+            {
+                ally.AddEffect(ally.AttackStat, DuplaVozPercentage, BuffDebuffDuration);
+
+                BattleUnit allyUnit = _arena.GetUnitFor(ally);
+
+                allyUnit?.ShowFloatingText($"+{GetStatAbbreviation(ally.AttackStat)}", BuffColor);
+            }
+        }
+
+        /// <summary>Marca Dupla (Debuffer, ver PASSIVAS_SPEC.md): espelho de Dupla Voz, nos
+        /// dois maiores atacantes inimigos.</summary>
+        private void ApplyMarcaDuplaDebuff()
+        {
+            BattleTeam enemyTeam = _isPlayerSide ? _arena.Match.EnemyTeam : _arena.Match.PlayerTeam;
+
+            var topTwo = enemyTeam.AliveMembers
+                .OrderByDescending(m => m.GetEffectiveStat(m.AttackStat))
+                .Take(2);
+
+            foreach (var enemy in topTwo)
+            {
+                enemy.AddEffect(enemy.AttackStat, MarcaDuplaPercentage, BuffDebuffDuration);
+
+                BattleUnit enemyUnit = _arena.GetUnitFor(enemy);
+
+                enemyUnit?.ShowFloatingText($"-{GetStatAbbreviation(enemy.AttackStat)}", DebuffColor);
+            }
+        }
+
+        /// <summary>Ressonância (Buffer, ver PASSIVAS_SPEC.md): permite uma 3ª pilha no
+        /// mesmo alvo, mas ela vale menos que as duas primeiras - por isso precisa saber
+        /// quantas pilhas de ATK esse alvo já tem ANTES de chamar AddEffect, pra escolher o
+        /// percentual certo.</summary>
+        private void ApplyRessonanciaBuff(BattleUnit targetUnit)
+        {
+            int existingStacks = _target.Effects.Count(e => e.Stat == _target.AttackStat && e.Percentage > 0);
+
+            float percentage = existingStacks >= 2
+                ? RessonanciaThirdStackPercentage
+                : BuffDebuffPercentage;
+
+            _target.AddEffect(_target.AttackStat, percentage, BuffDebuffDuration, RessonanciaMaxStacks);
+            targetUnit.ShowFloatingText($"+{GetStatAbbreviation(_target.AttackStat)}", BuffColor);
         }
 
         /// <summary>Abreviação do stat pro indicador de buff/debuff - já cobre Speed/Defense
@@ -1023,7 +1461,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
         {
             var targetDigimon = _target.Digimon;
 
-            int healAmount = (int)(targetDigimon.MaxHealthPoints * HealPercentage * GetHealEffectivenessMultiplier());
+            float healPercentage = _combatant.Digimon.PassiveId == PassiveType.MaosFirmes
+                ? MaosFirmesHealPercentage
+                : HealPercentage;
+
+            int healAmount = (int)(targetDigimon.MaxHealthPoints * healPercentage * GetHealEffectivenessMultiplier());
             int before = targetDigimon.CurrentHealthPoints;
 
             targetDigimon.CurrentHealthPoints = Math.Min(
@@ -1034,25 +1476,28 @@ namespace ProjetoDC.Scripts.Systems.Battle
             return targetDigimon.CurrentHealthPoints - before;
         }
 
+        /// <summary>Vigília (Healer, ver PASSIVAS_SPEC.md): aplica escudo em vez de cura
+        /// quando ninguém está ferido (ver SelectTarget). Obedece o mesmo decaimento de R2
+        /// (GetHealEffectivenessMultiplier) - "cura, regeneração e escudo de passiva
+        /// obedecem o decaimento do Healer".</summary>
+        private void ApplyVigiliaShield(BattleUnit targetUnit)
+        {
+            int shieldAmount = (int)(_target.Digimon.MaxHealthPoints * VigiliaShieldPercentage * GetHealEffectivenessMultiplier());
+
+            _target.ShieldAmount += shieldAmount;
+
+            targetUnit.ShowFloatingText($"+{shieldAmount}", BuffColor);
+        }
+
         /// <summary>
-        /// Multiplicador de eficácia da cura: 100% durante os primeiros HealDecayGraceSeconds
-        /// de luta, depois cai HealDecayPerStep a cada HealDecayInterval segundos - nunca
-        /// abaixo de MinHealEffectiveness. Usa o tempo real da luta (BattleMatch.ElapsedSeconds),
-        /// não o tempo de vida dessa unidade, então vale igual pra quem entrou desde o início.
+        /// Multiplicador de eficácia da cura (ver BattleCombatant.GetHealEffectivenessMultiplier
+        /// pra curva/consts - vive lá porque Fôlego/Aura Vital também precisam dela e não têm
+        /// acesso a essa unidade). Usa o tempo real da luta (BattleMatch.ElapsedSeconds), não
+        /// o tempo de vida dessa unidade, então vale igual pra quem entrou desde o início.
         /// </summary>
         private float GetHealEffectivenessMultiplier()
         {
-            double elapsed = _arena.Match.ElapsedSeconds;
-
-            if (elapsed <= HealDecayGraceSeconds)
-                return 1f;
-
-            double secondsPastGrace = elapsed - HealDecayGraceSeconds;
-            int decaySteps = (int)(secondsPastGrace / HealDecayInterval) + 1;
-
-            float multiplier = 1f - decaySteps * HealDecayPerStep;
-
-            return Mathf.Max(MinHealEffectiveness, multiplier);
+            return BattleCombatant.GetHealEffectivenessMultiplier(_arena.Match.ElapsedSeconds);
         }
 
         // True entre o momento em que o resultado da luta é decidido e a unidade ser

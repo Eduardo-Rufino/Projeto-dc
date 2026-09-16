@@ -1,0 +1,7 @@
+{
+  "id": "Fixacao",
+  "name": "Fixação",
+  "description": "Não reavalia alvo (troca só quando o alvo morre) e cada acerto consecutivo reduz 0.06s do cooldown, até -0.24s.",
+  "role": "Ranged",
+  "supportTypes": []
+}

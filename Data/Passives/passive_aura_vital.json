@@ -1,0 +1,7 @@
+{
+  "id": "AuraVital",
+  "name": "Aura Vital",
+  "description": "Regeneração passiva num raio, com decaimento em lutas longas.",
+  "role": "Support",
+  "supportTypes": []
+}

@@ -1,0 +1,7 @@
+{
+  "id": "GolpeSorrateiro",
+  "name": "Golpe Sorrateiro",
+  "description": "+80% de dano final no primeiro golpe contra cada alvo, uma vez por alvo por luta.",
+  "role": "Assassin",
+  "supportTypes": []
+}

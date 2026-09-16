@@ -1,0 +1,7 @@
+{
+  "id": "Espinhos",
+  "name": "Espinhos",
+  "description": "Devolve 15% do dano final recebido em melee.",
+  "role": "Tank",
+  "supportTypes": []
+}

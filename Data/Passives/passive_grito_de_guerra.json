@@ -1,0 +1,7 @@
+{
+  "id": "GritoDeGuerra",
+  "name": "Grito de Guerra",
+  "description": "Inimigos sob Taunt causam -30% de dano durante os 4s.",
+  "role": "Tank",
+  "supportTypes": []
+}

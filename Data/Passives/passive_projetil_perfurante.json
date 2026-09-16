@@ -1,0 +1,7 @@
+{
+  "id": "ProjetilPerfurante",
+  "name": "Projétil Perfurante",
+  "description": "Atravessa e atinge um segundo inimigo por 50% do dano.",
+  "role": "Ranged",
+  "supportTypes": []
+}

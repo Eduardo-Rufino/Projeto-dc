@@ -31,6 +31,8 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
+[sub_resource type="ButtonGroup" id="ButtonGroup_tabs"]
+
 [node name="EncyclopediaScreen" type="Control"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -84,22 +86,62 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "📘 Enciclopédia"
 
-[node name="SearchEdit" type="LineEdit" parent="Window/MarginContainer/VBoxContainer"]
+[node name="TabRow" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SpeciesTabButton" type="Button" parent="Window/MarginContainer/VBoxContainer/TabRow"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_tabs")
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Espécies"
+
+[node name="SetsTabButton" type="Button" parent="Window/MarginContainer/VBoxContainer/TabRow"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_tabs")
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "Conjuntos"
+
+[node name="SpeciesPanel" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="SearchEdit" type="LineEdit" parent="Window/MarginContainer/VBoxContainer/SpeciesPanel"]
 layout_mode = 2
 placeholder_text = "Pesquisar Digimon pelo nome..."
 
-[node name="HSeparator" type="HSeparator" parent="Window/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="Window/MarginContainer/VBoxContainer/SpeciesPanel"]
 layout_mode = 2
 
-[node name="GridScroll" type="ScrollContainer" parent="Window/MarginContainer/VBoxContainer"]
+[node name="GridScroll" type="ScrollContainer" parent="Window/MarginContainer/VBoxContainer/SpeciesPanel"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="Sections" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/GridScroll"]
+[node name="Sections" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/SpeciesPanel/GridScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 16
+
+[node name="SetsPanel" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="SetsScroll" type="ScrollContainer" parent="Window/MarginContainer/VBoxContainer/SetsPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SetsContainer" type="VBoxContainer" parent="Window/MarginContainer/VBoxContainer/SetsPanel/SetsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
 
 [node name="HSeparator2" type="HSeparator" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2

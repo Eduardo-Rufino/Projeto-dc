@@ -1,0 +1,7 @@
+{
+  "id": "Predicao",
+  "name": "Predição",
+  "description": "O projétil mira a posição prevista do alvo, reduzindo pela metade a margem de esquiva geométrica.",
+  "role": "Ranged",
+  "supportTypes": []
+}

@@ -1,0 +1,7 @@
+{
+  "id": "Teimosia",
+  "name": "Teimosia",
+  "description": "Redução de dano final escala com o HP perdido, até -30% no HP mínimo.",
+  "role": "Warrior",
+  "supportTypes": []
+}

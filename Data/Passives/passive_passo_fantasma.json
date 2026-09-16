@@ -1,0 +1,7 @@
+{
+  "id": "PassoFantasma",
+  "name": "Passo Fantasma",
+  "description": "Ganha o dash de melee (cooldown 4s, não 6s).",
+  "role": "Assassin",
+  "supportTypes": []
+}

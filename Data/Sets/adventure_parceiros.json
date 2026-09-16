@@ -1,0 +1,8 @@
+{
+  "Id": 2,
+  "Name": "Parceiros do Adventure",
+  "EffectDescription": "Conjunto completo: +10% em toda experiência ganha (treino ou batalha), pra qualquer Digimon do Center.",
+  "EffectType": "ExperienceGainedPercent",
+  "EffectValue": 0.10,
+  "DigimonIds": [1, 2, 59, 3, 6, 65, 4, 71]
+}

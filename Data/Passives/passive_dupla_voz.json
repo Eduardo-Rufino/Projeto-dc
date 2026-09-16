@@ -1,0 +1,7 @@
+{
+  "id": "DuplaVoz",
+  "name": "Dupla Voz",
+  "description": "Buffa os dois maiores atacantes aliados com +12% cada, em vez de um com +20%.",
+  "role": "Support",
+  "supportTypes": ["Buffer"]
+}

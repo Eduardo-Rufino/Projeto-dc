@@ -1,0 +1,7 @@
+{
+  "id": "Ressonancia",
+  "name": "Ressonância",
+  "description": "Empilha até 3x, mas a 3ª pilha vale +10% em vez de +20%.",
+  "role": "Support",
+  "supportTypes": ["Buffer"]
+}

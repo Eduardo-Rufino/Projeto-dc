@@ -1,0 +1,7 @@
+{
+  "id": "Execucao",
+  "name": "Execução",
+  "description": "+25% de dano final contra alvos abaixo de 40% de HP.",
+  "role": "Assassin",
+  "supportTypes": []
+}
