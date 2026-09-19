@@ -60,6 +60,8 @@
     <Content Include="Data\Sets\tamers_parceiros.json" />
     <Content Include="Data\Sets\data_squad_parceiros.json" />
     <Content Include="Data\Sets\adventure_formas_batalha.json" />
+    <Content Include="Data\Jogress\omegamon_jogress.json" />
+    <Content Include="Data\Jogress\examon_jogress.json" />
     <Content Include="Data\Tournaments\copa_novato.json" />
     <Content Include="Data\Tournaments\torneio_rookie.json" />
     <Content Include="Data\Tournaments\desafio_champion.json" />
@@ -177,11 +179,15 @@
     <Content Include="Data\Digimon\coredramon_blue.json" />
     <Content Include="Data\Digimon\wingdramon.json" />
     <Content Include="Data\Digimon\slayerdramon.json" />
+    <Content Include="Data\Digimon\puttimon.json" />
+    <Content Include="Data\Digimon\babydmon.json" />
+    <Content Include="Data\Digimon\examon.json" />
     <Content Include="Data\Digimon\veemon.json" />
     <Content Include="Data\Digimon\veedramon.json" />
     <Content Include="Data\Digimon\aeroveedramon.json" />
     <Content Include="Data\Digimon\ulforceveedramon.json" />
     <Content Include="Data\Digimon\magnamon.json" />
+    <Content Include="Data\Digimon\omegamon.json" />
     <Content Include="Data\Digimon\kentaurusmon.json" />
     <Content Include="Data\Digimon\kotemon.json" />
     <Content Include="Data\Digimon\gladimon.json" />
@@ -341,6 +347,8 @@
     <Content Include="Data\Evolutions\groundramon_evolutions.json" />
     <Content Include="Data\Evolutions\coredramon_blue_evolutions.json" />
     <Content Include="Data\Evolutions\wingdramon_evolutions.json" />
+    <Content Include="Data\Evolutions\puttimon_evolutions.json" />
+    <Content Include="Data\Evolutions\babydmon_evolutions.json" />
     <Content Include="Data\Evolutions\veemon_evolutions.json" />
     <Content Include="Data\Evolutions\veedramon_evolutions.json" />
     <Content Include="Data\Evolutions\aeroveedramon_evolutions.json" />

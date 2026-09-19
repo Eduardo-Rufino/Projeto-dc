@@ -118,6 +118,7 @@ namespace ProjetoDC.Scripts.UI
         private void ShowEvolutionInfo(DigimonInstance digimon)
         {
             var evolutions = DatabaseManager.Instance.GetEvolutionsFrom(digimon.BaseData.Id);
+            var jogressRecipes = DatabaseManager.Instance.GetJogressRecipesInvolving(digimon.BaseData.Id).ToList();
 
             _headerLabel.Text =
                 $"[b]{digimon.DisplayName}[/b] ({digimon.BaseData.Name}) - " +
@@ -125,7 +126,7 @@ namespace ProjetoDC.Scripts.UI
 
             ClearEntries();
 
-            if (evolutions == null || evolutions.Count == 0)
+            if ((evolutions == null || evolutions.Count == 0) && jogressRecipes.Count == 0)
             {
                 var label = new Label
                 {
@@ -241,6 +242,83 @@ namespace ProjetoDC.Scripts.UI
 
                 _entriesContainer.AddChild(BuildEvolutionEntry(digimon, target, sb.ToString()));
             }
+
+            foreach (var recipe in jogressRecipes)
+            {
+                int partnerSpeciesId = recipe.DigimonAId == digimon.BaseData.Id
+                    ? recipe.DigimonBId
+                    : recipe.DigimonAId;
+
+                var partnerSpecies = DatabaseManager.Instance.GetDigimon(partnerSpeciesId);
+                var target = DatabaseManager.Instance.GetDigimon(recipe.ToDigimonId);
+
+                if (partnerSpecies == null || target == null)
+                    continue;
+
+                // Parceiro precisa estar vivo no Center agora (não é sobre ter chocado um
+                // algum dia, ver DiscoveredDigimonIds - é sobre ter um de verdade disponível
+                // pra fundir com esse). Qualquer instância da espécie serve, menos o próprio
+                // digimon (só relevante se a receita for de uma espécie fundindo com ela
+                // mesma, o que hoje não acontece, mas não custa a guarda).
+                var partnerInstance = Game.CenterService.GetAllDigimons()
+                    .FirstOrDefault(d => d != digimon && d.BaseData.Id == partnerSpeciesId);
+
+                bool partnerOk = partnerInstance != null;
+
+                int requiredCapacity = DigimonInstance.GetCapacityCostForStage(target.Stage);
+
+                int capacityDelta = partnerOk
+                    ? requiredCapacity - (digimon.CapacityCost + partnerInstance.CapacityCost)
+                    : requiredCapacity - digimon.CapacityCost -
+                        DigimonInstance.GetCapacityCostForStage(partnerSpecies.Stage);
+
+                bool capacityOk = center.CapacityUsed + capacityDelta <= center.CapacityLimit;
+
+                var jogressSb = new StringBuilder();
+
+                jogressSb.AppendLine($"[b]🧬 {target.Name}[/b] ({target.Stage}) [color=#9fb8d9]via Jogress[/color]");
+                jogressSb.AppendLine($"{Check(partnerOk)} Parceiro: {partnerSpecies.Name}" +
+                    (partnerOk ? "" : " (nenhum no Center agora)"));
+                jogressSb.AppendLine(
+                    $"{Check(capacityOk)} Capacidade extra: {capacityDelta} " +
+                    $"(Center: {center.CapacityUsed}/{center.CapacityLimit})"
+                );
+                jogressSb.AppendLine(
+                    "[color=#9fb8d9]Sem requisito de nível/stats - só precisa dos dois Digimons. " +
+                    "Fundir é manual, no menu 🧬 Jogress.[/color]"
+                );
+                jogressSb.AppendLine(
+                    partnerOk && capacityOk
+                        ? "[color=#8fd98f]Pronto pra fundir![/color]"
+                        : "[color=#d98f8f]Ainda faltam requisitos.[/color]"
+                );
+
+                _entriesContainer.AddChild(BuildJogressEntry(target, jogressSb.ToString()));
+            }
+        }
+
+        /// <summary>Mesma silhueta+requisitos de BuildEvolutionEntry, mas sem o toggle de
+        /// bloquear (isso é específico de EvolutionSystem/GameManager.SetEvolutionBlocked -
+        /// Jogress não acontece automaticamente, então não tem nada pra bloquear).</summary>
+        private Control BuildJogressEntry(DigimonData target, string requirementsText)
+        {
+            var row = new HBoxContainer();
+            row.AddThemeConstantOverride("separation", 12);
+
+            row.AddChild(BuildSilhouette(target.Code));
+
+            var label = new RichTextLabel
+            {
+                BbcodeEnabled = true,
+                FitContent = true,
+                ScrollActive = false,
+                SizeFlagsHorizontal = SizeFlags.ExpandFill,
+                Text = requirementsText,
+            };
+
+            row.AddChild(label);
+
+            return row;
         }
 
         /// <summary>Uma linha [silhueta | requisitos | bloquear] por evolução possível.</summary>

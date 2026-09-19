@@ -58,6 +58,7 @@ namespace ProjetoDC.Scripts.UI
         private Button _explorationButton;
         private Button _encyclopediaButton;
         private Button _patchNotesButton;
+        private Button _jogressButton;
         private ConfirmationDialog _exitConfirmDialog;
 
         private Control _digimonStatusPage1;
@@ -363,6 +364,12 @@ namespace ProjetoDC.Scripts.UI
             );
 
             _patchNotesButton.Pressed += OnPatchNotesButtonPressed;
+
+            _jogressButton = GetNode<Button>(
+                "ControlBar/JogressButton"
+            );
+
+            _jogressButton.Pressed += OnJogressButtonPressed;
 
             // O GameManager pode ainda estar terminando sua inicialização.
             CallDeferred(nameof(ConnectToGameManager));
@@ -851,6 +858,11 @@ namespace ProjetoDC.Scripts.UI
         private void OnEvolutionGuideButtonPressed()
         {
             _center.OpenEvolutionGuide();
+        }
+
+        private void OnJogressButtonPressed()
+        {
+            _center.OpenJogressPick();
         }
 
         private void OnBaseEditorButtonPressed()

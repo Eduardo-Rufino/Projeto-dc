@@ -71,6 +71,7 @@ public partial class Center : Node2D
     private PatchNotesScreen _patchNotesScreen;
     private DigimonDeathScreen _digimonDeathScreen;
     private EvolutionGuideScreen _evolutionGuideScreen;
+    private JogressPickScreen _jogressPickScreen;
     private BaseEditorScreen _baseEditorScreen;
     private SettingsScreen _settingsScreen;
     private ExplorationListScreen _explorationListScreen;
@@ -183,6 +184,9 @@ public partial class Center : Node2D
         _evolutionGuideScreen = GetNode<EvolutionGuideScreen>("CanvasLayer/EvolutionGuideScreen");
         _evolutionGuideScreen.BackPressed += OnEvolutionGuideBackPressed;
 
+        _jogressPickScreen = GetNode<JogressPickScreen>("CanvasLayer/JogressPickScreen");
+        _jogressPickScreen.BackPressed += OnJogressPickBackPressed;
+
         _baseEditorScreen = GetNode<BaseEditorScreen>("CanvasLayer/BaseEditorScreen");
         _baseEditorScreen.BackPressed += OnBaseEditorBackPressed;
 
@@ -207,6 +211,9 @@ public partial class Center : Node2D
 
         GameManager.Instance.DigimonDeleted -= OnDigimonDeleted;
         GameManager.Instance.DigimonDeleted += OnDigimonDeleted;
+
+        GameManager.Instance.JogressFused -= OnJogressFused;
+        GameManager.Instance.JogressFused += OnJogressFused;
 
         GameManager.Instance.DigimonDied -= OnDigimonDied;
         GameManager.Instance.DigimonDied += OnDigimonDied;
@@ -328,6 +335,10 @@ public partial class Center : Node2D
             case "evolutionguide":
                 _evolutionGuideScreen.Open();
                 break;
+            case "jogress":
+                _jogressPickScreen.Open();
+                _jogressPickScreen.Visible = true;
+                break;
             case "encyclopediasets":
                 OpenEncyclopedia();
                 _encyclopediaScreen.DebugShowSetsTab();
@@ -402,6 +413,7 @@ public partial class Center : Node2D
             GameManager.Instance.ExplorationFinished -= OnExplorationFinished;
             GameManager.Instance.EvolutionBlockedByCapacity -= OnEvolutionBlockedByCapacity;
             GameManager.Instance.DigimonDeleted -= OnDigimonDeleted;
+            GameManager.Instance.JogressFused -= OnJogressFused;
             GameManager.Instance.DigimonDied -= OnDigimonDied;
             GameManager.Instance.SleepSkipped -= OnSleepSkipped;
         }
@@ -1260,6 +1272,16 @@ public partial class Center : Node2D
         _evolutionGuideScreen.Visible = false;
     }
 
+    public void OpenJogressPick()
+    {
+        _jogressPickScreen.Open();
+    }
+
+    private void OnJogressPickBackPressed()
+    {
+        _jogressPickScreen.Visible = false;
+    }
+
     public void OpenEncyclopedia()
     {
         _encyclopediaScreen.Open();
@@ -1443,6 +1465,7 @@ public partial class Center : Node2D
             || (_tutorialScreen?.Visible ?? false)
             || (_patchNotesScreen?.Visible ?? false)
             || (_evolutionGuideScreen?.Visible ?? false)
+            || (_jogressPickScreen?.Visible ?? false)
             || (_baseEditorScreen?.Visible ?? false)
             || (_settingsScreen?.Visible ?? false)
             || (_explorationListScreen?.Visible ?? false)
@@ -1958,6 +1981,27 @@ public partial class Center : Node2D
         }
 
         SpawnDigimon(digimon, position);
+    }
+
+    // OnDigimonDeleted já removeu os dois visuais de origem sozinho (GameManager.
+    // TryToFuse dispara DigimonDeleted pros dois antes desse evento) - só falta criar o
+    // visual do Digimon fundido, no meio do caminho entre onde os dois estavam (ou o
+    // centro de alguma área, se por algum motivo nenhum dos dois tinha um DigimonWorld
+    // ainda).
+    private void OnJogressFused(DigimonInstance a, DigimonInstance b, DigimonInstance fused)
+    {
+        Vector2? positionA = _digimonWorlds.FirstOrDefault(w => w._digimon == a)?.GlobalPosition;
+        Vector2? positionB = _digimonWorlds.FirstOrDefault(w => w._digimon == b)?.GlobalPosition;
+
+        Vector2 position = (positionA, positionB) switch
+        {
+            (Vector2 pa, Vector2 pb) => (pa + pb) / 2f,
+            (Vector2 pa, null) => pa,
+            (null, Vector2 pb) => pb,
+            _ => GetRandomAreaPosition()
+        };
+
+        SpawnDigimon(fused, position);
     }
 
 }

@@ -1,0 +1,20 @@
+{
+  "id": 174,
+  "code": "examon",
+  "name": "Examon",
+  "stage": "MegaPlus",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Virus",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 860,
+    "physicalDamage": 290,
+    "physicalDefense": 180,
+    "specialDamage": 70,
+    "specialDefense": 130,
+    "speed": 160
+  }
+}

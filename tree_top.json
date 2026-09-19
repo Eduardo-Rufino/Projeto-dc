@@ -1,0 +1,30 @@
+{
+  "sha": "5d1a43a97762765a6be13852cfc21be647ff8287",
+  "url": "https://api.github.com/repos/tero0x/dmc-sprites/git/trees/5d1a43a97762765a6be13852cfc21be647ff8287",
+  "tree": [
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a03f11a9d7ad912d6fae3dbe4cccb87e70811fd",
+      "size": 43,
+      "url": "https://api.github.com/repos/tero0x/dmc-sprites/git/blobs/1a03f11a9d7ad912d6fae3dbe4cccb87e70811fd"
+    },
+    {
+      "path": "images",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1716df42836827fd55291673d0210fbcdf256fd6",
+      "url": "https://api.github.com/repos/tero0x/dmc-sprites/git/trees/1716df42836827fd55291673d0210fbcdf256fd6"
+    },
+    {
+      "path": "sprites.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da100c5aada51aabae8cf1155bed26f570131c32",
+      "size": 6046460,
+      "url": "https://api.github.com/repos/tero0x/dmc-sprites/git/blobs/da100c5aada51aabae8cf1155bed26f570131c32"
+    }
+  ],
+  "truncated": false
+}

@@ -1,0 +1,20 @@
+{
+  "id": 173,
+  "code": "babydmon",
+  "name": "Babydmon",
+  "stage": "InTraining",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 46,
+    "physicalDamage": 20,
+    "physicalDefense": 10,
+    "specialDamage": 4,
+    "specialDefense": 7,
+    "speed": 14
+  }
+}

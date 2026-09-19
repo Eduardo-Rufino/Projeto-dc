@@ -1,0 +1,20 @@
+{
+  "id": 171,
+  "code": "omegamon",
+  "name": "Omegamon",
+  "stage": "MegaPlus",
+  "role": "Warrior",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Light",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 900,
+    "physicalDamage": 260,
+    "physicalDefense": 170,
+    "specialDamage": 260,
+    "specialDefense": 140,
+    "speed": 110
+  }
+}

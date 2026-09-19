@@ -10,7 +10,9 @@ using ProjetoDC.Scripts.Systems.Center;
 using ProjetoDC.Scripts.Systems.Clock;
 using ProjetoDC.Scripts.Systems.Eggs;
 using ProjetoDC.Scripts.Systems.Evolution;
+using ProjetoDC.Scripts.Systems.Jogress;
 using ProjetoDC.Scripts.Systems.Passives;
+using ProjetoDC.Scripts.Systems.Results;
 using ProjetoDC.Scripts.Systems.Save;
 using ProjetoDC.Scripts.Systems.Training;
 using ProjetoDC.Scripts.UI;
@@ -64,6 +66,12 @@ namespace ProjetoDC.Scripts.Managers
         /// visual correspondente, senão ele continuaria andando por aí sem existir mais
         /// no save.</summary>
         public event Action<DigimonInstance> DigimonDeleted;
+
+        /// <summary>Disparado quando uma fusão Jogress acontece de verdade (ver TryToFuse),
+        /// com os dois Digimons de origem (já removidos do Center) e o Digimon fundido (já
+        /// adicionado) - quem desenha o Center escuta isso pra tirar os dois DigimonWorld
+        /// visuais antigos e criar o novo (mesmo espírito de EggSystem.EggHatched).</summary>
+        public event Action<DigimonInstance, DigimonInstance, DigimonInstance> JogressFused;
 
         /// <summary>Disparado quando um Digimon morre de verdade (velhice ou maus-tratos -
         /// ver KillDigimon), com o nome já formatado e o motivo em texto pronto pra mostrar
@@ -610,6 +618,55 @@ namespace ProjetoDC.Scripts.Managers
                 default:
                     return false;
             }
+        }
+
+        /// <summary>
+        /// Tenta fundir dois Digimons do roster num Digimon novo via Jogress (ver
+        /// JogressSystem.TryToFuse) - sem requisito de nível/stats, só precisa dos dois
+        /// Digimons certos e capacidade suficiente no Center. Se bloqueado por capacidade
+        /// ou se a combinação não corresponder a nenhuma receita, nada muta - os dois
+        /// continuam no Center exatamente como estavam.
+        /// </summary>
+        public JogressAttemptResult TryToFuse(DigimonInstance a, DigimonInstance b)
+        {
+            if (a == null || b == null || a == b)
+                return JogressAttemptResult.NotEligible();
+
+            var attempt = JogressSystem.TryToFuse(
+                a,
+                b,
+                Save.Center.CapacityUsed,
+                Save.Center.CapacityLimit
+            );
+
+            if (attempt.Outcome != JogressOutcome.Fused)
+                return attempt;
+
+            CenterService.RemoveDigimon(a);
+            CenterService.RemoveDigimon(b);
+
+            // AddDigimon já chama MarkDigimonDiscovered sozinho (ver CenterState.AddDigimon) -
+            // não repetir aqui.
+            CenterService.AddDigimon(attempt.FusedDigimon);
+
+            if (PlayerDigimon == a || PlayerDigimon == b)
+                SetPlayerDigimonInstance(attempt.FusedDigimon);
+
+            // JogressFused primeiro - quem desenha o Center usa ele pra achar a posição
+            // dos dois DigimonWorld de origem (ver Center.OnJogressFused) e nascer o
+            // fundido ali, ANTES de DigimonDeleted apagar esses dois visuais. Depois,
+            // reaproveita o mesmo evento que DeleteDigimon/KillDigimon usam pros dois
+            // Digimons de origem - Center.OnDigimonDeleted já está inscrito nele e remove
+            // o DigimonWorld visual correspondente, sem precisar de nenhum código novo de
+            // despawn (os dois SAEM do roster de vez, é a mesma semântica).
+            JogressFused?.Invoke(a, b, attempt.FusedDigimon);
+
+            DigimonDeleted?.Invoke(a);
+            DigimonDeleted?.Invoke(b);
+
+            SaveGame();
+
+            return attempt;
         }
 
         /// <summary>

@@ -22,6 +22,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/Exploration/ExplorationDigimonPickScreen.tscn" id="2_exppick"]
 [ext_resource type="PackedScene" path="res://Scenes/Battle/BattleTypeScreen.tscn" id="2_battletype"]
 [ext_resource type="PackedScene" path="res://Scenes/Battle/TournamentListScreen.tscn" id="2_tournamentlist"]
+[ext_resource type="PackedScene" path="res://Scenes/Center/JogressPickScreen.tscn" id="2_jogress"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="3_csbr3"]
 [ext_resource type="Texture2D" uid="uid://dvmynr18ibstu" path="res://Assets/Sprites/Food/energetico.png" id="4_energetico"]
 
@@ -678,6 +679,16 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
 tooltip_text = "Notas de Atualização"
 text = "📋"
 
+[node name="JogressButton" type="Button" parent="CanvasLayer/HUD/ControlBar"]
+layout_mode = 0
+offset_left = 962.0
+offset_top = 3.0
+offset_right = 1026.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+tooltip_text = "Jogress"
+text = "🧬"
+
 [node name="FoodPickerPopup" type="PanelContainer" parent="CanvasLayer/HUD"]
 visible = false
 layout_mode = 0
@@ -773,6 +784,9 @@ visible = false
 visible = false
 
 [node name="EvolutionGuideScreen" parent="CanvasLayer" instance=ExtResource("2_evoguide")]
+visible = false
+
+[node name="JogressPickScreen" parent="CanvasLayer" instance=ExtResource("2_jogress")]
 visible = false
 
 [node name="BaseEditorScreen" parent="CanvasLayer" instance=ExtResource("2_basedit")]

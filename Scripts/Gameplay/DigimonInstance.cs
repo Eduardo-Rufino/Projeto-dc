@@ -467,9 +467,11 @@ namespace ProjetoDC.Scripts.Gameplay
         /// acumulado) e, se isso ainda ficar abaixo do valor "de ficha" da nova espécie,
         /// puxa uma fração dele em direção a esse valor - nunca reduz o que já foi
         /// multiplicado, só corrige quem ficou pra trás (nunca pune quem já treinou acima
-        /// da média da espécie).
+        /// da média da espécie). Internal (não private) porque JogressSystem.TryToFuse
+        /// reaproveita exatamente essa mesma fórmula pra fusão, só que a partir da média
+        /// dos dois Digimons de origem em vez de um só.
         /// </summary>
-        private static int BlendTowardSpecies(int currentValue, float multiplier, int speciesValue)
+        internal static int BlendTowardSpecies(int currentValue, float multiplier, int speciesValue)
         {
             int multiplied = (int)(currentValue * multiplier);
 

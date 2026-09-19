@@ -29,6 +29,7 @@ namespace ProjetoDC.Scripts.Managers
             LoadExplorationMaps();
             LoadPassives();
             LoadSets();
+            LoadJogressRecipes();
         }
 
         private const string DigimonFolder = "res://Data/Digimon/";
@@ -39,6 +40,7 @@ namespace ProjetoDC.Scripts.Managers
         private const string MapFolder = "res://Data/Maps/";
         private const string PassiveFolder = "res://Data/Passives/";
         private const string SetFolder = "res://Data/Sets/";
+        private const string JogressFolder = "res://Data/Jogress/";
 
         private Dictionary<int, DigimonData> digimons = new();
 
@@ -57,6 +59,8 @@ namespace ProjetoDC.Scripts.Managers
         private Dictionary<PassiveType, PassiveData> passives = new();
 
         private Dictionary<int, DigimonSetData> sets = new();
+
+        private Dictionary<int, JogressData> jogressRecipes = new();
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
@@ -752,6 +756,99 @@ namespace ProjetoDC.Scripts.Managers
         public IEnumerable<PassiveData> GetAllPassives()
         {
             return passives.Values.OrderBy(p => p.Id);
+        }
+
+        /// <summary>Carrega as receitas de Jogress (ver JogressData/JogressSystem) - um
+        /// arquivo por receita, mesmo padrão de LoadPassives (objeto único, não lista),
+        /// já que cada receita é autocontida. Chaveado pelo Digimon resultante
+        /// (ToDigimonId) - cada forma só deveria ter uma receita de Jogress.</summary>
+        public void LoadJogressRecipes()
+        {
+            string path = JogressFolder;
+
+            using var dir = DirAccess.Open(path);
+
+            if (dir == null)
+            {
+                GD.PrintErr("Pasta de receitas de Jogress não encontrada!");
+                return;
+            }
+
+            dir.ListDirBegin();
+
+            string fileName = dir.GetNext();
+
+            while (fileName != "")
+            {
+                if (fileName == "." || fileName == "..")
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                if (!fileName.EndsWith(".json"))
+                {
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string fullPath = path + fileName;
+
+                using var file = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
+
+                if (file == null)
+                {
+                    GD.PrintErr("Erro ao abrir: " + fullPath);
+                    fileName = dir.GetNext();
+                    continue;
+                }
+
+                string json = file.GetAsText();
+
+                try
+                {
+                    JogressData recipe = JsonSerializer.Deserialize<JogressData>(json, JsonOptions);
+
+                    if (jogressRecipes.ContainsKey(recipe.ToDigimonId))
+                    {
+                        GD.PrintErr("Receita de Jogress duplicada pro Digimon: " + recipe.ToDigimonId);
+                    }
+                    else
+                    {
+                        jogressRecipes.Add(recipe.ToDigimonId, recipe);
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                }
+
+                fileName = dir.GetNext();
+            }
+
+            GD.Print("Receitas de Jogress carregadas: " + jogressRecipes.Count);
+        }
+
+        /// <summary>Receita cujo par de origem (desordenado) bate com idA/idB, ou null se
+        /// nenhuma combinação de Jogress existe pra esses dois Digimons.</summary>
+        public JogressData GetJogressRecipe(int idA, int idB)
+        {
+            return jogressRecipes.Values.FirstOrDefault(r => r.MatchesPair(idA, idB));
+        }
+
+        /// <summary>Todas as receitas de Jogress onde digimonId é um dos dois Digimons de
+        /// origem (A ou B) - usado pelo Guia de Evolução pra mostrar "esse Digimon também
+        /// pode virar X via Jogress, com um parceiro Y" junto das evoluções normais.</summary>
+        public IEnumerable<JogressData> GetJogressRecipesInvolving(int digimonId)
+        {
+            return jogressRecipes.Values.Where(r => r.DigimonAId == digimonId || r.DigimonBId == digimonId);
+        }
+
+        /// <summary>Retorna todas as receitas de Jogress carregadas, ordenadas pelo
+        /// Digimon resultante.</summary>
+        public IEnumerable<JogressData> GetAllJogressRecipes()
+        {
+            return jogressRecipes.Values.OrderBy(r => r.ToDigimonId);
         }
 
         /// <summary>Carrega os "conjuntos" de Digimon (ver DigimonSetData) - grupos temáticos

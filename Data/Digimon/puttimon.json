@@ -1,0 +1,20 @@
+{
+  "id": 172,
+  "code": "puttimon",
+  "name": "Puttimon",
+  "stage": "Baby",
+  "role": "Warrior",
+  "Element": "Fire",
+  "Attribute": "Data",
+  "EggType": "Dragon",
+  "AttackType": "Physical",
+
+  "BaseStats": {
+    "healthPoints": 24,
+    "physicalDamage": 6,
+    "physicalDefense": 4,
+    "specialDamage": 2,
+    "specialDefense": 3,
+    "speed": 10
+  }
+}
