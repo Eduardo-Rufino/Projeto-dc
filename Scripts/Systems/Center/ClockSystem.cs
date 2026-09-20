@@ -37,7 +37,9 @@ namespace ProjetoDC.Scripts.Systems.Clock
         // Limite de segurança pra AdvanceUntilHour nunca travar num loop infinito (ex.: se
         // chamado com um targetHour que não existe de verdade - HoursPerDay é privado aqui
         // de propósito, então quem chama não tem como validar isso sozinho).
-        private const int MaxMinutesPerAdvanceUntilHour = 4 * 60;
+        // Um dia inteiro: cobre qualquer hora-alvo (a janela de sono, 22h-6h, tem 8h = 480 min - o teto
+        // antigo, 4h, fazia "Pular sono" parar às 2h-5h em vez de acordar o Center às 6h).
+        private const int MaxMinutesPerAdvanceUntilHour = 24 * 60;
 
         /// <summary>
         /// Avança o relógio minuto a minuto (chamando o mesmo AdvanceMinute que roda em

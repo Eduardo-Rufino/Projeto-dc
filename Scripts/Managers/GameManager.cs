@@ -126,6 +126,16 @@ namespace ProjetoDC.Scripts.Managers
 
         private bool _loadedExistingSave;
 
+        // True quando existe um jogo de verdade pra salvar: um save carregado no boot ou um
+        // Novo Jogo já iniciado (ver StartNewGame). Sem isso o boot fica "esperando o menu
+        // principal" com um SaveData vazio - e SaveGame() (inclusive o do fechamento da
+        // janela) não pode gravar esse estado vazio por cima do save do jogador.
+        private bool _hasActiveGame;
+
+        /// <summary>True se o boot carregou um save válido do disco - é o que habilita
+        /// "Carregar Jogo" no menu principal (ver MainMenuScreen).</summary>
+        public bool CanContinueGame => _loadedExistingSave;
+
         public override void _Ready()
         {
             Instance = this;
@@ -144,6 +154,7 @@ namespace ProjetoDC.Scripts.Managers
                 else
                 {
                     _loadedExistingSave = true;
+                    _hasActiveGame = true;
 
                     GD.Print($"Digimons carregados: {Save.Center.Digimons.Count}");
 
@@ -182,6 +193,7 @@ namespace ProjetoDC.Scripts.Managers
 
             ClockSystem.HourPassed += OnHourPassed;
             ClockSystem.DayPassed += OnDayPassed;
+            ClockSystem.MinutePassed += OnMinutePassed;
 
 
             CallDeferred(nameof(InitializeGame));
@@ -202,13 +214,66 @@ namespace ProjetoDC.Scripts.Managers
             }
             else
             {
-                InitializeNewGame();
+                // Sem save carregado, o jogo espera o jogador escolher no menu principal
+                // (ver MainMenuScreen -> StartNewGame). Abrir o Center direto, sem passar
+                // pelo menu, cai em EnsureGameStarted.
+                GD.Print("Nenhum save carregado - aguardando o menu principal.");
             }
         }
 
         public void SaveGame()
         {
+            if (!_hasActiveGame)
+                return;
+
             SaveSystem.SaveGame(Save);
+        }
+
+        /// <summary>
+        /// "Novo Jogo": apaga o save antigo (e o backup) e recomeça do zero - Save/Centro/
+        /// relógio novos e o ovo inicial. Só é seguro chamar antes de qualquer tela do jogo
+        /// existir (o menu principal aparece no boot, antes do Center): as telas assinam o
+        /// ClockSystem/CenterService em _Ready, então quem já estivesse aberto ficaria
+        /// escutando os objetos antigos. A confirmação com o jogador é responsabilidade de quem
+        /// chama (ver MainMenuScreen).
+        /// </summary>
+        public void StartNewGame()
+        {
+            SaveSystem.DeleteSave();
+
+            Save = new SaveData();
+            CenterService = new CenterService(Save.Center);
+
+            if (ClockSystem != null)
+            {
+                ClockSystem.HourPassed -= OnHourPassed;
+                ClockSystem.DayPassed -= OnDayPassed;
+                ClockSystem.MinutePassed -= OnMinutePassed;
+            }
+
+            ClockSystem = new ClockSystem(Save.World);
+            ClockSystem.HourPassed += OnHourPassed;
+            ClockSystem.DayPassed += OnDayPassed;
+            ClockSystem.MinutePassed += OnMinutePassed;
+
+            IsClockSpeedDoubled = false;
+            PlayerDigimon = null;
+            _loadedExistingSave = false;
+            _hasActiveGame = true;
+
+            InitializeNewGame();
+
+            GD.Print("Novo jogo iniciado.");
+        }
+
+        /// <summary>Garante que existe um jogo em andamento. No fluxo normal o menu principal
+        /// já escolheu (Novo Jogo/Carregar) e isso não faz nada; só age quando o Center é
+        /// aberto direto (ex.: rodar a cena no editor, DEBUG_OPEN_SCREEN) sem save carregado,
+        /// mantendo o comportamento de antes do menu existir: começa um jogo novo.</summary>
+        public void EnsureGameStarted()
+        {
+            if (!_hasActiveGame)
+                StartNewGame();
         }
 
         private void LoadExistingGame()
@@ -352,10 +417,7 @@ namespace ProjetoDC.Scripts.Managers
             SaveGame();
         }
 
-        // Id da Palmon (ver Data/NPCs/npc_palmon.json) - hardcoded porque hoje é o único NPC
-        // recrutável com bônus diário; se mais NPCs ganharem bônus desse tipo, isso merece
-        // virar dado em NpcData ao invés de const aqui.
-        private const int PalmonNpcId = 5;
+        // Quantas Carnes cada NPC recrutado com o perk DailyMeat (ver NpcPerkType) deixa por dia.
         private const int PalmonDailyMeatMin = 1;
         private const int PalmonDailyMeatMax = 2;
 
@@ -366,14 +428,18 @@ namespace ProjetoDC.Scripts.Managers
         /// HasRecruitedTrainingBonus/DigimonWorld.ProcessTraining.</summary>
         private void ApplyRecruitedNpcDailyBonuses()
         {
-            if (!Save.Center.RecruitedNpcIds.Contains(PalmonNpcId))
-                return;
+            // Um lote por NPC recrutado com o perk DailyMeat (hoje só a Palmon, mas é dado em NpcData).
+            int dailyMeatNpcs = DatabaseManager.Instance.GetAllNpcs()
+                .Count(n => n.RecruitmentPerk == NpcPerkType.DailyMeat && Save.Center.RecruitedNpcIds.Contains(n.Id));
 
-            int freeMeat = _random.Next(PalmonDailyMeatMin, PalmonDailyMeatMax + 1);
+            for (int i = 0; i < dailyMeatNpcs; i++)
+            {
+                int freeMeat = _random.Next(PalmonDailyMeatMin, PalmonDailyMeatMax + 1);
 
-            Save.Center.Meat += freeMeat;
+                Save.Center.Meat += freeMeat;
 
-            GD.Print($"Palmon deixou {freeMeat} Carne(s) de graça no Center.");
+                GD.Print($"Um NPC recrutado deixou {freeMeat} Carne(s) de graça no Center.");
+            }
         }
 
         /// <summary>True se algum NPC recrutado (ver CenterState.RecruitedNpcIds) tem
@@ -392,15 +458,75 @@ namespace ProjetoDC.Scripts.Managers
             return false;
         }
 
-        // Id do Wizardmon (ver Data/NPCs/npc_wizardmon.json) - hardcoded pelo mesmo motivo
-        // de PalmonNpcId acima: hoje é o único NPC que desbloqueia esse perk específico.
-        private const int WizardmonNpcId = 7;
+        /// <summary>True se algum NPC com esse perk (NpcData.RecruitmentPerk) já foi recrutado.</summary>
+        public bool HasRecruitedPerk(NpcPerkType perk) =>
+            perk != NpcPerkType.None &&
+            DatabaseManager.Instance.GetAllNpcs()
+                .Any(n => n.RecruitmentPerk == perk && Save.Center.RecruitedNpcIds.Contains(n.Id));
 
         /// <summary>True depois que o Wizardmon é recrutado - só a partir daí o jogador pode
         /// bloquear evoluções indesejadas por Digimon (ver SetEvolutionBlocked). Antes disso
         /// a EvolutionGuideScreen mostra os toggles desabilitados/ocultos.</summary>
-        public bool HasRecruitedEvolutionAdvisor =>
-            Save.Center.RecruitedNpcIds.Contains(WizardmonNpcId);
+        public bool HasRecruitedEvolutionAdvisor => HasRecruitedPerk(NpcPerkType.EvolutionAdvisor);
+
+        /// <summary>Se o Meramon já foi recrutado - é ele quem trabalha na cozinha do Center e
+        /// permite assar Carne (ver CookMeat).</summary>
+        public bool HasRecruitedKitchenCook => HasRecruitedPerk(NpcPerkType.KitchenCook);
+
+        /// <summary>Preço, em Bits, de cada Carne crua que o Meramon assa.</summary>
+        public const int CookingPricePerMeat = 100;
+
+        /// <summary>Quanto tempo (minutos do relógio do jogo) o Meramon leva pra assar uma encomenda -
+        /// a encomenda inteira, seja de 1 ou de 10 Carnes.</summary>
+        public const int CookingMinutes = 20;
+
+        /// <summary>Avisa (com a quantidade) que o Meramon terminou de assar uma encomenda.</summary>
+        public event Action<int> CookingFinished;
+
+        /// <summary>Encomenda ao Meramon que assem até <paramref name="amount"/> Carnes cruas do
+        /// estoque (1 pra 1) - só com ele recrutado. Cobra <see cref="CookingPricePerMeat"/> Bits por
+        /// Carne na hora e a encomenda fica pronta <see cref="CookingMinutes"/> minutos de jogo depois
+        /// (o relógio, com o x2 e o pular sono, é quem move isso - ver OnMinutePassed). Uma encomenda
+        /// por vez. A Carne Assada rende mais nutrição e demora mais pra estragar (ver
+        /// Food.IsCooked/FoodWorld.GetSpoilHours).</summary>
+        public SystemResult CookMeat(int amount)
+        {
+            if (!HasRecruitedKitchenCook)
+                return SystemResult.Fail("Você precisa do Meramon na cozinha pra assar carnes.");
+
+            if (amount <= 0)
+                return SystemResult.Fail("Quantidade inválida.");
+
+            if (Save.Center.IsCooking)
+                return SystemResult.Fail(
+                    $"O Meramon ainda está assando {Save.Center.CookingMeatAmount} Carne(s) " +
+                    $"(faltam {Save.Center.CookingMinutesLeft} min).");
+
+            if (Save.Center.Meat <= 0)
+                return SystemResult.Fail("Você não possui Carne pra assar.");
+
+            if (Save.Center.Bits < CookingPricePerMeat)
+                return SystemResult.Fail($"Assar custa {CookingPricePerMeat} Bits por Carne.");
+
+            // "Assar todas" assa o que o dinheiro paga, em vez de recusar tudo por falta de troco.
+            int affordable = Save.Center.Bits / CookingPricePerMeat;
+
+            int started = Save.Center.StartCooking(Math.Min(amount, affordable), CookingMinutes);
+
+            Save.Center.Bits -= started * CookingPricePerMeat;
+
+            return SystemResult.Ok(
+                $"O Meramon começou a assar {started} Carne(s) por {started * CookingPricePerMeat} Bits - " +
+                $"fica pronto em {CookingMinutes} min.");
+        }
+
+        private void OnMinutePassed()
+        {
+            int finished = Save.Center.AdvanceCookingMinute();
+
+            if (finished > 0)
+                CookingFinished?.Invoke(finished);
+        }
 
         /// <summary>Bloqueia (ou desbloqueia) uma evolução específica pra um Digimon do
         /// roster - ver DigimonInstance.BlockedEvolutionTargetIds/EvolutionSystem.TryToEvolve,
@@ -678,7 +804,7 @@ namespace ProjetoDC.Scripts.Managers
         {
             EggSystem.CreateInitialEgg(CenterService);
 
-            SaveSystem.SaveGame(Save);
+            SaveGame();
         }
 
         /// <summary>Debug: reproduz o cenário relatado de Suporte vs Suporte (mesmo
@@ -1189,6 +1315,32 @@ namespace ProjetoDC.Scripts.Managers
         public event Action ExplorationStarted;
         public event Action ExplorationFinished;
 
+        /// <summary>True se a área já está liberada: sem RequiredQuestId ela é sempre livre, com
+        /// um ela só abre depois que o jogador concluiu essa quest (CenterState.CompletedQuestIds)
+        /// - é assim que uma área nova entra na progressão (ver ExplorationMapData).</summary>
+        public bool IsExplorationMapUnlocked(ExplorationMapData map)
+        {
+            if (map == null)
+                return false;
+
+            return map.RequiredQuestId == null ||
+                   Save.Center.CompletedQuestIds.Contains(map.RequiredQuestId.Value);
+        }
+
+        /// <summary>Por que a área está bloqueada (texto pra mostrar ao jogador), ou null se
+        /// ela já está liberada.</summary>
+        public string GetExplorationMapLockReason(ExplorationMapData map)
+        {
+            if (IsExplorationMapUnlocked(map))
+                return null;
+
+            var quest = DatabaseManager.Instance.GetQuest(map.RequiredQuestId.Value);
+
+            return quest != null
+                ? $"Conclua a quest \"{quest.Name}\" pra liberar esta área."
+                : "Esta área ainda não foi liberada.";
+        }
+
         /// <summary>
         /// Abre uma área de exploração com o Digimon escolhido (só 1 por vez - ver
         /// game_idea.txt) - mesmo padrão de LaunchBattle: sobe a cena por cima do Center e
@@ -1205,6 +1357,14 @@ namespace ProjetoDC.Scripts.Managers
 
             if (explorer == null || map == null)
                 return;
+
+            // A lista já mostra a área como bloqueada (ver ExplorationListScreen), mas a regra
+            // vale aqui também pra nenhum outro caminho de código contornar a progressão.
+            if (!IsExplorationMapUnlocked(map))
+            {
+                GD.PrintErr($"StartExploration: a área '{map.Name}' ainda está bloqueada.");
+                return;
+            }
 
             ExplorationStarted?.Invoke();
 

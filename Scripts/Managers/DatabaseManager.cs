@@ -1,6 +1,7 @@
 using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Data;
+using ProjetoDC.Scripts.Systems.Evolution;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -30,6 +31,8 @@ namespace ProjetoDC.Scripts.Managers
             LoadPassives();
             LoadSets();
             LoadJogressRecipes();
+            LoadEvolutionWeb();
+            LoadAreaThemes();
         }
 
         private const string DigimonFolder = "res://Data/Digimon/";
@@ -41,6 +44,8 @@ namespace ProjetoDC.Scripts.Managers
         private const string PassiveFolder = "res://Data/Passives/";
         private const string SetFolder = "res://Data/Sets/";
         private const string JogressFolder = "res://Data/Jogress/";
+        private const string EvolutionWebPath = "res://Data/Evolution/evolution_web.json";
+        private const string AreaThemeFolder = "res://Data/AreaThemes/";
 
         private Dictionary<int, DigimonData> digimons = new();
 
@@ -61,6 +66,13 @@ namespace ProjetoDC.Scripts.Managers
         private Dictionary<int, DigimonSetData> sets = new();
 
         private Dictionary<int, JogressData> jogressRecipes = new();
+
+        private Dictionary<string, AreaThemeData> areaThemes = new();
+
+        /// <summary>Teia evolutiva (Data/Evolution/evolution_web.json) - só consulta de quais
+        /// ligações existem entre espécies, sem requisitos. Nunca null depois de _Ready (vem
+        /// vazia se o arquivo faltar ou estiver ilegível). Ver EvolutionDatabase.</summary>
+        public EvolutionDatabase EvolutionWeb { get; private set; } = EvolutionDatabase.Load("{}", new Dictionary<string, DigimonData>());
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
@@ -232,6 +244,50 @@ namespace ProjetoDC.Scripts.Managers
         public List<EvolutionData> GetEvolutionsFrom(int digimonId)
         {
             return evolutions.Where(e => e.FromDigimonId == digimonId).ToList();
+        }
+
+        /// <summary>
+        /// Carrega a teia evolutiva (<see cref="EvolutionWeb"/>) e valida contra os Digimons já
+        /// carregados por <see cref="LoadDigimons"/> - erros de validação vão para GD.PushError
+        /// (ver EvolutionDatabase.Load). Também loga quantas ligações a teia e os requisitos de
+        /// Data/Evolutions/ têm em comum, já que os dois ainda são fontes separadas.
+        /// </summary>
+        public void LoadEvolutionWeb()
+        {
+            using var file = FileAccess.Open(EvolutionWebPath, FileAccess.ModeFlags.Read);
+
+            if (file == null)
+            {
+                GD.PushError("Teia evolutiva não encontrada: " + EvolutionWebPath);
+                return;
+            }
+
+            var digimonsByCode = new Dictionary<string, DigimonData>();
+
+            foreach (var digimon in digimons.Values)
+            {
+                if (!digimonsByCode.TryAdd(digimon.Code, digimon))
+                    GD.PushError("Code de Digimon duplicado: " + digimon.Code);
+            }
+
+            EvolutionWeb = EvolutionDatabase.Load(file.GetAsText(), digimonsByCode);
+
+            // Ligações "normal" da teia x evoluções com requisitos que o jogo realmente usa.
+            var runtimeEdges = evolutions
+                .Where(e => digimons.ContainsKey(e.FromDigimonId) && digimons.ContainsKey(e.ToDigimonId))
+                .Select(e => (digimons[e.FromDigimonId].Code, digimons[e.ToDigimonId].Code))
+                .ToHashSet();
+
+            var webEdges = EvolutionWeb.Links
+                .Where(l => l.Type == EvolutionLinkType.Normal)
+                .Select(l => (l.From, l.To))
+                .ToHashSet();
+
+            GD.Print($"Teia evolutiva carregada: {EvolutionWeb.Links.Count} ligações, " +
+                     $"{EvolutionWeb.ValidationErrors.Count} erro(s) de validação. " +
+                     $"Normais: {webEdges.Count} na teia, {runtimeEdges.Count} em Data/Evolutions " +
+                     $"({webEdges.Except(runtimeEdges).Count()} só na teia, " +
+                     $"{runtimeEdges.Except(webEdges).Count()} só em Data/Evolutions).");
         }
 
         /// <summary>
@@ -653,6 +709,71 @@ namespace ProjetoDC.Scripts.Managers
             GD.Print("Áreas de exploração carregadas: " + explorationMaps.Count);
         }
 
+        /// <summary>Carrega os temas visuais das áreas de exploração (Data/AreaThemes/*.json, um
+        /// arquivo por tema - ver AreaThemeData). Chaveado por AreaThemeData.Id em minúsculo.</summary>
+        public void LoadAreaThemes()
+        {
+            using var dir = DirAccess.Open(AreaThemeFolder);
+
+            if (dir == null)
+            {
+                GD.PrintErr("Pasta de temas de área não encontrada!");
+                return;
+            }
+
+            dir.ListDirBegin();
+
+            string fileName = dir.GetNext();
+
+            while (fileName != "")
+            {
+                if (fileName.EndsWith(".json"))
+                {
+                    using var file = FileAccess.Open(AreaThemeFolder + fileName, FileAccess.ModeFlags.Read);
+
+                    if (file == null)
+                    {
+                        GD.PrintErr("Erro ao abrir: " + AreaThemeFolder + fileName);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var theme = JsonSerializer.Deserialize<AreaThemeData>(file.GetAsText(), JsonOptions);
+                            string id = (theme?.Id ?? "").ToLowerInvariant();
+
+                            if (string.IsNullOrEmpty(id))
+                                GD.PrintErr($"Tema de área sem Id em {fileName}.");
+                            else if (!areaThemes.TryAdd(id, theme))
+                                GD.PrintErr("Tema de área duplicado: " + id);
+                        }
+                        catch (JsonException ex)
+                        {
+                            GD.PrintErr($"Erro ao desserializar {fileName}: {ex.Message}");
+                        }
+                    }
+                }
+
+                fileName = dir.GetNext();
+            }
+
+            GD.Print("Temas de área carregados: " + areaThemes.Count);
+        }
+
+        /// <summary>Tema pelo id (ver ExplorationMapData.Theme). Se não existir, cai no "forest"
+        /// (com um aviso) em vez de deixar a área sem cenário.</summary>
+        public AreaThemeData GetAreaTheme(string id)
+        {
+            string key = (id ?? "forest").ToLowerInvariant();
+
+            if (areaThemes.TryGetValue(key, out var theme))
+                return theme;
+
+            GD.PrintErr($"Tema de área não encontrado: '{id}' - usando 'forest'.");
+
+            return areaThemes.GetValueOrDefault("forest");
+        }
+
         /// <summary>Retorna o <see cref="ExplorationMapData"/> pelo ID, ou null se não
         /// encontrado.</summary>
         public ExplorationMapData GetExplorationMap(int id)
@@ -664,10 +785,12 @@ namespace ProjetoDC.Scripts.Managers
             return null;
         }
 
-        /// <summary>Retorna todas as áreas de exploração carregadas, ordenadas por ID.</summary>
+        /// <summary>Retorna todas as áreas de exploração carregadas, da mais fácil pra mais difícil
+        /// (nível recomendado; o ID desempata) - é a ordem da lista de exploração, e o ID não
+        /// segue a progressão (ex.: a Praia é a 6ª área, mas vem logo depois do Pântano).</summary>
         public IEnumerable<ExplorationMapData> GetAllExplorationMaps()
         {
-            return explorationMaps.Values.OrderBy(m => m.Id);
+            return explorationMaps.Values.OrderBy(m => m.RecommendedLevel).ThenBy(m => m.Id);
         }
 
         /// <summary>

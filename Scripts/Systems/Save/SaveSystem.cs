@@ -137,6 +137,38 @@ namespace ProjetoDC.Scripts.Systems.Save
             }
         }
 
+        /// <summary>Apaga o save e o backup (só o save.json, o .bak e um .tmp que tenha sobrado
+        /// de uma gravação interrompida) - usado por "Novo Jogo" no menu principal. As cópias
+        /// .corrupt-* de saves ilegíveis ficam, são só diagnóstico. Devolve false se algum
+        /// arquivo não pôde ser apagado.</summary>
+        public bool DeleteSave()
+        {
+            string path = ProjectSettings.GlobalizePath("user://" + SavePath);
+            string backupPath = ProjectSettings.GlobalizePath("user://" + BackupPath);
+
+            bool ok = true;
+
+            foreach (var file in new[] { path, backupPath, path + ".tmp" })
+            {
+                try
+                {
+                    if (File.Exists(file))
+                        File.Delete(file);
+                }
+                catch (Exception e)
+                {
+                    ok = false;
+
+                    GD.PrintErr($"Não foi possível apagar '{file}': {e.Message}");
+                }
+            }
+
+            if (ok)
+                GD.Print("Save apagado.");
+
+            return ok;
+        }
+
         public bool HasSave()
         {
             string path = ProjectSettings.GlobalizePath(

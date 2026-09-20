@@ -31,12 +31,14 @@ namespace ProjetoDC.Scripts.UI
             ("🌎 Exploração", ExploracaoBody),
             ("🤝 NPCs Recrutados", NpcsRecrutadosBody),
             ("✨ Evolução", EvolucaoBody),
+            ("🧬 Jogress", JogressBody),
             ("💀 Morte", MorteBody),
             ("🥚 Ovos", OvosBody),
             ("❤️ Necessidades do Digimon", NecessidadesBody),
             ("🎒 Inventário", InventarioBody),
             ("📖 Enciclopédia", EnciclopediaBody),
             ("🕐 Relógio e Sono", RelogioBody),
+            ("💾 Menu Principal e Save", MenuESaveBody),
             ("✏️ Renomear Digimon", RenomearBody),
         };
 
@@ -157,6 +159,8 @@ namespace ProjetoDC.Scripts.UI
             "[b]Refeitório[/b]: coloque carne aqui para os Digimons comerem. Carne dentro do Refeitório demora muito mais " +
             "pra estragar (~1 dia) e ainda dá 10% a mais de recuperação de fome quando fresca. Carne fora do Refeitório estraga rápido " +
             "e, se um Digimon comer carne estragada, perde felicidade, disciplina e corre mais risco de ficar doente.\n\n" +
+            "[b]Carne Assada[/b]: com o Meramon recrutado, o Inventário mostra uma linha de cozinha pra assar as Carnes cruas do estoque: cada Carne custa 100 Bits e a encomenda inteira leva 20 minutos do relógio do jogo (uma por vez; o Meramon avisa quando terminar). A assada sacia mais (30 de fome, contra 20) e demora o dobro pra estragar - 12h fora do Refeitório e 48h dentro dele (a crua dura 6h e 24h). Coloque no Center pela terceira opção do botão de comida.\n" +
+            "" +
             "[b]Hospital[/b]: Digimons dentro dessa área recuperam HP muito mais rápido (regeneração passiva bem mais forte " +
             "que em qualquer outro lugar do Center). Não tem relação com remédio - remédio cura doença e pode ser usado em " +
             "qualquer lugar, não precisa estar no Hospital.";
@@ -181,6 +185,8 @@ namespace ProjetoDC.Scripts.UI
             "[b]Selecionar um Digimon[/b]: durante a luta, clique em qualquer Digimon (seu ou " +
             "inimigo) pra ver o HP dele. Do seu time mostra o HP exato (atual/máximo); do time " +
             "inimigo mostra só uma porcentagem aproximada de vida restante.\n\n" +
+            "[b]Cura e morte súbita[/b]: a cura, a regeneração e os escudos perdem eficácia com o tempo de luta (100% nos primeiros 30 segundos, depois caem aos poucos até 20%). Passados 2 minutos começa a morte súbita: todos perdem 3% da vida máxima por segundo, sem defesa nem cura que segure - quem estiver com a menor porcentagem de vida cai primeiro. O topo da tela avisa a contagem regressiva.\n" +
+            "" +
             "Ao vencer, o time ganha experiência e Bits. Mesmo perdendo, cada Digimon ganha uma experiência de consolação " +
             "(cerca de 1/5 do normal), pra não travar o progresso do jogador.\n\n" +
             "Cada Digimon também pode ter uma passiva ativa que soma um efeito extra na batalha - veja o tópico ✨ Passivas.";
@@ -228,7 +234,10 @@ namespace ProjetoDC.Scripts.UI
             "perto de um selvagem que guarda o caminho até eles - vale a pena explorar todo " +
             "canto do mapa.\n\n" +
             "[b]Itens no chão[/b]: clique de perto pra coletar - somam direto no Inventário do " +
-            "Center e não voltam a aparecer depois.";
+            "Center e não voltam a aparecer depois.\n\n" +
+            "[b]Áreas novas[/b]: algumas áreas só abrem depois de concluir uma quest - enquanto estiverem bloqueadas, o cartão na lista mostra 🔒 e qual quest falta, e o botão fica desativado. Por exemplo, a Caverna Cristalina (nível recomendado 14, bem mais difícil que a Floresta Inicial) abre ao concluir a quest Limpeza da Floresta.\n\n" +
+            "[b]Ordem das áreas[/b]: Caminho principal: Floresta Inicial (nível 6) -> Caverna Cristalina (14) -> Deserto Escaldante (26, abre com a quest Luz na Escuridão) -> Cânion Carmesim (32, abre com a quest Ventos do Deserto). Caminho alternativo: Floresta -> Pântano Sombrio (20, abre junto com a Caverna, mas os selvagens de lá são mais fortes - vale passar pela caverna antes) -> Praia Dourada (24, abre com a quest Trilhas do Pântano). Do Deserto sai um segundo desvio: o Vulcão Ardente (30, abre com a mesma quest Ventos do Deserto do Cânion).\n\n" +
+            "[b]Quests de coleta e de caçada[/b]: algumas quests pedem itens que só caem de certos selvagens (o texto da quest diz de quais) - ganhe combates na área pra juntar e depois entregue ao NPC. Outras pedem pra derrotar uma espécie específica; o progresso conta entre visitas, e os selvagens são sorteados de novo a cada entrada, então pode ser preciso voltar mais de uma vez.";
 
         private const string NpcsRecrutadosBody =
             "Alguns NPCs de áreas de exploração podem ser recrutados: entregue a quest deles " +
@@ -245,7 +254,8 @@ namespace ProjetoDC.Scripts.UI
             "não quer (e acabando puxando ele pra uma evolução indesejada), abra a tela de " +
             "Detalhes dele (botão ℹ na barra de status) e desmarque esse stat na seção " +
             "\"Treino Autônomo\" - ele só deixa de ir sozinho pra aquela área específica, o " +
-            "treino manual (arrastar na mão) continua funcionando normalmente.";
+            "treino manual (arrastar na mão) continua funcionando normalmente.\n\n" +
+            "[b]Quais NPCs cobrem quais treinos[/b]: na Floresta Inicial, o Gaogamon (Ataque) e o Togemon (Defesa); na Caverna Cristalina, o Candlemon (Ataque Especial), o Stingmon (Velocidade), o Sunarizamon (HP) e o Phascomon (Defesa Especial) - juntos, cobrem as seis áreas de treino específico.";
 
         private const string EvolucaoBody =
             "Cada Digimon pode evoluir quando atinge o nível mínimo, a idade mínima (em dias) e os stats mínimos exigidos " +
@@ -263,12 +273,29 @@ namespace ProjetoDC.Scripts.UI
             "Wizardmon (veja 🤝 NPCs Recrutados), também dá pra marcar \"Bloquear\" numa evolução específica ali " +
             "mesmo: o Digimon nunca evolui por um caminho bloqueado, mesmo atendendo todos os requisitos - útil pra " +
             "recusar a evolução mais fácil de propósito e esperar juntar os stats de uma alternativa mais forte. Dá " +
-            "pra marcar e desmarcar quando quiser, sem custo.";
+            "pra marcar e desmarcar quando quiser, sem custo." +
+            "\n" +
+            "\n" +
+            "[b]Ramificações[/b]: um Digimon pode ter vários caminhos de evolução. Quando mais de um tem os requisitos atendidos ao mesmo tempo, o jogo escolhe o mais exigente (o que pede mais nível, idade, stats e condições); se empatarem, sorteia entre eles. Por isso, pra chegar num caminho específico, olhe os requisitos dele no Guia de Evolução e treine os stats certos - e lembre que Felicidade e Disciplina podem abrir ou fechar caminhos. Algumas formas só saem por Jogress (veja 🧬 Jogress) e outras são uma troca de modo dentro do mesmo estágio (Belphemon Sleep Mode → Rage Mode).";
+
+        private const string JogressBody =
+            "O botão 🧬 na barra de controle abre a fusão Jogress (DNA Digivolution): você escolhe 2 Digimons do Center e, se a combinação for uma receita conhecida, eles se fundem num Digimon novo.\n" +
+            "\n" +
+            "[b]Sem requisitos de treino[/b]: diferente da evolução, o Jogress não exige nível, idade nem stats - só os dois Digimons certos (em qualquer ordem) e Capacidade livre no Center. A tela mostra uma prévia (\"A + B → Resultado\") antes de você confirmar, e avisa quando a combinação não existe ou quando falta Capacidade. Nada muda até o clique de confirmar.\n" +
+            "\n" +
+            "[b]O que acontece[/b]: os dois Digimons saem do Center e um Digimon novo nasce no lugar. Os stats dele vêm da média dos stats dos dois, com um bônus, puxada em direção à espécie resultante - então treinar os dois antes compensa. A Capacidade que o resultado ocupa é descontada da que os dois ocupavam.\n" +
+            "\n" +
+            "[b]Receitas[/b]:\n" +
+            "- Omegamon = WarGreymon + MetalGarurumon\n" +
+            "- Examon = Slayerdramon + Breakdramon\n" +
+            "- Paildramon = ExVeemon + Stingmon\n" +
+            "\n" +
+            "Esses três só existem por Jogress - nenhuma evolução comum chega neles. O Guia de Evolução (✨) também mostra, pra cada Digimon, com qual parceiro ele pode fazer Jogress.";
 
         private const string MorteBody =
-            "Digimons não vivem para sempre - cuidar bem deles (e evoluir a tempo) é o que mantém eles vivos.\n\n" +
+            "Digimons não vivem para sempre - cuidar bem deles (e evoluir a tempo) é o que mantém eles vivos. Com um esforço moderado (uns 4 combates por dia, treinando os stats que a evolução pede) ele chega pelo menos a uma forma mais fraca de cada estágio; as formas mais fortes pedem mais esforço (Energético, mais combates) ou um Center mais evoluído.\n\n" +
             "[b]Velhice[/b]: cada estágio evolutivo tem um teto de idade em dias - Baby: 3, In-Training: 5, " +
-            "Rookie: 9, Champion: 15, Ultimate: 22, Mega/Mega+/Special: 30. A idade nunca reseta ao evoluir, só o " +
+            "Rookie: 15, Champion: 26, Ultimate: 52, Mega/Mega+/Special: 68. A idade nunca reseta ao evoluir, só o " +
             "teto aumenta - evoluir antes do prazo é o que evita a morte por velhice, que é certa assim que a " +
             "idade passa do teto do estágio atual.\n\n" +
             "[b]Maus-tratos[/b]: negligência repetida também pode matar, com uma chance (não é certeza) a cada vez " +
@@ -299,6 +326,7 @@ namespace ProjetoDC.Scripts.UI
             "[b]Doença[/b]: Digimons podem ficar doentes aleatoriamente (chance maior comendo comida estragada); " +
             "use remédio nele (em qualquer lugar do Center, não precisa ser no Hospital) pra curar. Já o Hospital em si " +
             "serve pra recuperar HP mais rápido, não pra curar doença.\n\n" +
+            "[b]Colocar Carne, Energético e remédio[/b]: segure o botão do item e arraste até o Center; solte pra colocar. Pra desistir no meio do arrastar, aperte Esc - nada é gasto. O jogo também cancela sozinho se a janela perder o foco (Alt-Tab, por exemplo) antes de você soltar.\n\n" +
             "Enquanto todos os Digimons do Center estão dormindo, o botão de pular sono (na área do relógio) avança o " +
             "tempo direto até alguém acordar.";
 
@@ -326,6 +354,16 @@ namespace ProjetoDC.Scripts.UI
             "num ciclo de 24 horas. Enquanto todos os Digimons estão dormindo (não há nada pra fazer nesse período ainda, " +
             "já que não existem Digimons diurnos/noturnos no jogo por enquanto), aparece um botão pra pular direto até " +
             "alguém acordar, sem quebrar a passagem de dias nem nenhum sistema que dependa do relógio.";
+
+        private const string MenuESaveBody =
+            "[b]Menu Principal[/b]: ao abrir o jogo você escolhe entre Novo Jogo, Carregar Jogo e Opções.\n" +
+            "- [b]Carregar Jogo[/b] continua do último save. Fica desativado quando não existe save.\n" +
+            "- [b]Novo Jogo[/b] começa do zero e APAGA o save atual (e o backup dele). Se já existe um save, o jogo pergunta antes, mostrando o que será perdido - não dá pra desfazer. Sem nenhum save, começa direto.\n" +
+            "- [b]Opções[/b] tem o volume da música (o mesmo da ⚙ Configurações dentro do jogo).\n" +
+            "\n" +
+            "O relógio do jogo fica parado enquanto o menu está aberto.\n" +
+            "\n" +
+            "[b]Salvamento automático[/b]: não existe botão de salvar. O jogo salva sozinho no fim de cada dia do jogo, quando um ovo choca, depois de uma fusão Jogress ou de uma decisão de capacidade na evolução, quando um Digimon morre e ao sair pelo botão 🚪 ou fechar a janela. O jogo guarda também um backup do save anterior e tenta usá-lo se o save principal não puder ser lido.";
 
         private const string RenomearBody =
             "Clique no nome do Digimon selecionado, ao lado do sprite na barra superior, pra dar um apelido a ele. " +

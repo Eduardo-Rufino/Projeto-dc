@@ -25,7 +25,9 @@ namespace ProjetoDC.Scripts.UI
         // Mais recente primeiro - é a que abre selecionada por padrão.
         private static readonly (string Title, string Body)[] Versions =
         {
-            ("🆕 Versão 0.8", Version08Body),
+            ("🆕 Versão 0.10", Version10Body),
+            ("📦 Versão 0.9", Version09Body),
+            ("📦 Versão 0.8", Version08Body),
             ("📦 Versão 0.7", Version07Body),
             ("📦 Versão 0.6", Version06Body),
             ("📦 Versão 0.5", Version05Body),
@@ -118,8 +120,118 @@ namespace ProjetoDC.Scripts.UI
             BackPressed?.Invoke();
         }
 
-        private const string Version08Body =
+        private const string Version10Body =
             "Em desenvolvimento.";
+
+        private const string Version09Body =
+            "[b]Mais tempo pra evoluir (todos os estágios)[/b]\n" +
+            "Os tetos de idade em dias subiram: Baby 4, In-Training 7, Rookie 15, Champion 26, Ultimate 52 e Mega/Mega+/Special 68 (antes: 3, 5, 9, 15, 22 e 30). A ideia é que o Digimon só morra sem evoluir se você cuidar e treinar mal: com um esforço moderado (uns 4 combates por dia) ele chega pelo menos a uma forma mais fraca de cada estágio. As formas mais fortes pedem mais - Energético, mais combates ou um Center mais evoluído (áreas de treino específicas, NPCs recrutados, conjuntos completos).\n" +
+            "\n" +
+            "Chegar ao Mega deixou de ser praticamente impossível. Além dos tetos maiores, o nível exigido nas faixas mais fortes caiu um pouco: Rookie -> Champion de nível 20 pra 18, Champion -> Ultimate de 30 pra 28, e Ultimate -> Mega de 30 pra 28, de 40 pra 36 e de 42 pra 37.\n" +
+            "\n" +
+            "" +
+            "[b]Morte súbita nas batalhas[/b]\n" +
+            "Depois de 2 minutos de luta começa a morte súbita: todo mundo perde 3% da vida máxima por segundo, ignorando defesa, escudo e cura - então nenhuma luta dura pra sempre (antes, um Suporte de cura contra um Tank de pouco dano podia travar). Como a perda é proporcional à vida máxima, ela não favorece quem tem pouca vida nem pune quem tem muita: quem estiver com a menor porcentagem de vida cai primeiro, ou seja, vence quem causou mais dano relativo à vida máxima do alvo. Um aviso vermelho no topo faz a contagem nos últimos 15 segundos.\n" +
+            "\n" +
+            "[b]Novo fundo do Center: céu e nuvens[/b]\n" +
+            "O fundo cinza do Center virou um céu que muda com a hora do relógio do jogo (madrugada, amanhecer, dia, pôr do sol e noite estrelada), com nuvens andando devagar, como se o Center fosse uma ilha flutuante. Cada sala ganhou sombra e uma base de pedra, e à noite as salas escurecem de leve. A arena de batalha também ganhou o mesmo céu, com a sombra e a base de pedra nos hexágonos.\n" +
+            "\n" +
+            "[b]Novo fundo nas janelas[/b]\n" +
+            "As janelas do jogo (inventário, loja, enciclopédia, tutorial, batalha, exploração...), a barra superior com as informações e a barra de botões ganharam o fundo de hexágonos azuis do menu inicial. As caixas de confirmação (fechar o jogo, deletar Digimon) também foram refeitas nesse estilo, com o botão Cancelar já selecionado.\n" +
+            "\n" +
+            "[b]Tela de evolução sem capacidade[/b]\n" +
+            "Ganhou o mesmo visual das outras telas. Continua igual: selecione Digimons pra obliterar até liberar a capacidade que falta, ou mantenha a evolução bloqueada até haver espaço.\n" +
+            "\n" +
+            "[b]Correções[/b]\n" +
+            "- Pular o sono agora acorda o Center às 6h de qualquer horário entre 22h e 5h (parava 4 horas depois de começar).\n" +
+            "- Digimons doentes agora continuam doentes depois de salvar e carregar (antes voltavam saudáveis, o que também zerava o risco de morte por doença).\n" +
+            "- As funções dos NPCs recrutados (Carne diária da Palmon, consultor do Wizardmon, cozinha do Meramon) agora vêm dos dados de cada NPC.\n" +
+            "\n" +
+            "" +
+            "[b]Cozinha do Meramon: Carne Assada[/b]\n" +
+            "Depois de recrutar o Meramon (quest Brasas pro Meramon, no Vulcão Ardente), o Inventário ganha uma linha de cozinha: ele assa as Carnes cruas do seu estoque (\"Assar 1\" ou \"Assar todas\", 1 Carne crua vira 1 Carne Assada). Cada Carne custa 100 Bits e a encomenda inteira leva 20 minutos do relógio do jogo (acelera com o x2 e o Pular sono); só cabe uma encomenda por vez e um aviso aparece quando ela fica pronta. A Carne Assada é colocada no Center como a crua - pelo botão de comida, na terceira opção - mas sacia mais (30 de fome, contra 20) e demora o dobro do tempo pra estragar: 12 horas fora do Refeitório e 48 dentro dele (a crua dura 6 e 24). Dentro do Refeitório ela continua durando mais e ainda dá o bônus de recuperação de fome.\n" +
+            "\n" +
+            "" +
+            "[b]Nova área: Vulcão Ardente[/b]\n" +
+            "Um segundo caminho alternativo, que sai do Deserto Escaldante em vez do Cânion: um vulcão de rocha escura, fumarolas e colunas de basalto, com um rio de lava ao sul. Abre ao concluir a quest Ventos do Deserto (a mesma do Cânion) e tem nível recomendado 30, com selvagens de nível 28 a 32 (Growlmon, GeoGreymon, Kyubimon, Garurumon, Dracomon e Candlemon). Só dá pra andar até a beira da brasa - a lava não é caminho.\n" +
+            "\n" +
+            "Quem mora lá: Agumon (quest Trilhas de Cinzas), Renamon (caçada de Kyubimon), Tentomon (coleta de Pedras de Enxofre) e um Meramon escondido atrás das colunas. Entregar a quest do Meramon (coletar 4 Brasas Vulcânicas) recruta ele pro Center: ele vai trabalhar na cozinha do Center, assando as suas Carnes (veja Cozinha do Meramon, acima).\n" +
+            "\n" +
+            "Itens novos: Brasa Vulcânica (dropada por Growlmon, GeoGreymon e Candlemon) e Pedra de Enxofre (dropada por Garurumon, Dracomon e Kyubimon).\n" +
+            "\n" +
+            "" +
+            "[b]Mais quests nas áreas novas[/b]\n" +
+            "Cada uma das quatro áreas novas (Pântano, Praia, Deserto e Cânion) ganhou duas quests além da do guia:\n" +
+            "- Uma quest de coleta, com o NPC escondido: junte 4 itens que só os selvagens da própria área soltam - Cogumelo do Pântano, Concha Perolada, Escama do Deserto e Fragmento de Fóssil - e entregue pra ele.\n" +
+            "- Uma caçada, com um NPC novo à vista: derrote 2 selvagens de uma espécie específica (ShoeShoemon, Ikkakumon, Gladimon e BaoHackmon). O progresso vale entre visitas.\n" +
+            "\n" +
+            "As recompensas são Bits, Capacidade e itens (Energético e Remédio) - nenhum desses NPCs entra no Center.\n" +
+            "\n" +
+            "" +
+            "[b]Nova área: Praia Dourada[/b]\n" +
+            "Continuação do caminho alternativo da Floresta: uma praia de areia clara com o mar ao sul, depois do Pântano Sombrio. Abre ao concluir a quest Trilhas do Pântano e é um pouco mais difícil que o pântano (nível recomendado 24, selvagens de nível 22 a 26 - Gomamon, Elizamon, Bakemon, Dimetromon e Ikkakumon). Só dá pra caminhar até a beira da água: onde a areia vira onda e depois mar, o Digimon não passa. Quem mora lá: Muchomon (quest Maré Baixa) e um Lucemon escondido atrás das palmeiras e pedras. Tem palmeiras, guarda-sóis, castelos de areia, conchas, estrelas-do-mar e coral no mar, além de 4 itens espalhados pela areia.\n" +
+            "\n" +
+            "" +
+            "[b]Nova área: Cânion Carmesim[/b]\n" +
+            "A última etapa por enquanto: um cânion de paredões vermelhos, arcos de pedra, colunas e fósseis, além do Deserto Escaldante. Abre ao concluir a quest Ventos do Deserto e é a área mais difícil até agora (nível recomendado 32, selvagens de nível 30 a 34 - Veedramon, Reppamon, BaoHackmon, ExVeemon, Stingmon, Galemon, Coredramon Azul e Dorugamon). Quem mora lá: Dorumon (quest Rastro no Cânion) e um Gladimon escondido atrás das colunas e paredões. Tem 4 itens espalhados pelo chão.\n" +
+            "\n" +
+            "" +
+            "[b]Novas áreas: Pântano Sombrio e Deserto Escaldante[/b]\n" +
+            "Duas áreas novas de exploração, cada uma com chão e cenário próprios.\n" +
+            "\n" +
+            "O Pântano Sombrio é um caminho alternativo que sai da Floresta Inicial: abre logo ao concluir a quest Limpeza da Floresta, mas é mais difícil que a Caverna Cristalina (nível recomendado 20, selvagens de nível 18 a 22 - Shoemon, ShoeShoemon, Sunflowmon, Snatchmon, Palmon e Lalamon). Dá pra entrar antes da caverna, só que sem treino suficiente os selvagens de lá não perdoam. Quem mora lá: Gomamon (quest Trilhas do Pântano) e um Bakemon escondido entre os troncos.\n" +
+            "\n" +
+            "O Deserto Escaldante continua a caverna: abre ao concluir a quest Luz na Escuridão, do Candlemon, e é a área mais difícil até agora (nível recomendado 26, selvagens de nível 24 a 28 - Greymon, Kabuterimon, Devidramon, Gladimon, Raptordramon, Coredramon Verde, Togemon e Cockatrimon). Quem mora lá: Pteromon (quest Ventos do Deserto) e um Kotemon escondido atrás das rochas e ruínas.\n" +
+            "\n" +
+            "Cada área tem 4 itens espalhados pelo chão pra coletar.\n" +
+            "\n" +
+            "" +
+            "[b]Nova área: Caverna Cristalina[/b]\n" +
+            "A próxima etapa depois da Floresta Inicial: uma caverna escura de cristais, estalagmites e colunas de pedra, com nível recomendado 14 e selvagens bem mais fortes que os da floresta (Sunarizamon, Phascomon, Ghostmon, BEMmon, Wormmon e Tortamon, níveis 12 a 16). Ela só abre depois de concluir a quest Limpeza da Floresta - o cartão na lista de áreas (🌎) mostra o que falta enquanto estiver bloqueada.\n" +
+            "\n" +
+            "Quatro NPCs novos: o Candlemon, guia visível na entrada, e três escondidos atrás das formações de pedra - Stingmon, Sunarizamon e Phascomon -, cada um com uma quest. Recrutar os quatro completa, junto com os da Floresta, o bônus das seis áreas de treino específico: Ataque Especial (Candlemon), Velocidade (Stingmon), HP (Sunarizamon) e Defesa Especial (Phascomon).\n" +
+            "\n" +
+            "Novo item: Cristal de Caverna, solto por Sunarizamon e Phascomon selvagens (50% de chance) e usado na quest do Sunarizamon.\n" +
+            "\n" +
+            "[b]Áreas liberadas pela progressão[/b]\n" +
+            "Uma área agora pode exigir a conclusão de uma quest pra abrir. Enquanto estiver bloqueada, o botão vira \"Bloqueada\" e o cartão explica qual quest concluir.\n" +
+            "\n" +
+            "[b]Visual novo: Floresta e Caverna[/b]\n" +
+            "Árvores, arbustos, pedras, flores, cogumelos e gramas da Floresta Inicial foram redesenhados com mais detalhe. As colisões de árvores e pedras foram reajustadas ao novo desenho (antes ficavam abaixo do tronco e mais estreitas que ele). O chão da Floresta Inicial e o da Caverna Cristalina agora são texturas ladrilhadas, no lugar de uma cor lisa.\n" +
+            "\n" +
+            "[b]Passivas para todos os Digimons[/b]\n" +
+            "Todas as 199 espécies agora têm uma pool de 2 ou 3 passivas possíveis, da mesma Role dela (e, no Suporte, do mesmo tipo: Curador, Buffer ou Debuffer). Antes só 4 espécies tinham pool - o resto nascia sem passiva nenhuma. Ao nascer ou evoluir, o Digimon sorteia 1 delas, como sempre foi a regra. Digimons de saves antigos que estavam sem passiva recebem uma na primeira vez que o save é carregado; quem já tinha uma continua com a mesma.\n" +
+            "\n" +
+            "Consequência: Digimons selvagens e times inimigos de Batalha Livre também sorteiam passiva, então essas lutas ficam um pouco mais difíceis. Times de Campeonato não mudam." +
+            "\n" +
+            "\n" +
+            "[b]Correção: comida e remédio travados[/b]\n" +
+            "Segurar e arrastar Carne, Energético ou remédio podia travar a colocação pra sempre se o soltar do botão não fosse percebido pelo jogo (por exemplo, trocando de janela com Alt-Tab no meio do arrastar): dali em diante nada mais podia ser colocado até reabrir o jogo. Agora o arrastar é cancelado sozinho se a janela perder o foco ou se o botão do mouse for solto sem a colocação terminar, e dá pra cancelar de propósito apertando Esc. Cancelar não gasta o item.";
+
+        private const string Version08Body =
+            "[b]Menu Principal[/b]\n" +
+            "O jogo agora abre num menu com Novo Jogo, Carregar Jogo e Opções (volume da música). Novo Jogo pede confirmação antes de apagar o save existente - o aviso mostra o dia, os Digimons, os ovos e os Bits que serão perdidos - e, sem nenhum save, começa direto. Carregar Jogo fica desativado quando não há save. O relógio do jogo fica parado enquanto o menu está aberto. O fundo tem uma grade de hexágonos e Digimons aleatórios comemorando pela tela, diferentes a cada vez que o jogo abre.\n" +
+            "\n" +
+            "[b]Teia Evolutiva Nova[/b]\n" +
+            "A malha de evoluções foi refeita a partir de um mapa completo: 337 evoluções entre os 199 Digimons, e nenhum Digimon de meio de linha fica mais com uma única origem e uma única evolução - todos têm pelo menos duas entradas ou duas saídas. Várias evoluções antigas saíram ou mudaram de lugar (por exemplo, Tsunomon deixou de virar Renamon, Gigimon deixou de virar Agumon e Gatomon deixou de virar Angewomon direto). Toda evolução nova ganhou requisitos de nível, idade e stats; onde dois caminhos saem do mesmo Digimon, eles se diferenciam por stats, Felicidade, Disciplina ou batalhas, pra nenhum ficar escondido atrás do outro. As formas mais raras (Sakuyamon, MirageGaogamon, Sleipmon, Ophanimon, Lilamon e Imperialdramon) exigem Felicidade 40 ou mais; sem isso o Digimon segue pela alternativa que já existia.\n" +
+            "\n" +
+            "Também nova: troca de modo. Belphemon Sleep Mode pode virar Rage Mode (exige 15 batalhas, Felicidade e Disciplina baixas).\n" +
+            "\n" +
+            "[b]Jogress[/b]\n" +
+            "Novo botão 🧬 na barra de controle: funde dois Digimons do Center num Digimon novo. Não exige nível nem stats - só os dois Digimons certos e Capacidade livre. O resultado é um Digimon novo, com a média dos stats dos dois (com bônus) puxada pra espécie resultante. Receitas: Omegamon (WarGreymon + MetalGarurumon), Examon (Slayerdramon + Breakdramon) e Paildramon (ExVeemon + Stingmon). Essas três formas só saem por Jogress - nenhuma evolução comum chega nelas.\n" +
+            "\n" +
+            "[b]Digimons novos (26)[/b]\n" +
+            "- [b]Megas[/b]: Sakuyamon, MirageGaogamon, Sleipmon, Ophanimon, Piedmon, Imperialdramon (Dragon Mode) e GrandisKuwagamon.\n" +
+            "- [b]Ultimates[/b]: Lilamon, LadyDevimon, SkullSatamon, Myotismon, Paildramon (só por Jogress) e JewelBeemon.\n" +
+            "- [b]Champions[/b]: ExVeemon e Stingmon.\n" +
+            "- [b]Rookie[/b]: Wormmon.\n" +
+            "- [b]In-Training[/b]: DemiVeemon, Dorimon, Budmon e Minomon.\n" +
+            "- [b]Babies[/b]: Chibomon, Dodomon, Zerimon, Pabumon, Nyokimon e Leafmon.\n" +
+            "\n" +
+            "A linha do Wormmon é nova por inteira: Leafmon → Minomon → Wormmon → Stingmon → JewelBeemon → GrandisKuwagamon, com ramificações em todos os estágios (por exemplo, o Wormmon também vira Kabuterimon ou Togemon, e o JewelBeemon também vira HerculesKabuterimon ou Imperialdramon).\n" +
+            "\n" +
+            "[b]Correção[/b]\n" +
+            "Onze Digimons (Candlemon, Devidramon, Devimon, Geogreymon, IceDevimon, MachGaogamon, Mistymon, RizeGreymon, Sunflowmon, Taomon e Wizardmon) tinham o arquivo de evoluções fora da lista do projeto - funcionava no editor, mas uma versão exportada ficaria sem as evoluções deles.";
 
         private const string Version07Body =
             "[b]Ilustrações do Center[/b]\n" +

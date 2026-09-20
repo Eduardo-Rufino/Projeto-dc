@@ -229,9 +229,9 @@ namespace ProjetoDC.Scripts.Systems.Eggs
 
             EggHatched?.Invoke(egg, digimon);
 
-            GameManager.Instance.SaveSystem.SaveGame(
-                GameManager.Instance.Save
-            );
+            // Pelo GameManager.SaveGame (que respeita _hasActiveGame): chamar o SaveSystem direto
+            // gravava mesmo sem jogo ativo (ex.: nos testes automáticos ou antes de escolher no menu).
+            GameManager.Instance.SaveGame();
         }
     }
 }

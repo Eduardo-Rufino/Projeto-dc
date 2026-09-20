@@ -109,6 +109,57 @@ namespace ProjetoDC.Scripts.Models.World
             );
         }
 
+        /// <summary>Verdadeiro se o ponto está dentro do hexágono inteiro (sem o recuo das
+        /// paredes de <see cref="IsPointInside"/>).</summary>
+        public bool IsPointInsideHexagon(Vector2 globalPosition)
+        {
+            return _polygon != null &&
+                Geometry2D.IsPointInPolygon(ToLocal(globalPosition), _polygon.Polygon);
+        }
+
+        /// <summary>Tira a parede (recuo) das arestas que este hexágono divide com algum dos
+        /// outros - ali não existe parede, é só a passagem pro hexágono vizinho. Sem isso, dois
+        /// hexágonos colados viram "ilhas" separadas por uma faixa de parede de cada lado e
+        /// ninguém consegue andar de um pro outro (foi o que prendia os Digimons na arena de
+        /// batalha, ver BattleArena.IsPointInsideArena). Só as arestas voltadas pra fora
+        /// continuam com parede. Chame depois de posicionar todos os hexágonos.</summary>
+        public void OpenEdgesSharedWith(System.Collections.Generic.IEnumerable<CenterArea> others)
+        {
+            Vector2[] hexagon = _polygon?.Polygon;
+
+            if (hexagon == null || hexagon.Length != 6)
+                return;
+
+            float[] edgeDepths = { 0f, 0f, 0f, WallDepthSide, WallDepthTop, WallDepthSide };
+            Vector2 hexagonCenter = Vector2.Zero;
+
+            foreach (Vector2 point in hexagon)
+                hexagonCenter += point;
+
+            hexagonCenter /= hexagon.Length;
+
+            for (int i = 0; i < edgeDepths.Length; i++)
+            {
+                if (edgeDepths[i] <= 0f)
+                    continue;
+
+                Vector2 middle = (hexagon[i] + hexagon[(i + 1) % hexagon.Length]) / 2f;
+                Vector2 outside = middle + (middle - hexagonCenter).Normalized() * 6f;
+                Vector2 probe = ToGlobal(outside);
+
+                foreach (CenterArea other in others)
+                {
+                    if (other != this && other.IsPointInsideHexagon(probe))
+                    {
+                        edgeDepths[i] = 0f;
+                        break;
+                    }
+                }
+            }
+
+            _walkablePolygon = InsetPolygonEdges(hexagon, edgeDepths);
+        }
+
         /// <summary>Encolhe as 3 arestas de cima do hexágono (parede de fundo + paredes
         /// laterais - ver WallDepthTop/WallDepthSide) pra dentro, preservando as 3 de baixo
         /// como estão - usado por GetRandomPointInside/IsPointInside pra impedir Digimons de

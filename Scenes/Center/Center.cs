@@ -99,6 +99,14 @@ public partial class Center : Node2D
     private BroomWorld _placingBroom;
     private bool _isPlacingBroom;
 
+    // Rede de segurança do arrastar de Comida/Remédio (ver CancelDragPlacement): a colocação
+    // só termina no ButtonUp do botão da HUD - se ele nunca chegar, _isPlacingFood/
+    // _isPlacingMedicine ficariam true pra sempre e nada mais poderia ser colocado até
+    // reabrir o jogo.
+    private bool _placementStartedByMouse;
+    private double _placementMouseReleasedFor;
+    private const double LostButtonUpGraceSeconds = 0.25;
+
     private const float CleanRadius = 28f;
     private const int PoopFreshnessHours = 3;
     private const int CleanQuicklyHappinessBonus = 3;
@@ -111,6 +119,10 @@ public partial class Center : Node2D
     public override void _Ready()
     {
         PrintTree();
+
+        // Abrir o Center sem passar pelo menu principal (rodar a cena direto, DEBUG_*) ainda
+        // precisa de um jogo em andamento - no fluxo normal isso já foi decidido no menu.
+        GameManager.Instance.EnsureGameStarted();
 
         MusicManager.Instance?.PlayCenterMusic();
 
@@ -280,6 +292,34 @@ public partial class Center : Node2D
         if (!string.IsNullOrEmpty(OS.GetEnvironment("DEBUG_TEST_PASSIVES")))
             ProjetoDC.Scripts.Systems.Passives.PassiveSystemDebugTests.Run();
 
+        // Mesmo esquema: integridade dos dados de exploração (temas, mapas, NPCs, quests, itens) -
+        // ver ExplorationDebugTests.
+        if (!string.IsNullOrEmpty(OS.GetEnvironment("DEBUG_TEST_EXPLORATION")))
+            ProjetoDC.Scripts.Systems.Exploration.ExplorationDebugTests.Run();
+
+        // Mesmo esquema: o Digimon comendo Carne/Carne Assada/Energético no Center e o estrago - ver
+        // Center.FoodEatingDebugTest.cs.
+        if (!string.IsNullOrEmpty(OS.GetEnvironment("DEBUG_TEST_FOOD")))
+            CallDeferred(nameof(DebugTestFoodEating));
+
+        // Teste de longa duração (soak): fecha sozinho os diálogos que pausam o jogo - ver SoakAutoDismiss.
+        if (!string.IsNullOrEmpty(OS.GetEnvironment("DEBUG_SOAK")))
+            AddChild(new ProjetoDC.Scripts.Systems.Audit.SoakAutoDismiss());
+
+        // Mesmo esquema: a cozinha do Meramon (Carne Assada) - ver CookingDebugTests.
+        if (!string.IsNullOrEmpty(OS.GetEnvironment("DEBUG_TEST_COOKING")))
+            ProjetoDC.Scripts.Systems.Kitchen.CookingDebugTests.Run();
+
+        // Mesmo esquema: rede de segurança do arrastar de Comida/Remédio (ver
+        // Center.PlacementDebugTest.cs).
+        if (!string.IsNullOrEmpty(OS.GetEnvironment("DEBUG_TEST_PLACEMENT")))
+            CallDeferred(nameof(DebugTestPlacementSafety));
+
+        // Mesmo esquema: verificação da malha evolutiva (teia x requisitos, toda evolução
+        // alcançável, Jogress) via log - ver EvolutionDebugTests.
+        if (!string.IsNullOrEmpty(OS.GetEnvironment("DEBUG_TEST_EVOLUTION")))
+            ProjetoDC.Scripts.Systems.Evolution.EvolutionDebugTests.Run();
+
         // Mesmo esquema acima: reproduz ao vivo o impasse relatado de Suporte vs Suporte
         // (ver GameManager.DebugStartSupportDeadlockBattle/BattleUnit._supportFallbackAttack) -
         // um duelo 1x1 entre dois Suportes do mesmo SupportType não tinha como terminar antes
@@ -369,10 +409,30 @@ public partial class Center : Node2D
                 }
                 break;
             case "explorationarea":
-                var explorationMap = DatabaseManager.Instance.GetAllExplorationMaps().FirstOrDefault();
+                // DEBUG_EXPLORATION_MAP (opcional) escolhe o mapa pelo Id em vez do primeiro.
+                int.TryParse(OS.GetEnvironment("DEBUG_EXPLORATION_MAP"), out int debugMapId);
+                var explorationMap = debugMapId > 0
+                    ? DatabaseManager.Instance.GetExplorationMap(debugMapId)
+                    : DatabaseManager.Instance.GetAllExplorationMaps().FirstOrDefault();
                 var explorer = GameManager.Instance.Save.Center.Digimons.FirstOrDefault();
                 if (explorationMap != null && explorer != null)
                     GameManager.Instance.StartExploration(explorer, explorationMap);
+                break;
+            case "settings":
+                OpenSettings();
+                break;
+            case "baseeditor":
+                OpenBaseEditor();
+                break;
+            case "explorationlist":
+                OpenExplorationList();
+                break;
+            case "battletype":
+                _battleTypeScreen.Visible = true;
+                break;
+            case "tournaments":
+                _tournamentListScreen.RefreshUI();
+                _tournamentListScreen.Visible = true;
                 break;
             case "tutorial":
                 _tutorialScreen.Open();
@@ -417,6 +477,14 @@ public partial class Center : Node2D
             GameManager.Instance.DigimonDied -= OnDigimonDied;
             GameManager.Instance.SleepSkipped -= OnSleepSkipped;
         }
+    }
+
+    public override void _Notification(int what)
+    {
+        // Alt-Tab (ou qualquer coisa que tire o foco da janela) no meio do arrastar: o soltar do
+        // botão pode acontecer com a janela sem foco e nunca chegar no botão da HUD.
+        if (what == NotificationApplicationFocusOut || what == NotificationWMWindowFocusOut)
+            CancelDragPlacement("a janela perdeu o foco");
     }
 
     public override void _Process(double delta)
@@ -465,6 +533,8 @@ public partial class Center : Node2D
             _placingBroom.GlobalPosition =
                 GetGlobalMousePosition();
         }
+
+        UpdateLostButtonUpGuard(delta);
     }
 
     private void SpawnDigimons()
@@ -1407,6 +1477,15 @@ public partial class Center : Node2D
     /// </summary>
     public override void _UnhandledInput(InputEvent @event)
     {
+        // Esc cancela um arrastar de Comida/Remédio em andamento (nada é gasto).
+        if (@event is InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape } && IsDragPlacing)
+        {
+            CancelDragPlacement("Esc");
+            GetViewport().SetInputAsHandled();
+
+            return;
+        }
+
         if (IsBlockingScreenOpen())
             return;
 
@@ -1511,7 +1590,22 @@ public partial class Center : Node2D
             return;
         }
 
-        BeginPlacingFood(new Food("Carne", 20, FoodType.Meat));
+        BeginPlacingFood(Food.CreateMeat());
+    }
+
+    /// <summary>Mesmo esquema de StartFoodPlacement, pra Carne Assada (ver GameManager.CookMeat).</summary>
+    public void StartCookedMeatPlacement()
+    {
+        if (!CanStartPlacingFood())
+            return;
+
+        if (GameManager.Instance.Save.Center.CookedMeat <= 0)
+        {
+            GD.Print("Você não possui Carne Assada.");
+            return;
+        }
+
+        BeginPlacingFood(Food.CreateCookedMeat());
     }
 
     /// <summary>Mesmo esquema de StartFoodPlacement acima, só que pro Energético (ver
@@ -1544,6 +1638,7 @@ public partial class Center : Node2D
         _placingFood.SetPlacementMode(true);
 
         _isPlacingFood = true;
+        MarkPlacementStart();
     }
 
     /// <summary>Confirma a colocação do que estiver em andamento (Carne ou Energético - ver
@@ -1589,6 +1684,8 @@ public partial class Center : Node2D
         // cancelar soltando fora de uma área (acima), nada é gasto.
         if (food.Type == FoodType.StaminaSnack)
             GameManager.Instance.Save.Center.StaminaSnacks--;
+        else if (food.IsCooked)
+            GameManager.Instance.Save.Center.CookedMeat--;
         else
             GameManager.Instance.Save.Center.Meat--;
 
@@ -1608,6 +1705,64 @@ public partial class Center : Node2D
         }
 
         return null;
+    }
+
+    private bool IsDragPlacing =>
+        (_isPlacingFood && _placingFood != null) ||
+        (_isPlacingMedicine && _placingMedicine != null);
+
+    private void MarkPlacementStart()
+    {
+        // Só vale pra quem começou com o botão do mouse pressionado (o normal): quem ativou o
+        // botão da HUD pelo teclado nunca tem o mouse pressionado, e não deve ser cancelado
+        // por isso (a rede de segurança do mouse abaixo ignora esse caso).
+        _placementStartedByMouse = Input.IsMouseButtonPressed(MouseButton.Left);
+        _placementMouseReleasedFor = 0;
+    }
+
+    /// <summary>Se o botão esquerdo já foi solto (o jogo sabe) mas o ButtonUp do botão da HUD
+    /// nunca resolveu a colocação, cancela depois de uma pequena folga. Numa soltura normal o
+    /// ButtonUp chega no mesmo quadro e resolve tudo antes disso, então a folga nunca é
+    /// alcançada.</summary>
+    private void UpdateLostButtonUpGuard(double delta)
+    {
+        if (!IsDragPlacing || !_placementStartedByMouse ||
+            Input.IsMouseButtonPressed(MouseButton.Left))
+        {
+            _placementMouseReleasedFor = 0;
+            return;
+        }
+
+        _placementMouseReleasedFor += delta;
+
+        if (_placementMouseReleasedFor >= LostButtonUpGraceSeconds)
+            CancelDragPlacement("o botão do mouse foi solto sem a colocação terminar");
+    }
+
+    /// <summary>Descarta o arrastar de Comida/Remédio em andamento, se houver. Nada foi gasto:
+    /// o item só sai do inventário na confirmação (PlaceFood/PlaceMedicine). Um ButtonUp
+    /// tardio depois disso é inofensivo - PlaceFood/PlaceMedicine já saem cedo sem nada
+    /// pendente.</summary>
+    private void CancelDragPlacement(string reason)
+    {
+        if (!IsDragPlacing)
+            return;
+
+        if (_isPlacingFood && _placingFood != null)
+            _placingFood.QueueFree();
+
+        if (_isPlacingMedicine && _placingMedicine != null)
+            _placingMedicine.QueueFree();
+
+        _placingFood = null;
+        _isPlacingFood = false;
+
+        _placingMedicine = null;
+        _isPlacingMedicine = false;
+
+        _placementMouseReleasedFor = 0;
+
+        GD.Print($"Colocação de comida/remédio cancelada ({reason}) - nada foi gasto.");
     }
 
     public void StartMedicinePlacement()
@@ -1640,6 +1795,7 @@ public partial class Center : Node2D
         _placingMedicine.SetPlacementMode(true);
 
         _isPlacingMedicine = true;
+        MarkPlacementStart();
     }
 
     public void PlaceMedicine()

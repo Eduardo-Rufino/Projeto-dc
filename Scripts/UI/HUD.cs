@@ -20,8 +20,8 @@ namespace ProjetoDC.Scripts.UI
         private Label _selectedDigimonNameLabel;
         private LineEdit _selectedDigimonNameEdit;
         private Button _deleteDigimonButton;
-        private ConfirmationDialog _deleteDigimonConfirmDialog;
-        private AcceptDialog _deleteDigimonBlockedDialog;
+        private ConfirmWindow _deleteDigimonConfirmDialog;
+        private ConfirmWindow _deleteDigimonBlockedDialog;
         private DigimonInstance _pendingDeleteDigimon;
         private Label _selectedDigimonLevelLabel;
         private Label _selectedDigimonXpLabel;
@@ -45,6 +45,7 @@ namespace ProjetoDC.Scripts.UI
         private Control _foodPickerPopup;
         private Button _meatOptionButton;
         private Button _staminaSnackOptionButton;
+        private Button _cookedMeatOptionButton;
         private Button _medicineButton;
         private Button _cleanButton;
         private Button _shopButton;
@@ -59,7 +60,7 @@ namespace ProjetoDC.Scripts.UI
         private Button _encyclopediaButton;
         private Button _patchNotesButton;
         private Button _jogressButton;
-        private ConfirmationDialog _exitConfirmDialog;
+        private ConfirmWindow _exitConfirmDialog;
 
         private Control _digimonStatusPage1;
         private Control _digimonStatusPage2;
@@ -286,6 +287,23 @@ namespace ProjetoDC.Scripts.UI
             _staminaSnackOptionButton.ButtonDown += OnStaminaSnackOptionButtonDown;
             _staminaSnackOptionButton.ButtonUp += OnFoodOptionButtonUp;
 
+            // Terceira opção (Carne Assada): criada por código, só aparece com o Meramon
+            // recrutado ou com estoque (ver OnFeedButtonPressed).
+            _cookedMeatOptionButton = new Button
+            {
+                CustomMinimumSize = new Vector2(56, 56),
+                ExpandIcon = true,
+                Visible = false,
+                TooltipText = "Carne Assada - segure e arraste pra colocar no Center. Sacia mais e demora mais pra estragar que a Carne crua",
+                Icon = GD.Load<Texture2D>("res://Assets/Sprites/Food/beef on bone fried.png"),
+            };
+
+            _cookedMeatOptionButton.AddThemeStyleboxOverride("normal", _meatOptionButton.GetThemeStylebox("normal"));
+            _staminaSnackOptionButton.GetParent().AddChild(_cookedMeatOptionButton);
+
+            _cookedMeatOptionButton.ButtonDown += OnCookedMeatOptionButtonDown;
+            _cookedMeatOptionButton.ButtonUp += OnFoodOptionButtonUp;
+
             _medicineButton = GetNode<Button>(
                 "ControlBar/MedicineButton"
             );
@@ -442,6 +460,7 @@ namespace ProjetoDC.Scripts.UI
             // troca de PlayerDigimon (ex.: deletar o selecionado) deixavam o painel preso no
             // texto de placeholder do .tscn ("Botamon Lv. 1") até isso acontecer.
             GameManager.Instance.PlayerDigimonChanged += OnPlayerDigimonChanged;
+            GameManager.Instance.CookingFinished += OnCookingFinished;
 
             if (GameManager.Instance.PlayerDigimon != null)
                 InspectDigimon(GameManager.Instance.PlayerDigimon);
@@ -476,6 +495,11 @@ namespace ProjetoDC.Scripts.UI
             GameManager.Instance.SkipSleep();
         }
 
+        private void OnCookingFinished(int amount)
+        {
+            ShowWarning($"O Meramon terminou de assar {amount} Carne(s)! Confira o Inventário.");
+        }
+
         private void OnSpeedButtonPressed()
         {
             GameManager.Instance.ToggleClockSpeedDoubled();
@@ -491,6 +515,7 @@ namespace ProjetoDC.Scripts.UI
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.PlayerDigimonChanged -= OnPlayerDigimonChanged;
+                GameManager.Instance.CookingFinished -= OnCookingFinished;
             }
 
             if (_inspectedDigimon != null)
@@ -786,6 +811,11 @@ namespace ProjetoDC.Scripts.UI
         /// em FoodPickerPopup, que são quem realmente inicia o arraste agora).</summary>
         private void OnFeedButtonPressed()
         {
+            var center = GameManager.Instance.Save.Center;
+
+            _cookedMeatOptionButton.Visible = GameManager.Instance.HasRecruitedKitchenCook || center.CookedMeat > 0;
+            _cookedMeatOptionButton.Disabled = center.CookedMeat <= 0;
+
             _foodPickerPopup.Visible = !_foodPickerPopup.Visible;
         }
 
@@ -798,6 +828,11 @@ namespace ProjetoDC.Scripts.UI
         private void OnMeatOptionButtonDown()
         {
             _center.StartFoodPlacement();
+        }
+
+        private void OnCookedMeatOptionButtonDown()
+        {
+            _center.StartCookedMeatPlacement();
         }
 
         private void OnStaminaSnackOptionButtonDown()
@@ -894,18 +929,15 @@ namespace ProjetoDC.Scripts.UI
             {
                 if (_deleteDigimonBlockedDialog == null)
                 {
-                    _deleteDigimonBlockedDialog = new AcceptDialog
-                    {
-                        Title = "Deletar Digimon"
-                    };
+                    _deleteDigimonBlockedDialog = new ConfirmWindow(hasCancel: false);
 
                     AddChild(_deleteDigimonBlockedDialog);
                 }
 
-                _deleteDigimonBlockedDialog.DialogText =
-                    "Você não pode deletar seu único Digimon.";
-
-                _deleteDigimonBlockedDialog.PopupCentered();
+                _deleteDigimonBlockedDialog.Open(
+                    "Deletar Digimon",
+                    "Você não pode deletar seu único Digimon."
+                );
 
                 return;
             }
@@ -914,21 +946,19 @@ namespace ProjetoDC.Scripts.UI
 
             if (_deleteDigimonConfirmDialog == null)
             {
-                _deleteDigimonConfirmDialog = new ConfirmationDialog
-                {
-                    Title = "Deletar Digimon"
-                };
+                _deleteDigimonConfirmDialog = new ConfirmWindow(danger: true);
 
                 AddChild(_deleteDigimonConfirmDialog);
 
                 _deleteDigimonConfirmDialog.Confirmed += OnDeleteDigimonConfirmed;
             }
 
-            _deleteDigimonConfirmDialog.DialogText =
+            _deleteDigimonConfirmDialog.Open(
+                "Deletar Digimon",
                 $"Tem certeza que quer deletar {_pendingDeleteDigimon.DisplayName}?\n" +
-                "Essa ação é PERMANENTE: o Digimon será apagado e não pode ser recuperado.";
-
-            _deleteDigimonConfirmDialog.PopupCentered();
+                "Essa ação é PERMANENTE: o Digimon será apagado e não pode ser recuperado.",
+                "Deletar"
+            );
         }
 
         private void OnDeleteDigimonConfirmed()
@@ -951,19 +981,19 @@ namespace ProjetoDC.Scripts.UI
         {
             if (_exitConfirmDialog == null)
             {
-                _exitConfirmDialog = new ConfirmationDialog
-                {
-                    Title = "Fechar o jogo",
-                    DialogText = "Tem certeza que quer fechar o jogo?\n" +
-                        "As alterações serão salvas automaticamente ao fechar."
-                };
+                _exitConfirmDialog = new ConfirmWindow();
 
                 AddChild(_exitConfirmDialog);
 
                 _exitConfirmDialog.Confirmed += OnExitConfirmed;
             }
 
-            _exitConfirmDialog.PopupCentered();
+            _exitConfirmDialog.Open(
+                "Fechar o jogo",
+                "Tem certeza que quer fechar o jogo?\n" +
+                "As alterações serão salvas automaticamente ao fechar.",
+                "Fechar o jogo"
+            );
         }
 
         private void OnExitConfirmed()
