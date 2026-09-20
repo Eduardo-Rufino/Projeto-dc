@@ -16,6 +16,9 @@
                       "specialDefense":  18,
                       "speed":  34
                   },
+    "Drops": [
+      { "ItemId": 10, "Quantity": 1, "ChancePercent": 50 }
+    ],
     "Passives":  [
                      "AlvoMarcado",
                      "ProjetilPerfurante",

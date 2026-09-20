@@ -1,0 +1,24 @@
+{
+  "id": 190,
+  "code": "budmon",
+  "name": "Budmon",
+  "stage": "InTraining",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Forest",
+  "AttackType": "Special",
+  "BaseStats": {
+    "healthPoints": 48,
+    "physicalDamage": 4,
+    "physicalDefense": 8,
+    "specialDamage": 19,
+    "specialDefense": 9,
+    "speed": 15
+  },
+  "Passives": [
+    "AlvoMarcado",
+    "PosturaFirme",
+    "Predicao"
+  ]
+}

@@ -17,5 +17,9 @@
     "specialDamage": 19,
     "specialDefense": 50,
     "speed": 61
-  }
+  },
+  "Passives": [
+    "MarcaDupla",
+    "AuraVital"
+  ]
 }

@@ -16,5 +16,13 @@
     "specialDamage": 65,
     "specialDefense": 55,
     "speed": 85
-  }
+  },
+  "Drops": [
+    { "ItemId": 8, "Quantity": 1, "ChancePercent": 50 }
+  ],
+  "Passives": [
+    "PrecisaoLetal",
+    "FioDaLamina",
+    "PassoFantasma"
+  ]
 }

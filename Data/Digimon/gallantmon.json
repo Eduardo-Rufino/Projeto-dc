@@ -16,5 +16,10 @@
     "specialDamage": 60,
     "specialDefense": 105,
     "speed": 119
-  }
+  },
+  "Passives": [
+    "Investida",
+    "GolpePesado",
+    "RompeGuarda"
+  ]
 }

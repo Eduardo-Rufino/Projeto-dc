@@ -16,5 +16,10 @@
     "specialDamage": 9,
     "specialDefense": 15,
     "speed": 18
-  }
+  },
+  "Passives": [
+    "FuriaCrescente",
+    "Teimosia",
+    "GolpePesado"
+  ]
 }

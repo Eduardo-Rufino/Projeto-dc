@@ -1,0 +1,24 @@
+{
+  "id": 178,
+  "code": "ophanimon",
+  "name": "Ophanimon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Light",
+  "Attribute": "Vacine",
+  "EggType": "Light",
+  "AttackType": "Special",
+  "BaseStats": {
+    "healthPoints": 590,
+    "physicalDamage": 50,
+    "physicalDefense": 100,
+    "specialDamage": 285,
+    "specialDefense": 140,
+    "speed": 145
+  },
+  "Passives": [
+    "PesLeves",
+    "ProjetilPerfurante",
+    "AlvoMarcado"
+  ]
+}

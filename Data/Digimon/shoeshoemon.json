@@ -17,5 +17,13 @@
     "specialDamage": 85,
     "specialDefense": 63,
     "speed": 48
-  }
+  },
+  "Drops": [
+    { "ItemId": 6, "Quantity": 1, "ChancePercent": 50 }
+  ],
+  "Passives": [
+    "DuplaVoz",
+    "InstintoDeFuga",
+    "Ressonancia"
+  ]
 }

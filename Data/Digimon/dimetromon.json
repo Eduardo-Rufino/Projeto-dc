@@ -16,5 +16,13 @@
     "specialDamage": 118,
     "specialDefense": 40,
     "speed": 82
-  }
+  },
+  "Drops": [
+    { "ItemId": 9, "Quantity": 1, "ChancePercent": 40 }
+  ],
+  "Passives": [
+    "FioDaLamina",
+    "GolpeSorrateiro",
+    "Infiltrador"
+  ]
 }

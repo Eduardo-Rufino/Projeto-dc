@@ -16,5 +16,10 @@
     "specialDamage": 160,
     "specialDefense": 68,
     "speed": 115
-  }
+  },
+  "Passives": [
+    "PesLeves",
+    "Predicao",
+    "Fixacao"
+  ]
 }

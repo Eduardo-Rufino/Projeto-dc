@@ -1,0 +1,24 @@
+{
+  "id": 198,
+  "code": "stingmon",
+  "name": "Stingmon",
+  "stage": "Champion",
+  "role": "Assassin",
+  "Element": "Wind",
+  "Attribute": "Vacine",
+  "EggType": "Forest",
+  "AttackType": "Physical",
+  "BaseStats": {
+    "healthPoints": 170,
+    "physicalDamage": 120,
+    "physicalDefense": 45,
+    "specialDamage": 30,
+    "specialDefense": 45,
+    "speed": 115
+  },
+  "Passives": [
+    "PrecisaoLetal",
+    "Execucao",
+    "PassoFantasma"
+  ]
+}

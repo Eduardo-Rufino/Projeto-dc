@@ -1,0 +1,24 @@
+{
+  "id": 196,
+  "code": "minomon",
+  "name": "Minomon",
+  "stage": "InTraining",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Forest",
+  "AttackType": "Special",
+  "BaseStats": {
+    "healthPoints": 48,
+    "physicalDamage": 4,
+    "physicalDefense": 9,
+    "specialDamage": 18,
+    "specialDefense": 9,
+    "speed": 14
+  },
+  "Passives": [
+    "AlvoMarcado",
+    "PosturaFirme",
+    "Predicao"
+  ]
+}

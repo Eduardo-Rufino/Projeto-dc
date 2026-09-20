@@ -16,5 +16,10 @@
     "specialDamage": 70,
     "specialDefense": 70,
     "speed": 120
-  }
+  },
+  "Passives": [
+    "Execucao",
+    "PrecisaoLetal",
+    "GolpeSorrateiro"
+  ]
 }

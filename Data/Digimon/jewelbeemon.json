@@ -1,0 +1,24 @@
+{
+  "id": 199,
+  "code": "jewelbeemon",
+  "name": "JewelBeemon",
+  "stage": "Ultimate",
+  "role": "Assassin",
+  "Element": "Wind",
+  "Attribute": "Vacine",
+  "EggType": "Forest",
+  "AttackType": "Physical",
+  "BaseStats": {
+    "healthPoints": 340,
+    "physicalDamage": 160,
+    "physicalDefense": 62,
+    "specialDamage": 60,
+    "specialDefense": 62,
+    "speed": 128
+  },
+  "Passives": [
+    "Execucao",
+    "PrecisaoLetal",
+    "GolpeSorrateiro"
+  ]
+}

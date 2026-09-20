@@ -16,5 +16,10 @@
     "specialDamage": 71,
     "specialDefense": 35,
     "speed": 30
-  }
+  },
+  "Passives": [
+    "RompeGuarda",
+    "GolpePesado",
+    "Teimosia"
+  ]
 }

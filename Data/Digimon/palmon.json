@@ -16,5 +16,13 @@
     "specialDamage": 9,
     "specialDefense": 19,
     "speed": 30
-  }
+  },
+  "Drops": [
+    { "ItemId": 6, "Quantity": 1, "ChancePercent": 40 }
+  ],
+  "Passives": [
+    "Fixacao",
+    "PosturaFirme",
+    "ProjetilPerfurante"
+  ]
 }

@@ -16,5 +16,10 @@
     "specialDamage": 2,
     "specialDefense": 3,
     "speed": 10
-  }
+  },
+  "Passives": [
+    "Investida",
+    "SedeDeBatalha",
+    "RompeGuarda"
+  ]
 }

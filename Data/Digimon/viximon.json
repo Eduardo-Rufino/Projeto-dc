@@ -16,5 +16,10 @@
     "specialDamage": 4,
     "specialDefense": 8,
     "speed": 9
-  }
+  },
+  "Passives": [
+    "FuriaCrescente",
+    "Investida",
+    "GolpePesado"
+  ]
 }

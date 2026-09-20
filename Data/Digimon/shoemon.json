@@ -17,5 +17,12 @@
     "specialDamage": 40,
     "specialDefense": 25,
     "speed": 28
-  }
+  },
+  "Drops": [
+    { "ItemId": 6, "Quantity": 1, "ChancePercent": 50 }
+  ],
+  "Passives": [
+    "MarcaDupla",
+    "AuraVital"
+  ]
 }

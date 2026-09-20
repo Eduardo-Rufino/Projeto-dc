@@ -1,0 +1,24 @@
+{
+  "id": 175,
+  "code": "sakuyamon",
+  "name": "Sakuyamon",
+  "stage": "Mega",
+  "role": "Ranged",
+  "Element": "Light",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Special",
+  "BaseStats": {
+    "healthPoints": 600,
+    "physicalDamage": 55,
+    "physicalDefense": 100,
+    "specialDamage": 285,
+    "specialDefense": 125,
+    "speed": 160
+  },
+  "Passives": [
+    "AlvoMarcado",
+    "PosturaFirme",
+    "Predicao"
+  ]
+}

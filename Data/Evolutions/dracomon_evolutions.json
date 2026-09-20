@@ -2,7 +2,7 @@
   {
     "fromDigimonId": 132,
     "toDigimonId": 133,
-    "requiredLevel": 20,
+    "requiredLevel": 18,
     "requiredAgeInDays": 5,
     "statMultiplier": 1.6,
     "requiredStats": {
@@ -17,7 +17,7 @@
   {
     "fromDigimonId": 132,
     "toDigimonId": 136,
-    "requiredLevel": 20,
+    "requiredLevel": 18,
     "requiredAgeInDays": 5,
     "statMultiplier": 1.6,
     "requiredStats": {

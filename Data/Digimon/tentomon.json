@@ -16,5 +16,10 @@
     "specialDamage": 9,
     "specialDefense": 32,
     "speed": 11
-  }
+  },
+  "Passives": [
+    "GritoDeGuerra",
+    "ProvocacaoInsistente",
+    "Couraca"
+  ]
 }

@@ -1,0 +1,24 @@
+{
+  "id": 195,
+  "code": "leafmon",
+  "name": "Leafmon",
+  "stage": "Baby",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Forest",
+  "AttackType": "Special",
+  "BaseStats": {
+    "healthPoints": 22,
+    "physicalDamage": 2,
+    "physicalDefense": 4,
+    "specialDamage": 11,
+    "specialDefense": 4,
+    "speed": 9
+  },
+  "Passives": [
+    "AlvoMarcado",
+    "PosturaFirme",
+    "Predicao"
+  ]
+}

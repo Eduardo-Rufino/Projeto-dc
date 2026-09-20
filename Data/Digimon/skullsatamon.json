@@ -1,0 +1,24 @@
+{
+  "id": 181,
+  "code": "skullsatamon",
+  "name": "SkullSatamon",
+  "stage": "Ultimate",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Physical",
+  "BaseStats": {
+    "healthPoints": 355,
+    "physicalDamage": 165,
+    "physicalDefense": 62,
+    "specialDamage": 55,
+    "specialDefense": 60,
+    "speed": 118
+  },
+  "Passives": [
+    "Execucao",
+    "PrecisaoLetal",
+    "GolpeSorrateiro"
+  ]
+}

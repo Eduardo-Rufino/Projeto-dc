@@ -16,5 +16,17 @@
     "specialDamage": 20,
     "specialDefense": 30,
     "speed": 20
-  }
+  },
+  "Passives": [
+    "UltimaTrincheira",
+    "Folego",
+    "GritoDeGuerra"
+  ],
+  "Drops": [
+    {
+      "ItemId": 5,
+      "Quantity": 1,
+      "ChancePercent": 50
+    }
+  ]
 }

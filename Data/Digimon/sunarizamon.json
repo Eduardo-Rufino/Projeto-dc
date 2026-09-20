@@ -16,5 +16,17 @@
     "specialDamage": 10,
     "specialDefense": 22,
     "speed": 22
-  }
+  },
+  "Passives": [
+    "GritoDeGuerra",
+    "Espinhos",
+    "UltimaTrincheira"
+  ],
+  "Drops": [
+    {
+      "ItemId": 5,
+      "Quantity": 1,
+      "ChancePercent": 50
+    }
+  ]
 }

@@ -17,5 +17,10 @@
     "specialDamage": 205,
     "specialDefense": 135,
     "speed": 120
-  }
+  },
+  "Passives": [
+    "Vigilia",
+    "MaosFirmes",
+    "AuraVital"
+  ]
 }

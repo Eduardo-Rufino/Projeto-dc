@@ -17,5 +17,10 @@
     "specialDamage": 9,
     "specialDefense": 9,
     "speed": 6
-  }
+  },
+  "Passives": [
+    "Ressonancia",
+    "InstintoDeFuga",
+    "AuraVital"
+  ]
 }

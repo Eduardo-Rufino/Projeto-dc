@@ -16,5 +16,10 @@
     "specialDamage": 60,
     "specialDefense": 207,
     "speed": 75
-  }
+  },
+  "Passives": [
+    "GritoDeGuerra",
+    "Espinhos",
+    "UltimaTrincheira"
+  ]
 }

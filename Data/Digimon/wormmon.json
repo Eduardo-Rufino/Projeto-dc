@@ -1,0 +1,24 @@
+{
+  "id": 197,
+  "code": "wormmon",
+  "name": "Wormmon",
+  "stage": "Rookie",
+  "role": "Assassin",
+  "Element": "Plant",
+  "Attribute": "Vacine",
+  "EggType": "Forest",
+  "AttackType": "Physical",
+  "BaseStats": {
+    "healthPoints": 70,
+    "physicalDamage": 30,
+    "physicalDefense": 20,
+    "specialDamage": 12,
+    "specialDefense": 18,
+    "speed": 48
+  },
+  "Passives": [
+    "PrecisaoLetal",
+    "Execucao",
+    "PassoFantasma"
+  ]
+}

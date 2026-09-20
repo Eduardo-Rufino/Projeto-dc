@@ -1,0 +1,24 @@
+{
+  "id": 180,
+  "code": "ladydevimon",
+  "name": "LadyDevimon",
+  "stage": "Ultimate",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+  "BaseStats": {
+    "healthPoints": 340,
+    "physicalDamage": 45,
+    "physicalDefense": 55,
+    "specialDamage": 165,
+    "specialDefense": 65,
+    "speed": 128
+  },
+  "Passives": [
+    "GolpeSorrateiro",
+    "PassoFantasma",
+    "Infiltrador"
+  ]
+}

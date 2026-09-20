@@ -1,0 +1,5870 @@
+{
+  "version": 2,
+  "notes": "type: normal = evolucao comum; dna = DNA/Jogress, exige os dois 'from' ao mesmo tempo; mode = troca de modo dentro do mesmo estagio. source: canon = baseado em v-pet/anime/jogos; design = escolha de game design sem linha oficial.",
+  "stages": [
+    "Baby",
+    "InTraining",
+    "Rookie",
+    "Champion",
+    "Ultimate",
+    "Mega",
+    "MegaPlus"
+  ],
+  "digimon": [
+    {
+      "code": "botamon",
+      "name": "Botamon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "koromon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "tsunomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "wanyamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "punimon",
+      "name": "Punimon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "tsunomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "viximon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "gummymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "yuramon",
+      "name": "Yuramon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "tanemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "budmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "yokomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "minomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "keemon",
+      "name": "Keemon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "yaamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "kyaromon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "tsumemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "poyomon",
+      "name": "Poyomon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "tokomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "salamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "yokomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "pichimon",
+      "name": "Pichimon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "bukamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "tsunomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "nyaromon",
+      "name": "Nyaromon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "salamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "tokomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "yolkmon",
+      "name": "Yolkmon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "fluffymon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "babydmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "jyarimon",
+      "name": "Jyarimon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "gigimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "koromon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "pafumon",
+      "name": "Pafumon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "kyaromon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "yaamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "petimeramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "mokumon",
+      "name": "Mokumon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "petimeramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "kyaromon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "sunamon",
+      "name": "Sunamon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "goromon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "viximon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "kuramon",
+      "name": "Kuramon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "tsumemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "yaamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "puttimon",
+      "name": "Puttimon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "babydmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "tokomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "fluffymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "chibomon",
+      "name": "Chibomon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "demiveemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "koromon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "dodomon",
+      "name": "Dodomon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "dorimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "gigimon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "zerimon",
+      "name": "Zerimon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "gummymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "viximon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "pabumon",
+      "name": "Pabumon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "motimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "tanemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "nyokimon",
+      "name": "Nyokimon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "yokomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "budmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "tanemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "koromon",
+      "name": "Koromon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "botamon",
+        "jyarimon",
+        "chibomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "agumon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "agumon_savers",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "veemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "tsunomon",
+      "name": "Tsunomon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "botamon",
+        "punimon",
+        "pichimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "gabumon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "elizamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "kotemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "tokomon",
+      "name": "Tokomon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "poyomon",
+        "nyaromon",
+        "puttimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "patamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "kudamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "motimon",
+      "name": "Motimon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "pabumon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "tentomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "palmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "wormmon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "gigimon",
+      "name": "Gigimon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "jyarimon",
+        "dodomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "guilmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "elizamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "dorumon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "gummymon",
+      "name": "Gummymon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "punimon",
+        "zerimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "terriermon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "gaomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "viximon",
+      "name": "Viximon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "punimon",
+        "sunamon",
+        "zerimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "renamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "kudamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "tanemon",
+      "name": "Tanemon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "yuramon",
+        "pabumon",
+        "nyokimon",
+        "leafmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "palmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "lalamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "wanyamon",
+      "name": "Wanyamon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "botamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "gaomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "kotemon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "kudamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "yaamon",
+      "name": "Yaamon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "keemon",
+        "pafumon",
+        "kuramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "impmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "ghostmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "shoemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "yokomon",
+      "name": "Yokomon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "yuramon",
+        "poyomon",
+        "nyokimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "biyomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "muchomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "wormmon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "bukamon",
+      "name": "Bukamon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "pichimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "gomamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "gabumon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "salamon",
+      "name": "Salamon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "poyomon",
+        "nyaromon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "gatomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "lucemon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "patamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "fluffymon",
+      "name": "Fluffymon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "yolkmon",
+        "puttimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "pteromon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "biyomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "muchomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "kyaromon",
+      "name": "Kyaromon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "keemon",
+        "pafumon",
+        "mokumon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "lucemon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "phascomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "bemmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "petimeramon",
+      "name": "PetiMeramon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "pafumon",
+        "mokumon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "candlemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "ghostmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "goromon",
+      "name": "Goromon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "sunamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "sunarizamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "kotemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "tsumemon",
+      "name": "Tsumemon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "keemon",
+        "kuramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "bemmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "phascomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "hackmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "babydmon",
+      "name": "Babydmon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "yolkmon",
+        "puttimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "dracomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dorumon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "demiveemon",
+      "name": "DemiVeemon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "chibomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "veemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dracomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "dorimon",
+      "name": "Dorimon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "dodomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "dorumon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "hackmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "budmon",
+      "name": "Budmon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "yuramon",
+        "nyokimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "lalamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "palmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "wormmon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "agumon",
+      "name": "Agumon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "koromon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "greymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "devimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dimetromon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "gabumon",
+      "name": "Gabumon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "tsunomon",
+        "bukamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "garurumon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "icedevimon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "tentomon",
+      "name": "Tentomon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "motimon",
+        "minomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "kabuterimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "togemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "patamon",
+      "name": "Patamon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "tokomon",
+        "salamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "angemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "galemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "gaomon",
+      "name": "Gaomon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "gummymon",
+        "wanyamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "gaogamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "garurumon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "gladimon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "palmon",
+      "name": "Palmon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "motimon",
+        "tanemon",
+        "budmon",
+        "minomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "togemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "sunflowmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "guilmon",
+      "name": "Guilmon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "gigimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "growlmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "devidramon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "dimetromon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "terriermon",
+      "name": "Terriermon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "gummymon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "gargomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "galemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "renamon",
+      "name": "Renamon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "viximon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "kyubimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "reppamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "impmon",
+      "name": "Impmon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "yaamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "devimon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "wizardmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "bakemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "agumon_savers",
+      "name": "Agumon (Savers)",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "koromon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "geogreymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "greymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "lalamon",
+      "name": "Lalamon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "tanemon",
+        "budmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "sunflowmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "togemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "biyomon",
+      "name": "Biyomon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "yokomon",
+        "fluffymon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "birdramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "cockatrimon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "gomamon",
+      "name": "Gomamon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "bukamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "ikkakumon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "tortamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "gatomon",
+      "name": "Gatomon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "salamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "angemon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "wizardmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "pteromon",
+      "name": "Pteromon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "fluffymon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "birdramon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "galemon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "coredramon_blue",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "elizamon",
+      "name": "Elizamon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "tsunomon",
+        "gigimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "dimetromon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "tortamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "devidramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "shoemon",
+      "name": "Shoemon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "yaamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "shoeshoemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "wizardmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "muchomon",
+      "name": "Muchomon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "yokomon",
+        "fluffymon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "cockatrimon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "birdramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "ghostmon",
+      "name": "Ghostmon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "yaamon",
+        "petimeramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "bakemon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "devimon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "sunarizamon",
+      "name": "Sunarizamon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "goromon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "tortamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "dimetromon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "bemmon",
+      "name": "BEMmon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "kyaromon",
+        "tsumemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "snatchmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "bakemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "lucemon",
+      "name": "Lucemon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "salamon",
+        "kyaromon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "angemon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "devimon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "phascomon",
+      "name": "Phascomon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "kyaromon",
+        "tsumemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "icedevimon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "snatchmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "kudamon",
+      "name": "Kudamon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "tokomon",
+        "viximon",
+        "wanyamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "reppamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "angemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "dracomon",
+      "name": "Dracomon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "babydmon",
+        "demiveemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "coredramon_green",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "coredramon_blue",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "veemon",
+      "name": "Veemon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "koromon",
+        "demiveemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "veedramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "exveemon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "kotemon",
+      "name": "Kotemon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "tsunomon",
+        "wanyamon",
+        "goromon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "gladimon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "gaogamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "dorumon",
+      "name": "Dorumon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "gigimon",
+        "babydmon",
+        "dorimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "dorugamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "raptordramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dexdorugamon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "hackmon",
+      "name": "Hackmon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "tsumemon",
+        "dorimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "baohackmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "gladimon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "candlemon",
+      "name": "Candlemon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "petimeramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "wizardmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "bakemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "greymon",
+      "name": "Greymon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "agumon",
+        "agumon_savers"
+      ],
+      "evolvesTo": [
+        {
+          "to": "metalgreymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "rizegreymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "garurumon",
+      "name": "Garurumon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "gabumon",
+        "gaomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "weregarurumon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "machgaogamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "kabuterimon",
+      "name": "Kabuterimon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "tentomon",
+        "wormmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "megakabuterimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "knightmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "jewelbeemon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "angemon",
+      "name": "Angemon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "patamon",
+        "gatomon",
+        "lucemon",
+        "kudamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "magnaangemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "angewomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "lucemon_falldown",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "togemon",
+      "name": "Togemon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "tentomon",
+        "palmon",
+        "lalamon",
+        "wormmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "lillymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "lilamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "growlmon",
+      "name": "Growlmon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "guilmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "wargrowlmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "metalgreymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "gargomon",
+      "name": "Gargomon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "terriermon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "rapidmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "machgaogamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "kyubimon",
+      "name": "Kyubimon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "renamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "taomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "mistymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "wizardmon",
+      "name": "Wizardmon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "impmon",
+        "gatomon",
+        "shoemon",
+        "candlemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "mistymon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "fantomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "gaogamon",
+      "name": "Gaogamon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "gaomon",
+        "kotemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "machgaogamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "weregarurumon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "sunflowmon",
+      "name": "Sunflowmon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "palmon",
+        "lalamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "lilamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "lillymon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "jewelbeemon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "geogreymon",
+      "name": "Geogreymon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "agumon_savers"
+      ],
+      "evolvesTo": [
+        {
+          "to": "rizegreymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "metalgreymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "devimon",
+      "name": "Devimon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "agumon",
+        "impmon",
+        "ghostmon",
+        "lucemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "myotismon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "skullsatamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "ladydevimon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "lucemon_falldown",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "icedevimon",
+      "name": "IceDevimon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "gabumon",
+        "phascomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "astamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "destromon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "devidramon",
+      "name": "Devidramon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "guilmon",
+        "elizamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "wargrowlmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "lamiamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "birdramon",
+      "name": "Birdramon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "biyomon",
+        "pteromon",
+        "muchomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "garudamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "delumon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "ikkakumon",
+      "name": "Ikkakumon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "gomamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "zudomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "triceramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "galemon",
+      "name": "Galemon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "patamon",
+        "terriermon",
+        "pteromon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "grandgalemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "wingdramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "dimetromon",
+      "name": "Dimetromon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "agumon",
+        "guilmon",
+        "elizamon",
+        "sunarizamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "triceramon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "lamiamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "shoeshoemon",
+      "name": "ShoeShoemon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "shoemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "chaperomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "ladydevimon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "cockatrimon",
+      "name": "Cockatrimon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "biyomon",
+        "muchomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "delumon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "garudamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "bakemon",
+      "name": "Bakemon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "impmon",
+        "ghostmon",
+        "bemmon",
+        "candlemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "fantomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "myotismon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "tortamon",
+      "name": "Tortamon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "gomamon",
+        "elizamon",
+        "sunarizamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "triceramon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "groundramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "snatchmon",
+      "name": "Snatchmon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "bemmon",
+        "phascomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "destromon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "astamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "reppamon",
+      "name": "Reppamon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "renamon",
+        "kudamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "chirinmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "taomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "coredramon_green",
+      "name": "Coredramon (Green)",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "dracomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "groundramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "grademon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "coredramon_blue",
+      "name": "Coredramon (Blue)",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "pteromon",
+        "dracomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "wingdramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "aeroveedramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "veedramon",
+      "name": "Veedramon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "veemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "aeroveedramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "wingdramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "gladimon",
+      "name": "Gladimon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "gaomon",
+        "kotemon",
+        "hackmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "knightmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "grademon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "dorugamon",
+      "name": "Dorugamon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "dorumon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "dorugreymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dexdorugreymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "raptordramon",
+      "name": "Raptordramon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "dorumon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "grademon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dorugreymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "dexdorugamon",
+      "name": "DexDorugamon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "dorumon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "dexdorugreymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dorugreymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "baohackmon",
+      "name": "BaoHackmon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "hackmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "saviorhackmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "knightmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "exveemon",
+      "name": "ExVeemon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "veemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "aeroveedramon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "paildramon",
+          "type": "dna",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "metalgreymon",
+      "name": "MetalGreymon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "greymon",
+        "geogreymon",
+        "growlmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "wargreymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "shinegreymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "weregarurumon",
+      "name": "WereGarurumon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "garurumon",
+        "gaogamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "metalgarurumon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "gankoomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "wargrowlmon",
+      "name": "WarGrowlmon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "growlmon",
+        "devidramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "gallantmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "medievaldukemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "rapidmon",
+      "name": "Rapidmon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "gargomon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "megagargomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "magnamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "magnaangemon",
+      "name": "MagnaAngemon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "angemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "seraphimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "magnadramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "machgaogamon",
+      "name": "MachGaogamon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "garurumon",
+        "gargomon",
+        "gaogamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "miragegaogamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "gankoomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "taomon",
+      "name": "Taomon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "kyubimon",
+        "reppamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "sakuyamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "duftmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "lillymon",
+      "name": "Lillymon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "togemon",
+        "sunflowmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "rosemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "cendrillmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "megakabuterimon",
+      "name": "MegaKabuterimon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "kabuterimon",
+        "stingmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "herculeskabuterimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "craniummon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "garudamon",
+      "name": "Garudamon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "birdramon",
+        "cockatrimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "hououmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "zephagamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "zudomon",
+      "name": "Zudomon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "ikkakumon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "vikemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "leviamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "angewomon",
+      "name": "Angewomon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "angemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "ophanimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "magnadramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "lilithmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "grandgalemon",
+      "name": "Grand Galemon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "galemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "zephagamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "dynasmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "lamiamon",
+      "name": "Lamiamon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "devidramon",
+        "dimetromon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "medusamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "leviamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "chaperomon",
+      "name": "Chaperomon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "shoeshoemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "cendrillmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "pinochimon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "delumon",
+      "name": "Delumon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "birdramon",
+        "cockatrimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "hououmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "ancientsphinxmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "fantomon",
+      "name": "Fantomon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "wizardmon",
+        "bakemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "piedmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "boltmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "ragnamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "triceramon",
+      "name": "Triceramon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "ikkakumon",
+        "dimetromon",
+        "tortamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "dinomon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "ancientsphinxmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "grandiskuwagamon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "destromon",
+      "name": "Destromon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "icedevimon",
+        "snatchmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "demon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "boltmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "belphemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "lucemon_falldown",
+      "name": "Lucemon Falldown Mode",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "angemon",
+        "devimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "lucemon_satan",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "demon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "astamon",
+      "name": "Astamon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "icedevimon",
+        "snatchmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "beelzebumon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "ragnamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "chirinmon",
+      "name": "Chirinmon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "reppamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "sleipmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "kentaurusmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "groundramon",
+      "name": "Groundramon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "tortamon",
+        "coredramon_green"
+      ],
+      "evolvesTo": [
+        {
+          "to": "breakdramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dorugoramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "wingdramon",
+      "name": "Wingdramon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "galemon",
+        "coredramon_blue",
+        "veedramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "slayerdramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dynasmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "aeroveedramon",
+      "name": "AeroVeedramon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "coredramon_blue",
+        "veedramon",
+        "exveemon",
+        "stingmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "ulforceveedramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "magnamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "knightmon",
+      "name": "Knightmon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "kabuterimon",
+        "gladimon",
+        "baohackmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "craniummon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "crusadermon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "dorugreymon",
+      "name": "Dorugreymon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "dorugamon",
+        "raptordramon",
+        "dexdorugamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "dorugoramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "alphamon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "grademon",
+      "name": "Grademon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "coredramon_green",
+        "gladimon",
+        "raptordramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "alphamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "dynasmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "dexdorugreymon",
+      "name": "DexDorugreymon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "dorugamon",
+        "dexdorugamon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "dexdorugoramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "dorugoramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "saviorhackmon",
+      "name": "SaviorHackmon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "baohackmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "jesmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "gankoomon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "rizegreymon",
+      "name": "RizeGreymon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "greymon",
+        "geogreymon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "shinegreymon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "wargreymon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "mistymon",
+      "name": "Mistymon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "kyubimon",
+        "wizardmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "barbamon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "piedmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "lilamon",
+      "name": "Lilamon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "togemon",
+        "sunflowmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "rosemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "cendrillmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "ladydevimon",
+      "name": "LadyDevimon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "devimon",
+        "shoeshoemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "lilithmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "medusamon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "skullsatamon",
+      "name": "SkullSatamon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "devimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "piedmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "demon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "myotismon",
+      "name": "Myotismon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "devimon",
+        "bakemon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "piedmon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "beelzebumon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "paildramon",
+      "name": "Paildramon",
+      "stage": "Ultimate",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "imperialdramon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "ulforceveedramon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "wargreymon",
+      "name": "WarGreymon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "metalgreymon",
+        "rizegreymon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "omegamon",
+          "type": "dna",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "metalgarurumon",
+      "name": "MetalGarurumon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "weregarurumon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "omegamon",
+          "type": "dna",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "gallantmon",
+      "name": "Gallantmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "wargrowlmon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "megagargomon",
+      "name": "MegaGargomon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "rapidmon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "seraphimon",
+      "name": "Seraphimon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "magnaangemon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "hououmon",
+      "name": "Hououmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "garudamon",
+        "delumon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "vikemon",
+      "name": "Vikemon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "zudomon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "magnadramon",
+      "name": "Magnadramon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "magnaangemon",
+        "angewomon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "herculeskabuterimon",
+      "name": "HerculesKabuterimon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "megakabuterimon",
+        "jewelbeemon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "rosemon",
+      "name": "Rosemon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "lillymon",
+        "lilamon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "zephagamon",
+      "name": "Zephagamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "garudamon",
+        "grandgalemon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "pinochimon",
+      "name": "Pinochimon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "chaperomon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "medusamon",
+      "name": "Medusamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "lamiamon",
+        "ladydevimon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "leviamon",
+      "name": "Leviamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "zudomon",
+        "lamiamon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "cendrillmon",
+      "name": "Cendrillmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "lillymon",
+        "lilamon",
+        "chaperomon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "lilithmon",
+      "name": "Lilithmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "angewomon",
+        "ladydevimon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "medievaldukemon",
+      "name": "Medieval Dukemon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "wargrowlmon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "demon",
+      "name": "Demon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "destromon",
+        "lucemon_falldown",
+        "skullsatamon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "beelzebumon",
+      "name": "Beelzebumon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "astamon",
+        "myotismon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "ancientsphinxmon",
+      "name": "AncientSphinxmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "delumon",
+        "triceramon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "boltmon",
+      "name": "Boltmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "fantomon",
+        "destromon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "ragnamon",
+      "name": "Ragnamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "fantomon",
+        "astamon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "dinomon",
+      "name": "Dinomon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "triceramon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "lucemon_satan",
+      "name": "Lucemon Satan Mode",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "lucemon_falldown"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "barbamon",
+      "name": "Barbamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "mistymon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "belphemon_rage",
+      "name": "Belphemon Rage Mode",
+      "stage": "Mega",
+      "evolvesFrom": [],
+      "evolvesTo": []
+    },
+    {
+      "code": "belphemon",
+      "name": "Belphemon Sleep Mode",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "destromon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "belphemon_rage",
+          "type": "mode",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "breakdramon",
+      "name": "Breakdramon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "groundramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "examon",
+          "type": "dna",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "slayerdramon",
+      "name": "SlayerDramon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "wingdramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "examon",
+          "type": "dna",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "ulforceveedramon",
+      "name": "UlforceVeedramon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "aeroveedramon",
+        "paildramon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "magnamon",
+      "name": "Magnamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "rapidmon",
+        "aeroveedramon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "kentaurusmon",
+      "name": "Kentaurusmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "chirinmon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "crusadermon",
+      "name": "Crusadermon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "knightmon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "alphamon",
+      "name": "Alphamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "dorugreymon",
+        "grademon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "dorugoramon",
+      "name": "Dorugoramon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "groundramon",
+        "dorugreymon",
+        "dexdorugreymon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "dexdorugoramon",
+      "name": "DexDorugoramon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "dexdorugreymon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "craniummon",
+      "name": "Craniummon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "megakabuterimon",
+        "knightmon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "dynasmon",
+      "name": "Dynasmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "grandgalemon",
+        "wingdramon",
+        "grademon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "duftmon",
+      "name": "Duftmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "taomon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "gankoomon",
+      "name": "Gankoomon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "weregarurumon",
+        "machgaogamon",
+        "saviorhackmon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "jesmon",
+      "name": "Jesmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "saviorhackmon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "shinegreymon",
+      "name": "ShineGreymon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "metalgreymon",
+        "rizegreymon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "sakuyamon",
+      "name": "Sakuyamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "taomon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "miragegaogamon",
+      "name": "MirageGaogamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "machgaogamon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "sleipmon",
+      "name": "Sleipmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "chirinmon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "ophanimon",
+      "name": "Ophanimon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "angewomon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "imperialdramon",
+      "name": "Imperialdramon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "paildramon",
+        "jewelbeemon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "piedmon",
+      "name": "Piedmon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "fantomon",
+        "mistymon",
+        "skullsatamon",
+        "myotismon"
+      ],
+      "evolvesTo": []
+    },
+    {
+      "code": "omegamon",
+      "name": "Omegamon",
+      "stage": "MegaPlus",
+      "evolvesFrom": [],
+      "evolvesTo": []
+    },
+    {
+      "code": "examon",
+      "name": "Examon",
+      "stage": "MegaPlus",
+      "evolvesFrom": [],
+      "evolvesTo": []
+    },
+    {
+      "code": "leafmon",
+      "name": "Leafmon",
+      "stage": "Baby",
+      "evolvesFrom": [],
+      "evolvesTo": [
+        {
+          "to": "minomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "tanemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "minomon",
+      "name": "Minomon",
+      "stage": "InTraining",
+      "evolvesFrom": [
+        "leafmon",
+        "yuramon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "wormmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "tentomon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "palmon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "wormmon",
+      "name": "Wormmon",
+      "stage": "Rookie",
+      "evolvesFrom": [
+        "minomon",
+        "budmon",
+        "yokomon",
+        "motimon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "stingmon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "kabuterimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "togemon",
+          "type": "normal",
+          "source": "design"
+        }
+      ]
+    },
+    {
+      "code": "stingmon",
+      "name": "Stingmon",
+      "stage": "Champion",
+      "evolvesFrom": [
+        "wormmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "jewelbeemon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "megakabuterimon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "aeroveedramon",
+          "type": "normal",
+          "source": "design"
+        },
+        {
+          "to": "paildramon",
+          "type": "dna",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "jewelbeemon",
+      "name": "JewelBeemon",
+      "stage": "Ultimate",
+      "evolvesFrom": [
+        "stingmon",
+        "kabuterimon",
+        "sunflowmon"
+      ],
+      "evolvesTo": [
+        {
+          "to": "grandiskuwagamon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "herculeskabuterimon",
+          "type": "normal",
+          "source": "canon"
+        },
+        {
+          "to": "imperialdramon",
+          "type": "normal",
+          "source": "canon"
+        }
+      ]
+    },
+    {
+      "code": "grandiskuwagamon",
+      "name": "GrandisKuwagamon",
+      "stage": "Mega",
+      "evolvesFrom": [
+        "jewelbeemon",
+        "triceramon"
+      ],
+      "evolvesTo": []
+    }
+  ],
+  "dna": [
+    {
+      "result": "examon",
+      "partners": [
+        "breakdramon",
+        "slayerdramon"
+      ]
+    },
+    {
+      "result": "omegamon",
+      "partners": [
+        "metalgarurumon",
+        "wargreymon"
+      ]
+    },
+    {
+      "result": "paildramon",
+      "partners": [
+        "exveemon",
+        "stingmon"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "botamon",
+      "to": "koromon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "botamon",
+      "to": "tsunomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "botamon",
+      "to": "wanyamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "punimon",
+      "to": "tsunomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "punimon",
+      "to": "viximon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "punimon",
+      "to": "gummymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "yuramon",
+      "to": "tanemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "yuramon",
+      "to": "budmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "yuramon",
+      "to": "yokomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "keemon",
+      "to": "yaamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "keemon",
+      "to": "kyaromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "keemon",
+      "to": "tsumemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "poyomon",
+      "to": "tokomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "poyomon",
+      "to": "salamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "poyomon",
+      "to": "yokomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "pichimon",
+      "to": "bukamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "pichimon",
+      "to": "tsunomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "nyaromon",
+      "to": "salamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "nyaromon",
+      "to": "tokomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "yolkmon",
+      "to": "fluffymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "yolkmon",
+      "to": "babydmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "jyarimon",
+      "to": "gigimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "jyarimon",
+      "to": "koromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "pafumon",
+      "to": "kyaromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "pafumon",
+      "to": "yaamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "pafumon",
+      "to": "petimeramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "mokumon",
+      "to": "petimeramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "mokumon",
+      "to": "kyaromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "sunamon",
+      "to": "goromon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "sunamon",
+      "to": "viximon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "kuramon",
+      "to": "tsumemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "kuramon",
+      "to": "yaamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "puttimon",
+      "to": "babydmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "puttimon",
+      "to": "tokomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "puttimon",
+      "to": "fluffymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "chibomon",
+      "to": "demiveemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "chibomon",
+      "to": "koromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dodomon",
+      "to": "dorimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "dodomon",
+      "to": "gigimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "zerimon",
+      "to": "gummymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "zerimon",
+      "to": "viximon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "pabumon",
+      "to": "motimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "pabumon",
+      "to": "tanemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "nyokimon",
+      "to": "yokomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "nyokimon",
+      "to": "budmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "nyokimon",
+      "to": "tanemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "koromon",
+      "to": "agumon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "koromon",
+      "to": "agumon_savers",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "koromon",
+      "to": "veemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tsunomon",
+      "to": "gabumon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "tsunomon",
+      "to": "elizamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tsunomon",
+      "to": "kotemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tokomon",
+      "to": "patamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "tokomon",
+      "to": "kudamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "motimon",
+      "to": "tentomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "motimon",
+      "to": "palmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gigimon",
+      "to": "guilmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "gigimon",
+      "to": "elizamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gigimon",
+      "to": "dorumon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gummymon",
+      "to": "terriermon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "gummymon",
+      "to": "gaomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "viximon",
+      "to": "renamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "viximon",
+      "to": "kudamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tanemon",
+      "to": "palmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "tanemon",
+      "to": "lalamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "wanyamon",
+      "to": "gaomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "wanyamon",
+      "to": "kotemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "wanyamon",
+      "to": "kudamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "yaamon",
+      "to": "impmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "yaamon",
+      "to": "ghostmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "yaamon",
+      "to": "shoemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "yokomon",
+      "to": "biyomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "yokomon",
+      "to": "muchomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "bukamon",
+      "to": "gomamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "bukamon",
+      "to": "gabumon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "salamon",
+      "to": "gatomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "salamon",
+      "to": "lucemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "salamon",
+      "to": "patamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "fluffymon",
+      "to": "pteromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "fluffymon",
+      "to": "biyomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "fluffymon",
+      "to": "muchomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "kyaromon",
+      "to": "lucemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "kyaromon",
+      "to": "phascomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "kyaromon",
+      "to": "bemmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "petimeramon",
+      "to": "candlemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "petimeramon",
+      "to": "ghostmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "goromon",
+      "to": "sunarizamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "goromon",
+      "to": "kotemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tsumemon",
+      "to": "bemmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tsumemon",
+      "to": "phascomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tsumemon",
+      "to": "hackmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "babydmon",
+      "to": "dracomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "babydmon",
+      "to": "dorumon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "demiveemon",
+      "to": "veemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "demiveemon",
+      "to": "dracomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dorimon",
+      "to": "dorumon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "dorimon",
+      "to": "hackmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "budmon",
+      "to": "lalamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "budmon",
+      "to": "palmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "agumon",
+      "to": "greymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "agumon",
+      "to": "devimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "agumon",
+      "to": "dimetromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "agumon_savers",
+      "to": "geogreymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "agumon_savers",
+      "to": "greymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gabumon",
+      "to": "garurumon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "gabumon",
+      "to": "icedevimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tentomon",
+      "to": "kabuterimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "tentomon",
+      "to": "togemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "patamon",
+      "to": "angemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "patamon",
+      "to": "galemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gaomon",
+      "to": "gaogamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "gaomon",
+      "to": "garurumon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gaomon",
+      "to": "gladimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "palmon",
+      "to": "togemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "palmon",
+      "to": "sunflowmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "guilmon",
+      "to": "growlmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "guilmon",
+      "to": "devidramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "guilmon",
+      "to": "dimetromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "terriermon",
+      "to": "gargomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "terriermon",
+      "to": "galemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "renamon",
+      "to": "kyubimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "renamon",
+      "to": "reppamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "impmon",
+      "to": "devimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "impmon",
+      "to": "wizardmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "impmon",
+      "to": "bakemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "lalamon",
+      "to": "sunflowmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "lalamon",
+      "to": "togemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "biyomon",
+      "to": "birdramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "biyomon",
+      "to": "cockatrimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gomamon",
+      "to": "ikkakumon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "gomamon",
+      "to": "tortamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gatomon",
+      "to": "angemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gatomon",
+      "to": "wizardmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "pteromon",
+      "to": "birdramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "pteromon",
+      "to": "galemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "pteromon",
+      "to": "coredramon_blue",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "elizamon",
+      "to": "dimetromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "elizamon",
+      "to": "tortamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "elizamon",
+      "to": "devidramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "shoemon",
+      "to": "shoeshoemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "shoemon",
+      "to": "wizardmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "muchomon",
+      "to": "cockatrimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "muchomon",
+      "to": "birdramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "ghostmon",
+      "to": "bakemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "ghostmon",
+      "to": "devimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "sunarizamon",
+      "to": "tortamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "sunarizamon",
+      "to": "dimetromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "bemmon",
+      "to": "snatchmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "bemmon",
+      "to": "bakemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "lucemon",
+      "to": "angemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "lucemon",
+      "to": "devimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "phascomon",
+      "to": "icedevimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "phascomon",
+      "to": "snatchmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "kudamon",
+      "to": "reppamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "kudamon",
+      "to": "angemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dracomon",
+      "to": "coredramon_green",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "dracomon",
+      "to": "coredramon_blue",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "veemon",
+      "to": "veedramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "veemon",
+      "to": "exveemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "kotemon",
+      "to": "gladimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "kotemon",
+      "to": "gaogamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dorumon",
+      "to": "dorugamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "dorumon",
+      "to": "raptordramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "dorumon",
+      "to": "dexdorugamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "hackmon",
+      "to": "baohackmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "hackmon",
+      "to": "gladimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "candlemon",
+      "to": "wizardmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "candlemon",
+      "to": "bakemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "greymon",
+      "to": "metalgreymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "greymon",
+      "to": "rizegreymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "geogreymon",
+      "to": "rizegreymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "geogreymon",
+      "to": "metalgreymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "garurumon",
+      "to": "weregarurumon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "garurumon",
+      "to": "machgaogamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "kabuterimon",
+      "to": "megakabuterimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "kabuterimon",
+      "to": "knightmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "angemon",
+      "to": "magnaangemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "angemon",
+      "to": "angewomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "angemon",
+      "to": "lucemon_falldown",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "togemon",
+      "to": "lillymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "togemon",
+      "to": "lilamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "growlmon",
+      "to": "wargrowlmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "growlmon",
+      "to": "metalgreymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gargomon",
+      "to": "rapidmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "gargomon",
+      "to": "machgaogamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "kyubimon",
+      "to": "taomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "kyubimon",
+      "to": "mistymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "wizardmon",
+      "to": "mistymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "wizardmon",
+      "to": "fantomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gaogamon",
+      "to": "machgaogamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "gaogamon",
+      "to": "weregarurumon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "sunflowmon",
+      "to": "lilamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "sunflowmon",
+      "to": "lillymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "devimon",
+      "to": "myotismon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "devimon",
+      "to": "skullsatamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "devimon",
+      "to": "ladydevimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "devimon",
+      "to": "lucemon_falldown",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "icedevimon",
+      "to": "astamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "icedevimon",
+      "to": "destromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "devidramon",
+      "to": "wargrowlmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "devidramon",
+      "to": "lamiamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "birdramon",
+      "to": "garudamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "birdramon",
+      "to": "delumon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "ikkakumon",
+      "to": "zudomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "ikkakumon",
+      "to": "triceramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "galemon",
+      "to": "grandgalemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "galemon",
+      "to": "wingdramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dimetromon",
+      "to": "triceramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dimetromon",
+      "to": "lamiamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "shoeshoemon",
+      "to": "chaperomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "shoeshoemon",
+      "to": "ladydevimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "cockatrimon",
+      "to": "delumon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "cockatrimon",
+      "to": "garudamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "bakemon",
+      "to": "fantomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "bakemon",
+      "to": "myotismon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tortamon",
+      "to": "triceramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "tortamon",
+      "to": "groundramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "snatchmon",
+      "to": "destromon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "snatchmon",
+      "to": "astamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "reppamon",
+      "to": "chirinmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "reppamon",
+      "to": "taomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "coredramon_green",
+      "to": "groundramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "coredramon_green",
+      "to": "grademon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "coredramon_blue",
+      "to": "wingdramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "coredramon_blue",
+      "to": "aeroveedramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "veedramon",
+      "to": "aeroveedramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "veedramon",
+      "to": "wingdramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gladimon",
+      "to": "knightmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "gladimon",
+      "to": "grademon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dorugamon",
+      "to": "dorugreymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "dorugamon",
+      "to": "dexdorugreymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "raptordramon",
+      "to": "grademon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "raptordramon",
+      "to": "dorugreymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dexdorugamon",
+      "to": "dexdorugreymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "dexdorugamon",
+      "to": "dorugreymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "baohackmon",
+      "to": "saviorhackmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "baohackmon",
+      "to": "knightmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "exveemon",
+      "to": "aeroveedramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "metalgreymon",
+      "to": "wargreymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "metalgreymon",
+      "to": "shinegreymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "rizegreymon",
+      "to": "shinegreymon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "rizegreymon",
+      "to": "wargreymon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "weregarurumon",
+      "to": "metalgarurumon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "weregarurumon",
+      "to": "gankoomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "wargrowlmon",
+      "to": "gallantmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "wargrowlmon",
+      "to": "medievaldukemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "rapidmon",
+      "to": "megagargomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "rapidmon",
+      "to": "magnamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "magnaangemon",
+      "to": "seraphimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "magnaangemon",
+      "to": "magnadramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "angewomon",
+      "to": "ophanimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "angewomon",
+      "to": "magnadramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "angewomon",
+      "to": "lilithmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "machgaogamon",
+      "to": "miragegaogamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "machgaogamon",
+      "to": "gankoomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "taomon",
+      "to": "sakuyamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "taomon",
+      "to": "duftmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "lillymon",
+      "to": "rosemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "lillymon",
+      "to": "cendrillmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "lilamon",
+      "to": "rosemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "lilamon",
+      "to": "cendrillmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "megakabuterimon",
+      "to": "herculeskabuterimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "megakabuterimon",
+      "to": "craniummon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "garudamon",
+      "to": "hououmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "garudamon",
+      "to": "zephagamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "delumon",
+      "to": "hououmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "delumon",
+      "to": "ancientsphinxmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "zudomon",
+      "to": "vikemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "zudomon",
+      "to": "leviamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "grandgalemon",
+      "to": "zephagamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "grandgalemon",
+      "to": "dynasmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "lamiamon",
+      "to": "medusamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "lamiamon",
+      "to": "leviamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "chaperomon",
+      "to": "cendrillmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "chaperomon",
+      "to": "pinochimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "fantomon",
+      "to": "piedmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "fantomon",
+      "to": "boltmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "fantomon",
+      "to": "ragnamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "triceramon",
+      "to": "dinomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "triceramon",
+      "to": "ancientsphinxmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "destromon",
+      "to": "demon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "destromon",
+      "to": "boltmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "destromon",
+      "to": "belphemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "lucemon_falldown",
+      "to": "lucemon_satan",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "lucemon_falldown",
+      "to": "demon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "astamon",
+      "to": "beelzebumon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "astamon",
+      "to": "ragnamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "chirinmon",
+      "to": "sleipmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "chirinmon",
+      "to": "kentaurusmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "groundramon",
+      "to": "breakdramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "groundramon",
+      "to": "dorugoramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "wingdramon",
+      "to": "slayerdramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "wingdramon",
+      "to": "dynasmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "aeroveedramon",
+      "to": "ulforceveedramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "aeroveedramon",
+      "to": "magnamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "knightmon",
+      "to": "craniummon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "knightmon",
+      "to": "crusadermon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dorugreymon",
+      "to": "dorugoramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "dorugreymon",
+      "to": "alphamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "grademon",
+      "to": "alphamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "grademon",
+      "to": "dynasmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "dexdorugreymon",
+      "to": "dexdorugoramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "dexdorugreymon",
+      "to": "dorugoramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "saviorhackmon",
+      "to": "jesmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "saviorhackmon",
+      "to": "gankoomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "mistymon",
+      "to": "barbamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "mistymon",
+      "to": "piedmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "ladydevimon",
+      "to": "lilithmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "ladydevimon",
+      "to": "medusamon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "skullsatamon",
+      "to": "piedmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "skullsatamon",
+      "to": "demon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "myotismon",
+      "to": "piedmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "myotismon",
+      "to": "beelzebumon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "paildramon",
+      "to": "imperialdramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "paildramon",
+      "to": "ulforceveedramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "wargreymon",
+      "to": "omegamon",
+      "type": "dna",
+      "source": "canon"
+    },
+    {
+      "from": "metalgarurumon",
+      "to": "omegamon",
+      "type": "dna",
+      "source": "canon"
+    },
+    {
+      "from": "slayerdramon",
+      "to": "examon",
+      "type": "dna",
+      "source": "canon"
+    },
+    {
+      "from": "breakdramon",
+      "to": "examon",
+      "type": "dna",
+      "source": "canon"
+    },
+    {
+      "from": "belphemon",
+      "to": "belphemon_rage",
+      "type": "mode",
+      "source": "canon"
+    },
+    {
+      "from": "leafmon",
+      "to": "minomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "leafmon",
+      "to": "tanemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "yuramon",
+      "to": "minomon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "minomon",
+      "to": "wormmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "minomon",
+      "to": "tentomon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "minomon",
+      "to": "palmon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "budmon",
+      "to": "wormmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "yokomon",
+      "to": "wormmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "motimon",
+      "to": "wormmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "wormmon",
+      "to": "stingmon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "wormmon",
+      "to": "kabuterimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "wormmon",
+      "to": "togemon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "stingmon",
+      "to": "jewelbeemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "stingmon",
+      "to": "megakabuterimon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "stingmon",
+      "to": "aeroveedramon",
+      "type": "normal",
+      "source": "design"
+    },
+    {
+      "from": "kabuterimon",
+      "to": "jewelbeemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "sunflowmon",
+      "to": "jewelbeemon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "jewelbeemon",
+      "to": "grandiskuwagamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "jewelbeemon",
+      "to": "herculeskabuterimon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "jewelbeemon",
+      "to": "imperialdramon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "triceramon",
+      "to": "grandiskuwagamon",
+      "type": "normal",
+      "source": "canon"
+    },
+    {
+      "from": "exveemon",
+      "to": "paildramon",
+      "type": "dna",
+      "source": "canon"
+    },
+    {
+      "from": "stingmon",
+      "to": "paildramon",
+      "type": "dna",
+      "source": "canon"
+    }
+  ]
+}

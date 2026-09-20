@@ -16,5 +16,13 @@
     "specialDamage": 32,
     "specialDefense": 16,
     "speed": 14
-  }
+  },
+  "Drops": [
+    { "ItemId": 3, "Quantity": 1, "ChancePercent": 40 }
+  ],
+  "Passives": [
+    "Investida",
+    "SedeDeBatalha",
+    "RompeGuarda"
+  ]
 }

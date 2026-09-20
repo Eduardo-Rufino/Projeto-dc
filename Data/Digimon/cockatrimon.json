@@ -16,5 +16,13 @@
     "specialDamage": 20,
     "specialDefense": 38,
     "speed": 70
-  }
+  },
+  "Drops": [
+    { "ItemId": 7, "Quantity": 1, "ChancePercent": 50 }
+  ],
+  "Passives": [
+    "RompeGuarda",
+    "GolpePesado",
+    "Teimosia"
+  ]
 }

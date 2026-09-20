@@ -1,0 +1,20 @@
+[
+  {
+    "fromDigimonId": 128,
+    "toDigimonId": 123,
+    "requiredLevel": 45,
+    "requiredAgeInDays": 14,
+    "statMultiplier": 1.1,
+    "requiredStats": {
+      "healthPoints": 752,
+      "physicalDamage": 135,
+      "physicalDefense": 180,
+      "specialDamage": 0,
+      "specialDefense": 141,
+      "speed": 0
+    },
+    "requiredBattles": 15,
+    "maxHappiness": 40,
+    "maxDiscipline": 40
+  }
+]

@@ -16,5 +16,10 @@
     "specialDamage": 62,
     "specialDefense": 14,
     "speed": 50
-  }
+  },
+  "Passives": [
+    "PrecisaoLetal",
+    "FioDaLamina",
+    "PassoFantasma"
+  ]
 }

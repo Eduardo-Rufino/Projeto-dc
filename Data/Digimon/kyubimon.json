@@ -16,5 +16,13 @@
     "specialDamage": 91,
     "specialDefense": 35,
     "speed": 76
-  }
+  },
+  "Drops": [
+    { "ItemId": 11, "Quantity": 1, "ChancePercent": 50 }
+  ],
+  "Passives": [
+    "AlvoMarcado",
+    "ProjetilPerfurante",
+    "Predicao"
+  ]
 }

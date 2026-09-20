@@ -16,5 +16,10 @@
     "specialDamage": 50,
     "specialDefense": 100,
     "speed": 95
-  }
+  },
+  "Passives": [
+    "Couraca",
+    "Espinhos",
+    "UltimaTrincheira"
+  ]
 }

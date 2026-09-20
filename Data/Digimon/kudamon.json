@@ -16,5 +16,10 @@
     "specialDamage": 45,
     "specialDefense": 25,
     "speed": 55
-  }
+  },
+  "Passives": [
+    "PesLeves",
+    "ProjetilPerfurante",
+    "AlvoMarcado"
+  ]
 }

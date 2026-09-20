@@ -16,5 +16,10 @@
     "specialDamage": 160,
     "specialDefense": 125,
     "speed": 180
-  }
+  },
+  "Passives": [
+    "GolpeSorrateiro",
+    "PassoFantasma",
+    "Infiltrador"
+  ]
 }

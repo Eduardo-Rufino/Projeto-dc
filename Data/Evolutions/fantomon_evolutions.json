@@ -1,39 +1,48 @@
 [
   {
     "fromDigimonId": 104,
-    "toDigimonId": 105,
-    "requiredLevel": 30,
+    "toDigimonId": 194,
+    "requiredLevel": 28,
     "requiredAgeInDays": 8,
     "statMultiplier": 1.7,
-
     "requiredStats": {
-      "healthPoints": 520,
+      "healthPoints": 540,
       "physicalDamage": 0,
       "physicalDefense": 0,
-      "specialDamage": 248,
+      "specialDamage": 255,
       "specialDefense": 0,
-      "speed": 180
+      "speed": 185
     },
-
-    "maxDiscipline": 30
+    "minDiscipline": 60
   },
   {
     "fromDigimonId": 104,
-    "toDigimonId": 106,
-    "requiredLevel": 30,
+    "toDigimonId": 113,
+    "requiredLevel": 28,
     "requiredAgeInDays": 8,
     "statMultiplier": 1.7,
-
     "requiredStats": {
-      "healthPoints": 500,
-      "physicalDamage": 90,
+      "healthPoints": 535,
+      "physicalDamage": 0,
       "physicalDefense": 0,
-      "specialDamage": 210,
+      "specialDamage": 238,
       "specialDefense": 0,
-      "speed": 140
-    },
-
-    "maxDiscipline": 30,
-    "requiredBattles": 10
+      "speed": 180
+    }
+  },
+  {
+    "fromDigimonId": 104,
+    "toDigimonId": 119,
+    "requiredLevel": 28,
+    "requiredAgeInDays": 8,
+    "statMultiplier": 1.7,
+    "requiredStats": {
+      "healthPoints": 533,
+      "physicalDamage": 0,
+      "physicalDefense": 0,
+      "specialDamage": 294,
+      "specialDefense": 0,
+      "speed": 192
+    }
   }
 ]

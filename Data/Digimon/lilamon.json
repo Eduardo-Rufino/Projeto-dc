@@ -1,0 +1,25 @@
+{
+  "id": 179,
+  "code": "lilamon",
+  "name": "Lilamon",
+  "stage": "Ultimate",
+  "role": "Support",
+  "Element": "Plant",
+  "Attribute": "Data",
+  "EggType": "Forest",
+  "AttackType": "Special",
+  "SupportType": "Healer",
+  "BaseStats": {
+    "healthPoints": 360,
+    "physicalDamage": 30,
+    "physicalDefense": 70,
+    "specialDamage": 150,
+    "specialDefense": 85,
+    "speed": 100
+  },
+  "Passives": [
+    "MaosFirmes",
+    "InstintoDeFuga",
+    "AuraVital"
+  ]
+}

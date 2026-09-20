@@ -16,5 +16,10 @@
     "specialDamage": 20,
     "specialDefense": 8,
     "speed": 17
-  }
+  },
+  "Passives": [
+    "AlvoMarcado",
+    "PosturaFirme",
+    "Predicao"
+  ]
 }

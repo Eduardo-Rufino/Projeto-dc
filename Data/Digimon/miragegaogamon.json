@@ -1,0 +1,24 @@
+{
+  "id": 176,
+  "code": "miragegaogamon",
+  "name": "MirageGaogamon",
+  "stage": "Mega",
+  "role": "Warrior",
+  "Element": "Wind",
+  "Attribute": "Data",
+  "EggType": "Beast",
+  "AttackType": "Physical",
+  "BaseStats": {
+    "healthPoints": 700,
+    "physicalDamage": 245,
+    "physicalDefense": 135,
+    "specialDamage": 60,
+    "specialDefense": 105,
+    "speed": 165
+  },
+  "Passives": [
+    "RompeGuarda",
+    "GolpePesado",
+    "Teimosia"
+  ]
+}

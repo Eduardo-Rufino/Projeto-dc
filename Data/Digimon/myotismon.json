@@ -1,0 +1,24 @@
+{
+  "id": 182,
+  "code": "myotismon",
+  "name": "Myotismon",
+  "stage": "Ultimate",
+  "role": "Assassin",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Dark",
+  "AttackType": "Special",
+  "BaseStats": {
+    "healthPoints": 345,
+    "physicalDamage": 60,
+    "physicalDefense": 58,
+    "specialDamage": 160,
+    "specialDefense": 72,
+    "speed": 125
+  },
+  "Passives": [
+    "GolpeSorrateiro",
+    "PassoFantasma",
+    "Infiltrador"
+  ]
+}

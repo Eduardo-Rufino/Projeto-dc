@@ -16,5 +16,10 @@
     "specialDamage": 112,
     "specialDefense": 36,
     "speed": 80
-  }
+  },
+  "Passives": [
+    "FioDaLamina",
+    "GolpeSorrateiro",
+    "Infiltrador"
+  ]
 }

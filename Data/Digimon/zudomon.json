@@ -16,5 +16,10 @@
     "specialDamage": 25,
     "specialDefense": 80,
     "speed": 50
-  }
+  },
+  "Passives": [
+    "Couraca",
+    "Folego",
+    "ProvocacaoInsistente"
+  ]
 }

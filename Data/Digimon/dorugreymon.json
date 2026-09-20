@@ -16,5 +16,10 @@
     "specialDamage": 55,
     "specialDefense": 70,
     "speed": 100
-  }
+  },
+  "Passives": [
+    "SedeDeBatalha",
+    "FuriaCrescente",
+    "Teimosia"
+  ]
 }

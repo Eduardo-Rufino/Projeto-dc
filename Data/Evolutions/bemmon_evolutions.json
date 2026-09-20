@@ -5,7 +5,6 @@
     "requiredLevel": 12,
     "requiredAgeInDays": 2,
     "statMultiplier": 1.8,
-
     "requiredStats": {
       "healthPoints": 96,
       "physicalDamage": 0,
@@ -13,6 +12,21 @@
       "specialDamage": 78,
       "specialDefense": 0,
       "speed": 69
+    }
+  },
+  {
+    "fromDigimonId": 116,
+    "toDigimonId": 103,
+    "requiredLevel": 12,
+    "requiredAgeInDays": 2,
+    "statMultiplier": 1.8,
+    "requiredStats": {
+      "healthPoints": 103,
+      "physicalDamage": 0,
+      "physicalDefense": 0,
+      "specialDamage": 114,
+      "specialDefense": 0,
+      "speed": 83
     }
   }
 ]

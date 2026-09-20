@@ -16,5 +16,10 @@
     "specialDamage": 91,
     "specialDefense": 35,
     "speed": 76
-  }
+  },
+  "Passives": [
+    "Fixacao",
+    "PosturaFirme",
+    "ProjetilPerfurante"
+  ]
 }

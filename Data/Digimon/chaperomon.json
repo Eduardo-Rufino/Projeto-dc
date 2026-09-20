@@ -17,5 +17,10 @@
     "specialDamage": 148,
     "specialDefense": 89,
     "speed": 70
-  }
+  },
+  "Passives": [
+    "Ressonancia",
+    "DuplaVoz",
+    "AuraVital"
+  ]
 }

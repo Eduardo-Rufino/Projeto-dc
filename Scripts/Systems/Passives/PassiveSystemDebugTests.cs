@@ -90,6 +90,10 @@ namespace ProjetoDC.Scripts.Systems.Passives
             Test_SedeDeBatalhaHealsAttacker();
             Test_SedeDeBatalhaRespectsR2Decay();
 
+            // Cobre o roster inteiro (não só o Agumon): todo pool tem que existir, ter 2 ou 3
+            // passivas e ser compatível com a Role/SupportType da espécie.
+            Test_AllSpeciesHaveValidPools();
+
             if (_failures == 0)
                 GD.Print("===== PassiveSystemDebugTests: TODOS OS TESTES PASSARAM =====");
             else
@@ -229,6 +233,59 @@ namespace ProjetoDC.Scripts.Systems.Passives
             var rolled = PassiveSystem.RollRandomPassive(species);
 
             Check(rolled == null, "IncompatiblePoolReturnsNull: pool inteiro incompatível devolve null em vez de sortear algo errado");
+        }
+
+        private static void Test_AllSpeciesHaveValidPools()
+        {
+            var db = DatabaseManager.Instance;
+            var problems = new List<string>();
+            int total = 0;
+
+            foreach (var species in db.GetAllDigimons())
+            {
+                total++;
+
+                var pool = species.Passives;
+
+                if (pool == null || pool.Count < 2 || pool.Count > 3)
+                {
+                    problems.Add($"{species.Code}: pool com {pool?.Count ?? 0} passivas (esperado 2 ou 3)");
+                    continue;
+                }
+
+                if (pool.Distinct().Count() != pool.Count)
+                    problems.Add($"{species.Code}: passiva repetida no pool");
+
+                foreach (var id in pool)
+                {
+                    var data = db.GetPassive(id);
+
+                    bool compatible = data != null &&
+                                      data.Role == species.Role &&
+                                      (species.Role != RoleType.Support ||
+                                       data.SupportTypes.Count == 0 ||
+                                       data.SupportTypes.Contains(species.SupportType));
+
+                    if (!compatible)
+                        problems.Add($"{species.Code} ({species.Role}): {id} não é compatível");
+                }
+
+                // O sorteio real nunca pode devolver null pra uma espécie com pool válido.
+                for (int i = 0; i < 20; i++)
+                {
+                    if (!PassiveSystem.RollRandomPassive(species).HasValue)
+                    {
+                        problems.Add($"{species.Code}: RollRandomPassive devolveu null");
+                        break;
+                    }
+                }
+            }
+
+            Check(
+                problems.Count == 0,
+                $"AllSpeciesHaveValidPools: as {total} espécies têm pool de 2 ou 3 passivas compatíveis e sorteável",
+                string.Join(" | ", problems.Take(8))
+            );
         }
 
         private static void Test_RealSpeciesRollsFromPopulatedPool()

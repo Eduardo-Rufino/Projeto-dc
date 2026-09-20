@@ -1,0 +1,24 @@
+{
+  "id": 188,
+  "code": "pabumon",
+  "name": "Pabumon",
+  "stage": "Baby",
+  "role": "Ranged",
+  "Element": "Neutral",
+  "Attribute": "Free",
+  "EggType": "Forest",
+  "AttackType": "Special",
+  "BaseStats": {
+    "healthPoints": 22,
+    "physicalDamage": 2,
+    "physicalDefense": 4,
+    "specialDamage": 11,
+    "specialDefense": 5,
+    "speed": 9
+  },
+  "Passives": [
+    "AlvoMarcado",
+    "PosturaFirme",
+    "Predicao"
+  ]
+}

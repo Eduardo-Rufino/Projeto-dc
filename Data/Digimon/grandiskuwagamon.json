@@ -1,0 +1,24 @@
+{
+  "id": 200,
+  "code": "grandiskuwagamon",
+  "name": "GrandisKuwagamon",
+  "stage": "Mega",
+  "role": "Warrior",
+  "Element": "Dark",
+  "Attribute": "Virus",
+  "EggType": "Forest",
+  "AttackType": "Physical",
+  "BaseStats": {
+    "healthPoints": 690,
+    "physicalDamage": 250,
+    "physicalDefense": 140,
+    "specialDamage": 60,
+    "specialDefense": 105,
+    "speed": 140
+  },
+  "Passives": [
+    "Investida",
+    "GolpePesado",
+    "RompeGuarda"
+  ]
+}
