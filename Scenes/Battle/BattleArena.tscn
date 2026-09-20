@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://c5mnilcm2vrfn" path="res://Scenes/Battle/BattleResultScreen.tscn" id="2_result"]
 [ext_resource type="PackedScene" uid="uid://bpdm1djccv738" path="res://Scenes/Center/Areas/CenterArea.tscn" id="3_hex"]
 [ext_resource type="PackedScene" path="res://Scenes/Battle/BattlePauseScreen.tscn" id="4_pause"]
+[ext_resource type="Script" path="res://Scripts/UI/CenterSky.cs" id="5_centersky"]
+[ext_resource type="Script" path="res://Scripts/UI/CenterHexBackdrop.cs" id="6_hexbackdrop"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selectedcard"]
 bg_color = Color(0.1254902, 0.14509805, 0.16862746, 0.92)
@@ -24,17 +26,13 @@ content_margin_bottom = 8
 [node name="BattleArena" type="Node2D"]
 script = ExtResource("1_arena")
 
-[node name="BackgroundLayer" type="CanvasLayer" parent="."]
-layer = -1
+[node name="SkyBackground" type="CanvasLayer" parent="."]
+layer = -100
+script = ExtResource("5_centersky")
 
-[node name="Background" type="ColorRect" parent="BackgroundLayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0.09, 0.11, 0.16, 1)
+[node name="HexBackdrop" type="Node2D" parent="."]
+script = ExtResource("6_hexbackdrop")
+AreasPath = NodePath("../CombatAreas")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(640, 360)

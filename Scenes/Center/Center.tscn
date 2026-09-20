@@ -25,6 +25,9 @@
 [ext_resource type="PackedScene" path="res://Scenes/Center/JogressPickScreen.tscn" id="2_jogress"]
 [ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="3_csbr3"]
 [ext_resource type="Texture2D" uid="uid://dvmynr18ibstu" path="res://Assets/Sprites/Food/energetico.png" id="4_energetico"]
+[ext_resource type="Script" path="res://Scripts/UI/CenterSky.cs" id="5_centersky"]
+[ext_resource type="Script" path="res://Scripts/UI/CenterHexBackdrop.cs" id="6_hexbackdrop"]
+[ext_resource type="Script" path="res://Scripts/UI/HexWindowBackground.cs" id="hexbg_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scj13"]
 bg_color = Color(0.1254902, 0.14509805, 0.16862746, 1)
@@ -122,6 +125,17 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
 
+[node name="HexBackground" type="ColorRect" parent="CanvasLayer/HUD/TopBar/CenterMap/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
+CornerRadius = 0.0
+
 [node name="MiniMap" type="Control" parent="CanvasLayer/HUD/TopBar/CenterMap/Panel" unique_id=1858172320]
 script = ExtResource("4_minimap")
 layout_mode = 1
@@ -146,6 +160,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="HexBackground" type="ColorRect" parent="CanvasLayer/HUD/TopBar/DateTime/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
+CornerRadius = 0.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel"]
 layout_mode = 1
@@ -206,6 +231,17 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
 
+[node name="HexBackground" type="ColorRect" parent="CanvasLayer/HUD/TopBar/CenterStatus/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
+CornerRadius = 0.0
+
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/CenterStatus/Panel" unique_id=73548883]
 layout_mode = 1
 anchors_preset = 15
@@ -240,6 +276,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="HexBackground" type="ColorRect" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
+CornerRadius = 0.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/DigimonStatus/Panel" unique_id=167920006]
 layout_mode = 1
@@ -415,6 +462,17 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
 
+[node name="HexBackground" type="ColorRect" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
+CornerRadius = 0.0
+
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/SelectedDigimon/Panel" unique_id=1391575962]
 layout_mode = 1
 anchors_preset = 15
@@ -541,6 +599,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
+
+[node name="HexBackground" type="ColorRect" parent="CanvasLayer/HUD/ControlBar/ControlBackground"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
+CornerRadius = 0.0
 
 [node name="FeedButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=1129572515]
 layout_mode = 0
@@ -810,3 +879,10 @@ visible = false
 [node name="CenterAreas" type="Node2D" parent="." unique_id=1618977558]
 
 [node name="CenterArea" parent="CenterAreas" unique_id=1880692764 instance=ExtResource("2_gloqd")]
+
+[node name="SkyBackground" type="CanvasLayer" parent="."]
+layer = -100
+script = ExtResource("5_centersky")
+
+[node name="HexBackdrop" type="Node2D" parent="."]
+script = ExtResource("6_hexbackdrop")

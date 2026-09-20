@@ -1,6 +1,36 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://Scripts/UI/HexWindowBackground.cs" id="hexbg_script"]
 [ext_resource type="Script" path="res://Scripts/UI/EvolutionCapacityScreen.cs" id="1_evocap"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dim"]
+bg_color = Color(0.03137255, 0.03529412, 0.043137256, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_window"]
+bg_color = Color(0.1254902, 0.14509805, 0.16862746, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.1882353, 0.21176471, 0.23921569, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.35686275, 0.3882353, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="EvolutionCapacityScreen" type="Control"]
 anchors_preset = 15
@@ -10,53 +40,111 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_evocap")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Dim" type="Panel" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.05, 0.06, 0.09, 0.95)
+theme_override_styles/panel = SubResource("StyleBoxFlat_dim")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Window" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -270.0
+offset_right = 340.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_window")
+
+[node name="HexBackground" type="ColorRect" parent="Window"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer"]
-custom_minimum_size = Vector2(1240, 0)
+[node name="MarginContainer" type="MarginContainer" parent="Window"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Window/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HeaderRow" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HeaderLabel" type="Label" parent="Window/MarginContainer/VBoxContainer/HeaderRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "✨ Evolução sem capacidade"
+
+[node name="HSeparator" type="HSeparator" parent="Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MessageLabel" type="Label" parent="Window/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
-horizontal_alignment = 1
-autowrap_mode = 2
+autowrap_mode = 3
 text = "Digimon pronto pra evoluir, mas sem capacidade no Center."
 
-[node name="CapacityLabel" type="Label" parent="VBoxContainer"]
+[node name="CapacityLabel" type="Label" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
 horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
 text = "Capacidade selecionada pra liberar: 0/0"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/ScrollContainer"]
+[node name="GridContainer" type="GridContainer" parent="Window/MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-columns = 4
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
 alignment = 1
 
-[node name="KeepButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="KeepButton" type="Button" parent="Window/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+tooltip_text = "A evolução fica bloqueada até haver capacidade suficiente - ele evolui sozinho assim que houver."
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 text = "Manter sem evoluir"
 
-[node name="DeleteButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="DeleteButton" type="Button" parent="Window/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
+tooltip_text = "Selecione Digimons pra obliterar até liberar a capacidade que falta."
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 disabled = true
 text = "Obliterar selecionados e evoluir"

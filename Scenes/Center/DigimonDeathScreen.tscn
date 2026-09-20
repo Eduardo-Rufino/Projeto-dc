@@ -1,5 +1,6 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://Scripts/UI/HexWindowBackground.cs" id="hexbg_script"]
 [ext_resource type="Script" path="res://Scripts/UI/DigimonDeathScreen.cs" id="1_death"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dim"]
@@ -62,6 +63,16 @@ offset_bottom = 130.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_window")
+
+[node name="HexBackground" type="ColorRect" parent="Window"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
 
 [node name="MarginContainer" type="MarginContainer" parent="Window"]
 layout_mode = 1

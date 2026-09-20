@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://pr5s0dygmvkt"]
 
+[ext_resource type="Script" path="res://Scripts/UI/HexWindowBackground.cs" id="hexbg_script"]
 [ext_resource type="Script" uid="uid://b2bbno1kjaoy1" path="res://Scripts/UI/ShopScreen.cs" id="1_vrsw4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dim"]
@@ -75,6 +76,16 @@ offset_bottom = 290.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_window")
+
+[node name="HexBackground" type="ColorRect" parent="Window"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
 
 [node name="MarginContainer" type="MarginContainer" parent="Window"]
 layout_mode = 1
@@ -864,6 +875,16 @@ offset_bottom = 280.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_window")
+
+[node name="HexBackground" type="ColorRect" parent="EggTypePopup/Window"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hexbg_script")
 
 [node name="MarginContainer" type="MarginContainer" parent="EggTypePopup/Window"]
 layout_mode = 1
