@@ -58,6 +58,8 @@ powershell -File .claude\skills\run-projeto-dc\driver.ps1 -Action stop
 
 Default artifact locations if you don't pass `-LogPath`/`-OutPath`: log at `%TEMP%\claude\projeto_dc_run.log`, screenshot at `%TEMP%\claude\projeto_dc_screenshot.png`.
 
+**The game now opens on the main menu (Novo Jogo / Carregar Jogo / Opções), not on the Center.** A plain `launch` therefore sits at the menu. To land straight in the Center, set `DEBUG_SKIP_MENU=1` (same `Start-Process` trick as `DEBUG_OPEN_SCREEN` below); any `DEBUG_OPEN_SCREEN`/`DEBUG_TEST_*` variable also skips the menu on its own. Careful when testing the menu itself: "Novo Jogo" deletes the real `save.json` in `%APPDATA%\Godot\app_userdata\Projeto DC\` — copy `save.json`, `save.json.bak` and `settings.cfg` somewhere safe first and restore them afterwards. Menu buttons need a real click: `SetCursorPos`+`mouse_event` can land on another window on top, so post `WM_MOUSEMOVE`/`WM_LBUTTONDOWN`/`WM_LBUTTONUP` straight to the game window handle instead (convert screenshot coordinates with `GetWindowRect` and `ClientToScreen`, after `SetProcessDPIAware`).
+
 A `launch` takes about 5-8 seconds before the window is up and the save is loaded — don't screenshot or `check` immediately after `launch` returns; wait first (e.g. `Start-Sleep -Seconds 8` or equivalent).
 
 ### Opening an internal screen for a screenshot
