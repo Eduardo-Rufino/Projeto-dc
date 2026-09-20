@@ -10,5 +10,6 @@
   "QuestId": 5,
   "IsRecruitable": true,
   "RecruitmentPerkDescription": "Todo dia, deixa 1 ou 2 Carnes de graça no Center - Palmon sempre soube achar comida na floresta, e agora colhe um pouco pra vocês também.",
+  "RecruitmentPerk": "DailyMeat",
   "RecruitmentTrainingAreaType": null
 }

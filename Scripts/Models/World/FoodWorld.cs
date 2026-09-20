@@ -13,7 +13,13 @@ public partial class FoodWorld : Node2D
     private const int SpoilHoursOutsideRestaurant = 6;
     private const int SpoilHoursInRestaurant = 24;
 
+    // Carne Assada (ver Food.IsCooked): o dobro do tempo da crua, nos dois casos - e no
+    // Refeitório continua durando mais que fora dele, igual à crua.
+    private const int CookedSpoilHoursOutsideRestaurant = 12;
+    private const int CookedSpoilHoursInRestaurant = 48;
+
     private const string FreshTexturePath = "res://Assets/Sprites/Food/beef on bone raw.png";
+    private const string CookedTexturePath = "res://Assets/Sprites/Food/beef on bone fried.png";
     private const string SpoiledTexturePath = "res://Assets/Sprites/Food/beef_on_bone_spoiled_heavy.png";
     private const string StaminaSnackTexturePath = "res://Assets/Sprites/Food/energetico.png";
 
@@ -72,11 +78,7 @@ public partial class FoodWorld : Node2D
 
         _food.HoursSincePlaced++;
 
-        int spoilThreshold = _food.PlacedInRestaurant
-            ? SpoilHoursInRestaurant
-            : SpoilHoursOutsideRestaurant;
-
-        if (_food.HoursSincePlaced < spoilThreshold)
+        if (_food.HoursSincePlaced < GetSpoilHours(_food))
             return;
 
         _food.IsSpoiled = true;
@@ -84,6 +86,17 @@ public partial class FoodWorld : Node2D
         UpdateSpriteForSpoilState();
 
         GD.Print($"Comida em {GlobalPosition} estragou.");
+    }
+
+    /// <summary>Quantas horas de jogo essa comida aguenta antes de estragar (Carne crua ou
+    /// assada, dentro ou fora do Refeitório) - público pro teste (CookingDebugTests) conferir
+    /// que assada dura mais que crua e Refeitório mais que fora.</summary>
+    public static int GetSpoilHours(Food food)
+    {
+        if (food.IsCooked)
+            return food.PlacedInRestaurant ? CookedSpoilHoursInRestaurant : CookedSpoilHoursOutsideRestaurant;
+
+        return food.PlacedInRestaurant ? SpoilHoursInRestaurant : SpoilHoursOutsideRestaurant;
     }
 
     private void UpdateSpriteForSpoilState()
@@ -94,7 +107,7 @@ public partial class FoodWorld : Node2D
         string path = _food.Type switch
         {
             FoodType.StaminaSnack => StaminaSnackTexturePath,
-            _ => _food.IsSpoiled ? SpoiledTexturePath : FreshTexturePath,
+            _ => _food.IsSpoiled ? SpoiledTexturePath : (_food.IsCooked ? CookedTexturePath : FreshTexturePath),
         };
 
         if (ResourceLoader.Exists(path))

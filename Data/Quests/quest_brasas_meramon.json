@@ -1,0 +1,13 @@
+{
+  "Id": 24,
+  "Name": "Brasas pro Meramon",
+  "Description": "Colete 4 Brasas Vulcânicas (dropadas por Growlmon, GeoGreymon e Candlemon selvagens derrotados) e entregue ao Meramon. Ele passa a trabalhar na cozinha do seu Center.",
+  "GiverNpcId": 25,
+  "ObjectiveType": "CollectItem",
+  "ObjectiveTargetId": 10,
+  "ObjectiveCount": 4,
+  "RewardBits": 2500,
+  "RewardCapacity": 0,
+  "RewardItemId": 2,
+  "RewardItemQuantity": 2
+}

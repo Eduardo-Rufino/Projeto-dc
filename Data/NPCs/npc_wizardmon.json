@@ -10,5 +10,6 @@
   "QuestId": 6,
   "IsRecruitable": true,
   "RecruitmentPerkDescription": "Permite bloquear, Digimon por Digimon, quais evoluções específicas você não quer que aconteçam - o Digimon simplesmente não evolui por aquele caminho até você desbloqueá-lo de novo (ver Guia de Evolução).",
+  "RecruitmentPerk": "EvolutionAdvisor",
   "RecruitmentTrainingAreaType": null
 }

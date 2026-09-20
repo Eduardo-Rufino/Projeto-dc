@@ -2,5 +2,5 @@
   "Id": 2,
   "Name": "Remédio",
   "Description": "Cura um Digimon doente.",
-  "IconPath": ""
+  "IconPath": "res://Assets/Sprites/Itens/item_remedio_vermelho.png"
 }

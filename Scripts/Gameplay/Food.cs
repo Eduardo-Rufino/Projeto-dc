@@ -33,6 +33,20 @@ public class Food
     /// disso.</summary>
     public bool IsSpoiled { get; set; }
 
+    /// <summary>Carne Assada (ver GameManager.CookMeat): continua sendo FoodType.Meat pra tudo
+    /// que já existe (procurar, comer, estragar) funcionar sem mudança, mas tem mais nutrição
+    /// (<see cref="CookedMeatNutrition"/>) e estraga mais devagar (ver
+    /// FoodWorld.GetSpoilHours). False por padrão - saves antigos, sem esse campo, carregam
+    /// como Carne crua normalmente.</summary>
+    public bool IsCooked { get; set; }
+
+    public const int RawMeatNutrition = 20;
+    public const int CookedMeatNutrition = 30;
+
+    public static Food CreateMeat() => new("Carne", RawMeatNutrition);
+
+    public static Food CreateCookedMeat() => new("Carne Assada", CookedMeatNutrition) { IsCooked = true };
+
     public Food() { }
 
     public Food(string name, int nutrition, FoodType type = FoodType.Meat)

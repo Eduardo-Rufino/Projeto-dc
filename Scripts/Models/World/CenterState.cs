@@ -47,6 +47,68 @@ namespace ProjetoDC.Scripts.Models.World
             set => SetItemQuantity(ItemIds.StaminaSnack, value);
         }
 
+        /// <summary>Carne assada na cozinha (ver GameManager.CookMeat) - item próprio, colocado
+        /// no Center como a Carne crua mas com mais nutrição e estrago mais lento (ver
+        /// Food.IsCooked).</summary>
+        public int CookedMeat
+        {
+            get => GetItemQuantity(ItemIds.CookedMeat);
+            set => SetItemQuantity(ItemIds.CookedMeat, value);
+        }
+
+        /// <summary>Quantas Carnes o Meramon está assando agora (0 = fogão vazio). A encomenda inteira
+        /// fica pronta junto, quando <see cref="CookingMinutesLeft"/> chega a 0 - ver
+        /// GameManager.CookMeat. Salvo com o jogo: fechar e abrir não perde a encomenda.</summary>
+        public int CookingMeatAmount { get; set; }
+
+        /// <summary>Minutos de jogo que faltam pra encomenda em andamento ficar pronta.</summary>
+        public int CookingMinutesLeft { get; set; }
+
+        public bool IsCooking => CookingMeatAmount > 0;
+
+        /// <summary>Tira até <paramref name="amount"/> Carnes cruas do estoque e as coloca no fogão
+        /// (a Carne Assada só chega ao estoque quando <see cref="AdvanceCookingMinute"/> termina a
+        /// encomenda). Devolve quantas foram pro fogão - 0 se já há uma encomenda em andamento ou não
+        /// há Carne crua. Só mexe no estado: quem decide se a cozinha existe (Meramon recrutado) e
+        /// cobra o preço é o GameManager.CookMeat.</summary>
+        public int StartCooking(int amount, int minutes)
+        {
+            if (IsCooking)
+                return 0;
+
+            int taken = Math.Min(Math.Max(0, amount), Meat);
+
+            if (taken <= 0)
+                return 0;
+
+            Meat -= taken;
+            CookingMeatAmount = taken;
+            CookingMinutesLeft = Math.Max(1, minutes);
+
+            return taken;
+        }
+
+        /// <summary>Passa 1 minuto de jogo na encomenda em andamento. Devolve quantas Carnes Assadas
+        /// acabaram de ficar prontas (já somadas ao estoque), ou 0 se nada terminou agora.</summary>
+        public int AdvanceCookingMinute()
+        {
+            if (!IsCooking)
+                return 0;
+
+            CookingMinutesLeft--;
+
+            if (CookingMinutesLeft > 0)
+                return 0;
+
+            int finished = CookingMeatAmount;
+
+            CookedMeat += finished;
+            CookingMeatAmount = 0;
+            CookingMinutesLeft = 0;
+
+            return finished;
+        }
+
         // Ovos reservam capacidade igual ao Digimon Baby que vão gerar (EggData.CapacityCost) -
         // senão o jogador podia comprar ovos sem limite e lotar o Center de uma vez só quando
         // todos chocassem.

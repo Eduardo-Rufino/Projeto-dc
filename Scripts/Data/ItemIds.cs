@@ -12,5 +12,6 @@ namespace ProjetoDC.Scripts.Data
         public const int Meat = 1;
         public const int Medicine = 2;
         public const int StaminaSnack = 4;
+        public const int CookedMeat = 12;
     }
 }

@@ -37,5 +37,9 @@ namespace ProjetoDC.Scripts.Data
         /// específica (ver CenterAreaType.TrainingAttack/TrainingDefense/etc.), qual área é
         /// essa - null se o perk não é desse tipo. Só metadado por enquanto.</summary>
         public CenterAreaType? RecruitmentTrainingAreaType { get; set; }
+
+        /// <summary>Função especial que o NPC recrutado tem no Center (Carne diária, consultor de
+        /// evolução, cozinha...) - ver GameManager.HasRecruitedPerk. None = nenhuma.</summary>
+        public NpcPerkType RecruitmentPerk { get; set; } = NpcPerkType.None;
     }
 }

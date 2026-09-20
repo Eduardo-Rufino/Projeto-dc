@@ -1,0 +1,15 @@
+{
+  "Id": 25,
+  "Name": "Meramon",
+  "Code": "meramon",
+  "DialogueLines": [
+    "Ei, forasteiro... você me achou entre as colunas de basalto. Poucos aguentam esse calor tempo o bastante pra chegar até aqui.",
+    "Eu sou cozinheiro, sabia? Só que a lenha do vulcão apaga fácil, e sem uma brasa boa nem o fogão mais bem-feito serve pra nada.",
+    "Traga umas Brasas Vulcânicas e eu topo ir cozinhar no seu Center. Posso assar as suas Carnes: elas duram mais tempo e matam mais fome dos seus Digimons."
+  ],
+  "QuestId": 24,
+  "IsRecruitable": true,
+  "RecruitmentPerkDescription": "Passa a trabalhar na cozinha do Center: assa as Carnes do estoque (Inventário), por 100 Bits cada e em 20 minutos. A Carne Assada sacia mais fome e demora mais pra estragar que a crua, e no Refeitório dura ainda mais.",
+  "RecruitmentPerk": "KitchenCook",
+  "RecruitmentTrainingAreaType": null
+}
