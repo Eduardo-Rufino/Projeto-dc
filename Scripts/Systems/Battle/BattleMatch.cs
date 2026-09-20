@@ -1,4 +1,5 @@
 using ProjetoDC.Enums;
+using System.Linq;
 
 namespace ProjetoDC.Scripts.Systems.Battle
 {
@@ -14,6 +15,19 @@ namespace ProjetoDC.Scripts.Systems.Battle
         /// <summary>Tempo real de luta desde o início (usado pra ir enfraquecendo cura ao
         /// longo do combate - ver BattleUnit.GetHealEffectivenessMultiplier).</summary>
         public double ElapsedSeconds { get; private set; }
+
+        /// <summary>Depois de tanto tempo de luta começa a morte súbita: todo mundo perde uma % fixa da
+        /// própria vida máxima por segundo. Existe porque a luta não tinha fim garantido - um Suporte
+        /// curando contra um Tank de pouco dano podia durar pra sempre (a cura já decai com o tempo,
+        /// ver BattleCombatant.GetHealEffectivenessMultiplier, mas nunca chega a zero: o piso é 20%).
+        /// 3% por segundo é maior que qualquer cura/regeneração no piso, então a luta sempre acaba, no
+        /// máximo ~33s depois de começar. Quem estiver com a MENOR % de vida cai primeiro, então em
+        /// teoria vence quem causou mais dano relativo à vida máxima do alvo antes disso.</summary>
+        public const double SuddenDeathStartSeconds = 120.0;
+
+        public const float SuddenDeathPercentOfMaxHpPerSecond = 0.03f;
+
+        public bool IsSuddenDeath => ElapsedSeconds >= SuddenDeathStartSeconds;
 
         public BattleMatch(BattleTeam playerTeam, BattleTeam enemyTeam)
         {
@@ -34,6 +48,27 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             PlayerTeam.Tick(delta, ElapsedSeconds);
             EnemyTeam.Tick(delta, ElapsedSeconds);
+
+            ApplySuddenDeath(delta);
+        }
+
+        private void ApplySuddenDeath(double delta)
+        {
+            if (!IsSuddenDeath)
+                return;
+
+            // Quem tem a menor % de vida recebe primeiro: se o dano deste quadro zerar o último de um
+            // time, a luta já está decidida e ninguém mais é tocado (empate exato = perde o mais fraco).
+            foreach (var combatant in PlayerTeam.AliveMembers
+                         .Concat(EnemyTeam.AliveMembers)
+                         .OrderBy(c => c.HpPercentage)
+                         .ToList())
+            {
+                combatant.ApplySuddenDeathDamage(SuddenDeathPercentOfMaxHpPerSecond, delta);
+
+                if (CheckResult() != BattleResult.Ongoing)
+                    break;
+            }
         }
 
         public BattleResult CheckResult()

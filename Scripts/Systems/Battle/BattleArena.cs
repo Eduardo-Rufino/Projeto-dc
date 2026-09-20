@@ -115,6 +115,13 @@ namespace ProjetoDC.Scripts.Systems.Battle
                 _combatAreas[i].Position = HexPositions[i];
             }
 
+            // Os 3 hexágonos são vizinhos: sem isso as paredes recuadas nas arestas
+            // compartilhadas separavam a arena em 3 ilhas, e quem tentava atravessar caía no
+            // fallback de BattleUnit.MoveTowardTarget e era jogado pro ArenaCenter (o vértice
+            // comum, na borda de um deles), onde ficava preso.
+            foreach (var area in _combatAreas)
+                area.OpenEdgesSharedWith(_combatAreas);
+
             CreateArenaBackground();
         }
 
@@ -458,12 +465,54 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             Match.Tick(delta);
 
+            UpdateSuddenDeathBanner();
+
             var result = Match.CheckResult();
 
             if (result == BattleResult.Ongoing)
                 return;
 
             EndBattle(result);
+        }
+
+        private Label _suddenDeathBanner;
+
+        /// <summary>Aviso vermelho no topo quando a morte súbita começa (ver BattleMatch.
+        /// SuddenDeathStartSeconds) - e uma contagem discreta nos 15s antes, pra ninguém ser pego
+        /// de surpresa.</summary>
+        private void UpdateSuddenDeathBanner()
+        {
+            double untilSuddenDeath = BattleMatch.SuddenDeathStartSeconds - Match.ElapsedSeconds;
+
+            if (untilSuddenDeath > 15.0)
+                return;
+
+            if (_suddenDeathBanner == null)
+            {
+                _suddenDeathBanner = new Label
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    MouseFilter = Control.MouseFilterEnum.Ignore,
+                };
+
+                _suddenDeathBanner.AddThemeFontSizeOverride("font_size", 22);
+                _suddenDeathBanner.AddThemeColorOverride("font_color", new Color(1f, 0.35f, 0.3f));
+                _suddenDeathBanner.AddThemeColorOverride("font_outline_color", new Color(0f, 0f, 0f));
+                _suddenDeathBanner.AddThemeConstantOverride("outline_size", 6);
+
+                var layer = GetNode<CanvasLayer>("CanvasLayer");
+                layer.AddChild(_suddenDeathBanner);
+
+                _suddenDeathBanner.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterTop, Control.LayoutPresetMode.KeepSize);
+                _suddenDeathBanner.Position = new Vector2(0, 46);
+            }
+
+            _suddenDeathBanner.Text = untilSuddenDeath > 0
+                ? $"Morte súbita em {Mathf.CeilToInt((float)untilSuddenDeath)}s"
+                : "MORTE SÚBITA - todos perdem 3% da vida máxima por segundo";
+
+            _suddenDeathBanner.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterTop, Control.LayoutPresetMode.KeepWidth);
+            _suddenDeathBanner.OffsetTop = 46;
         }
 
         /// <summary>Marca a luta como decidida (naturalmente, via Match.CheckResult, ou por

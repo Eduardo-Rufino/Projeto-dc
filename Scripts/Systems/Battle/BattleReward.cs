@@ -21,7 +21,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
         /// <summary>Itens que caíram de um encontro selvagem de exploração (ver DigimonData.
         /// Drops / GameManager.ResolveWildEncounterDrops), já formatados pra exibição (ex.:
-        /// "1x Chifre de Gabumon") - vazio fora de exploração ou quando nada cai.</summary>
+        /// "1x Folha da Floresta") - vazio fora de exploração ou quando nada cai.</summary>
         public List<string> DropDescriptions { get; set; } = new();
     }
 }

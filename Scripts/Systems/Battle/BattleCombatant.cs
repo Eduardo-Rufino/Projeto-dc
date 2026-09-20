@@ -98,6 +98,27 @@ namespace ProjetoDC.Scripts.Systems.Battle
             return Math.Max(MinHealEffectiveness, multiplier);
         }
 
+        // Acumulador fracionário da morte súbita (mesma ideia do _pendingRegenHp abaixo): o dano é uma
+        // % da vida MÁXIMA por segundo, então em 1 frame quase nunca dá 1 HP inteiro.
+        private float _pendingSuddenDeathHp;
+
+        /// <summary>Dano da morte súbita (ver BattleMatch.SuddenDeathStartSeconds): uma % fixa da vida
+        /// máxima deste combatente por segundo - proporcional, então não favorece quem tem pouca vida
+        /// nem pune quem tem muita. É dano direto: ignora escudo, defesa e cura.</summary>
+        public void ApplySuddenDeathDamage(float percentOfMaxPerSecond, double delta)
+        {
+            _pendingSuddenDeathHp += Digimon.MaxHealthPoints * percentOfMaxPerSecond * (float)delta;
+
+            int wholeHp = (int)_pendingSuddenDeathHp;
+
+            if (wholeHp <= 0)
+                return;
+
+            _pendingSuddenDeathHp -= wholeHp;
+
+            Digimon.TakeDamage(wholeHp);
+        }
+
         // Fôlego (Tank, ver PASSIVAS_SPEC.md): regen contínua por segundo.
         private const float FolegoRegenPercentPerSecond = 0.006f;
 
