@@ -39,11 +39,11 @@ namespace ProjetoDC.Scripts.UI
             // HUD.SyncPauseWithBlockingScreens) - sem isso os botões parariam de responder.
             ProcessMode = ProcessModeEnum.Always;
 
-            _titleLabel = GetNode<Label>("VBoxContainer/TitleLabel");
-            _capacityLabel = GetNode<Label>("VBoxContainer/CapacityLabel");
-            _grid = GetNode<GridContainer>("VBoxContainer/ScrollContainer/GridContainer");
-            _deleteButton = GetNode<Button>("VBoxContainer/HBoxContainer/DeleteButton");
-            _keepButton = GetNode<Button>("VBoxContainer/HBoxContainer/KeepButton");
+            _titleLabel = GetNode<Label>("Window/MarginContainer/VBoxContainer/MessageLabel");
+            _capacityLabel = GetNode<Label>("Window/MarginContainer/VBoxContainer/CapacityLabel");
+            _grid = GetNode<GridContainer>("Window/MarginContainer/VBoxContainer/ScrollContainer/GridContainer");
+            _deleteButton = GetNode<Button>("Window/MarginContainer/VBoxContainer/HBoxContainer/DeleteButton");
+            _keepButton = GetNode<Button>("Window/MarginContainer/VBoxContainer/HBoxContainer/KeepButton");
 
             _cardScene = GD.Load<PackedScene>("res://Scenes/Battle/DigimonSelectCard.tscn");
 
@@ -59,8 +59,8 @@ namespace ProjetoDC.Scripts.UI
             _titleLabel.Text =
                 $"{blockedDigimon.BaseData.Name} está pronto para evoluir para " +
                 $"{targetForm.Name}, mas o Center está sem capacidade.\n" +
-                "Deseja obliterar um dos Digimons da base pra abrir espaço? Ou prefere " +
-                "mantê-lo como está (ele evolui sozinho assim que houver capacidade)?";
+                "Selecione Digimons pra obliterar até liberar a capacidade que falta, ou mantenha a " +
+                "evolução bloqueada (ele evolui sozinho assim que houver capacidade suficiente).";
 
             RefreshRoster();
 

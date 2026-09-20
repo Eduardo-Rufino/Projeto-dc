@@ -8,6 +8,7 @@ using ProjetoDC.Scripts.Save;
 using ProjetoDC.Scripts.Systems.Passives;
 using ProjetoDC.Scripts.Systems.Results;
 using System;
+using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
 namespace ProjetoDC.Scripts.Gameplay
@@ -276,7 +277,20 @@ namespace ProjetoDC.Scripts.Gameplay
         /// bichinhos virtuais clássicos: evoluir antes do prazo é o que mantém o Digimon vivo,
         /// já que a idade nunca reseta ao evoluir (GetCapacityCostForStage também não reseta
         /// nada, só troca com base no estágio atual). Mega/MegaPlus/Special dividem o mesmo
-        /// teto de 30 dias - "e acima" no pedido original.
+        /// teto (68 dias) - "e acima" no pedido original.
+        ///
+        /// 2026-09-20 (revisão de folga): 4/7/15/26/52/68 (eram 3/5/9/15/22/30). A ideia: o Digimon só
+        /// morre sem evoluir se o jogador cuidar e treinar mal; com pouco esforço (~4 batalhas por dia) ele
+        /// ainda chega a uma forma mais fraca de cada estágio, e as formas mais fortes (níveis exigidos
+        /// maiores) pedem mais esforço (Energético, várias batalhas) ou um Center mais evoluído (bônus de
+        /// treino e de XP). Calibrado com a simulação DEBUG_AUDIT_SECTIONS=lifespan.
+        ///
+        /// Antes disso, Ultimate foi de 22 pra 36 e Mega de 30 pra 48. Uma simulação de "jogador ideal"
+        /// (DEBUG_AUDIT_SECTIONS=lifespan na bateria geral) mostrou que com 22 dias o Ultimate nunca
+        /// dava tempo de juntar o XP do nível exigido pelo Mega (a curva é exponencial: nível 30 = 97 mil
+        /// XP). O Mega subiu junto porque quem evolui do Ultimate chega a ele por volta do dia 27 - com
+        /// o teto antigo (30) morreria poucos dias depois de nascer. Ainda é difícil (precisa de várias
+        /// batalhas por dia e Energético), só deixou de ser impossível.
         ///
         /// Baby/InTraining ganharam 1 dia a mais cada (eram 2/4) depois do "grande teste" de
         /// 2026-09-13: como XP de treino é fixo (5 por sessão, ver TrainingSystem.Execute) e a
@@ -290,12 +304,12 @@ namespace ProjetoDC.Scripts.Gameplay
         /// raro/difícil, não garantido.</summary>
         public static int GetMaxAgeForStage(DigimonStage stage) => stage switch
         {
-            DigimonStage.Baby => 3,
-            DigimonStage.InTraining => 5,
-            DigimonStage.Rookie => 9,
-            DigimonStage.Champion => 15,
-            DigimonStage.Ultimate => 22,
-            _ => 30, // Mega, MegaPlus, Special
+            DigimonStage.Baby => 4,
+            DigimonStage.InTraining => 7,
+            DigimonStage.Rookie => 15,
+            DigimonStage.Champion => 26,
+            DigimonStage.Ultimate => 52,
+            _ => 68, // Mega, MegaPlus, Special
         };
 
         public bool IsPastMaxAge() => AgeInDays > GetMaxAgeForStage(BaseData.Stage);
@@ -775,6 +789,19 @@ namespace ProjetoDC.Scripts.Gameplay
             return HealthState != HealthState.Sick;
         }
 
+        /// <summary>Persistência do estado de saúde: mesmo nome no JSON ("HealthState") do save, mas
+        /// grava/lê direto o campo, sem passar pelo setter de <see cref="HealthState"/> (que tem
+        /// efeitos colaterais - felicidade e evento - e é privado, então o System.Text.Json o
+        /// ignorava ao carregar: todo Digimon doente voltava saudável depois de salvar/carregar).</summary>
+        [JsonPropertyName("HealthState")]
+        [JsonInclude]
+        public HealthState PersistedHealthState
+        {
+            get => _healthState;
+            set => _healthState = value;
+        }
+
+        [JsonIgnore]
         public HealthState HealthState
         {
             get => _healthState;
