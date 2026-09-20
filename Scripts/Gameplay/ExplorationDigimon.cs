@@ -10,7 +10,7 @@ namespace ProjetoDC.Scripts.Gameplay
     /// marcam o próprio clique como tratado (GetViewport().SetInputAsHandled()), então clicar
     /// neles não também manda o explorador andar até lá.
     /// CharacterBody2D (não Node2D puro) pra colidir de verdade com a base de árvores/pedras
-    /// via MoveAndSlide (ver ForestDecoration) - a máscara 1 é exatamente essa camada de
+    /// via MoveAndSlide (ver AreaDecoration) - a máscara 1 é exatamente essa camada de
     /// obstáculo; o limite do mapa em si continua sendo um checagem manual (IsPointInsideBoundary),
     /// não física, porque o Boundary é só um Polygon2D visual.
     /// </summary>

@@ -1,0 +1,14 @@
+{
+  "Id": 13,
+  "Name": "Bakemon",
+  "Code": "bakemon",
+  "DialogueLines": [
+    "...uuuh. Achou o meu esconderijo entre os troncos? Ninguém costuma achar.",
+    "Fico por aqui porque a névoa combina comigo. Mas tem uma coisa que eu queria: os cogumelos que crescem por aqui têm um cheiro... reconfortante. Só que os selvagens não me deixam colher em paz.",
+    "Se você conseguir uns Cogumelos do Pântano, eu retribuo do meu jeito."
+  ],
+  "QuestId": 15,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

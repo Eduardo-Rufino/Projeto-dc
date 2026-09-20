@@ -1,0 +1,13 @@
+{
+  "Id": 15,
+  "Name": "Cogumelos pro Bakemon",
+  "Description": "Colete 4 Cogumelos do Pântano (dropados por Shoemon, ShoeShoemon e Palmon selvagens derrotados) e entregue ao Bakemon.",
+  "GiverNpcId": 13,
+  "ObjectiveType": "CollectItem",
+  "ObjectiveTargetId": 6,
+  "ObjectiveCount": 4,
+  "RewardBits": 1400,
+  "RewardCapacity": 0,
+  "RewardItemId": 4,
+  "RewardItemQuantity": 1
+}

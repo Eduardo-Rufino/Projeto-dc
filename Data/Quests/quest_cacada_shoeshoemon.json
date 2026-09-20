@@ -1,0 +1,13 @@
+{
+  "Id": 19,
+  "Name": "Silêncio no Pântano",
+  "Description": "Derrote 2 ShoeShoemon selvagens no pântano pro Ghostmon poder assombrar em paz.",
+  "GiverNpcId": 20,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 92,
+  "ObjectiveCount": 2,
+  "RewardBits": 1500,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

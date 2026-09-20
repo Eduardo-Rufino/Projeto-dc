@@ -1,0 +1,13 @@
+{
+  "Id": 16,
+  "Name": "Escamas pro Kotemon",
+  "Description": "Colete 4 Escamas do Deserto (dropadas por Raptordramon, Coredramon Verde e Cockatrimon selvagens derrotados) e entregue ao Kotemon.",
+  "GiverNpcId": 15,
+  "ObjectiveType": "CollectItem",
+  "ObjectiveTargetId": 7,
+  "ObjectiveCount": 4,
+  "RewardBits": 1700,
+  "RewardCapacity": 0,
+  "RewardItemId": 2,
+  "RewardItemQuantity": 2
+}

@@ -1,0 +1,13 @@
+{
+  "Id": 21,
+  "Name": "Lição do Cânion",
+  "Description": "Derrote 2 BaoHackmon selvagens no cânion pro Veemon aprender com a luta.",
+  "GiverNpcId": 22,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 164,
+  "ObjectiveCount": 2,
+  "RewardBits": 2600,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

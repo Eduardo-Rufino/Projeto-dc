@@ -1,0 +1,14 @@
+{
+  "Id": 23,
+  "Name": "Biyomon",
+  "Code": "biyomon",
+  "DialogueLines": [
+    "Piu! Que vista linda, né? Só perde a graça quando aparece um Ikkakumon selvagem.",
+    "Eles chegam com a maré e espantam todo mundo que vem passear por aqui. Eu queria poder voar tranquila de novo.",
+    "Se derrotar alguns Ikkakumon selvagens, a praia fica bem mais calma."
+  ],
+  "QuestId": 22,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

@@ -1,0 +1,227 @@
+{
+  "Id": "desert",
+  "Folder": "res://Assets/Areas/Desert/",
+  "GroundTexture": "ground_desert.png",
+  "BackgroundColor": "#3a2a1a",
+  "GroundColor": "#e0c48a",
+  "DecorationCount": 170,
+  "ScaleMin": 0.85,
+  "ScaleMax": 1.2,
+  "Variants": {
+    "Saguaro": [
+      {
+        "File": "desert_cactus_saguaro.png",
+        "Solid": {
+          "Width": 30,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -8
+        }
+      },
+      {
+        "File": "desert_cactus_small.png",
+        "Solid": {
+          "Width": 26,
+          "Height": 14,
+          "CenterX": -6,
+          "CenterY": -8
+        }
+      }
+    ],
+    "Cactus": [
+      {
+        "File": "desert_cactus_pear.png",
+        "Solid": {
+          "Width": 36,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -14
+        }
+      },
+      {
+        "File": "desert_cactus_barrel.png",
+        "Solid": {
+          "Width": 36,
+          "Height": 12,
+          "CenterX": 0,
+          "CenterY": -11
+        }
+      },
+      {
+        "File": "desert_cactus_barrel_flower.png",
+        "Solid": {
+          "Width": 36,
+          "Height": 12,
+          "CenterX": 0,
+          "CenterY": -11
+        }
+      }
+    ],
+    "Rock": [
+      {
+        "File": "desert_rock_big.png",
+        "Solid": {
+          "Width": 66,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -11
+        }
+      },
+      {
+        "File": "desert_rock_small.png",
+        "Solid": {
+          "Width": 42,
+          "Height": 12,
+          "CenterX": 0,
+          "CenterY": -10
+        }
+      }
+    ],
+    "Ruin": [
+      {
+        "File": "desert_ruin_pillar.png",
+        "Solid": {
+          "Width": 54,
+          "Height": 14,
+          "CenterX": 3,
+          "CenterY": -14
+        }
+      }
+    ],
+    "DeadTree": [
+      {
+        "File": "desert_dead_tree.png",
+        "Solid": {
+          "Width": 22,
+          "Height": 14,
+          "CenterX": -2,
+          "CenterY": -9
+        }
+      }
+    ],
+    "Pot": [
+      {
+        "File": "desert_clay_pot.png",
+        "Solid": {
+          "Width": 32,
+          "Height": 12,
+          "CenterX": 0,
+          "CenterY": -13
+        }
+      }
+    ],
+    "DryGrass": [
+      {
+        "File": "desert_dry_grass.png"
+      }
+    ],
+    "Tumbleweed": [
+      {
+        "File": "desert_tumbleweed.png"
+      }
+    ],
+    "Skull": [
+      {
+        "File": "desert_skull.png"
+      }
+    ],
+    "Oasis": [
+      {
+        "File": "desert_oasis.png"
+      }
+    ]
+  },
+  "DefaultKinds": [
+    "DryGrass",
+    "DryGrass",
+    "Tumbleweed",
+    "Rock",
+    "Cactus",
+    "Saguaro",
+    "Skull"
+  ],
+  "Zones": [
+    {
+      "CenterX": 0.18,
+      "CenterY": 0.45,
+      "Radius": 520,
+      "Kinds": [
+        "DryGrass",
+        "DryGrass",
+        "Tumbleweed",
+        "Cactus",
+        "Skull",
+        "Pot"
+      ]
+    },
+    {
+      "CenterX": 0.6,
+      "CenterY": 0.14,
+      "Radius": 480,
+      "Kinds": [
+        "Saguaro",
+        "Saguaro",
+        "Cactus",
+        "Cactus",
+        "DryGrass",
+        "Tumbleweed"
+      ]
+    },
+    {
+      "CenterX": 0.58,
+      "CenterY": 0.87,
+      "Radius": 480,
+      "Kinds": [
+        "Ruin",
+        "Ruin",
+        "Rock",
+        "Rock",
+        "Pot",
+        "Skull",
+        "DeadTree"
+      ]
+    },
+    {
+      "CenterX": 0.41,
+      "CenterY": 0.48,
+      "Radius": 340,
+      "Kinds": [
+        "Oasis",
+        "Cactus",
+        "DryGrass",
+        "DryGrass",
+        "Saguaro"
+      ]
+    },
+    {
+      "CenterX": 0.34,
+      "CenterY": 0.82,
+      "Radius": 320,
+      "Kinds": [
+        "DeadTree",
+        "DeadTree",
+        "Skull",
+        "Tumbleweed",
+        "Rock"
+      ]
+    },
+    {
+      "CenterX": 0.9,
+      "CenterY": 0.52,
+      "Radius": 460,
+      "Kinds": [
+        "Saguaro",
+        "Saguaro",
+        "Rock",
+        "Rock",
+        "Ruin",
+        "DeadTree"
+      ]
+    }
+  ],
+  "ConcealmentKinds": [
+    "Saguaro",
+    "Ruin",
+    "Rock"
+  ]
+}

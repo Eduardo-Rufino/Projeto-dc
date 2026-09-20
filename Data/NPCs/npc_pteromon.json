@@ -1,0 +1,14 @@
+{
+  "Id": 14,
+  "Name": "Pteromon",
+  "Code": "pteromon",
+  "DialogueLines": [
+    "Sopra um vento seco por aqui, treinador. Dá pra sentir o calor até nas asas.",
+    "Os selvagens do deserto são os mais fortes que já vi - e as dunas não deixam ninguém fugir a pé. Só chegou até aqui quem já passou pela caverna.",
+    "Ajude a limpar a região em volta das ruínas e eu marco pra você as melhores correntes de ar."
+  ],
+  "QuestId": 12,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

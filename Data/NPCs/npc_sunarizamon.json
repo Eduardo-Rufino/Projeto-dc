@@ -1,0 +1,14 @@
+{
+  "Id": 10,
+  "Name": "Sunarizamon",
+  "Code": "sunarizamon",
+  "DialogueLines": [
+    "...Ah, uma visita. Faz tempo que eu não escuto passos que não sejam de pedra.",
+    "Eu escavo aqui embaixo há muito tempo. Os cristais que sobram nos selvagens da caverna são o que eu procuro - traga alguns pra mim.",
+    "Em troca eu te mostro como deixar um Digimon aguentar bem mais do que ele imagina."
+  ],
+  "QuestId": 9,
+  "IsRecruitable": true,
+  "RecruitmentPerkDescription": "Aumenta a efetividade das áreas de treino específico de HP, e os Digimon do Center passam a ter chance de ir treinar HP sozinhos, sem precisar ser arrastados até lá.",
+  "RecruitmentTrainingAreaType": "TrainingHealthPoints"
+}

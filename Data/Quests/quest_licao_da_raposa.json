@@ -1,0 +1,13 @@
+{
+  "Id": 25,
+  "Name": "Lição da Raposa",
+  "Description": "Derrote 2 Kyubimon selvagens no vulcão pra Renamon aprender com a luta.",
+  "GiverNpcId": 26,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 20,
+  "ObjectiveCount": 2,
+  "RewardBits": 2800,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

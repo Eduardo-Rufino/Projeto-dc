@@ -1,0 +1,14 @@
+{
+  "Id": 18,
+  "Name": "Muchomon",
+  "Code": "muchomon",
+  "DialogueLines": [
+    "Bem-vindo à praia, treinador! A areia é macia, mas não se engane com a paz - o vento traz uns bichos bem brabos do mar.",
+    "Os selvagens daqui são mais fortes que os do pântano, então não relaxe só porque a areia é macia. Só dá pra andar até onde a onda alcança, então cuidado pra não ser encurralado na beira.",
+    "Me ajuda a limpar a areia e eu deixo o passeio livre pra você."
+  ],
+  "QuestId": 14,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

@@ -1,0 +1,13 @@
+{
+  "Id": 10,
+  "Name": "Prove seu Valor (Defesa Especial)",
+  "Description": "Derrote 3 Digimon selvagens nessa área pra mostrar ao Phascomon que sabe proteger os seus.",
+  "GiverNpcId": 11,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 3,
+  "RewardBits": 750,
+  "RewardCapacity": 0,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

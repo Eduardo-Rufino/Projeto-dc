@@ -1,0 +1,14 @@
+{
+  "Id": 20,
+  "Name": "Ghostmon",
+  "Code": "ghostmon",
+  "DialogueLines": [
+    "Uuu... Que bom que alguém apareceu. Esse pântano já é assustador o bastante sem os ShoeShoemon rondando.",
+    "Eles fazem barulho a noite toda e não me deixam assombrar em paz. Alguém precisa dar um jeito neles.",
+    "Derrote uns ShoeShoemon selvagens e eu fico te devendo um favor."
+  ],
+  "QuestId": 19,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

@@ -1,0 +1,212 @@
+{
+  "Id": "volcano",
+  "Folder": "res://Assets/Areas/Vulcan/",
+  "GroundTexture": "ground_volcano_rock.png",
+  "ShoreTexture": "ground_volcano_shore.png",
+  "SeaTexture": "ground_volcano_lava.png",
+  "ShoreLine": 0.64,
+  "WalkLimitOffset": 52,
+  "BackgroundColor": "#2a0d08",
+  "GroundColor": "#3a3538",
+  "DecorationCount": 150,
+  "ScaleMin": 0.9,
+  "ScaleMax": 1.15,
+  "SeaDecorationCount": 22,
+  "SeaKinds": [
+    "MagmaRock",
+    "MagmaRock",
+    "Vent",
+    "Fumarole"
+  ],
+  "Variants": {
+    "Basalt": [
+      {
+        "File": "volcano_basalt_columns.png",
+        "Solid": {
+          "Width": 72,
+          "Height": 14,
+          "CenterX": -3,
+          "CenterY": -10
+        }
+      }
+    ],
+    "Tree": [
+      {
+        "File": "volcano_charred_tree.png",
+        "Solid": {
+          "Width": 20,
+          "Height": 14,
+          "CenterX": -2,
+          "CenterY": -8
+        }
+      }
+    ],
+    "Fumarole": [
+      {
+        "File": "volcano_fumarole.png",
+        "Solid": {
+          "Width": 76,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -9
+        }
+      }
+    ],
+    "MagmaRock": [
+      {
+        "File": "volcano_magma_rock.png",
+        "Solid": {
+          "Width": 64,
+          "Height": 14,
+          "CenterX": 2,
+          "CenterY": -10
+        }
+      }
+    ],
+    "Obsidian": [
+      {
+        "File": "volcano_obsidian.png",
+        "Solid": {
+          "Width": 56,
+          "Height": 14,
+          "CenterX": 4,
+          "CenterY": -10
+        }
+      }
+    ],
+    "Rock": [
+      {
+        "File": "volcano_rock.png",
+        "Solid": {
+          "Width": 50,
+          "Height": 12,
+          "CenterX": 0,
+          "CenterY": -9
+        }
+      }
+    ],
+    "Sulfur": [
+      {
+        "File": "volcano_sulfur.png",
+        "Solid": {
+          "Width": 52,
+          "Height": 12,
+          "CenterX": 0,
+          "CenterY": -9
+        }
+      }
+    ],
+    "LavaPool": [
+      {
+        "File": "volcano_lava_pool.png",
+        "Solid": {
+          "Width": 84,
+          "Height": 16,
+          "CenterX": 2,
+          "CenterY": -10
+        }
+      }
+    ],
+    "Vent": [
+      {
+        "File": "volcano_steam_vent.png"
+      }
+    ],
+    "Flower": [
+      {
+        "File": "volcano_fire_flower.png"
+      }
+    ],
+    "Crack": [
+      {
+        "File": "volcano_magma_crack.png"
+      }
+    ]
+  },
+  "DefaultKinds": [
+    "Crack",
+    "Rock",
+    "Sulfur",
+    "Flower",
+    "Tree",
+    "MagmaRock"
+  ],
+  "Zones": [
+    {
+      "CenterX": 0.18,
+      "CenterY": 0.45,
+      "Radius": 520,
+      "Kinds": [
+        "Rock",
+        "Crack",
+        "Flower",
+        "Vent",
+        "Sulfur"
+      ]
+    },
+    {
+      "CenterX": 0.6,
+      "CenterY": 0.14,
+      "Radius": 480,
+      "Kinds": [
+        "Basalt",
+        "Basalt",
+        "Tree",
+        "Obsidian",
+        "Crack"
+      ]
+    },
+    {
+      "CenterX": 0.58,
+      "CenterY": 0.9,
+      "Radius": 480,
+      "Kinds": [
+        "LavaPool",
+        "MagmaRock",
+        "Fumarole",
+        "Vent",
+        "Crack"
+      ]
+    },
+    {
+      "CenterX": 0.41,
+      "CenterY": 0.48,
+      "Radius": 340,
+      "Kinds": [
+        "Rock",
+        "Crack",
+        "Flower",
+        "Sulfur"
+      ]
+    },
+    {
+      "CenterX": 0.34,
+      "CenterY": 0.9,
+      "Radius": 320,
+      "Kinds": [
+        "MagmaRock",
+        "Vent",
+        "Crack",
+        "Sulfur"
+      ]
+    },
+    {
+      "CenterX": 0.9,
+      "CenterY": 0.5,
+      "Radius": 460,
+      "Kinds": [
+        "Basalt",
+        "Obsidian",
+        "Tree",
+        "Fumarole",
+        "Rock"
+      ]
+    }
+  ],
+  "ConcealmentKinds": [
+    "Basalt",
+    "Obsidian",
+    "Tree",
+    "MagmaRock"
+  ]
+}

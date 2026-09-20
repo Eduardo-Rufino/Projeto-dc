@@ -1,0 +1,108 @@
+{
+  "Id": 7,
+  "Name": "Vulcão Ardente",
+  "Description": "Um vulcão em atividade, caminho alternativo que sai do Deserto Escaldante em vez do Cânion. Rocha escura, fumarolas e um rio de lava ao sul - só dá pra andar até a beira da brasa. Os selvagens daqui são fortes e sabem lutar quente. Alguns moradores se escondem atrás das colunas de basalto e das rochas.",
+  "Theme": "volcano",
+  "RequiredQuestId": 12,
+  "RecommendedLevel": 30,
+  "WildPool": [
+    18,
+    44,
+    20,
+    14,
+    132,
+    169
+  ],
+  "WildLevelMin": 28,
+  "WildLevelMax": 32,
+  "WildSpawnPoints": [
+    {
+      "X": 900,
+      "Y": 450
+    },
+    {
+      "X": 1550,
+      "Y": 650
+    },
+    {
+      "X": 1100,
+      "Y": 1150
+    },
+    {
+      "X": 2000,
+      "Y": 1200
+    },
+    {
+      "X": 2700,
+      "Y": 1150
+    },
+    {
+      "X": 2850,
+      "Y": 620
+    },
+    {
+      "X": 1350,
+      "Y": 1200
+    },
+    {
+      "X": 2450,
+      "Y": 1000
+    }
+  ],
+  "Npcs": [
+    {
+      "NpcId": 24,
+      "X": 700,
+      "Y": 1050,
+      "Hidden": false
+    },
+    {
+      "NpcId": 25,
+      "X": 2950,
+      "Y": 520,
+      "Hidden": true
+    },
+    {
+      "NpcId": 26,
+      "X": 1900,
+      "Y": 900,
+      "Hidden": false
+    },
+    {
+      "NpcId": 27,
+      "X": 2250,
+      "Y": 800,
+      "Hidden": false
+    }
+  ],
+  "ItemPickups": [
+    {
+      "UniqueId": 601,
+      "ItemId": 1,
+      "Quantity": 3,
+      "X": 1000,
+      "Y": 880
+    },
+    {
+      "UniqueId": 602,
+      "ItemId": 2,
+      "Quantity": 1,
+      "X": 2100,
+      "Y": 650
+    },
+    {
+      "UniqueId": 603,
+      "ItemId": 4,
+      "Quantity": 1,
+      "X": 2900,
+      "Y": 1200
+    },
+    {
+      "UniqueId": 604,
+      "ItemId": 1,
+      "Quantity": 3,
+      "X": 700,
+      "Y": 1180
+    }
+  ]
+}

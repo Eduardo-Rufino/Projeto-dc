@@ -58,7 +58,7 @@ namespace ProjetoDC.Scripts.UI
 
                 _itemsContainer.AddChild(card);
 
-                card.SetMap(map);
+                card.SetMap(map, GameManager.Instance.GetExplorationMapLockReason(map));
                 card.Entered += OnCardEntered;
 
                 _cards.Add(card);

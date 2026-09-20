@@ -1,0 +1,13 @@
+{
+  "Id": 26,
+  "Name": "Enxofre pro Tentomon",
+  "Description": "Colete 4 Pedras de Enxofre (dropadas por Garurumon, Dracomon e Kyubimon selvagens derrotados) e entregue ao Tentomon.",
+  "GiverNpcId": 27,
+  "ObjectiveType": "CollectItem",
+  "ObjectiveTargetId": 11,
+  "ObjectiveCount": 4,
+  "RewardBits": 2400,
+  "RewardCapacity": 0,
+  "RewardItemId": 4,
+  "RewardItemQuantity": 2
+}

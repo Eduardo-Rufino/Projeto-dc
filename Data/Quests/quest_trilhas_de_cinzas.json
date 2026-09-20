@@ -1,0 +1,13 @@
+{
+  "Id": 23,
+  "Name": "Trilhas de Cinzas",
+  "Description": "Derrote 5 Digimon selvagens nessa área pra limpar as trilhas de cinza pro Agumon.",
+  "GiverNpcId": 24,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 5,
+  "RewardBits": 2400,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

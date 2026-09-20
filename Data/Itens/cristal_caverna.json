@@ -1,0 +1,6 @@
+{
+  "Id": 5,
+  "Name": "Cristal de Caverna",
+  "Description": "Um cristal pequeno que se solta de alguns Digimon que vivem nas cavernas. Usado por NPCs em algumas quests.",
+  "IconPath": "res://Assets/Areas/Cave/cave_crystal_small_blue.png"
+}

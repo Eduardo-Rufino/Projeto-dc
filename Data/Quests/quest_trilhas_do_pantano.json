@@ -1,0 +1,13 @@
+{
+  "Id": 11,
+  "Name": "Trilhas do Pântano",
+  "Description": "Derrote 4 Digimon selvagens nessa área pra manter as trilhas de tábua livres pro Gomamon.",
+  "GiverNpcId": 12,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 4,
+  "RewardBits": 1200,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

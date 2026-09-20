@@ -1,0 +1,13 @@
+{
+  "Id": 14,
+  "Name": "Maré Baixa",
+  "Description": "Derrote 5 Digimon selvagens nessa área pra deixar a areia livre pro Muchomon.",
+  "GiverNpcId": 18,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 5,
+  "RewardBits": 1400,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

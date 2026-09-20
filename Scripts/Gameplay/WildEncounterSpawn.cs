@@ -15,7 +15,7 @@ namespace ProjetoDC.Scripts.Gameplay
     /// clicar) dispara a batalha (GameManager.StartWildEncounter). Resolvida a luta (vitória
     /// ou derrota), esse encontro some até a próxima vez que o jogador entrar na área.
     /// CharacterBody2D (não Node2D puro) pra colidir de verdade com a base de árvores/pedras
-    /// via MoveAndSlide (ver ForestDecoration) - camada 1, mesma regra do explorador.
+    /// via MoveAndSlide (ver AreaDecoration) - camada 1, mesma regra do explorador.
     /// </summary>
     public partial class WildEncounterSpawn : CharacterBody2D
     {

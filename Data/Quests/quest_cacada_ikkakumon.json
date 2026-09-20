@@ -1,0 +1,13 @@
+{
+  "Id": 22,
+  "Name": "Maré Calma",
+  "Description": "Derrote 2 Ikkakumon selvagens na praia pra Biyomon voltar a passear em paz.",
+  "GiverNpcId": 23,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 66,
+  "ObjectiveCount": 2,
+  "RewardBits": 1800,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

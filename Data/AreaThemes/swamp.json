@@ -1,0 +1,200 @@
+{
+  "Id": "swamp",
+  "Folder": "res://Assets/Areas/Swamp/",
+  "GroundTexture": "ground_swamp.png",
+  "BackgroundColor": "#0f150e",
+  "GroundColor": "#3b3a2a",
+  "DecorationCount": 200,
+  "ScaleMin": 0.85,
+  "ScaleMax": 1.2,
+  "Variants": {
+    "Tree": [
+      {
+        "File": "swamp_tree_mangrove.png",
+        "Solid": {
+          "Width": 56,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -14
+        }
+      },
+      {
+        "File": "swamp_tree_willow.png",
+        "Solid": {
+          "Width": 40,
+          "Height": 14,
+          "CenterX": -1,
+          "CenterY": -15
+        }
+      }
+    ],
+    "Snag": [
+      {
+        "File": "swamp_snag.png",
+        "Solid": {
+          "Width": 30,
+          "Height": 14,
+          "CenterX": -3,
+          "CenterY": -9
+        }
+      }
+    ],
+    "Log": [
+      {
+        "File": "swamp_log.png",
+        "Solid": {
+          "Width": 80,
+          "Height": 14,
+          "CenterX": -3,
+          "CenterY": -13
+        }
+      }
+    ],
+    "Rock": [
+      {
+        "File": "swamp_rock.png",
+        "Solid": {
+          "Width": 54,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -11
+        }
+      }
+    ],
+    "Mushroom": [
+      {
+        "File": "swamp_mushroom.png"
+      }
+    ],
+    "Reeds": [
+      {
+        "File": "swamp_reeds.png"
+      },
+      {
+        "File": "swamp_cattails.png"
+      }
+    ],
+    "Lily": [
+      {
+        "File": "swamp_lily.png"
+      },
+      {
+        "File": "swamp_lily_flower.png"
+      }
+    ],
+    "Pond": [
+      {
+        "File": "swamp_pool.png"
+      },
+      {
+        "File": "swamp_mud.png"
+      }
+    ],
+    "Wisp": [
+      {
+        "File": "swamp_wisp.png"
+      }
+    ],
+    "Boardwalk": [
+      {
+        "File": "swamp_boardwalk.png"
+      }
+    ]
+  },
+  "DefaultKinds": [
+    "Reeds",
+    "Reeds",
+    "Lily",
+    "Pond",
+    "Mushroom",
+    "Tree",
+    "Rock",
+    "Log",
+    "Wisp"
+  ],
+  "Zones": [
+    {
+      "CenterX": 0.18,
+      "CenterY": 0.45,
+      "Radius": 520,
+      "Kinds": [
+        "Reeds",
+        "Reeds",
+        "Lily",
+        "Pond",
+        "Boardwalk",
+        "Mushroom"
+      ]
+    },
+    {
+      "CenterX": 0.6,
+      "CenterY": 0.14,
+      "Radius": 480,
+      "Kinds": [
+        "Tree",
+        "Tree",
+        "Tree",
+        "Snag",
+        "Reeds",
+        "Wisp"
+      ]
+    },
+    {
+      "CenterX": 0.58,
+      "CenterY": 0.87,
+      "Radius": 480,
+      "Kinds": [
+        "Tree",
+        "Tree",
+        "Snag",
+        "Log",
+        "Rock",
+        "Mushroom"
+      ]
+    },
+    {
+      "CenterX": 0.41,
+      "CenterY": 0.48,
+      "Radius": 340,
+      "Kinds": [
+        "Pond",
+        "Pond",
+        "Lily",
+        "Lily",
+        "Reeds",
+        "Wisp"
+      ]
+    },
+    {
+      "CenterX": 0.34,
+      "CenterY": 0.82,
+      "Radius": 320,
+      "Kinds": [
+        "Mushroom",
+        "Mushroom",
+        "Reeds",
+        "Log",
+        "Lily"
+      ]
+    },
+    {
+      "CenterX": 0.9,
+      "CenterY": 0.52,
+      "Radius": 460,
+      "Kinds": [
+        "Tree",
+        "Tree",
+        "Tree",
+        "Snag",
+        "Rock",
+        "Log"
+      ]
+    }
+  ],
+  "ConcealmentKinds": [
+    "Tree",
+    "Tree",
+    "Snag",
+    "Log"
+  ]
+}

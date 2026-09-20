@@ -1,0 +1,14 @@
+{
+  "Id": 27,
+  "Name": "Tentomon",
+  "Code": "tentomon",
+  "DialogueLines": [
+    "Fascinante, fascinante! Você sabia que o enxofre das fumarolas forma cristais em camadas?",
+    "Estou fazendo um estudo, mas as Pedras de Enxofre mais bonitas ficam com os selvagens que moram perto das fumarolas, e eu não sou de briga.",
+    "Traga Pedras de Enxofre e eu pago pela ajuda à ciência."
+  ],
+  "QuestId": 26,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

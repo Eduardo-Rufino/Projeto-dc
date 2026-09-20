@@ -1,0 +1,13 @@
+{
+  "Id": 17,
+  "Name": "Fósseis pro Gladimon",
+  "Description": "Colete 4 Fragmentos de Fóssil (dropados por Dorugamon, BaoHackmon e Galemon selvagens derrotados) e entregue ao Gladimon.",
+  "GiverNpcId": 17,
+  "ObjectiveType": "CollectItem",
+  "ObjectiveTargetId": 8,
+  "ObjectiveCount": 4,
+  "RewardBits": 2200,
+  "RewardCapacity": 0,
+  "RewardItemId": 4,
+  "RewardItemQuantity": 2
+}

@@ -1,0 +1,14 @@
+{
+  "Id": 9,
+  "Name": "Stingmon",
+  "Code": "stingmon",
+  "DialogueLines": [
+    "Você me achou. Poucos conseguem, e menos ainda enxergam alguma coisa nessa escuridão.",
+    "Eu me movo mais rápido do que qualquer pedra que cai aqui. Se você aguenta o ritmo dos selvagens da caverna, talvez eu te ensine como treinar Velocidade de verdade.",
+    "Mostre que sabe lutar e considere isso combinado."
+  ],
+  "QuestId": 8,
+  "IsRecruitable": true,
+  "RecruitmentPerkDescription": "Aumenta a efetividade das áreas de treino específico de Velocidade, e os Digimon do Center passam a ter chance de ir treinar Velocidade sozinhos, sem precisar ser arrastados até lá.",
+  "RecruitmentTrainingAreaType": "TrainingSpeed"
+}

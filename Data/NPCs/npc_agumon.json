@@ -1,0 +1,14 @@
+{
+  "Id": 24,
+  "Name": "Agumon",
+  "Code": "agumon",
+  "DialogueLines": [
+    "Uau, você chegou até o vulcão! O calor daqui derrete a paciência de qualquer um.",
+    "Os selvagens daqui gostam de luta quente - eles não recuam nem quando a lava está a dois passos. Só dá pra andar até a beira, então cuidado onde pisa.",
+    "Me ajuda a limpar as trilhas de cinza? Eu tento, mas sozinho não dou conta."
+  ],
+  "QuestId": 23,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

@@ -4,7 +4,7 @@ namespace ProjetoDC.Scripts.Data
     /// Um item que uma espécie de Digimon pode soltar ao ser derrotada num encontro selvagem
     /// de exploração (ver DigimonData.Drops / GameManager.ApplyWildEncounterDrops) - não tem
     /// nada a ver com a recompensa normal de batalha (Bits/XP), é só pra alimentar quests de
-    /// coleta tipo "colete 3 chifres de Gabumon". Cada espécie pode ter vários drops
+    /// coleta tipo "colete 3 folhas da floresta". Cada espécie pode ter vários drops
     /// independentes, cada um com sua própria chance.
     /// </summary>
     public class DigimonDropData

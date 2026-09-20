@@ -1,0 +1,226 @@
+{
+  "Id": "beach",
+  "Folder": "res://Assets/Areas/Beach/",
+  "GroundTexture": "ground_beach_sand.png",
+  "ShoreTexture": "ground_beach_shore.png",
+  "SeaTexture": "ground_beach_sea.png",
+  "ShoreLine": 0.64,
+  "WalkLimitOffset": 56,
+  "BackgroundColor": "#2a9ab8",
+  "GroundColor": "#efdfb8",
+  "DecorationCount": 150,
+  "ScaleMin": 0.9,
+  "ScaleMax": 1.15,
+  "SeaDecorationCount": 26,
+  "SeaKinds": [
+    "Coral",
+    "Coral",
+    "Coral",
+    "Rowboat"
+  ],
+  "Variants": {
+    "Palm": [
+      {
+        "File": "beach_palm.png",
+        "Solid": {
+          "Width": 22,
+          "Height": 14,
+          "CenterX": -30,
+          "CenterY": -14
+        }
+      }
+    ],
+    "Umbrella": [
+      {
+        "File": "beach_umbrella.png",
+        "Solid": {
+          "Width": 12,
+          "Height": 12,
+          "CenterX": 0,
+          "CenterY": -10
+        }
+      }
+    ],
+    "Rock": [
+      {
+        "File": "beach_rock.png",
+        "Solid": {
+          "Width": 60,
+          "Height": 14,
+          "CenterX": 2,
+          "CenterY": -11
+        }
+      }
+    ],
+    "Driftwood": [
+      {
+        "File": "beach_driftwood.png",
+        "Solid": {
+          "Width": 84,
+          "Height": 12,
+          "CenterX": -3,
+          "CenterY": -10
+        }
+      }
+    ],
+    "Sandcastle": [
+      {
+        "File": "beach_sandcastle.png",
+        "Solid": {
+          "Width": 70,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -10
+        }
+      }
+    ],
+    "Rowboat": [
+      {
+        "File": "beach_rowboat.png",
+        "Solid": {
+          "Width": 112,
+          "Height": 14,
+          "CenterX": -2,
+          "CenterY": -14
+        }
+      }
+    ],
+    "Chest": [
+      {
+        "File": "beach_chest.png",
+        "Solid": {
+          "Width": 64,
+          "Height": 14,
+          "CenterX": 1,
+          "CenterY": -10
+        }
+      }
+    ],
+    "DuneGrass": [
+      {
+        "File": "beach_dune_grass.png"
+      }
+    ],
+    "Shells": [
+      {
+        "File": "beach_shells.png"
+      }
+    ],
+    "Starfish": [
+      {
+        "File": "beach_starfish.png"
+      }
+    ],
+    "Tidepool": [
+      {
+        "File": "beach_tidepool.png"
+      }
+    ],
+    "Coral": [
+      {
+        "File": "beach_coral.png"
+      }
+    ]
+  },
+  "DefaultKinds": [
+    "DuneGrass",
+    "Shells",
+    "Starfish",
+    "Palm",
+    "Rock",
+    "Driftwood"
+  ],
+  "Zones": [
+    {
+      "CenterX": 0.18,
+      "CenterY": 0.45,
+      "Radius": 520,
+      "Kinds": [
+        "DuneGrass",
+        "Shells",
+        "Starfish",
+        "Sandcastle",
+        "Umbrella",
+        "Palm"
+      ]
+    },
+    {
+      "CenterX": 0.6,
+      "CenterY": 0.14,
+      "Radius": 480,
+      "Kinds": [
+        "Palm",
+        "Palm",
+        "DuneGrass",
+        "Rock",
+        "Umbrella"
+      ]
+    },
+    {
+      "CenterX": 0.58,
+      "CenterY": 0.9,
+      "Radius": 480,
+      "Kinds": [
+        "Shells",
+        "Starfish",
+        "Tidepool",
+        "Driftwood",
+        "Rowboat",
+        "Rock"
+      ]
+    },
+    {
+      "CenterX": 0.41,
+      "CenterY": 0.48,
+      "Radius": 340,
+      "Kinds": [
+        "Sandcastle",
+        "Umbrella",
+        "Shells",
+        "DuneGrass"
+      ]
+    },
+    {
+      "CenterX": 0.34,
+      "CenterY": 0.9,
+      "Radius": 320,
+      "Kinds": [
+        "Starfish",
+        "Shells",
+        "Driftwood",
+        "Tidepool"
+      ]
+    },
+    {
+      "CenterX": 0.9,
+      "CenterY": 0.5,
+      "Radius": 460,
+      "Kinds": [
+        "Palm",
+        "Palm",
+        "Rock",
+        "DuneGrass",
+        "Shells"
+      ]
+    },
+    {
+      "CenterX": 0.8,
+      "CenterY": 0.78,
+      "Radius": 200,
+      "Kinds": [
+        "Chest",
+        "Shells",
+        "Shells",
+        "Shells",
+        "Starfish",
+        "Starfish",
+        "Starfish"
+      ]
+    }
+  ],
+  "ConcealmentKinds": [
+    "Palm",
+    "Rock",
+    "Driftwood"
+  ]
+}

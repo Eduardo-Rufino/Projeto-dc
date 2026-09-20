@@ -1,0 +1,102 @@
+{
+  "Id": 3,
+  "Name": "Pântano Sombrio",
+  "Description": "Um pântano de águas paradas e árvores retorcidas, um caminho alternativo que sai da Floresta Inicial. Fica além da Caverna Cristalina em dificuldade: chegar até aqui é fácil, mas os selvagens daqui são fortes demais pra quem ainda não treinou na caverna. Alguns moradores se escondem atrás das árvores e troncos.",
+  "Theme": "swamp",
+  "RequiredQuestId": 1,
+  "RecommendedLevel": 20,
+  "WildPool": [
+    91,
+    92,
+    24,
+    117,
+    6,
+    12
+  ],
+  "WildLevelMin": 18,
+  "WildLevelMax": 22,
+  "WildSpawnPoints": [
+    {
+      "X": 900,
+      "Y": 500
+    },
+    {
+      "X": 1550,
+      "Y": 700
+    },
+    {
+      "X": 1100,
+      "Y": 1400
+    },
+    {
+      "X": 2050,
+      "Y": 1600
+    },
+    {
+      "X": 2700,
+      "Y": 1650
+    },
+    {
+      "X": 2850,
+      "Y": 620
+    },
+    {
+      "X": 1300,
+      "Y": 1780
+    },
+    {
+      "X": 2450,
+      "Y": 1200
+    }
+  ],
+  "Npcs": [
+    {
+      "NpcId": 12,
+      "X": 700,
+      "Y": 1050,
+      "Hidden": false
+    },
+    {
+      "NpcId": 13,
+      "X": 2950,
+      "Y": 520,
+      "Hidden": true
+    },
+    {
+      "NpcId": 20,
+      "X": 1900,
+      "Y": 900,
+      "Hidden": false
+    }
+  ],
+  "ItemPickups": [
+    {
+      "UniqueId": 201,
+      "ItemId": 1,
+      "Quantity": 3,
+      "X": 1000,
+      "Y": 880
+    },
+    {
+      "UniqueId": 202,
+      "ItemId": 2,
+      "Quantity": 1,
+      "X": 2100,
+      "Y": 650
+    },
+    {
+      "UniqueId": 203,
+      "ItemId": 4,
+      "Quantity": 1,
+      "X": 2900,
+      "Y": 1500
+    },
+    {
+      "UniqueId": 204,
+      "ItemId": 1,
+      "Quantity": 3,
+      "X": 700,
+      "Y": 1700
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "Id": 19,
+  "Name": "Lucemon",
+  "Code": "lucemon",
+  "DialogueLines": [
+    "Shhh! Você me achou atrás das palmeiras... Eu vim só olhar o mar, ninguém devia me achar aqui.",
+    "Eu colecionava conchas antes de vir pra cá. As mais bonitas ficam com os bichos que moram na água, e eu não consigo enfrentá-los sozinho.",
+    "Se conseguir umas Conchas Peroladas pra mim, não conto pra ninguém que você me achou."
+  ],
+  "QuestId": 18,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

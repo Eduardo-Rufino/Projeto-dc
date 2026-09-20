@@ -1,0 +1,14 @@
+{
+  "Id": 15,
+  "Name": "Kotemon",
+  "Code": "kotemon",
+  "DialogueLines": [
+    "Alto lá! ...ah, é só um treinador. Desculpe, o sol cansa a vista de quem vigia essas ruínas há tanto tempo.",
+    "Preciso reforçar a minha armadura contra esse calor, e nada resiste melhor que a escama dos bichos daqui.",
+    "Traga Escamas do Deserto e eu te recompenso como um guerreiro merece."
+  ],
+  "QuestId": 16,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

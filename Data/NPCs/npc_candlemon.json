@@ -1,0 +1,14 @@
+{
+  "Id": 8,
+  "Name": "Candlemon",
+  "Code": "candlemon",
+  "DialogueLines": [
+    "Psiu... cuidado onde pisa. Essas cavernas ficam escuras de um jeito que a chama de uma vela sozinha não resolve.",
+    "Eu mantenho as lanternas da entrada acesas. Os selvagens daqui são bem mais fortes que os da floresta, e eles respeitam a luz... até certo ponto.",
+    "Ajude a manter a entrada segura e eu deixo a minha luz brilhando no seu Center também."
+  ],
+  "QuestId": 7,
+  "IsRecruitable": true,
+  "RecruitmentPerkDescription": "Aumenta a efetividade das áreas de treino específico de Ataque Especial, e os Digimon do Center passam a ter chance de ir treinar Ataque Especial sozinhos, sem precisar ser arrastados até lá.",
+  "RecruitmentTrainingAreaType": "TrainingSpecialAttack"
+}

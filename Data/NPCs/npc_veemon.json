@@ -1,0 +1,14 @@
+{
+  "Id": 22,
+  "Name": "Veemon",
+  "Code": "veemon",
+  "DialogueLines": [
+    "Ei, treinador! Você vai longe se chegou até o cânion.",
+    "Os BaoHackmon daqui são de outro nível - rápidos, fortes e teimosos. Eu sonho em ficar assim, mas ainda não tenho força pra enfrentar um.",
+    "Derrote uns BaoHackmon selvagens pra mim, e eu conto tudo o que aprendi vendo a luta de longe."
+  ],
+  "QuestId": 21,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

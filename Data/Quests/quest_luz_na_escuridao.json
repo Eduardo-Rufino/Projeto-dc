@@ -1,0 +1,13 @@
+{
+  "Id": 7,
+  "Name": "Luz na Escuridão",
+  "Description": "Derrote 3 Digimon selvagens nessa área pra manter a entrada da caverna segura pro Candlemon.",
+  "GiverNpcId": 8,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 3,
+  "RewardBits": 800,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

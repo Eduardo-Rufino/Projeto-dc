@@ -1,0 +1,13 @@
+{
+  "Id": 18,
+  "Name": "Conchas pro Lucemon",
+  "Description": "Colete 4 Conchas Peroladas (dropadas por Gomamon, Elizamon, Dimetromon e Ikkakumon selvagens derrotados) e entregue ao Lucemon.",
+  "GiverNpcId": 19,
+  "ObjectiveType": "CollectItem",
+  "ObjectiveTargetId": 9,
+  "ObjectiveCount": 4,
+  "RewardBits": 1600,
+  "RewardCapacity": 0,
+  "RewardItemId": 2,
+  "RewardItemQuantity": 2
+}

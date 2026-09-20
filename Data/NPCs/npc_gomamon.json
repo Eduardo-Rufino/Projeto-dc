@@ -1,0 +1,14 @@
+{
+  "Id": 12,
+  "Name": "Gomamon",
+  "Code": "gomamon",
+  "DialogueLines": [
+    "Cuidado com o chão, treinador - aqui a lama engole bota e paciência na mesma medida.",
+    "Esse pântano parece calmo, mas os selvagens que moram nele são bem mais fortes que os da caverna. Se você ainda não passou pela Caverna Cristalina, volte e treine antes de se meter a lutar aqui.",
+    "Se aguentar o tranco, me ajuda a manter as trilhas de tábua livres dos bichos mais agressivos."
+  ],
+  "QuestId": 11,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

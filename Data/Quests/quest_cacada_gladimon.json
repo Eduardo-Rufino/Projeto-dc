@@ -1,0 +1,13 @@
+{
+  "Id": 20,
+  "Name": "Duelo no Deserto",
+  "Description": "Derrote 2 Gladimon selvagens no deserto pro Guilmon.",
+  "GiverNpcId": 21,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 146,
+  "ObjectiveCount": 2,
+  "RewardBits": 1900,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

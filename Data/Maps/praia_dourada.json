@@ -1,0 +1,101 @@
+{
+  "Id": 6,
+  "Name": "Praia Dourada",
+  "Description": "Uma praia de areia clara com o mar logo ao sul, no fim do caminho alternativo que passa pelo Pântano Sombrio. Parece tranquila, mas os selvagens daqui são mais fortes que os do pântano - só dá pra caminhar até a beira da água. Alguns moradores se escondem atrás das palmeiras e pedras.",
+  "Theme": "beach",
+  "RequiredQuestId": 11,
+  "RecommendedLevel": 24,
+  "WildPool": [
+    65,
+    84,
+    103,
+    85,
+    66
+  ],
+  "WildLevelMin": 22,
+  "WildLevelMax": 26,
+  "WildSpawnPoints": [
+    {
+      "X": 900,
+      "Y": 450
+    },
+    {
+      "X": 1550,
+      "Y": 650
+    },
+    {
+      "X": 1100,
+      "Y": 1150
+    },
+    {
+      "X": 2000,
+      "Y": 1200
+    },
+    {
+      "X": 2700,
+      "Y": 1150
+    },
+    {
+      "X": 2780,
+      "Y": 620
+    },
+    {
+      "X": 1350,
+      "Y": 1200
+    },
+    {
+      "X": 2450,
+      "Y": 1000
+    }
+  ],
+  "Npcs": [
+    {
+      "NpcId": 18,
+      "X": 700,
+      "Y": 1050,
+      "Hidden": false
+    },
+    {
+      "NpcId": 19,
+      "X": 2950,
+      "Y": 520,
+      "Hidden": true
+    },
+    {
+      "NpcId": 23,
+      "X": 1800,
+      "Y": 950,
+      "Hidden": false
+    }
+  ],
+  "ItemPickups": [
+    {
+      "UniqueId": 501,
+      "ItemId": 1,
+      "Quantity": 3,
+      "X": 1000,
+      "Y": 880
+    },
+    {
+      "UniqueId": 502,
+      "ItemId": 2,
+      "Quantity": 1,
+      "X": 2100,
+      "Y": 650
+    },
+    {
+      "UniqueId": 503,
+      "ItemId": 4,
+      "Quantity": 1,
+      "X": 2900,
+      "Y": 1200
+    },
+    {
+      "UniqueId": 504,
+      "ItemId": 1,
+      "Quantity": 3,
+      "X": 700,
+      "Y": 1180
+    }
+  ]
+}

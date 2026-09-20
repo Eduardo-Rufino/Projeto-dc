@@ -26,6 +26,8 @@ namespace ProjetoDC.Scripts.Gameplay
 
         private Node2D _spawnsContainer;
         private Polygon2D _boundary;
+        private ColorRect _background;
+        private AreaThemeData _theme;
         private Marker2D _explorerSpawnPoint;
         private Camera2D _camera;
 
@@ -38,6 +40,10 @@ namespace ProjetoDC.Scripts.Gameplay
         private Label _mapNameLabel;
 
         private ExplorationMapData _map;
+
+        // Y local do Boundary além do qual é mar (só existe em tema com orla - ver
+        // AreaThemeData.ShoreTexture); IsPointInsideBoundary trata como fora do mapa.
+        private float? _walkLimitY;
         private DigimonInstance _explorer;
         private ExplorationDigimon _explorerVisual;
 
@@ -46,6 +52,7 @@ namespace ProjetoDC.Scripts.Gameplay
             _camera = GetNode<Camera2D>("Camera2D");
 
             _boundary = GetNode<Polygon2D>("Boundary");
+            _background = GetNode<ColorRect>("BackgroundLayer/Background");
             _spawnsContainer = GetNode<Node2D>("SpawnsContainer");
             _explorerSpawnPoint = GetNode<Marker2D>("ExplorerSpawnPoint");
 
@@ -80,10 +87,15 @@ namespace ProjetoDC.Scripts.Gameplay
 
             _mapNameLabel.Text = map.Name;
 
+            _theme = DatabaseManager.Instance.GetAreaTheme(map.Theme);
+            ApplyThemeGround();
+            ApplyShoreline();
+
             // Decorações primeiro: são adicionadas antes de tudo em SpawnsContainer, então
             // desenham por baixo do explorador/selvagens/NPCs/itens (mesma irmã mais velha
             // desenha atrás - sem precisar mexer em z_index pra isso).
             SpawnDecorations();
+            SpawnSeaDecorations();
             SpawnConcealmentRings();
 
             SpawnExplorer();
@@ -97,7 +109,12 @@ namespace ProjetoDC.Scripts.Gameplay
             if (_boundary == null)
                 return true;
 
-            return Geometry2D.IsPointInPolygon(_boundary.ToLocal(globalPosition), _boundary.Polygon);
+            Vector2 local = _boundary.ToLocal(globalPosition);
+
+            if (_walkLimitY.HasValue && local.Y > _walkLimitY.Value)
+                return false;
+
+            return Geometry2D.IsPointInPolygon(local, _boundary.Polygon);
         }
 
         private void SpawnExplorer()
@@ -164,98 +181,157 @@ namespace ProjetoDC.Scripts.Gameplay
             return new Rect2(min, max - min);
         }
 
-        // Quantidade de elementos de cenário (árvore/grama/flor/cogumelo/pedra/arbusto)
-        // espalhados pelo mapa - só pra variar visualmente o chão verde chapado, dar noção
-        // real de progresso andando. Sem colisão, puramente decorativo (exceto Árvore/Pedra,
-        // ver ForestDecoration). Escalado junto com o tamanho do Boundary (3400x2200) pra
-        // manter a mesma densidade visual de antes (2600x1800/130).
-        private const int DecorationCount = 210;
-
         // Não nasce nenhuma decoração mais perto que isso de um ponto de interesse (spawn do
         // explorador, selvagem, NPC ou item) - evita tampar visualmente o que importa.
         private const float DecorationMinDistanceFromPoints = 70f;
 
-        // Repetido = mais chance de sortear dentro da zona. Mesmo espírito de "densidade de
-        // floresta" de antes, só que agora dividido em biomas (ver DecorationZones) ao invés
-        // de um único mix uniforme pro mapa inteiro - dá uma composição com lógica de lugar
-        // real (clareira aberta perto da entrada, bosque denso escondendo os cantos de
-        // treino, afloramento de pedra no meio) em vez de decoração espalhada sem critério.
-        private static readonly ForestDecorationKind[] DefaultDecorationKinds =
+        /// <summary>Aplica o chão do tema: a textura ladrilhada em todo o Boundary (ver
+        /// AreaThemeData.GroundTexture) ou, sem ela, a cor sólida - vazio no tema = mantém a
+        /// cor padrão da cena, que é a da floresta. O fundo (fora do mapa) só aparece se a
+        /// câmera sair dos limites, então continua sendo uma cor.</summary>
+        private void ApplyThemeGround()
         {
-            ForestDecorationKind.Grass,
-            ForestDecorationKind.Grass,
-            ForestDecorationKind.Grass,
-            ForestDecorationKind.Flower,
-            ForestDecorationKind.Flower,
-            ForestDecorationKind.Tree,
-            ForestDecorationKind.Tree,
-            ForestDecorationKind.Mushroom,
-            ForestDecorationKind.Rock,
-            ForestDecorationKind.Bush,
-        };
+            if (!string.IsNullOrEmpty(_theme.BackgroundColor))
+                _background.Color = Color.FromHtml(_theme.BackgroundColor);
 
-        /// <summary>Bioma com composição de decoração própria - centro em fração (0..1) do
-        /// retângulo de Boundary (não pixel fixo), pra funcionar em mapas de tamanhos
-        /// diferentes mantendo a mesma disposição relativa.</summary>
-        private readonly struct DecorationZone
-        {
-            public readonly Vector2 FractionalCenter;
-            public readonly float Radius;
-            public readonly ForestDecorationKind[] Kinds;
-
-            public DecorationZone(Vector2 fractionalCenter, float radius, ForestDecorationKind[] kinds)
+            if (!string.IsNullOrEmpty(_theme.GroundTexture))
             {
-                FractionalCenter = fractionalCenter;
-                Radius = radius;
-                Kinds = kinds;
+                var texture = GD.Load<Texture2D>(_theme.Folder + _theme.GroundTexture);
+
+                if (texture != null)
+                {
+                    _boundary.Texture = texture;
+
+                    // Polygon2D lê a textura pelo UV, em pixels dela - usar as próprias
+                    // coordenadas do polígono como UV faz 1 pixel da imagem = 1 unidade do
+                    // mundo, ladrilhando a partir da origem do mapa.
+                    _boundary.UV = (Vector2[])_boundary.Polygon.Clone();
+                    _boundary.TextureRepeat = CanvasItem.TextureRepeatEnum.Enabled;
+                    _boundary.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+
+                    // A cor do Polygon2D multiplica a textura - branco = sem tingir.
+                    _boundary.Color = Colors.White;
+
+                    return;
+                }
+
+                GD.PrintErr($"Textura de chão não encontrada: {_theme.Folder}{_theme.GroundTexture}");
+            }
+
+            if (!string.IsNullOrEmpty(_theme.GroundColor))
+                _boundary.Color = Color.FromHtml(_theme.GroundColor);
+        }
+
+        /// <summary>Monta a praia por cima do chão de areia (o Boundary continua sendo o
+        /// retângulo todo, que a câmera usa como limite): a faixa da orla e, abaixo dela, o mar
+        /// até o fim do mapa. Ver AreaThemeData.ShoreTexture.</summary>
+        private void ApplyShoreline()
+        {
+            _walkLimitY = null;
+
+            if (!_theme.HasShoreline)
+                return;
+
+            Rect2? bounds = GetBoundaryBounds();
+            var shore = GD.Load<Texture2D>(_theme.Folder + _theme.ShoreTexture);
+            var sea = GD.Load<Texture2D>(_theme.Folder + _theme.SeaTexture);
+
+            if (bounds == null || shore == null || sea == null)
+            {
+                GD.PrintErr($"Orla do tema '{_theme.Id}' incompleta: sem texturas/limites, o mar não foi montado.");
+                return;
+            }
+
+            float left = bounds.Value.Position.X;
+            float right = bounds.Value.End.X;
+            float shoreTop = bounds.Value.Position.Y + _theme.ShoreLine * bounds.Value.Size.Y;
+            float seaTop = shoreTop + shore.GetHeight();
+
+            _walkLimitY = _theme.GetWalkLimitY(bounds.Value.Position.Y, bounds.Value.Size.Y);
+
+            // Logo depois do Boundary na árvore: desenha por cima da areia e por baixo de tudo
+            // que vai em SpawnsContainer.
+            int index = _boundary.GetIndex() + 1;
+
+            var shoreStrip = CreateGroundStrip(shore, left, right, shoreTop, seaTop);
+            AddChild(shoreStrip);
+            MoveChild(shoreStrip, index);
+
+            var seaStrip = CreateGroundStrip(sea, left, right, seaTop, bounds.Value.End.Y);
+            AddChild(seaStrip);
+            MoveChild(seaStrip, index + 1);
+        }
+
+        /// <summary>Faixa retangular ladrilhada: 1 pixel da imagem = 1 unidade do mundo, com o
+        /// canto de cima-esquerda da faixa como origem da textura (assim a faixa da orla começa
+        /// exatamente no topo da imagem, sem cortar a onda).</summary>
+        private static Polygon2D CreateGroundStrip(Texture2D texture, float left, float right, float top, float bottom)
+        {
+            var points = new[]
+            {
+                new Vector2(left, top), new Vector2(right, top),
+                new Vector2(right, bottom), new Vector2(left, bottom),
+            };
+
+            var uv = new Vector2[points.Length];
+
+            for (int i = 0; i < points.Length; i++)
+                uv[i] = points[i] - new Vector2(left, top);
+
+            return new Polygon2D
+            {
+                Polygon = points,
+                UV = uv,
+                Texture = texture,
+                TextureRepeat = CanvasItem.TextureRepeatEnum.Enabled,
+                TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+                Color = Colors.White,
+            };
+        }
+
+        /// <summary>Área onde dá pra pisar: o Boundary, cortado no limite de caminhada quando
+        /// há mar. Decorações de terra e as zonas (frações) usam esse retângulo.</summary>
+        private Rect2? GetLandBounds()
+        {
+            Rect2? bounds = GetBoundaryBounds();
+
+            if (bounds == null || !_walkLimitY.HasValue)
+                return bounds;
+
+            var b = bounds.Value;
+            return new Rect2(b.Position, new Vector2(b.Size.X, _walkLimitY.Value - b.Position.Y));
+        }
+
+        /// <summary>Decoração só visual dentro do mar (coral, barco...), longe da faixa da onda.</summary>
+        private void SpawnSeaDecorations()
+        {
+            Rect2? bounds = GetBoundaryBounds();
+
+            if (bounds == null || !_theme.HasShoreline || _theme.SeaKinds.Count == 0)
+                return;
+
+            var shore = GD.Load<Texture2D>(_theme.Folder + _theme.ShoreTexture);
+            float top = bounds.Value.Position.Y + _theme.ShoreLine * bounds.Value.Size.Y + shore.GetHeight() + 90f;
+            float bottom = bounds.Value.End.Y - 10f;
+
+            if (bottom <= top)
+                return;
+
+            for (int i = 0; i < _theme.SeaDecorationCount; i++)
+            {
+                var position = new Vector2(
+                    bounds.Value.Position.X + 80f + (float)_random.NextDouble() * (bounds.Value.Size.X - 160f),
+                    top + (float)_random.NextDouble() * (bottom - top));
+
+                var decoration = new AreaDecoration { Position = position };
+                decoration.SetKind(_theme, _theme.SeaKinds[_random.Next(_theme.SeaKinds.Count)], _random);
+                _spawnsContainer.AddChild(decoration);
             }
         }
 
-        // Biomas fixos da Floresta Inicial (ver Data/Maps/floresta_inicial.json pro layout de
-        // NPCs/selvagens que essa disposição foi pensada pra combinar): clareira aberta perto
-        // da entrada (oeste), bosque denso ao norte escondendo o canto de treino de Ataque,
-        // moita espinhenta ao sul escondendo o canto de treino de Defesa, afloramento de
-        // pedra no centro, recanto fechado ao sul-centro, e o bosque mais denso e mais
-        // distante da entrada a leste. Decoração fora do raio de toda zona cai no mix
-        // DefaultDecorationKinds (trilha/transição entre biomas).
-        private static readonly DecorationZone[] DecorationZones =
-        {
-            new(new Vector2(0.18f, 0.45f), 520f, new[]
-            {
-                ForestDecorationKind.Grass, ForestDecorationKind.Grass, ForestDecorationKind.Grass,
-                ForestDecorationKind.Flower, ForestDecorationKind.Flower, ForestDecorationKind.Flower,
-                ForestDecorationKind.Bush,
-            }),
-            new(new Vector2(0.6f, 0.14f), 480f, new[]
-            {
-                ForestDecorationKind.Tree, ForestDecorationKind.Tree, ForestDecorationKind.Tree,
-                ForestDecorationKind.Tree, ForestDecorationKind.Bush, ForestDecorationKind.Mushroom,
-            }),
-            new(new Vector2(0.58f, 0.87f), 480f, new[]
-            {
-                ForestDecorationKind.Bush, ForestDecorationKind.Bush, ForestDecorationKind.Bush,
-                ForestDecorationKind.Bush, ForestDecorationKind.Tree, ForestDecorationKind.Grass,
-            }),
-            new(new Vector2(0.41f, 0.48f), 340f, new[]
-            {
-                ForestDecorationKind.Rock, ForestDecorationKind.Rock, ForestDecorationKind.Mushroom,
-                ForestDecorationKind.Mushroom, ForestDecorationKind.Grass,
-            }),
-            new(new Vector2(0.34f, 0.82f), 320f, new[]
-            {
-                ForestDecorationKind.Tree, ForestDecorationKind.Bush, ForestDecorationKind.Bush,
-                ForestDecorationKind.Mushroom,
-            }),
-            new(new Vector2(0.9f, 0.52f), 460f, new[]
-            {
-                ForestDecorationKind.Tree, ForestDecorationKind.Tree, ForestDecorationKind.Tree,
-                ForestDecorationKind.Tree, ForestDecorationKind.Tree, ForestDecorationKind.Bush,
-            }),
-        };
-
         private void SpawnDecorations()
         {
-            Rect2? bounds = GetBoundaryBounds();
+            Rect2? bounds = GetLandBounds();
 
             if (bounds == null)
                 return;
@@ -271,7 +347,7 @@ namespace ProjetoDC.Scripts.Gameplay
             foreach (var pickup in _map.ItemPickups)
                 pointsToAvoid.Add(new Vector2(pickup.X, pickup.Y));
 
-            for (int i = 0; i < DecorationCount; i++)
+            for (int i = 0; i < _theme.DecorationCount; i++)
             {
                 Vector2? position = FindDecorationPosition(bounds.Value, pointsToAvoid);
 
@@ -280,28 +356,33 @@ namespace ProjetoDC.Scripts.Gameplay
 
                 var kinds = PickDecorationKindsFor(position.Value, bounds.Value);
 
-                var decoration = new ForestDecoration { Position = position.Value };
+                if (kinds.Count == 0)
+                    continue;
 
-                decoration.SetKind(kinds[_random.Next(kinds.Length)], _random);
+                var decoration = new AreaDecoration { Position = position.Value };
 
-                float scale = 0.85f + (float)_random.NextDouble() * 0.4f;
+                decoration.SetKind(_theme, kinds[_random.Next(kinds.Count)], _random);
+
+                float scale = _theme.ScaleMin + (float)_random.NextDouble() * (_theme.ScaleMax - _theme.ScaleMin);
                 decoration.Scale = new Vector2(scale, scale);
 
                 _spawnsContainer.AddChild(decoration);
             }
         }
 
-        private ForestDecorationKind[] PickDecorationKindsFor(Vector2 position, Rect2 bounds)
+        /// <summary>Mix de tipos da zona (bioma) que contém a posição, ou o mix padrão do tema
+        /// (trilha/transição entre biomas) se ela cair fora de todas.</summary>
+        private List<string> PickDecorationKindsFor(Vector2 position, Rect2 bounds)
         {
-            foreach (var zone in DecorationZones)
+            foreach (var zone in _theme.Zones)
             {
-                Vector2 center = bounds.Position + zone.FractionalCenter * bounds.Size;
+                Vector2 center = bounds.Position + new Vector2(zone.CenterX, zone.CenterY) * bounds.Size;
 
                 if (position.DistanceTo(center) <= zone.Radius)
                     return zone.Kinds;
             }
 
-            return DefaultDecorationKinds;
+            return _theme.DefaultKinds;
         }
 
         // Quantos elementos formam o cerco ao redor de um NPC "Hidden" (ver
@@ -322,11 +403,6 @@ namespace ProjetoDC.Scripts.Gameplay
         // pretendido pra esse NPC.
         private const float MaxGuardDistance = 260f;
 
-        private static readonly ForestDecorationKind[] ConcealmentKinds =
-        {
-            ForestDecorationKind.Tree, ForestDecorationKind.Tree, ForestDecorationKind.Bush,
-        };
-
         /// <summary>
         /// Planta um cerco fixo de árvore/arbusto ao redor de cada NPC marcado Hidden -
         /// diferente da decoração comum (SpawnDecorations), que só evita nascer perto de
@@ -336,6 +412,9 @@ namespace ProjetoDC.Scripts.Gameplay
         /// </summary>
         private void SpawnConcealmentRings()
         {
+            if (_theme.ConcealmentKinds.Count == 0)
+                return;
+
             foreach (var npcSpawn in _map.Npcs)
             {
                 if (!npcSpawn.Hidden)
@@ -354,9 +433,9 @@ namespace ProjetoDC.Scripts.Gameplay
 
                     var position = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * ConcealmentRingRadius;
 
-                    var decoration = new ForestDecoration { Position = position };
+                    var decoration = new AreaDecoration { Position = position };
 
-                    decoration.SetKind(ConcealmentKinds[_random.Next(ConcealmentKinds.Length)], _random);
+                    decoration.SetKind(_theme, _theme.ConcealmentKinds[_random.Next(_theme.ConcealmentKinds.Count)], _random);
 
                     float scale = 0.9f + (float)_random.NextDouble() * 0.3f;
                     decoration.Scale = new Vector2(scale, scale);

@@ -1,7 +1,7 @@
 {
   "Id": 4,
-  "Name": "Chifres pro Impmon",
-  "Description": "Colete 2 Chifres de Gabumon (dropados por Gabumon selvagens derrotados) e entregue ao Impmon.",
+  "Name": "Folhas pro Impmon",
+  "Description": "Colete 2 Folhas da Floresta (dropadas pelos Digimon selvagens da floresta derrotados) e entregue ao Impmon.",
   "GiverNpcId": 4,
   "ObjectiveType": "CollectItem",
   "ObjectiveTargetId": 3,

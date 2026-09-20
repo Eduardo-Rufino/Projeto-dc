@@ -1,0 +1,14 @@
+{
+  "Id": 26,
+  "Name": "Renamon",
+  "Code": "renamon",
+  "DialogueLines": [
+    "Hm. Você não tem cara de quem se assusta fácil. Bom.",
+    "Eu treino aqui porque quero evoluir, e nada me mostra o caminho como os Kyubimon selvagens. Mas sozinha eu apenas perco.",
+    "Derrote uns Kyubimon selvagens e eu aprendo com a luta de longe."
+  ],
+  "QuestId": 25,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

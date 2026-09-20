@@ -1,0 +1,13 @@
+{
+  "Id": 12,
+  "Name": "Ventos do Deserto",
+  "Description": "Derrote 4 Digimon selvagens nessa área pra limpar o caminho em volta das ruínas pro Pteromon.",
+  "GiverNpcId": 14,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 4,
+  "RewardBits": 1500,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

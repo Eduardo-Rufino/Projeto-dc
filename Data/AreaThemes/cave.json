@@ -1,0 +1,221 @@
+{
+  "Id": "cave",
+  "Folder": "res://Assets/Areas/Cave/",
+  "GroundTexture": "ground_cave.png",
+  "BackgroundColor": "#15171f",
+  "GroundColor": "#2c303d",
+  "DecorationCount": 190,
+  "ScaleMin": 0.85,
+  "ScaleMax": 1.2,
+  "Variants": {
+    "Stalagmite": [
+      {
+        "File": "cave_stalagmite_big.png",
+        "Solid": {
+          "Width": 44,
+          "Height": 14,
+          "CenterX": 3,
+          "CenterY": -12
+        }
+      },
+      {
+        "File": "cave_stalagmite_small.png",
+        "Solid": {
+          "Width": 26,
+          "Height": 12,
+          "CenterX": 1,
+          "CenterY": -8
+        }
+      },
+      {
+        "File": "cave_column.png",
+        "Solid": {
+          "Width": 36,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -14
+        }
+      }
+    ],
+    "Crystal": [
+      {
+        "File": "cave_crystal_blue.png",
+        "Solid": {
+          "Width": 40,
+          "Height": 14,
+          "CenterX": 2,
+          "CenterY": -12
+        }
+      },
+      {
+        "File": "cave_crystal_green.png",
+        "Solid": {
+          "Width": 40,
+          "Height": 14,
+          "CenterX": 2,
+          "CenterY": -12
+        }
+      },
+      {
+        "File": "cave_crystal_purple.png",
+        "Solid": {
+          "Width": 40,
+          "Height": 14,
+          "CenterX": 2,
+          "CenterY": -12
+        }
+      }
+    ],
+    "Boulder": [
+      {
+        "File": "cave_boulder.png",
+        "Solid": {
+          "Width": 50,
+          "Height": 14,
+          "CenterX": 1,
+          "CenterY": -12
+        }
+      },
+      {
+        "File": "cave_ore_gold.png",
+        "Solid": {
+          "Width": 44,
+          "Height": 14,
+          "CenterX": -2,
+          "CenterY": -11
+        }
+      }
+    ],
+    "Lantern": [
+      {
+        "File": "cave_lantern.png",
+        "Solid": {
+          "Width": 14,
+          "Height": 10,
+          "CenterX": -23,
+          "CenterY": -7
+        }
+      }
+    ],
+    "SmallCrystal": [
+      {
+        "File": "cave_crystal_small_blue.png"
+      },
+      {
+        "File": "cave_crystal_small_purple.png"
+      }
+    ],
+    "Glow": [
+      {
+        "File": "cave_glow_mushroom.png"
+      }
+    ],
+    "Debris": [
+      {
+        "File": "cave_rubble.png"
+      },
+      {
+        "File": "cave_bones.png"
+      },
+      {
+        "File": "cave_puddle.png"
+      }
+    ]
+  },
+  "DefaultKinds": [
+    "Debris",
+    "Debris",
+    "Debris",
+    "SmallCrystal",
+    "SmallCrystal",
+    "Stalagmite",
+    "Stalagmite",
+    "Glow",
+    "Boulder",
+    "Crystal"
+  ],
+  "Zones": [
+    {
+      "CenterX": 0.18,
+      "CenterY": 0.45,
+      "Radius": 520,
+      "Kinds": [
+        "Debris",
+        "Debris",
+        "Debris",
+        "Glow",
+        "Glow",
+        "SmallCrystal",
+        "Lantern"
+      ]
+    },
+    {
+      "CenterX": 0.6,
+      "CenterY": 0.14,
+      "Radius": 480,
+      "Kinds": [
+        "Crystal",
+        "Crystal",
+        "Crystal",
+        "SmallCrystal",
+        "SmallCrystal",
+        "Glow",
+        "Stalagmite"
+      ]
+    },
+    {
+      "CenterX": 0.58,
+      "CenterY": 0.87,
+      "Radius": 480,
+      "Kinds": [
+        "Stalagmite",
+        "Stalagmite",
+        "Stalagmite",
+        "Stalagmite",
+        "Boulder",
+        "Debris"
+      ]
+    },
+    {
+      "CenterX": 0.41,
+      "CenterY": 0.48,
+      "Radius": 340,
+      "Kinds": [
+        "Boulder",
+        "Boulder",
+        "Debris",
+        "Debris",
+        "SmallCrystal"
+      ]
+    },
+    {
+      "CenterX": 0.34,
+      "CenterY": 0.82,
+      "Radius": 320,
+      "Kinds": [
+        "Glow",
+        "Glow",
+        "Stalagmite",
+        "Debris"
+      ]
+    },
+    {
+      "CenterX": 0.9,
+      "CenterY": 0.52,
+      "Radius": 460,
+      "Kinds": [
+        "Stalagmite",
+        "Stalagmite",
+        "Stalagmite",
+        "Crystal",
+        "Crystal",
+        "Boulder"
+      ]
+    }
+  ],
+  "ConcealmentKinds": [
+    "Stalagmite",
+    "Stalagmite",
+    "Crystal"
+  ]
+}

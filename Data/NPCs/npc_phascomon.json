@@ -1,0 +1,14 @@
+{
+  "Id": 11,
+  "Name": "Phascomon",
+  "Code": "phascomon",
+  "DialogueLines": [
+    "Shh... escuta. Essa caverna sussurra pra quem fica quieto tempo suficiente.",
+    "Eu aprendi a resistir ao que nem o corpo nem a pedra aguentam. Prove que sabe proteger os seus dos ataques que vêm de longe, e eu te ensino.",
+    "Afaste alguns selvagens daqui e considere isso feito."
+  ],
+  "QuestId": 10,
+  "IsRecruitable": true,
+  "RecruitmentPerkDescription": "Aumenta a efetividade das áreas de treino específico de Defesa Especial, e os Digimon do Center passam a ter chance de ir treinar Defesa Especial sozinhos, sem precisar ser arrastados até lá.",
+  "RecruitmentTrainingAreaType": "TrainingSpecialDefense"
+}

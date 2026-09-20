@@ -1,0 +1,14 @@
+{
+  "Id": 16,
+  "Name": "Dorumon",
+  "Code": "dorumon",
+  "DialogueLines": [
+    "Cuidado com as bordas, treinador - o vento aqui puxa mais do que parece.",
+    "Esse cânion é o lugar mais duro que eu já cruzei. Os selvagens de cá derrubam Digimon que se achavam prontos, então não subestime nenhum deles.",
+    "Se você aguentar o ritmo, me ajuda a abrir caminho entre os paredões."
+  ],
+  "QuestId": 13,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

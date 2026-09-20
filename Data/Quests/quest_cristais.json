@@ -1,0 +1,13 @@
+{
+  "Id": 9,
+  "Name": "Cristais pro Sunarizamon",
+  "Description": "Colete 3 Cristais de Caverna (dropados por Sunarizamon e Phascomon selvagens derrotados) e entregue ao Sunarizamon.",
+  "GiverNpcId": 10,
+  "ObjectiveType": "CollectItem",
+  "ObjectiveTargetId": 5,
+  "ObjectiveCount": 3,
+  "RewardBits": 900,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

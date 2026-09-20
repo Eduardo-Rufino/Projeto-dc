@@ -49,6 +49,15 @@ namespace ProjetoDC.Scripts.Data
         public string Description { get; set; }
         public int RecommendedLevel { get; set; }
 
+        /// <summary>Tema visual da área (ver AreaThemeData / Data/AreaThemes/) - "forest" por
+        /// padrão, o que mantém os mapas antigos sem esse campo exatamente como eram.</summary>
+        public string Theme { get; set; } = "forest";
+
+        /// <summary>Se preenchido, a área só abre depois que o jogador concluir essa quest (id em
+        /// Data/Quests) - é como uma área nova é liberada pela progressão (ver
+        /// GameManager.IsExplorationMapUnlocked). Null = sempre disponível.</summary>
+        public int? RequiredQuestId { get; set; }
+
         public List<int> WildPool { get; set; } = new();
         public int WildLevelMin { get; set; } = 1;
         public int WildLevelMax { get; set; } = 1;

@@ -27,13 +27,20 @@ namespace ProjetoDC.Scripts.UI
             _enterButton.Pressed += () => Entered?.Invoke(_map);
         }
 
-        public void SetMap(ExplorationMapData map)
+        /// <param name="lockReason">Se não for null, a área está bloqueada: o botão fica
+        /// desativado e o motivo aparece embaixo da descrição.</param>
+        public void SetMap(ExplorationMapData map, string lockReason = null)
         {
             _map = map;
 
+            bool locked = lockReason != null;
+
             _nameLabel.Text = map.Name;
             _levelLabel.Text = $"Nível recomendado: {map.RecommendedLevel}";
-            _descriptionLabel.Text = map.Description;
+            _descriptionLabel.Text = locked ? $"{map.Description}\n\n🔒 {lockReason}" : map.Description;
+
+            _enterButton.Disabled = locked;
+            _enterButton.Text = locked ? "Bloqueada" : "Entrar";
         }
     }
 }

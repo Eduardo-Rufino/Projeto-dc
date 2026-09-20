@@ -1,0 +1,6 @@
+{
+  "Id": 3,
+  "Name": "Folha da Floresta",
+  "Description": "Uma folha larga e resistente que cai das árvores da Floresta Inicial. Às vezes encontrada depois de um combate contra um Digimon selvagem da floresta. Usada por NPCs em algumas quests.",
+  "IconPath": "res://Assets/Sprites/Itens/item_folha_floresta.png"
+}

@@ -1,0 +1,14 @@
+{
+  "Id": 17,
+  "Name": "Gladimon",
+  "Code": "gladimon",
+  "DialogueLines": [
+    "Hm. Você me achou atrás da coluna. Poucos têm essa paciência.",
+    "Treino aqui nas pedras porque o eco devolve cada golpe mais alto. Estou reunindo pedaços de fóssil dos paredões - a forma como o osso quebra me ensina onde um golpe pesa mais.",
+    "Traga Fragmentos de Fóssil e eu te pago pelo trabalho."
+  ],
+  "QuestId": 17,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}

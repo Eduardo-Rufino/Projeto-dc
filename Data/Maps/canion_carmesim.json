@@ -1,0 +1,104 @@
+{
+  "Id": 5,
+  "Name": "Cânion Carmesim",
+  "Description": "Um cânion de paredões vermelhos, arcos de pedra e fósseis, além do Deserto Escaldante. É a área mais perigosa até agora - os selvagens daqui são campeões fortes, então só se aventure com um Digimon muito bem treinado. Alguns moradores se escondem atrás das colunas e paredões.",
+  "Theme": "canyon",
+  "RequiredQuestId": 12,
+  "RecommendedLevel": 32,
+  "WildPool": [
+    140,
+    130,
+    164,
+    191,
+    198,
+    79,
+    136,
+    150
+  ],
+  "WildLevelMin": 30,
+  "WildLevelMax": 34,
+  "WildSpawnPoints": [
+    {
+      "X": 900,
+      "Y": 520
+    },
+    {
+      "X": 1550,
+      "Y": 680
+    },
+    {
+      "X": 1100,
+      "Y": 1380
+    },
+    {
+      "X": 2050,
+      "Y": 1650
+    },
+    {
+      "X": 2700,
+      "Y": 1700
+    },
+    {
+      "X": 2800,
+      "Y": 640
+    },
+    {
+      "X": 1300,
+      "Y": 1800
+    },
+    {
+      "X": 2450,
+      "Y": 1220
+    }
+  ],
+  "Npcs": [
+    {
+      "NpcId": 16,
+      "X": 700,
+      "Y": 1080,
+      "Hidden": false
+    },
+    {
+      "NpcId": 17,
+      "X": 2900,
+      "Y": 600,
+      "Hidden": true
+    },
+    {
+      "NpcId": 22,
+      "X": 1750,
+      "Y": 1000,
+      "Hidden": false
+    }
+  ],
+  "ItemPickups": [
+    {
+      "UniqueId": 401,
+      "ItemId": 1,
+      "Quantity": 3,
+      "X": 1000,
+      "Y": 900
+    },
+    {
+      "UniqueId": 402,
+      "ItemId": 2,
+      "Quantity": 1,
+      "X": 2100,
+      "Y": 640
+    },
+    {
+      "UniqueId": 403,
+      "ItemId": 4,
+      "Quantity": 1,
+      "X": 2900,
+      "Y": 1480
+    },
+    {
+      "UniqueId": 404,
+      "ItemId": 1,
+      "Quantity": 3,
+      "X": 720,
+      "Y": 1720
+    }
+  ]
+}

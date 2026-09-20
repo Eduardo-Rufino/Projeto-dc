@@ -1,0 +1,13 @@
+{
+  "Id": 8,
+  "Name": "Prove seu Valor (Velocidade)",
+  "Description": "Derrote 3 Digimon selvagens nessa área pra mostrar ao Stingmon que aguenta o ritmo da caverna.",
+  "GiverNpcId": 9,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 3,
+  "RewardBits": 700,
+  "RewardCapacity": 0,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

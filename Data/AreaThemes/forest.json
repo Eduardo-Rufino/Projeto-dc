@@ -1,0 +1,174 @@
+{
+  "Id": "forest",
+  "Folder": "res://Assets/Areas/Forest/",
+  "GroundTexture": "ground_forest.png",
+  "DecorationCount": 210,
+  "ScaleMin": 0.85,
+  "ScaleMax": 1.25,
+  "Variants": {
+    "Tree": [
+      {
+        "File": "forest_tree_oak.png",
+        "Solid": {
+          "Width": 24,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -15
+        }
+      },
+      {
+        "File": "forest_tree_palm.png",
+        "Solid": {
+          "Width": 16,
+          "Height": 14,
+          "CenterX": -2,
+          "CenterY": -15
+        }
+      },
+      {
+        "File": "forest_tree_pine.png",
+        "Solid": {
+          "Width": 18,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -16
+        }
+      }
+    ],
+    "Grass": [
+      {
+        "File": "grass_small.png"
+      },
+      {
+        "File": "grass_big.png"
+      }
+    ],
+    "Flower": [
+      {
+        "File": "flower_white.png"
+      },
+      {
+        "File": "flower_red.png"
+      },
+      {
+        "File": "flower_blue.png"
+      }
+    ],
+    "Mushroom": [
+      {
+        "File": "forest_mushroom.png"
+      }
+    ],
+    "Rock": [
+      {
+        "File": "forest_rock.png",
+        "Solid": {
+          "Width": 38,
+          "Height": 14,
+          "CenterX": 0,
+          "CenterY": -11
+        }
+      }
+    ],
+    "Bush": [
+      {
+        "File": "forest_bush.png"
+      }
+    ]
+  },
+  "DefaultKinds": [
+    "Grass",
+    "Grass",
+    "Grass",
+    "Flower",
+    "Flower",
+    "Tree",
+    "Tree",
+    "Mushroom",
+    "Rock",
+    "Bush"
+  ],
+  "Zones": [
+    {
+      "CenterX": 0.18,
+      "CenterY": 0.45,
+      "Radius": 520,
+      "Kinds": [
+        "Grass",
+        "Grass",
+        "Grass",
+        "Flower",
+        "Flower",
+        "Flower",
+        "Bush"
+      ]
+    },
+    {
+      "CenterX": 0.6,
+      "CenterY": 0.14,
+      "Radius": 480,
+      "Kinds": [
+        "Tree",
+        "Tree",
+        "Tree",
+        "Tree",
+        "Bush",
+        "Mushroom"
+      ]
+    },
+    {
+      "CenterX": 0.58,
+      "CenterY": 0.87,
+      "Radius": 480,
+      "Kinds": [
+        "Bush",
+        "Bush",
+        "Bush",
+        "Bush",
+        "Tree",
+        "Grass"
+      ]
+    },
+    {
+      "CenterX": 0.41,
+      "CenterY": 0.48,
+      "Radius": 340,
+      "Kinds": [
+        "Rock",
+        "Rock",
+        "Mushroom",
+        "Mushroom",
+        "Grass"
+      ]
+    },
+    {
+      "CenterX": 0.34,
+      "CenterY": 0.82,
+      "Radius": 320,
+      "Kinds": [
+        "Tree",
+        "Bush",
+        "Bush",
+        "Mushroom"
+      ]
+    },
+    {
+      "CenterX": 0.9,
+      "CenterY": 0.52,
+      "Radius": 460,
+      "Kinds": [
+        "Tree",
+        "Tree",
+        "Tree",
+        "Tree",
+        "Tree",
+        "Bush"
+      ]
+    }
+  ],
+  "ConcealmentKinds": [
+    "Tree",
+    "Tree",
+    "Bush"
+  ]
+}

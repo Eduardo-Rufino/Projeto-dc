@@ -1,0 +1,14 @@
+{
+  "Id": 21,
+  "Name": "Guilmon",
+  "Code": "guilmon",
+  "DialogueLines": [
+    "Grrr... Esse calor me dá fome de luta. E o Gladimon selvagem daqui é o único que aguenta o meu ritmo.",
+    "Só que ele não aparece sempre, e eu não posso ficar rodando o deserto atrás dele.",
+    "Se você derrotar uns Gladimon selvagens, eu te dou uma parte do que ganhar por aqui."
+  ],
+  "QuestId": 20,
+  "IsRecruitable": false,
+  "RecruitmentPerkDescription": "",
+  "RecruitmentTrainingAreaType": null
+}
