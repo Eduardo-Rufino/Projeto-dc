@@ -8,7 +8,7 @@
     "requiredStats": {
       "healthPoints": 277,
       "physicalDamage": 0,
-      "physicalDefense": 85,
+      "physicalDefense": 73,
       "specialDamage": 0,
       "specialDefense": 86,
       "speed": 71
@@ -24,9 +24,9 @@
     "requiredStats": {
       "healthPoints": 277,
       "physicalDamage": 0,
-      "physicalDefense": 76,
+      "physicalDefense": 73,
       "specialDamage": 0,
-      "specialDefense": 47,
+      "specialDefense": 30,
       "speed": 71
     }
   },
@@ -39,9 +39,9 @@
     "requiredStats": {
       "healthPoints": 277,
       "physicalDamage": 0,
-      "physicalDefense": 77,
+      "physicalDefense": 73,
       "specialDamage": 0,
-      "specialDefense": 47,
+      "specialDefense": 30,
       "speed": 111
     },
     "minHappiness": 40

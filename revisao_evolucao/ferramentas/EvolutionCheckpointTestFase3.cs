@@ -17,15 +17,14 @@ using System.Threading.Tasks;
 namespace ProjetoDC.Revisao
 {
     /// <summary>
-    /// Fase 3 da revisão de requisitos de evolução: prova, com o código real, que os CSV
-    /// (já importados em Data/Evolutions/) resolvem o problema da Fase 1/2. Diferença central
-    /// pra EvolutionCheckpointTest (Fase 2): aqui os Digimons NASCEM e SOBEM DE NÍVEL pela
-    /// curva real (GainExperience/LevelUp) e o "treino" usa o TrainingSystem de verdade
-    /// (TrainingSystem.Execute + DigimonInstance.ApplyTrainingResult) - inclusive o sorteio
-    /// 25/50/25% e a Felicidade/Disciplina que o treino de verdade muda - em vez de escrever
-    /// os stats diretamente. Só Felicidade/Disciplina em dois casos (C e E) são setados
-    /// diretamente: ali são a VARIÁVEL INDEPENDENTE do próprio caso (testar o efeito de um
-    /// valor de Felicidade/Disciplina específico), não um substituto do treino.
+    /// Fase 3 (v2) da revisão de requisitos de evolução: monta cada Digimon PELA CADEIA REAL -
+    /// começa no estágio anterior (Lv 1, sem nenhum treino aplicado ainda) e sobe através de
+    /// EvolutionSystem.TryToEvolve de verdade, uma aresta por vez (GrowLeg), em vez de criar a
+    /// forma final direto com a ficha no Lv 1. É a correção pro erro do modelo apontado pelo
+    /// usuário: os stats de entrada de cada forma são o pior caso pela cadeia completa desde o
+    /// ovo (rota mais fraca), não a rota mais barata - GrowLeg entra sempre pela rota mais fraca
+    /// disponível (a "padrão"/sem treino quando existir) e só treina onde for estritamente
+    /// necessário pra alcançar o alvo pedido.
     /// Uso: godot --headless --fixed-fps 60 --path . res://revisao_evolucao/ferramentas/EvolutionCheckpointTestFase3.tscn
     /// </summary>
     public partial class EvolutionCheckpointTestFase3 : Node
@@ -42,7 +41,7 @@ namespace ProjetoDC.Revisao
         {
             await Frames(30);
 
-            GD.Print("===== EvolutionCheckpointTestFase3: início =====");
+            GD.Print("===== EvolutionCheckpointTestFase3 (v2, cadeia real): início =====");
 
             CaseA_Guilmon();
             CaseB_Gaomon();
@@ -50,6 +49,8 @@ namespace ProjetoDC.Revisao
             CaseD_MachGaogamon();
             CaseE_GigimonNoTie();
             CaseF_NovasFormasPadrao();
+            CaseG_PremiumsViaCadeiaMinima();
+            CaseH_Chirinmon();
 
             GD.Print($"===== EvolutionCheckpointTestFase3: {_ok} ok, {_fail} falha(s) =====");
             GetTree().Quit(_fail > 0 ? 1 : 0);
@@ -104,14 +105,10 @@ namespace ProjetoDC.Revisao
             else { _fail++; GD.PrintErr($"[FALHOU] {msg}"); }
         }
 
-        /// <summary>Cria um Digimon e sobe até o nível pedido só pela curva real (GainExperience
-        /// repetido -> LevelUp real: +2 PA, +2 PD, +1 Vel, +5 HP por nível). Os stats ficam
-        /// exatamente onde a espécie + os níveis deixam - nenhum treino aconteceu ainda.
-        /// AgeInDays/Happiness/Discipline são setados diretamente (não são "stat de combate"
-        /// nenhuma evolução usa Happiness/Discipline como algo que "se treina pra", são
-        /// variáveis de cuidado do jogador, não têm uma "curva real de treino" pra seguir).
-        /// </summary>
-        private static DigimonInstance SpawnNatural(int speciesId, int level, int age, int happiness = 50, int discipline = 50)
+        /// <summary>Cria um Digimon no Lv 1 da espécie pedida, sem NENHUM treino ainda - o ponto
+        /// de partida de qualquer cadeia (o "estágio anterior" que o resto do teste evolui a
+        /// partir daqui, sempre com EvolutionSystem.TryToEvolve de verdade).</summary>
+        private static DigimonInstance SpawnNatural(int speciesId, int level = 1, int age = 0, int happiness = 50, int discipline = 50)
         {
             var species = Db.GetDigimon(speciesId);
             var d = new DigimonInstance(species);
@@ -127,14 +124,22 @@ namespace ProjetoDC.Revisao
             return d;
         }
 
+        private static Func<BaseStats, int> StatReader(TrainingType type) => type switch
+        {
+            TrainingType.HealthPoints => s => s.HealthPoints,
+            TrainingType.Attack => s => s.PhysicalDamage,
+            TrainingType.Defense => s => s.PhysicalDefense,
+            TrainingType.SpecialAttack => s => s.SpecialDamage,
+            TrainingType.SpecialDefense => s => s.SpecialDefense,
+            TrainingType.Speed => s => s.Speed,
+            _ => throw new ArgumentOutOfRangeException(nameof(type)),
+        };
+
         /// <summary>Um treino de verdade: TrainingSystem.Execute + DigimonInstance.
-        /// ApplyTrainingResult, exatamente o par que DigimonWorld.ProcessTraining chama (ver
-        /// Fase 1, item 1) - RNG real (25/50/25%), +10 Felicidade e +5 Disciplina reais, 5 XP
-        /// real (pode até disparar um LevelUp real se acumular o suficiente - deixado
-        /// acontecer, não é suprimido). Reabastece a stamina direto (100) quando falta -
-        /// atalho deliberado: regenerar 1 em 1 ponto (72/dia no jogo real) não muda NENHUM
-        /// stat relevante pra decisão de evolução, só quanto tempo de jogo o treino "gastaria"
-        /// - não é o mesmo tipo de atalho que setar PA/Vel/etc direto.</summary>
+        /// ApplyTrainingResult - RNG real (25/50/25%), +10 Felicidade e +5 Disciplina reais, 5 XP
+        /// real. Reabastece a stamina direto (100) quando falta - atalho deliberado: regenerar 1
+        /// em 1 ponto (72/dia no jogo real) não muda nenhum stat relevante pra decisão de
+        /// evolução, só quanto tempo de jogo o treino "gastaria".</summary>
         private void TrainOnce(DigimonInstance d, TrainingType type)
         {
             if (d.Stamina < 10)
@@ -146,10 +151,20 @@ namespace ProjetoDC.Revisao
                 d.ApplyTrainingResult(result);
         }
 
-        /// <summary>Checkpoint real (SEM XP): fim de uma batalha 3x3 vencida fora de torneio,
-        /// com time inimigo vazio de propósito - ver EvolutionCheckpointTest.BattleCheckpoint
-        /// (Fase 2) pro porquê. RecordBattleResult ainda roda (incrementa BattlesFought de
-        /// verdade), só o XP/LevelUp é que fica de fora.</summary>
+        /// <summary>Treina um único stat (real) até ele alcançar um piso, sem checar evolução no
+        /// meio - usado pra deixar o stat pronto ANTES de deixar o Digimon subir de nível/idade,
+        /// senão a subida (que dispara checagem de verdade) pode evoluir cedo demais com o stat
+        /// só pela metade.</summary>
+        private void TrainUntilStat(DigimonInstance d, TrainingType type, Func<BaseStats, int> read, int floor, int maxAttempts = 150)
+        {
+            for (int i = 0; i < maxAttempts && read(d.CurrentStats) < floor; i++)
+                TrainOnce(d, type);
+        }
+
+        /// <summary>Checkpoint real (SEM XP): fim de uma batalha 3x3 vencida fora de torneio, com
+        /// time inimigo vazio de propósito - BattleRewardCalculator devolve XP=0 pra time vazio,
+        /// então "if (xpGained > 0) GainExperience(...)" nunca roda; RecordBattleResult ainda
+        /// incrementa BattlesFought de verdade, e TryToEvolve roda normalmente.</summary>
         private void BattleCheckpoint(DigimonInstance member)
         {
             var t = typeof(GameManager);
@@ -163,7 +178,8 @@ namespace ProjetoDC.Revisao
         }
 
         /// <summary>Checkpoint real (COM XP): mesma função, mas com um inimigo de verdade -
-        /// usado só quando o caso pede pra subir de nível por batalha.</summary>
+        /// concede XP real (GainExperience -> LevelUp real) e ainda assim checa evolução no
+        /// fim, exatamente como GameManager.ApplyTeamBattleReward faz de verdade.</summary>
         private void BattleCheckpointWithLevelUp(DigimonInstance member)
         {
             var t = typeof(GameManager);
@@ -179,333 +195,249 @@ namespace ProjetoDC.Revisao
             Gm.ApplyTeamBattleReward(BattleResult.PlayerWon);
         }
 
-        /// <summary>Checkpoint real: virada de dia (ClockSystem.DayPassed -> OnDayPassed).
-        /// Precisa que o Digimon esteja no Center (EvaluateDailyDeathRisks itera Save.Center.
-        /// Digimons).</summary>
+        /// <summary>Checkpoint real: virada de dia (ClockSystem.DayPassed -> OnDayPassed). Cura
+        /// doença na hora (Heal() real) - sem isso, TryBecomeSick (aleatório, todo dia) podia
+        /// deixar o Digimon doente vários dias seguidos e arriscar uma morte por negligência
+        /// (20%/dia após 5 dias doente seguidos) - um risco real do jogo, mas não o que este
+        /// teste quer medir (só os requisitos de evolução).</summary>
         private void DayPassedCheckpoint(DigimonInstance member)
         {
             if (!Gm.Save.Center.Digimons.Contains(member))
                 Gm.CenterService.AddDigimon(member);
 
+            // Alimenta antes de passar o dia: ClockSystem.Update dispara HourPassed de verdade
+            // pra cada hora (24x aqui), e cada uma delas chama AdvanceHour -> ConsumeHunger; sem
+            // comida a Fome cai a zero em poucos dias e "if (Hunger <= 20) ChangeHappiness(-1)"
+            // drena a Felicidade pra 0 depois de o suficientes viradas de dia (foi exatamente
+            // isso que derrubou o Caso H1 - Sleipmon exige Felic>=40 e a Felicidade tinha ido a
+            // zero só de tantos dias passados pra subir de nível, não por causa de nenhum
+            // requisito de evolução em si). Feed() é a função real (mesma que o Center usa).
+            member.Feed(member.MaxHunger);
+
             Gm.ClockSystem.Update(1440.0);
 
-            // Cura qualquer doença na hora (Heal() real, mesma função que UseMedicine chama) -
-            // sem isso, TryBecomeSick (aleatório, ~sorteado todo dia) podia deixar o Digimon
-            // doente por vários dias seguidos e arriscar uma morte por negligência
-            // (GameManager.EvaluateDailyDeathRisks, 20% ao dia após 5 dias doente seguidos) -
-            // um risco real do jogo, mas não o que ESTE teste quer medir (só os requisitos de
-            // evolução). Descoberto porque F/B3 falhavam de forma não-determinística até essa
-            // correção - ver relatório da Fase 3.
             if (member.HealthState == HealthState.Sick)
                 member.Heal();
         }
 
-        /// <summary>Treina um único stat repetidamente (checkpoint real depois de cada treino)
-        /// até evoluir ou até o teto de tentativas. Devolve quantos treinos foram aplicados.
-        /// </summary>
-        private int TrainUntilEvolved(DigimonInstance d, TrainingType type, int maxAttempts = 200)
+        /// <summary>Percorre UMA aresta da cadeia evolutiva a partir do estado atual de <paramref
+        /// name="d"/>: treina (de verdade) o stat-assinatura até o piso pedido - se houver -
+        /// ANTES de deixar subir de nível/idade (mesma ordem já validada: treinar primeiro evita
+        /// que a subida de nível/idade dispare a checagem com o stat pela metade), depois sobe de
+        /// nível por batalha (com XP real) até o nível exigido e, por fim, avança dias até a
+        /// idade exigida - checando evolução (via os checkpoints reais) a cada passo o tempo
+        /// todo. Para quando evolui (BaseData.Id muda) ou quando os requisitos batem.</summary>
+        private void GrowLeg(DigimonInstance d, int requiredLevel, int requiredAge,
+            TrainingType? stat = null, int floor = 0, int maxBattles = 90, int maxDays = 60)
+        {
+            GrowLeg(d, requiredLevel, requiredAge,
+                stat.HasValue ? new[] { (stat.Value, floor) } : Array.Empty<(TrainingType, int)>(),
+                maxBattles, maxDays);
+        }
+
+        /// <summary>Mesma coisa que a sobrecarga acima, mas treinando VÁRIOS stats (todos de
+        /// verdade, um de cada vez até o piso) antes de deixar subir de nível/idade - usado
+        /// quando a aresta em si (não uma "assinatura" limpa de um só stat) pede mais de um stat
+        /// ao mesmo tempo pra ficar alcançável.</summary>
+        private void GrowLeg(DigimonInstance d, int requiredLevel, int requiredAge,
+            (TrainingType stat, int floor)[] stats, int maxBattles = 90, int maxDays = 60)
         {
             int startId = d.BaseData.Id;
 
-            for (int i = 0; i < maxAttempts && d.BaseData.Id == startId; i++)
-            {
-                TrainOnce(d, type);
-                BattleCheckpoint(d);
-            }
+            foreach (var (stat, floor) in stats)
+                TrainUntilStat(d, stat, StatReader(stat), floor);
 
-            return d.BaseData.Id != startId ? 1 : 0;
+            for (int i = 0; i < maxBattles && d.Level < requiredLevel && d.BaseData.Id == startId; i++)
+                BattleCheckpointWithLevelUp(d);
+
+            for (int i = 0; i < maxDays && d.AgeInDays < requiredAge && d.BaseData.Id == startId; i++)
+                DayPassedCheckpoint(d);
         }
 
         // ------------------------------------------------------------------ caso a) Guilmon
 
         private void CaseA_Guilmon()
         {
-            GD.Print("\n--- Caso A: Guilmon (id 7) ---");
+            GD.Print("\n--- Caso A: Guilmon (id 7) - já é o estágio sendo testado, Lv 1 direto ---");
 
             const int guilmonId = 7;
 
-            // a1: só PA (treino real) -> Growlmon. Idade fica em 2 o tempo todo (nunca chega
-            // nos 13 que Dimetromon/padrão exige), então Dimetromon nunca disputa aqui.
             ResetScratch();
 
-            var pa = SpawnNatural(guilmonId, level: 12, age: 2);
+            var pa = SpawnNatural(guilmonId);
 
-            Check(TrainUntilEvolved(pa, TrainingType.Attack) == 1 && pa.BaseData.Name == "Growlmon",
-                $"A1 (só PA, treino real): resultado {pa.BaseData.Name} (esperado Growlmon) - " +
-                $"PA final {pa.CurrentStats.PhysicalDamage}, HP final {pa.CurrentStats.HealthPoints}");
+            GrowLeg(pa, requiredLevel: 12, requiredAge: 2, stat: TrainingType.Attack, floor: 104);
 
-            // a2: nada de treino, só batalhas (sem XP) e viradas de dia até a Idade 13 -
-            // Growlmon exige PA que o Digimon nunca treinou, então só Dimetromon (padrão)
-            // pode disparar, exatamente na Idade 13.
+            Check(pa.BaseData.Name == "Growlmon",
+                $"A1 (só PA, treino real): resultado {pa.BaseData.Name} (esperado Growlmon)");
+
             ResetScratch();
 
-            var none = SpawnNatural(guilmonId, level: 12, age: 2);
+            var none = SpawnNatural(guilmonId);
 
-            for (int day = 0; day < 11 && none.BaseData.Id == guilmonId; day++)
-                DayPassedCheckpoint(none);
+            GrowLeg(none, requiredLevel: 12, requiredAge: 13);
 
             Check(none.BaseData.Name == "Dimetromon",
-                $"A2 (sem treino, até a Idade 13 por virada de dia): resultado {none.BaseData.Name} " +
-                $"(esperado Dimetromon - forma padrão) - Idade final {none.AgeInDays}");
+                $"A2 (sem treino, até a Idade 13): resultado {none.BaseData.Name} (esperado Dimetromon - forma padrão)");
         }
 
         // ------------------------------------------------------------------ caso b) Gaomon
 
         private void CaseB_Gaomon()
         {
-            GD.Print("\n--- Caso B: Gaomon (id 5) ---");
+            GD.Print("\n--- Caso B: Gaomon (id 5) - já é o estágio sendo testado, Lv 1 direto ---");
 
             const int gaomonId = 5;
 
-            // b1: só Velocidade, subindo de nível por batalha até o Lv 18 -> Gladimon, sem
-            // Gaogamon (exige PA nunca treinado) nem Garurumon (exige Idade 13, nunca avançada)
-            // disparar antes. Treina o Vel ATÉ O ALVO PRIMEIRO (ainda no Lv 12, onde nenhuma
-            // irmã pode disparar - Gaogamon exige PA que não treinamos, Garurumon exige Idade
-            // que não avançamos) e só DEPOIS sobe de nível - assim a subida de nível (XP real,
-            // não controlável ponto a ponto) não "atropela" o treino de Vel pela metade.
             ResetScratch();
 
-            // Age 5 (não 2): Gladimon exige Idade >= 5 no CSV (as outras duas irmãs pedem só
-            // Idade >= 2), então precisa começar aí ou nunca fica válida mesmo com Vel/PA prontos.
-            var vel = SpawnNatural(gaomonId, level: 12, age: 5);
-            string prematureName = null;
+            var vel = SpawnNatural(gaomonId, age: 5); // Gladimon exige Idade >= 5 (as outras duas só >= 2)
 
-            TrainUntilStat(vel, TrainingType.Speed, s => s.Speed, 82);
-
-            if (vel.BaseData.Id != gaomonId)
-                prematureName = vel.BaseData.Name;
-
-            for (int i = 0; i < 60 && vel.Level < 18 && vel.BaseData.Id == gaomonId; i++)
-            {
-                BattleCheckpointWithLevelUp(vel);
-
-                if (vel.BaseData.Id != gaomonId && vel.Level < 18)
-                    prematureName = vel.BaseData.Name;
-            }
-
-            Check(prematureName == null,
-                $"B1a (nenhuma irmã deveria disparar antes do Lv 18): {(prematureName == null ? "nenhuma disparou antes" : $"{prematureName} disparou antes do esperado")}");
+            GrowLeg(vel, requiredLevel: 18, requiredAge: 5, stat: TrainingType.Speed, floor: 82);
 
             Check(vel.BaseData.Name == "Gladimon",
-                $"B1b (Vel treinado até {vel.CurrentStats.Speed}, chegou ao Lv {vel.Level}): resultado {vel.BaseData.Name} (esperado Gladimon) - " +
-                $"PA final {vel.CurrentStats.PhysicalDamage} (nunca treinado, só cresceu por nível)");
+                $"B1 (só Vel até o Lv 18, treino real): resultado {vel.BaseData.Name} (esperado Gladimon)");
 
-            // b2: só PA (treino real), sem subir de nível -> Gaogamon.
             ResetScratch();
 
-            var pa = SpawnNatural(gaomonId, level: 12, age: 2);
+            var pa = SpawnNatural(gaomonId);
 
-            Check(TrainUntilEvolved(pa, TrainingType.Attack) == 1 && pa.BaseData.Name == "Gaogamon",
+            GrowLeg(pa, requiredLevel: 12, requiredAge: 2, stat: TrainingType.Attack, floor: 108);
+
+            Check(pa.BaseData.Name == "Gaogamon",
                 $"B2 (só PA, treino real): resultado {pa.BaseData.Name} (esperado Gaogamon)");
 
-            // b3: nada -> Garurumon aos 13 dias.
             ResetScratch();
 
-            var none = SpawnNatural(gaomonId, level: 12, age: 2);
+            var none = SpawnNatural(gaomonId);
 
-            GD.Print($"  [debug] B3 antes: Lv{none.Level} Age{none.AgeInDays} PA{none.CurrentStats.PhysicalDamage} Vel{none.CurrentStats.Speed}");
-
-            for (int day = 0; day < 11 && none.BaseData.Id == gaomonId; day++)
-            {
-                DayPassedCheckpoint(none);
-                GD.Print($"  [debug] B3 dia {day}: Lv{none.Level} Age{none.AgeInDays} PA{none.CurrentStats.PhysicalDamage} Vel{none.CurrentStats.Speed} nome={none.BaseData.Name}");
-            }
+            GrowLeg(none, requiredLevel: 12, requiredAge: 13);
 
             Check(none.BaseData.Name == "Garurumon",
-                $"B3 (sem treino, até a Idade 13): resultado {none.BaseData.Name} (esperado Garurumon - forma padrão) - " +
-                $"PA final {none.CurrentStats.PhysicalDamage} (natural, sem treino)");
+                $"B3 (sem treino, até a Idade 13): resultado {none.BaseData.Name} (esperado Garurumon - forma padrão)");
         }
 
         // ------------------------------------------------------------------ caso c) Angewomon
 
         private void CaseC_Angewomon()
         {
-            GD.Print("\n--- Caso C: Angewomon (id 72) ---");
+            GD.Print("\n--- Caso C: Angewomon (id 72), pela cadeia real a partir de Angemon (id 16) ---");
 
-            const int angewomonId = 72;
+            const int angemonId = 16;
 
-            // Diagnóstico: qual Vel a subida de nível pura (sem treino nenhum, Lv1->28) dá pra
-            // uma Angewomon? Magnadramon/Ophanimon/Lilithmon pedem Vel>=179 os TRÊS - se a
-            // subida pura não chega lá, NENHUM dos três é alcançável só de nível (mesmo a forma
-            // "padrão"), então testar "só EA"/"só ED" LITERALMENTE (sem tocar em Vel) não devia
-            // conseguir nenhum dos dois mesmo. Reporta os dois cenários: literal (só o stat
-            // descrito no caso) e ajustado (Vel também levado ao piso via treino real, isolando
-            // a pergunta "a lógica de escolha entre as 3 funciona quando os stats permitem?").
-            var probe = SpawnNatural(angewomonId, level: 28, age: 8);
-            GD.Print($"  [diagnóstico] Angewomon Lv28 sem NENHUM treino: HP{probe.CurrentStats.HealthPoints} EA{probe.CurrentStats.SpecialDamage} Vel{probe.CurrentStats.Speed} " +
-                "(Magnadramon/Ophanimon/Lilithmon pedem Vel>=179 - se o Vel acima for menor, é teto de nível, não bug do teste)");
+            // Angemon -> Angewomon é a rota PADRÃO do próprio Angemon (Lv20, Idade 24, sem
+            // treino nenhum) - é a "cadeia mínima" pra chegar em Angewomon.
+            DigimonInstance ChegarEmAngewomon(int happiness = 50)
+            {
+                var d = SpawnNatural(angemonId, happiness: happiness);
 
-            // c_EA (LITERAL): só Ataque Especial (treino real) -> Ophanimon. Felicidade 30 e 50.
+                GrowLeg(d, requiredLevel: 20, requiredAge: 24);
+
+                return d;
+            }
+
             foreach (int happiness in new[] { 30, 50 })
             {
                 ResetScratch();
 
-                var ea = SpawnNatural(angewomonId, level: 28, age: 8, happiness: happiness);
+                var ea = ChegarEmAngewomon(happiness);
 
-                TrainUntilEvolved(ea, TrainingType.SpecialAttack);
+                Check(ea.BaseData.Name == "Angewomon", $"C0 ({happiness}): chegou em Angewomon vindo de Angemon (pré-condição) - {ea.BaseData.Name}");
 
-                Check(ea.BaseData.Name == "Ophanimon",
-                    $"C1-literal (só EA, Felicidade={happiness}): resultado {ea.BaseData.Name} (esperado Ophanimon; " +
-                    $"Vel ficou em {ea.CurrentStats.Speed}/179 - se for isso que bloqueou, ver C1-ajustado abaixo)");
-            }
-
-            // c_EA (AJUSTADO): mesma coisa, mas o Vel também é treinado (de verdade) até 179
-            // ANTES do EA - isola só a pergunta "a escolha entre as 3 formas funciona?".
-            foreach (int happiness in new[] { 30, 50 })
-            {
-                ResetScratch();
-
-                var ea = SpawnNatural(angewomonId, level: 28, age: 8, happiness: happiness);
-
-                TrainUntilStat(ea, TrainingType.Speed, s => s.Speed, 179);
-                TrainUntilEvolved(ea, TrainingType.SpecialAttack);
+                GrowLeg(ea, requiredLevel: 28, requiredAge: 8, stat: TrainingType.SpecialAttack, floor: 213);
 
                 Check(ea.BaseData.Name == "Ophanimon",
-                    $"C1-ajustado (EA+Vel treinados de verdade, Felicidade={happiness}): resultado {ea.BaseData.Name} (esperado Ophanimon)");
+                    $"C1 (Angemon -> Angewomon padrão -> só EA, Felicidade={happiness}): resultado {ea.BaseData.Name} (esperado Ophanimon)");
             }
 
-            // c_ED (LITERAL e AJUSTADO): só Defesa Especial (treino real) -> Lilithmon.
             ResetScratch();
 
-            var edLiteral = SpawnNatural(angewomonId, level: 28, age: 8);
+            var ed = ChegarEmAngewomon();
 
-            TrainUntilEvolved(edLiteral, TrainingType.SpecialDefense);
+            GrowLeg(ed, requiredLevel: 28, requiredAge: 8, stat: TrainingType.SpecialDefense, floor: 108);
 
-            Check(edLiteral.BaseData.Name == "Lilithmon",
-                $"C2-literal (só ED, treino real): resultado {edLiteral.BaseData.Name} (esperado Lilithmon; Vel {edLiteral.CurrentStats.Speed}/179)");
-
-            ResetScratch();
-
-            var edAjustado = SpawnNatural(angewomonId, level: 28, age: 8);
-
-            TrainUntilStat(edAjustado, TrainingType.Speed, s => s.Speed, 179);
-            TrainUntilEvolved(edAjustado, TrainingType.SpecialDefense);
-
-            Check(edAjustado.BaseData.Name == "Lilithmon",
-                $"C2-ajustado (ED+Vel treinados de verdade): resultado {edAjustado.BaseData.Name} (esperado Lilithmon)");
-
-            // c_nada (LITERAL e AJUSTADO): nada -> Magnadramon aos 50 dias.
-            ResetScratch();
-
-            var noneLiteral = SpawnNatural(angewomonId, level: 28, age: 8);
-
-            for (int day = 0; day < 43 && noneLiteral.BaseData.Id == angewomonId; day++)
-                DayPassedCheckpoint(noneLiteral);
-
-            Check(noneLiteral.BaseData.Name == "Magnadramon",
-                $"C3-literal (sem treino, até a Idade 50): resultado {noneLiteral.BaseData.Name} (esperado Magnadramon; " +
-                $"Vel {noneLiteral.CurrentStats.Speed}/179, Idade {noneLiteral.AgeInDays})");
+            Check(ed.BaseData.Name == "Lilithmon",
+                $"C2 (Angemon -> Angewomon padrão -> só ED): resultado {ed.BaseData.Name} (esperado Lilithmon)");
 
             ResetScratch();
 
-            var noneAjustado = SpawnNatural(angewomonId, level: 28, age: 8);
+            var none = ChegarEmAngewomon();
 
-            TrainUntilStat(noneAjustado, TrainingType.Speed, s => s.Speed, 179);
+            GrowLeg(none, requiredLevel: 28, requiredAge: 50);
 
-            for (int day = 0; day < 43 && noneAjustado.BaseData.Id == angewomonId; day++)
-                DayPassedCheckpoint(noneAjustado);
-
-            Check(noneAjustado.BaseData.Name == "Magnadramon",
-                $"C3-ajustado (Vel treinado de verdade, até a Idade 50): resultado {noneAjustado.BaseData.Name} (esperado Magnadramon - forma padrão)");
+            Check(none.BaseData.Name == "Magnadramon",
+                $"C3 (Angemon -> Angewomon padrão -> sem treino, até a Idade 50): resultado {none.BaseData.Name} (esperado Magnadramon - forma padrão)");
         }
 
         // ------------------------------------------------------------------ caso d) MachGaogamon
 
         private void CaseD_MachGaogamon()
         {
-            GD.Print("\n--- Caso D: MachGaogamon (id 48) ---");
+            GD.Print("\n--- Caso D: MachGaogamon (id 48), pela cadeia real a partir de Kotemon -> Gaogamon ---");
 
-            const int machGaogamonId = 48;
+            const int kotemonId = 145;
 
-            var probe = SpawnNatural(machGaogamonId, level: 28, age: 8);
-            GD.Print($"  [diagnóstico] MachGaogamon Lv28 sem NENHUM treino: PA{probe.CurrentStats.PhysicalDamage} Vel{probe.CurrentStats.Speed} " +
-                "(Gankoomon/MirageGaogamon pedem Vel>=136 - se o Vel acima for menor, é teto de nível, não bug do teste)");
-
-            // d_PA (LITERAL): só Ataque (treino real) -> MirageGaogamon. Felic>=40 no CSV.
-            foreach (int happiness in new[] { 30, 50 })
+            // "MachGaogamon vindo de Gaogamon": Gaogamon (Champion) sozinho, criado do zero no
+            // Lv 1, não chega nem perto de Gaogamon->MachGaogamon (essa aresta não foi tocada
+            // pela revisão - alterada=nao - e pede mais HP/Vel do que a espécie ganha só subindo
+            // de nível a partir da própria ficha). Um Gaogamon de verdade só existe por ter
+            // evoluído de algo - testei primeiro a rota Gaomon (assinatura PA, Caso B) mas ela
+            // não dá HP suficiente pro próximo passo (ver relatório); a rota mais forte é
+            // Kotemon (HP+PA+PD, sem "assinatura" de um stat só) - depois disso, "sem treinar"
+            // vale a partir daqui.
+            DigimonInstance ChegarEmGaogamon()
             {
-                ResetScratch();
+                var d = SpawnNatural(kotemonId);
 
-                var pa = SpawnNatural(machGaogamonId, level: 28, age: 8, happiness: happiness);
+                // PD não entra no treino: o natural (30 base + 2/nível) já cobre os 50 exigidos
+                // por Kotemon->Gaogamon sozinho - treinar mais que isso deixaria o PD alto o
+                // bastante pra WereGarurumon (a outra saída de Gaogamon, PD>=80) competir e
+                // vencer por Score antes de MachGaogamon (PD não é exigido) ficar pronto.
+                GrowLeg(d, requiredLevel: 12, requiredAge: 2,
+                    new (TrainingType, int)[] { (TrainingType.HealthPoints, 170), (TrainingType.Attack, 90) });
 
-                TrainUntilEvolved(pa, TrainingType.Attack);
-
-                Check(happiness >= 40 ? pa.BaseData.Name == "MirageGaogamon" : true,
-                    $"D1-literal (só PA, Felicidade={happiness}): resultado {pa.BaseData.Name} " +
-                    $"(esperado MirageGaogamon se Felic>=40; Vel ficou em {pa.CurrentStats.Speed}/136 - ver D1-ajustado)");
+                return d;
             }
 
-            // d_PA (AJUSTADO, NATURAL): Vel também treinado de verdade até 136, e a Felicidade
-            // é deixada subir sozinha com o treino (ApplyTrainingResult dá +10 por treino, de
-            // verdade) - é o que acontece com um jogador de verdade treinando bastante: mesmo
-            // começando com Felicidade baixa, ela sobe rápido e passa de 40 bem antes do PA
-            // chegar em 226. Por isso as DUAS Felicidades iniciais convergem pro mesmo
-            // resultado aqui - não é um bug do teste, é o próprio treino elevando a Felicidade.
-            foreach (int happiness in new[] { 30, 50 })
-            {
-                ResetScratch();
-
-                var pa = SpawnNatural(machGaogamonId, level: 28, age: 8, happiness: happiness);
-
-                TrainUntilStat(pa, TrainingType.Speed, s => s.Speed, 136);
-                TrainUntilEvolved(pa, TrainingType.Attack);
-
-                Check(pa.BaseData.Name == "MirageGaogamon",
-                    $"D1-ajustado-natural (PA+Vel treinados, Felicidade INICIAL={happiness}, mas sobe com o treino): resultado {pa.BaseData.Name} " +
-                    $"(esperado MirageGaogamon nos dois - Felicidade final {pa.Happiness}, treino real já passa de 40 sozinho)");
-            }
-
-            // d_PA (AJUSTADO, ISOLADO): mesma coisa, mas a Felicidade é forçada bem na hora da
-            // checagem (não deixada subir) - testa a regra do CSV em isolado, sem o efeito
-            // colateral do treino: só aqui a Felicidade baixa realmente barra MirageGaogamon.
             ResetScratch();
 
-            var isolatedLow = SpawnNatural(machGaogamonId, level: 28, age: 8);
+            var d = ChegarEmGaogamon();
 
-            TrainUntilStat(isolatedLow, TrainingType.Speed, s => s.Speed, 136);
-            TrainUntilStat(isolatedLow, TrainingType.Attack, s => s.PhysicalDamage, 226);
-            isolatedLow.Happiness = 30;
-            // Gankoomon é a forma PADRÃO daqui (não a "papel PA" - essa é MirageGaogamon) e
-            // como todo padrão exige Idade >= teto-2 do estágio (Ultimate: 52-2=50), não os
-            // mesmos 8 dias que as outras duas. Sem isso nenhuma das duas fica válida (Gankoomon
-            // barrado pela Idade, MirageGaogamon pela Felicidade) - e foi exatamente isso que a
-            // primeira versão deste teste descobriu (por engano, mas corretamente).
-            isolatedLow.AgeInDays = 50;
-            BattleCheckpoint(isolatedLow);
+            Check(d.BaseData.Name == "Gaogamon", $"D-1: chegou em Gaogamon vindo de Kotemon (HP+PA+PD) - {d.BaseData.Name}");
+            GD.Print($"  [diagnóstico D-1] Lv{d.Level} Age{d.AgeInDays} HP{d.CurrentStats.HealthPoints} PA{d.CurrentStats.PhysicalDamage} PD{d.CurrentStats.PhysicalDefense} Vel{d.CurrentStats.Speed}");
 
-            Check(isolatedLow.BaseData.Name == "Gankoomon",
-                $"D1-isolado (PA+Vel prontos, Felicidade forçada em 30 só na checagem): resultado {isolatedLow.BaseData.Name} " +
-                "(esperado Gankoomon - MirageGaogamon exige Felic>=40; confirma que a regra existe, só não trava quem treina de verdade)");
+            GrowLeg(d, requiredLevel: 20, requiredAge: 5, maxBattles: 150);
 
-            // d_nada (LITERAL e AJUSTADO): nada -> Gankoomon aos 50 dias.
+            GD.Print($"  [diagnóstico D0] Lv{d.Level} Age{d.AgeInDays} HP{d.CurrentStats.HealthPoints} PA{d.CurrentStats.PhysicalDamage} PD{d.CurrentStats.PhysicalDefense} Vel{d.CurrentStats.Speed} nome={d.BaseData.Name}");
+            Check(d.BaseData.Name == "MachGaogamon", $"D0: chegou em MachGaogamon vindo de Gaogamon sem treino - {d.BaseData.Name}");
+
+            GrowLeg(d, requiredLevel: 28, requiredAge: 50);
+
+            Check(d.BaseData.Name == "Gankoomon",
+                $"D1 (Gaomon -> Gaogamon -> MachGaogamon -> sem treino, até a Idade 50): resultado {d.BaseData.Name} (esperado Gankoomon - forma padrão)");
+
+            // Felicidade baixa forçada na hora da checagem final (independe do que o treino real
+            // faria com ela, já que aqui não há treino nenhum depois de Gaogamon) - MirageGaogamon
+            // exige Felic>=40, então com Felicidade baixa quem vence continua sendo o padrão
+            // Gankoomon.
             ResetScratch();
 
-            var noneLiteral = SpawnNatural(machGaogamonId, level: 28, age: 8);
+            var lowHappy = ChegarEmGaogamon();
 
-            for (int day = 0; day < 43 && noneLiteral.BaseData.Id == machGaogamonId; day++)
-                DayPassedCheckpoint(noneLiteral);
+            GrowLeg(lowHappy, requiredLevel: 20, requiredAge: 5);
+            GrowLeg(lowHappy, requiredLevel: 28, requiredAge: 50 - 1); // fica 1 dia aquém de propósito
+            lowHappy.Happiness = 30;
+            DayPassedCheckpoint(lowHappy); // completa a Idade 50 já com a Felicidade baixa
 
-            Check(noneLiteral.BaseData.Name == "Gankoomon",
-                $"D2-literal (sem treino, até a Idade 50): resultado {noneLiteral.BaseData.Name} (esperado Gankoomon; Vel {noneLiteral.CurrentStats.Speed}/136)");
-
-            ResetScratch();
-
-            var noneAjustado = SpawnNatural(machGaogamonId, level: 28, age: 8);
-
-            TrainUntilStat(noneAjustado, TrainingType.Speed, s => s.Speed, 136);
-
-            for (int day = 0; day < 43 && noneAjustado.BaseData.Id == machGaogamonId; day++)
-                DayPassedCheckpoint(noneAjustado);
-
-            Check(noneAjustado.BaseData.Name == "Gankoomon",
-                $"D2-ajustado (Vel treinado de verdade, até a Idade 50): resultado {noneAjustado.BaseData.Name} (esperado Gankoomon - forma padrão)");
+            Check(lowHappy.BaseData.Name == "Gankoomon",
+                $"D2 (mesma cadeia, Felicidade forçada em 30 na checagem final): resultado {lowHappy.BaseData.Name} (esperado Gankoomon)");
         }
 
         // ------------------------------------------------------------------ caso e) Gigimon
 
         private void CaseE_GigimonNoTie()
         {
-            GD.Print("\n--- Caso E: Gigimon (id 33) - sem mais empate de Score ---");
+            GD.Print("\n--- Caso E: Gigimon (id 33) - já é o estágio sendo testado - sem mais empate de Score ---");
 
             const int gigimonId = 33;
 
@@ -515,16 +447,8 @@ namespace ProjetoDC.Revisao
             {
                 ResetScratch();
 
-                // Guilmon (padrão, score 87) só precisa da Idade 5 e do que o nível já dá.
-                // Elizamon (score 184) precisa de EA>=34, Vel>=26 e Disciplina<=45 - os dois
-                // ficam válidos ao mesmo tempo de propósito, pra testar o desempate. A
-                // Disciplina é forçada DEPOIS do treino (não antes): ApplyTrainingResult dá +5
-                // de Disciplina por treino de verdade, então setá-la antes só pra ela subir de
-                // novo com os treinos seguintes e nunca ficar de fato <=45 na hora da checagem.
                 var d = SpawnNatural(gigimonId, level: 2, age: 5);
 
-                // Elizamon também exige HP>=67 - o natural do Lv 2 (53) não chega lá, esqueci
-                // isso na primeira versão do teste (só tinha treinado EA e Vel).
                 TrainUntilStat(d, TrainingType.HealthPoints, s => s.HealthPoints, 67);
                 TrainUntilStat(d, TrainingType.SpecialAttack, s => s.SpecialDamage, 34);
                 TrainUntilStat(d, TrainingType.Speed, s => s.Speed, 26);
@@ -540,46 +464,204 @@ namespace ProjetoDC.Revisao
 
             Check(results.Count == 1 && results.ContainsKey("Elizamon"),
                 $"E (20 checagens, Guilmon e Elizamon ambos válidos): resultado(s) {string.Join("/", results.Keys)} " +
-                "(esperado: sempre Elizamon, score 184 > 87 - sem mais sorteio, já que os scores não empatam mais)");
+                "(esperado: sempre Elizamon, score maior - sem mais sorteio)");
         }
 
-        /// <summary>Treina um stat especifico (via TrainingSystem/ApplyTrainingResult reais)
-        /// até ele alcançar um piso, sem checar evolução no meio (usado quando vários stats
-        /// precisam ser preparados ANTES do checkpoint, pra não evoluir cedo demais só com o
-        /// primeiro stat pronto).</summary>
-        private void TrainUntilStat(DigimonInstance d, TrainingType type, Func<BaseStats, int> read, int floor, int maxAttempts = 100)
-        {
-            for (int i = 0; i < maxAttempts && read(d.CurrentStats) < floor; i++)
-                TrainOnce(d, type);
-        }
-
-        // ------------------------------------------------------------------ caso f) novas formas padrão
+        // ------------------------------------------------------------------ caso f) novas formas padrão (InTraining->Rookie / Rookie->Champion)
 
         private void CaseF_NovasFormasPadrao()
         {
-            GD.Print("\n--- Caso F: Rookies que só tinham saída premium (agora com forma padrão) ---");
+            GD.Print("\n--- Caso F: cadeias que ganharam forma padrão nesta revisão ---");
 
-            CheckDefaultAtAge13(132, "Dracomon", "Coredramon (Green)");
-            CheckDefaultAtAge13(139, "Veemon", "Veedramon");
-            CheckDefaultAtAge13(149, "Dorumon", "Dorugamon");
-            CheckDefaultAtAge13(163, "Hackmon", "BaoHackmon");
+            // Rookies que só tinham saída premium (já são o próprio estágio testado, Lv 1 direto).
+            CheckDefaultAtAge(132, "Dracomon", "Coredramon (Green)", requiredLevel: 12, requiredAge: 13);
+            CheckDefaultAtAge(139, "Veemon", "Veedramon", requiredLevel: 12, requiredAge: 13);
+            CheckDefaultAtAge(149, "Dorumon", "Dorugamon", requiredLevel: 12, requiredAge: 13);
+
+            // Hackmon vindo de Tsumemon (InTraining, id 115): a aresta Tsumemon->Hackmon não foi
+            // tocada pela revisão (não tem "assinatura" de um stat só - pede EA+ED+Vel juntos,
+            // acima do que o nível puro dá) - treina os três só pra CHEGAR em Hackmon, e dali em
+            // diante, sem treino nenhum, até BaoHackmon (padrão).
+            ResetScratch();
+
+            var h = SpawnNatural(115);
+
+            TrainUntilStat(h, TrainingType.SpecialAttack, s => s.SpecialDamage, 30);
+            TrainUntilStat(h, TrainingType.SpecialDefense, s => s.SpecialDefense, 18);
+            TrainUntilStat(h, TrainingType.Speed, s => s.Speed, 29);
+            GD.Print($"  [diagnóstico F0 pré-nível] Lv{h.Level} HP{h.CurrentStats.HealthPoints} EA{h.CurrentStats.SpecialDamage} ED{h.CurrentStats.SpecialDefense} Vel{h.CurrentStats.Speed}");
+
+            // Hackmon exige Idade >= 1 e BEMmon só Idade >= 0 - se a Idade não avançar ANTES da
+            // subida de nível, o primeiro nível já vence com BEMmon (score mais baixo, mas o
+            // único válido no instante em que a checagem roda, já que Hackmon fica de fora só
+            // pela Idade). Avança 1 dia primeiro (sem XP, Level ainda não sobe com isso) pra
+            // colocar as duas em pé de igualdade e deixar o Score decidir.
+            DayPassedCheckpoint(h);
+
+            GrowLeg(h, requiredLevel: 3, requiredAge: 1);
+
+            GD.Print($"  [diagnóstico F0 pós] Lv{h.Level} Age{h.AgeInDays} HP{h.CurrentStats.HealthPoints} EA{h.CurrentStats.SpecialDamage} ED{h.CurrentStats.SpecialDefense} Vel{h.CurrentStats.Speed} nome={h.BaseData.Name}");
+
+            Check(h.BaseData.Name == "Hackmon", $"F0: chegou em Hackmon vindo de Tsumemon (EA+ED+Vel) - {h.BaseData.Name}");
+
+            GrowLeg(h, requiredLevel: 12, requiredAge: 13);
+
+            Check(h.BaseData.Name == "BaoHackmon",
+                $"F (Tsumemon -> Hackmon -> sem treino, até a Idade 13): resultado {h.BaseData.Name} (esperado BaoHackmon - forma padrão)");
         }
 
-        private void CheckDefaultAtAge13(int speciesId, string speciesName, string expectedForm)
+        private void CheckDefaultAtAge(int speciesId, string speciesName, string expectedForm, int requiredLevel, int requiredAge)
         {
             ResetScratch();
 
-            var d = SpawnNatural(speciesId, level: 12, age: 2);
+            var d = SpawnNatural(speciesId);
 
-            GD.Print($"  [debug] {speciesName} antes: Lv{d.Level} Age{d.AgeInDays} HP{d.CurrentStats.HealthPoints} PA{d.CurrentStats.PhysicalDamage} PD{d.CurrentStats.PhysicalDefense} Vel{d.CurrentStats.Speed} Disc{d.Discipline} Happ{d.Happiness}");
-
-            for (int day = 0; day < 11 && d.BaseData.Id == speciesId; day++)
-                DayPassedCheckpoint(d);
-
-            GD.Print($"  [debug] {speciesName} depois: Lv{d.Level} Age{d.AgeInDays} HealthState={d.HealthState} nome final={d.BaseData.Name}");
+            GrowLeg(d, requiredLevel, requiredAge);
 
             Check(d.BaseData.Name == expectedForm,
-                $"F ({speciesName}, sem treino, até a Idade 13): resultado {d.BaseData.Name} (esperado {expectedForm} - forma padrão)");
+                $"F ({speciesName}, sem treino, até a Idade {requiredAge}): resultado {d.BaseData.Name} (esperado {expectedForm} - forma padrão)");
+        }
+
+        // ------------------------------------------------------------------ caso g) premiums Ultimate->Mega via cadeia mínima
+
+        private void CaseG_PremiumsViaCadeiaMinima()
+        {
+            GD.Print("\n--- Caso G: Grademon/SaviorHackmon/Wingdramon pela rota mais fraca (Champion padrão) ---");
+
+            // Grademon: rota mais fraca é Raptordramon, mas um Raptordramon de verdade só existe
+            // por ter evoluído (assinatura PA) do Dorumon - criado do zero no Lv 1 ele não tem
+            // stat suficiente nem pra completar essa própria aresta.
+            TestPremiumELine(
+                fromSpeciesId: 153, fromName: "Raptordramon",
+                toPadraoLevel: 20, toPadraoAge: 24, targetName: "Grademon",
+                premiumStat: TrainingType.Speed, premiumFloor: 192, premiumLevel: 36, premiumAge: 12, premiumName: "Alphamon",
+                defaultLevel: 28, defaultAge: 50, defaultName: "Dynasmon",
+                preFromSpeciesId: 149, preFromName: "Dorumon", preStat: TrainingType.Attack, preFloor: 120, preLevel: 18, preAge: 5);
+
+            // SaviorHackmon: rota mais fraca é BaoHackmon (padrão, Lv20/Idade24) - aqui um
+            // BaoHackmon criado do zero no Lv 1 já é suficiente (testado, sem precisar voltar
+            // até o Hackmon).
+            TestPremiumELine(
+                fromSpeciesId: 164, fromName: "BaoHackmon",
+                toPadraoLevel: 20, toPadraoAge: 24, targetName: "SaviorHackmon",
+                premiumStat: TrainingType.Speed, premiumFloor: 185, premiumLevel: 36, premiumAge: 12, premiumName: "Jesmon",
+                defaultLevel: 28, defaultAge: 50, defaultName: "Gankoomon");
+
+            // Wingdramon: rota mais fraca é Coredramon (Blue), mas ele só existe de verdade por
+            // ter evoluído (assinatura Vel) do Dracomon.
+            TestPremiumELine(
+                fromSpeciesId: 136, fromName: "Coredramon (Blue)",
+                toPadraoLevel: 20, toPadraoAge: 24, targetName: "Wingdramon",
+                premiumStat: TrainingType.Attack, premiumFloor: 235, premiumLevel: 36, premiumAge: 12, premiumName: "SlayerDramon",
+                defaultLevel: 28, defaultAge: 50, defaultName: "Dynasmon",
+                preFromSpeciesId: 132, preFromName: "Dracomon", preStat: TrainingType.Speed, preFloor: 108, preLevel: 18, preAge: 5);
+        }
+
+        /// <summary>Padrão comum aos 3 casos do G: chega no Ultimate-alvo pela rota Champion mais
+        /// fraca (padrão, sem treino) - opcionalmente voltando mais um estágio (Rookie), se o
+        /// Champion em si só existir de verdade por ter evoluído pela própria assinatura -,
+        /// depois testa separadamente (1) treinar só a assinatura da premium até o Lv da premium -
+        /// confirma que ela vence e que o padrão Mega (que exige Idade bem maior) não dispara
+        /// antes - e (2) sem treino nenhum, até a Idade da forma padrão Mega.</summary>
+        private void TestPremiumELine(
+            int fromSpeciesId, string fromName, int toPadraoLevel, int toPadraoAge, string targetName,
+            TrainingType premiumStat, int premiumFloor, int premiumLevel, int premiumAge, string premiumName,
+            int defaultLevel, int defaultAge, string defaultName,
+            int? preFromSpeciesId = null, string preFromName = null, TrainingType preStat = default, int preFloor = 0, int preLevel = 0, int preAge = 0)
+        {
+            DigimonInstance ChegarNoChampion()
+            {
+                if (!preFromSpeciesId.HasValue)
+                    return SpawnNatural(fromSpeciesId);
+
+                var pre = SpawnNatural(preFromSpeciesId.Value);
+
+                GrowLeg(pre, preLevel, preAge, preStat, preFloor);
+
+                Check(pre.BaseData.Name == fromName, $"G-1 ({fromName}): chegou vindo de {preFromName} (só {preStat}) - {pre.BaseData.Name}");
+
+                return pre;
+            }
+
+            // (1) só a assinatura da premium, até o Lv da premium.
+            ResetScratch();
+
+            var premium = ChegarNoChampion();
+
+            GrowLeg(premium, toPadraoLevel, toPadraoAge);
+
+            Check(premium.BaseData.Name == targetName, $"G0 ({targetName}): chegou vindo de {fromName} sem treino - {premium.BaseData.Name}");
+
+            GrowLeg(premium, premiumLevel, premiumAge, premiumStat, premiumFloor, maxBattles: 260);
+
+            GD.Print($"  [diagnóstico G1 {targetName}->{premiumName}] Lv{premium.Level} Age{premium.AgeInDays} HP{premium.CurrentStats.HealthPoints} PA{premium.CurrentStats.PhysicalDamage} PD{premium.CurrentStats.PhysicalDefense} Vel{premium.CurrentStats.Speed} nome={premium.BaseData.Name}");
+
+            Check(premium.BaseData.Name == premiumName,
+                $"G1 ({fromName} -> {targetName} -> só {premiumStat}, até o Lv {premiumLevel}): resultado {premium.BaseData.Name} " +
+                $"(esperado {premiumName}, sem {defaultName} disparar antes - Idade ficou em {premium.AgeInDays}, bem abaixo dos {defaultAge} que {defaultName} exige)");
+
+            // (2) sem treino nenhum, até a Idade da forma padrão Mega.
+            ResetScratch();
+
+            var none = ChegarNoChampion();
+
+            GrowLeg(none, toPadraoLevel, toPadraoAge);
+
+            Check(none.BaseData.Name == targetName, $"G0 ({targetName}, 2ª cadeia): chegou vindo de {fromName} sem treino - {none.BaseData.Name}");
+
+            GrowLeg(none, defaultLevel, defaultAge);
+
+            Check(none.BaseData.Name == defaultName,
+                $"G2 ({fromName} -> {targetName} -> sem treino, até a Idade {defaultAge}): resultado {none.BaseData.Name} (esperado {defaultName} - forma padrão)");
+        }
+
+        // ------------------------------------------------------------------ caso h) Chirinmon
+
+        private void CaseH_Chirinmon()
+        {
+            GD.Print("\n--- Caso H: Chirinmon (id 131), pela cadeia real a partir de Reppamon (id 130) ---");
+
+            const int reppamonId = 130;
+
+            // Diferente de Grademon/SaviorHackmon/Wingdramon: Reppamon NÃO tem rota padrão pra
+            // Chirinmon (a própria Reppamon->Chirinmon é a rota "EA", já que a rota padrão de
+            // Reppamon vai pra Taomon) - chegar em Chirinmon exige treinar EA de qualquer forma.
+            DigimonInstance ChegarEmChirinmon()
+            {
+                var d = SpawnNatural(reppamonId);
+
+                GrowLeg(d, requiredLevel: 28, requiredAge: 8, stat: TrainingType.SpecialAttack, floor: 243);
+
+                return d;
+            }
+
+            ResetScratch();
+
+            var premium = ChegarEmChirinmon();
+
+            Check(premium.BaseData.Name == "Chirinmon", $"H0: chegou em Chirinmon vindo de Reppamon (via EA) - {premium.BaseData.Name}");
+
+            // Sleipmon pede PA (assinatura) E Vel (base compartilhada com Kentaurusmon/Sleipmon) -
+            // o Vel natural da cadeia (Reppamon treinado só em EA) não chega lá sozinho.
+            GrowLeg(premium, requiredLevel: 36, requiredAge: 12,
+                new (TrainingType, int)[] { (TrainingType.Attack, 265), (TrainingType.Speed, 150) }, maxBattles: 260);
+
+            GD.Print($"  [diagnóstico H1] Lv{premium.Level} Age{premium.AgeInDays} HP{premium.CurrentStats.HealthPoints} PA{premium.CurrentStats.PhysicalDamage} PD{premium.CurrentStats.PhysicalDefense} EA{premium.CurrentStats.SpecialDamage} Vel{premium.CurrentStats.Speed} Happ{premium.Happiness} Disc{premium.Discipline} nome={premium.BaseData.Name}");
+
+            Check(premium.BaseData.Name == "Sleipmon",
+                $"H1 (Reppamon -> Chirinmon -> só PA, até o Lv 36): resultado {premium.BaseData.Name} " +
+                $"(esperado Sleipmon, sem Kentaurusmon disparar antes - Idade ficou em {premium.AgeInDays}, bem abaixo dos 50 que Kentaurusmon exige)");
+
+            ResetScratch();
+
+            var none = ChegarEmChirinmon();
+
+            Check(none.BaseData.Name == "Chirinmon", $"H0 (2ª cadeia): chegou em Chirinmon vindo de Reppamon (via EA) - {none.BaseData.Name}");
+
+            GrowLeg(none, requiredLevel: 28, requiredAge: 50);
+
+            Check(none.BaseData.Name == "Kentaurusmon",
+                $"H2 (Reppamon -> Chirinmon -> sem mais treino, até a Idade 50): resultado {none.BaseData.Name} (esperado Kentaurusmon - forma padrão)");
         }
     }
 }

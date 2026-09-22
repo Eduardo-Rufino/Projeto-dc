@@ -20,7 +20,11 @@ O que mede (modelo simplificado das regras da seção 2 do REQUISITOS_EVOLUCAO.m
   B. Forma padrão: irmã com Idade >= teto do estágio - 2 é tratada como rede de segurança;
      verifica que nenhuma outra irmã fica válida só de subir de nível (sem treinar).
   C. Empates de score entre irmãs.
+  E. Forma padrão alcançável: um Digimon que não treinou nada e veio pela rota mais fraca tem de
+     cumprir os stats dela só subindo de nível.
   D. Pais sem nenhuma rota para quem não se especializa (sem forma padrão nem irmã barata).
+Stats de entrada de cada forma: pior caso pela cadeia completa desde o ovo, considerando todas
+as rotas de entrada e a fórmula real de evolução (max(stat*xMult, lerp(..., ficha, 0.4))).
 Premissas do modelo: ver PREMISSAS no PROMPT. Se o código real divergir delas, os números
 mudam — é exatamente isso que precisa ser conferido antes de aplicar.
 """
@@ -102,15 +106,46 @@ def score(e):
 
 
 # ------------------------------------------------------------------ modelo
-def entry(D, inc, name):
-    st = dict(D[name]['base'])
-    ins = inc[name]
-    if not ins:
-        return st, 1
-    best = min(ins, key=lambda x: (x['lv'], sum(x[s] for s in STATS)))
+ORDER = ['Baby', 'InTraining', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'MegaPlus', 'Special']
+
+
+def evolve(pre, mult, ficha):
+    """Fórmula real (DigimonInstance.cs): m = int(stat*xMult); max(m, int(lerp(m, ficha, 0.4)))."""
+    out = {}
     for s in STATS:
-        st[s] = max(st[s], int(round(best[s] * best['mult'])))
-    return st, best['lv']
+        m = int(pre[s] * mult)
+        out[s] = max(m, int(m + (ficha[s] - m) * 0.4))
+    return out
+
+
+def anchors(D, inc):
+    """Pior caso pela cadeia completa desde o ovo, por TODAS as rotas de entrada: para cada
+    forma, o menor valor de cada stat com que um Digimon pode chegar nela sem treinar além do
+    que os requisitos exigiram. Como o crescimento é linear no nível, guarda a âncora
+    min(stat - g*nível); a projeção no nível L é âncora + g*L."""
+    anc, lvmin = {}, {}
+    for n in sorted(D, key=lambda n: ORDER.index(D[n]['stage']) if D[n]['stage'] in ORDER else 99):
+        best = None
+        for e in inc[n]:
+            if e['src'] not in anc:
+                continue
+            L = e['lv']
+            proj = {s: anc[e['src']][s] + GROWTH[s] * L for s in STATS}
+            arr = evolve({s: max(proj[s], e[s]) for s in STATS}, e['mult'], D[n]['base'])
+            a = {s: arr[s] - GROWTH[s] * L for s in STATS}
+            best = a if best is None else {s: min(best[s], a[s]) for s in STATS}
+        anc[n] = best or {s: D[n]['base'][s] - GROWTH[s] for s in STATS}   # ovo ou Jogress: ficha no Lv 1
+        lvmin[n] = min((e['lv'] for e in inc[n]), default=1)
+    return anc, lvmin
+
+
+_ANC = {}
+
+
+def entry(D, inc, name):
+    anc, lvmin = _ANC['anc'], _ANC['lvmin']
+    lv = lvmin[name]
+    return {s: anc[name][s] + GROWTH[s] * lv for s in STATS}, lv
 
 
 def valid(e, st, lv, beh):
@@ -218,7 +253,8 @@ def main():
     for e in E:
         if e['tipo'] == 'normal':
             inc[e['dst']].append(e); out[e['src']].append(e)
-    bloqueadas, padrao_ruim, empates, sem_rede = [], [], [], []
+    _ANC['anc'], _ANC['lvmin'] = anchors(D, inc)
+    bloqueadas, padrao_ruim, empates, sem_rede, padrao_inalc = [], [], [], [], []
     n_alvo = 0
     for src, sibs in sorted(out.items()):
         if len(sibs) < 2:
@@ -229,6 +265,10 @@ def main():
             n_alvo += 1
             if T['age'] >= SAFE.get(stg, 999):
                 beh = dict(disc=50, fel=50, bat=15, vit=60)
+                natL = {s: st0[s] + GROWTH[s] * (T['lv'] - lv0) for s in STATS}
+                falta = {s: T[s] - natL[s] for s in STATS if T[s] > natL[s]}
+                if falta:
+                    padrao_inalc.append((src, T['dst'], T['lv'], falta))
                 for L in range(lv0, max(o['lv'] for o in sibs) + 1):
                     stL = {s: st0[s] + GROWTH[s] * (L - lv0) for s in STATS}
                     v = [o for o in sibs if o is not T and valid(o, stL, L, beh)]
@@ -253,13 +293,16 @@ def main():
     print(f"\nB. Formas padrão atropeladas por irmã que sai só de subir de nível: {len(padrao_ruim)}")
     for p in padrao_ruim:
         print(f"   {p[0]} -> {p[1]}: {p[2]} fica válida sem treino")
+    print(f"\nE. Formas padrão que um Digimon sem treino (rota mais fraca) não alcança: {len(padrao_inalc)}")
+    for p in padrao_inalc:
+        print(f"   {p[0]} -> {p[1]} (Lv {p[2]}): falta " + ', '.join(f'{k} +{v}' for k, v in p[3].items()))
     print(f"\nC. Empates de score entre irmãs: {len(empates)}")
     for p in empates:
         print(f"   {p[0]}: score {p[1]} -> {', '.join(p[2])}")
     print(f"\nD. Pais sem forma padrão (Idade >= teto-2): {len(sem_rede)}  (informativo: nesses, quem"
           f" não treina a assinatura de nenhuma irmã depende de cumprir uma delas)")
     if a.json:
-        json.dump(dict(bloqueadas=bloqueadas, padrao_ruim=padrao_ruim, empates=empates, sem_rede=sem_rede),
+        json.dump(dict(bloqueadas=bloqueadas, padrao_ruim=padrao_ruim, padrao_inalc=padrao_inalc, empates=empates, sem_rede=sem_rede),
                   open(a.json, 'w'), ensure_ascii=False, indent=1)
 
 

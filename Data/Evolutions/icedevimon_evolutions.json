@@ -7,11 +7,11 @@
     "statMultiplier": 1.6,
     "requiredStats": {
       "healthPoints": 173,
-      "physicalDamage": 176,
+      "physicalDamage": 132,
       "physicalDefense": 0,
       "specialDamage": 0,
       "specialDefense": 0,
-      "speed": 129
+      "speed": 126
     }
   },
   {
@@ -22,7 +22,7 @@
     "statMultiplier": 1.6,
     "requiredStats": {
       "healthPoints": 173,
-      "physicalDamage": 176,
+      "physicalDamage": 132,
       "physicalDefense": 0,
       "specialDamage": 0,
       "specialDefense": 0,

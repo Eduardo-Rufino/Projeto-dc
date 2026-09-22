@@ -10,8 +10,8 @@
       "physicalDamage": 0,
       "physicalDefense": 0,
       "specialDamage": 243,
-      "specialDefense": 57,
-      "speed": 114
+      "specialDefense": 31,
+      "speed": 88
     }
   },
   {
@@ -25,8 +25,8 @@
       "physicalDamage": 0,
       "physicalDefense": 0,
       "specialDamage": 158,
-      "specialDefense": 57,
-      "speed": 106
+      "specialDefense": 31,
+      "speed": 80
     }
   }
 ]

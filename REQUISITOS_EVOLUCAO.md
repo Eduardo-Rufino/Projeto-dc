@@ -102,10 +102,10 @@ A intenção de design: com esforço moderado o Digimon chega a uma **forma mais
 | Transição | Nº de evoluções | Nível (mín / mediana / máx) | Idade (mín / mediana / máx) | Soma dos stats exigidos (mín / mediana / máx) | Com Batalhas/Vitórias/Disc/Felic | xMult (mín-máx) |
 |---|---|---|---|---|---|---|
 | Baby -> InTraining | 49 | 2 / 2 / 2 | 0 / 0 / 2 | 37 / 53 / 70 | 6 | 1.15-1.2 |
-| InTraining -> Rookie | 59 | 2 / 2 / 3 | 0 / 0 / 5 | 20 / 103 / 152 | 6 | 1.25-1.3 |
-| Rookie -> Champion | 72 | 12 / 12 / 18 | 2 / 2 / 13 | 182 / 260 / 417 | 10 | 1.8-1.9 |
-| Champion -> Ultimate | 75 | 20 / 20 / 28 | 5 / 8 / 24 | 381 / 518 / 813 | 8 | 1.6-1.7 |
-| Ultimate -> Mega | 81 | 28 / 28 / 36 | 8 / 12 / 50 | 674 / 845 / 1394 | 21 | 1.7-1.8 |
+| InTraining -> Rookie | 59 | 2 / 2 / 3 | 0 / 0 / 5 | 20 / 97 / 152 | 6 | 1.25-1.3 |
+| Rookie -> Champion | 72 | 12 / 12 / 18 | 2 / 2 / 13 | 145 / 242 / 417 | 10 | 1.8-1.9 |
+| Champion -> Ultimate | 75 | 20 / 20 / 28 | 5 / 8 / 24 | 316 / 473 / 813 | 8 | 1.6-1.7 |
+| Ultimate -> Mega | 81 | 28 / 28 / 36 | 8 / 12 / 50 | 557 / 781 / 1394 | 21 | 1.7-1.8 |
 | Mega -> Mega | 1 | 45 / 45 / 45 | 14 / 14 / 14 | 1208 / 1208 / 1208 | 1 | 1.1-1.1 |
 
 ## 5. Pontos de atenção detectados automaticamente
@@ -126,7 +126,7 @@ Total: **0**
 - nenhum
 
 ### 5.5 Evoluções que exigem EA/ED sem o Digimon de origem ter Role/AttackType especial
-Origem com `AttackType` Physical exigindo EA/ED > 0: **32** evoluções (EA/ED só sobem por treino). Exemplos: Agumon->Dimetromon (EA 58, ED 0); Belphemon Sleep Mode->Belphemon Rage Mode (EA 0, ED 141); Biyomon->Birdramon (EA 17, ED 0); Devimon->Myotismon (EA 100, ED 0); Gabumon->Garurumon (EA 17, ED 0); Gigimon->Elizamon (EA 34, ED 0); Gomamon->Tortamon (EA 0, ED 43); Goromon->Kotemon (EA 0, ED 18); Greymon->MetalGreymon (EA 67, ED 0); Greymon->RizeGreymon (EA 67, ED 0); Groundramon->Dorugoramon (EA 0, ED 76); Gummymon->Terriermon (EA 6, ED 0)
+Origem com `AttackType` Physical exigindo EA/ED > 0: **32** evoluções (EA/ED só sobem por treino). Exemplos: Agumon->Dimetromon (EA 58, ED 0); Belphemon Sleep Mode->Belphemon Rage Mode (EA 0, ED 141); Biyomon->Birdramon (EA 17, ED 0); Devimon->Myotismon (EA 100, ED 0); Gabumon->Garurumon (EA 17, ED 0); Gigimon->Elizamon (EA 34, ED 0); Gomamon->Tortamon (EA 0, ED 43); Goromon->Kotemon (EA 0, ED 18); Greymon->MetalGreymon (EA 30, ED 0); Greymon->RizeGreymon (EA 30, ED 0); Groundramon->Dorugoramon (EA 0, ED 56); Gummymon->Terriermon (EA 6, ED 0)
 
 ## 6. Receitas Jogress (fusão de dois Digimons)
 
@@ -163,7 +163,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Tsunomon (#30) | InTraining | 2 | - | 25 | 12 | 4 | - | - | 5 | - | 1.2 | 48 | canon | normal |
-| Gummymon (#34) | InTraining | 2 | 2 | 26 | - | 8 | 11 | - | - | - | 1.15 | 49 | design | normal |
+| Gummymon (#34) | InTraining | 2 | 2 | 24 | - | 8 | 11 | - | - | - | 1.15 | 47 | design | normal |
 | Viximon (#35) | InTraining | 2 | - | 25 | - | 14 | 6 | - | 5 | - | 1.15 | 52 | design | normal |
 
 #### Yuramon (#27) - Baby | Role Ranged | Special | Free / Neutral | Ovo: Forest
@@ -228,7 +228,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Fluffymon (#77) | InTraining | 2 | - | 25 | - | - | 19 | - | 9 | - | 1.2 | 55 | design | normal |
-| Babydmon (#173) | InTraining | 2 | 2 | 26 | - | 7 | 10 | - | 9 | - | 1.15 | 56 | design | normal |
+| Babydmon (#173) | InTraining | 2 | 2 | 24 | - | 7 | 10 | - | 9 | - | 1.15 | 54 | design | normal |
 
 #### Jyarimon (#83) - Baby | Role Assassin | Special | Virus / Dark | Ovo: Dragon
 
@@ -279,7 +279,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Yaamon (#38) | InTraining | 2 | 2 | 23 | - | 7 | 9 | - | 8 | - | 1.15 | 51 | design | normal |
-| Tsumemon (#115) | InTraining | 2 | - | 24 | - | - | 18 | - | 8 | - | 1.2 | 52 | canon | normal |
+| Tsumemon (#115) | InTraining | 2 | - | 22 | - | - | 18 | - | 8 | - | 1.2 | 50 | canon | normal |
 
 #### Puttimon (#172) - Baby | Role Warrior | Physical | Data / Fire | Ovo: Dragon
 
@@ -341,7 +341,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Tanemon (#36) | InTraining | 2 | - | 25 | - | - | 19 | - | 9 | - | 1.15 | 55 | design | normal |
 | Yokomon (#58) | InTraining | 2 | 2 | 25 | - | - | 10 | - | 9 | - | 1.15 | 48 | canon | normal |
-| Budmon (#190) | InTraining | 2 | - | 26 | - | - | 10 | - | 18 | - | 1.15 | 56 | design | normal |
+| Budmon (#190) | InTraining | 2 | - | 24 | - | - | 10 | - | 18 | - | 1.15 | 54 | design | normal |
 
 #### Leafmon (#195) - Baby | Role Ranged | Special | Free / Neutral | Ovo: Forest
 
@@ -362,9 +362,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Agumon (#1) | Rookie | 2 | - | 45 | 38 | - | 3 | - | 8 | - | 1.25 | 96 | canon | normal |
-| Agumon (Savers) (#11) | Rookie | 2 | 5 | 45 | 20 | - | - | - | - | - | 1.25 | 72 | canon | normal |
-| Veemon (#139) | Rookie | 2 | - | 45 | 20 | 11 | - | - | 25 | - | 1.25 | 103 | design | normal |
+| Agumon (#1) | Rookie | 2 | - | 35 | 38 | - | 1 | - | 6 | - | 1.25 | 82 | canon | normal |
+| Agumon (Savers) (#11) | Rookie | 2 | 5 | 35 | 17 | - | - | - | - | - | 1.25 | 59 | canon | normal |
+| Veemon (#139) | Rookie | 2 | - | 35 | 17 | 9 | - | - | 25 | - | 1.25 | 88 | design | normal |
 
 #### Tsunomon (#30) - InTraining | Role Warrior | Physical | Free / Neutral | Ovo: Dragon
 
@@ -373,9 +373,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Gabumon (#2) | Rookie | 2 | - | 45 | 20 | - | 3 | - | 25 | - | 1.3 | 95 | canon | normal |
-| Elizamon (#84) | Rookie | 2 | 5 | 45 | 20 | 11 | - | - | - | - | 1.25 | 83 | design | normal |
-| Kotemon (#145) | Rookie | 2 | - | 45 | 38 | 11 | - | - | - | - | 1.25 | 96 | design | normal |
+| Gabumon (#2) | Rookie | 2 | - | 36 | 16 | - | 1 | - | 25 | - | 1.3 | 80 | canon | normal |
+| Elizamon (#84) | Rookie | 2 | 5 | 36 | 16 | 9 | - | - | - | - | 1.25 | 68 | design | normal |
+| Kotemon (#145) | Rookie | 2 | - | 36 | 38 | 9 | - | - | - | - | 1.25 | 85 | design | normal |
 
 #### Tokomon (#31) - InTraining | Role Ranged | Physical | Free / Neutral | Ovo: Dragon
 
@@ -405,9 +405,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Guilmon (#7) | Rookie | 2 | 5 | 45 | 19 | - | - | - | 16 | - | 1.25 | 87 | canon | normal |
+| Guilmon (#7) | Rookie | 2 | 5 | 37 | 14 | - | - | - | 11 | - | 1.25 | 69 | canon | normal |
 | Elizamon (#84) | Rookie | 2 | - | 67 | - | - | 34 | - | 26 | Disc≤45 | 1.25 | 184 | design | normal |
-| Dorumon (#149) | Rookie | 2 | - | 45 | 19 | - | - | - | 33 | Batalhas≥8 | 1.25 | 107 | design | normal |
+| Dorumon (#149) | Rookie | 2 | - | 37 | 14 | - | - | - | 33 | Batalhas≥8 | 1.25 | 94 | design | normal |
 
 #### Gummymon (#34) - InTraining | Role Ranged | Physical | Free / Neutral | Ovo: Dragon
 
@@ -446,9 +446,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Gaomon (#5) | Rookie | 2 | - | 45 | 38 | 15 | - | - | - | Batalhas≥8 | 1.25 | 108 | design | normal |
-| Kotemon (#145) | Rookie | 2 | 5 | 45 | 20 | 15 | - | - | - | - | 1.25 | 87 | design | normal |
-| Kudamon (#129) | Rookie | 3 | 1 | 50 | 22 | 17 | - | - | 26 | - | 1.25 | 119 | design | normal |
+| Gaomon (#5) | Rookie | 2 | - | 35 | 38 | 15 | - | - | - | Batalhas≥8 | 1.25 | 98 | design | normal |
+| Kotemon (#145) | Rookie | 2 | 5 | 35 | 17 | 15 | - | - | - | - | 1.25 | 74 | design | normal |
+| Kudamon (#129) | Rookie | 3 | 1 | 39 | 19 | 17 | - | - | 26 | - | 1.25 | 105 | design | normal |
 
 #### Yaamon (#38) - InTraining | Role Warrior | Physical | Free / Neutral | Ovo: Dark
 
@@ -457,9 +457,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Shoemon (#91) | Rookie | 2 | - | 45 | 20 | 28 | - | - | - | - | 1.25 | 95 | design | normal |
-| Ghostmon (#102) | Rookie | 2 | 5 | 45 | 20 | 11 | - | - | - | - | 1.25 | 83 | design | normal |
-| Impmon (#10) | Rookie | 3 | 1 | 50 | - | - | 3 | - | 27 | - | 1.25 | 84 | canon | normal |
+| Shoemon (#91) | Rookie | 2 | - | 34 | 10 | 28 | - | - | - | - | 1.25 | 74 | design | normal |
+| Ghostmon (#102) | Rookie | 2 | 5 | 34 | 10 | 7 | - | - | - | - | 1.25 | 58 | design | normal |
+| Impmon (#10) | Rookie | 3 | 1 | 38 | - | - | 3 | - | 27 | - | 1.25 | 72 | canon | normal |
 
 #### Yokomon (#58) - InTraining | Role Ranged | Physical | Free / Neutral | Ovo: Beast
 
@@ -468,9 +468,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Biyomon (#59) | Rookie | 2 | 5 | 45 | 19 | - | - | - | 16 | - | 1.25 | 87 | canon | normal |
-| Muchomon (#96) | Rookie | 2 | - | 45 | 36 | - | - | - | - | - | 1.25 | 83 | design | normal |
-| Wormmon (#197) | Rookie | 2 | - | 45 | 19 | - | - | - | 33 | - | 1.25 | 99 | canon | normal |
+| Biyomon (#59) | Rookie | 2 | 5 | 35 | 9 | - | - | - | 12 | - | 1.25 | 63 | canon | normal |
+| Muchomon (#96) | Rookie | 2 | - | 35 | 36 | - | - | - | - | - | 1.25 | 73 | design | normal |
+| Wormmon (#197) | Rookie | 2 | - | 35 | 9 | - | - | - | 33 | - | 1.25 | 79 | canon | normal |
 
 #### Bukamon (#64) - InTraining | Role Warrior | Physical | Free / Neutral | Ovo: Water
 
@@ -500,9 +500,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Biyomon (#59) | Rookie | 2 | - | 43 | - | 10 | 21 | - | 35 | - | 1.25 | 111 | design | normal |
-| Pteromon (#78) | Rookie | 2 | 5 | 43 | - | - | 21 | - | 18 | - | 1.25 | 89 | design | normal |
-| Muchomon (#96) | Rookie | 2 | - | 43 | 24 | 10 | 21 | - | 18 | Batalhas≥8 | 1.25 | 126 | design | normal |
+| Biyomon (#59) | Rookie | 2 | - | 35 | - | 7 | 8 | - | 35 | - | 1.25 | 87 | design | normal |
+| Pteromon (#78) | Rookie | 2 | 5 | 35 | - | - | 8 | - | 13 | - | 1.25 | 63 | design | normal |
+| Muchomon (#96) | Rookie | 2 | - | 35 | 24 | 7 | 8 | - | 13 | Batalhas≥8 | 1.25 | 97 | design | normal |
 
 #### Kyaromon (#90) - InTraining | Role Support | Special | Virus / Dark | Ovo: Dark | Suporte: Buffer
 
@@ -594,9 +594,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Tentomon (#3) | Rookie | 2 | - | 45 | - | 25 | 16 | - | 13 | - | 1.25 | 101 | canon | normal |
-| Palmon (#6) | Rookie | 2 | - | 45 | - | 8 | 20 | - | 30 | - | 1.25 | 105 | design | normal |
-| Wormmon (#197) | Rookie | 2 | 5 | 45 | - | 8 | 20 | - | 13 | - | 1.25 | 93 | canon | normal |
+| Tentomon (#3) | Rookie | 2 | - | 35 | - | 25 | 16 | - | 11 | - | 1.25 | 89 | canon | normal |
+| Palmon (#6) | Rookie | 2 | - | 35 | - | 6 | 18 | - | 30 | - | 1.25 | 91 | design | normal |
+| Wormmon (#197) | Rookie | 2 | 5 | 35 | - | 6 | 18 | - | 11 | - | 1.25 | 77 | canon | normal |
 
 ### Estágio Rookie (32 Digimons)
 
@@ -628,8 +628,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Kabuterimon (#15) | Champion | 12 | 13 | 175 | - | 49 | - | 30 | - | - | 1.85 | 279 | canon | normal |
-| Togemon (#17) | Champion | 12 | 2 | 175 | 69 | 49 | - | 30 | - | - | 1.85 | 337 | design | normal |
+| Kabuterimon (#15) | Champion | 12 | 13 | 124 | - | 38 | - | 16 | - | - | 1.85 | 203 | canon | normal |
+| Togemon (#17) | Champion | 12 | 2 | 124 | 69 | 38 | - | 16 | - | - | 1.85 | 261 | design | normal |
 
 #### Patamon (#4) - Rookie | Role Ranged | Physical | Data / Wind | Ovo: Light
 
@@ -648,9 +648,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Garurumon (#14) | Champion | 12 | 13 | 146 | 64 | 39 | - | - | 30 | - | 1.85 | 304 | design | normal |
-| Gaogamon (#23) | Champion | 12 | 2 | 146 | 108 | - | - | - | 30 | - | 1.85 | 298 | canon | normal |
-| Gladimon (#146) | Champion | 18 | 5 | 166 | 76 | 51 | - | - | 82 | - | 1.9 | 398 | design | normal |
+| Garurumon (#14) | Champion | 12 | 13 | 113 | 58 | 31 | - | - | 21 | - | 1.85 | 248 | design | normal |
+| Gaogamon (#23) | Champion | 12 | 2 | 113 | 108 | - | - | - | 21 | - | 1.85 | 256 | canon | normal |
+| Gladimon (#146) | Champion | 18 | 5 | 141 | 70 | 42 | - | - | 82 | - | 1.9 | 358 | design | normal |
 
 #### Palmon (#6) - Rookie | Role Ranged | Physical | Data / Earth | Ovo: Forest
 
@@ -669,9 +669,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Growlmon (#18) | Champion | 12 | 2 | 146 | 104 | - | - | - | 28 | - | 1.85 | 292 | canon | normal |
+| Growlmon (#18) | Champion | 12 | 2 | 114 | 104 | - | - | - | 24 | - | 1.85 | 256 | canon | normal |
 | Devidramon (#47) | Champion | 12 | 2 | 70 | 115 | - | - | - | 75 | Disc≤30 | 1.85 | 344 | design | normal |
-| Dimetromon (#85) | Champion | 12 | 13 | 146 | 60 | 41 | - | - | - | - | 1.8 | 272 | design | normal |
+| Dimetromon (#85) | Champion | 12 | 13 | 114 | 45 | 34 | - | - | - | - | 1.8 | 218 | design | normal |
 
 #### Terriermon (#8) - Rookie | Role Ranged | Special | Vacine / Wind | Ovo: Beast
 
@@ -690,8 +690,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Kyubimon (#20) | Champion | 12 | 13 | 80 | - | - | 64 | - | 53 | - | 1.85 | 222 | canon | normal |
-| Reppamon (#130) | Champion | 18 | 5 | 82 | - | - | 114 | - | 58 | - | 1.9 | 277 | design | normal |
+| Kyubimon (#20) | Champion | 12 | 13 | 80 | - | - | 29 | - | 36 | - | 1.85 | 170 | canon | normal |
+| Reppamon (#130) | Champion | 18 | 5 | 82 | - | - | 114 | - | 41 | - | 1.9 | 260 | design | normal |
 
 #### Impmon (#10) - Rookie | Role Ranged | Special | Virus / Dark | Ovo: Dark
 
@@ -700,9 +700,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Wizardmon (#21) | Champion | 12 | 2 | 114 | - | - | 82 | - | 41 | Felic≥55 | 1.85 | 306 | design | normal |
+| Wizardmon (#21) | Champion | 12 | 2 | 100 | - | - | 82 | - | 39 | Felic≥55 | 1.85 | 290 | design | normal |
 | Devimon (#45) | Champion | 12 | 2 | 121 | - | - | 72 | - | 63 | Disc≤40 | 1.85 | 330 | design | normal |
-| Bakemon (#103) | Champion | 12 | 13 | 114 | - | - | 39 | - | 41 | - | 1.8 | 219 | design | normal |
+| Bakemon (#103) | Champion | 12 | 13 | 100 | - | - | 22 | - | 39 | - | 1.8 | 186 | design | normal |
 
 #### Agumon (Savers) (#11) - Rookie | Role Warrior | Physical | Vacine / Fire | Ovo: Dragon
 
@@ -711,8 +711,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Greymon (#13) | Champion | 12 | 2 | 145 | 85 | 43 | - | - | - | - | 1.85 | 287 | design | normal |
-| Geogreymon (#44) | Champion | 12 | 13 | 145 | 60 | - | - | - | 21 | - | 1.85 | 251 | canon | normal |
+| Greymon (#13) | Champion | 12 | 2 | 112 | 85 | 35 | - | - | - | - | 1.85 | 246 | design | normal |
+| Geogreymon (#44) | Champion | 12 | 13 | 112 | 47 | - | - | - | 19 | - | 1.85 | 203 | canon | normal |
 
 #### Lalamon (#12) - Rookie | Role Support | Special | Data / Earth | Ovo: Forest | Suporte: Healer
 
@@ -721,8 +721,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Togemon (#17) | Champion | 12 | 2 | 136 | 65 | 40 | - | 21 | 36 | - | 1.85 | 312 | design | normal |
-| Sunflowmon (#24) | Champion | 12 | 13 | 136 | - | 40 | - | 21 | 36 | - | 1.85 | 258 | canon | normal |
+| Togemon (#17) | Champion | 12 | 2 | 130 | 65 | 31 | - | 11 | 35 | - | 1.85 | 286 | design | normal |
+| Sunflowmon (#24) | Champion | 12 | 13 | 130 | - | 31 | - | 11 | 35 | - | 1.85 | 232 | canon | normal |
 
 #### Biyomon (#59) - Rookie | Role Ranged | Physical | Vacine / Wind | Ovo: Beast
 
@@ -751,7 +751,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Angemon (#16) | Champion | 12 | 13 | 90 | - | - | 58 | - | 57 | - | 1.85 | 230 | design | normal |
+| Angemon (#16) | Champion | 12 | 13 | 90 | - | - | 42 | - | 46 | - | 1.85 | 203 | design | normal |
 | Wizardmon (#21) | Champion | 12 | 2 | 90 | - | - | 100 | - | 80 | Disc≤40 | 1.85 | 344 | design | normal |
 
 #### Pteromon (#78) - Rookie | Role Ranged | Special | Data / Wind | Ovo: Dragon
@@ -761,9 +761,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Birdramon (#60) | Champion | 12 | 2 | 110 | - | - | 98 | - | 57 | - | 1.85 | 279 | design | normal |
-| Galemon (#79) | Champion | 12 | 13 | 105 | - | - | 55 | - | 57 | - | 1.8 | 242 | design | normal |
-| Coredramon (Blue) (#136) | Champion | 18 | 5 | 110 | - | - | 55 | - | 108 | Batalhas≥8 | 1.9 | 304 | design | normal |
+| Birdramon (#60) | Champion | 12 | 2 | 98 | - | - | 98 | - | 38 | - | 1.85 | 248 | design | normal |
+| Galemon (#79) | Champion | 12 | 13 | 98 | - | - | 27 | - | 38 | - | 1.8 | 188 | design | normal |
+| Coredramon (Blue) (#136) | Champion | 18 | 5 | 110 | - | - | 27 | - | 108 | Batalhas≥8 | 1.9 | 276 | design | normal |
 
 #### Elizamon (#84) - Rookie | Role Assassin | Special | Virus / Dark | Ovo: Dragon
 
@@ -772,9 +772,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Devidramon (#47) | Champion | 12 | 2 | 93 | - | - | 58 | - | 104 | - | 1.85 | 269 | design | normal |
-| Dimetromon (#85) | Champion | 12 | 13 | 87 | - | - | 58 | - | 60 | - | 1.8 | 230 | design | normal |
-| Tortamon (#110) | Champion | 12 | 2 | 96 | - | 74 | 58 | - | 60 | - | 1.8 | 302 | design | normal |
+| Devidramon (#47) | Champion | 12 | 2 | 93 | - | - | 24 | - | 104 | - | 1.85 | 235 | design | normal |
+| Dimetromon (#85) | Champion | 12 | 13 | 87 | - | - | 24 | - | 34 | - | 1.8 | 170 | design | normal |
+| Tortamon (#110) | Champion | 12 | 2 | 95 | - | 74 | 24 | - | 34 | - | 1.8 | 241 | design | normal |
 
 #### Shoemon (#91) - Rookie | Role Support | Special | Virus / Dark | Ovo: Dark | Suporte: Debuffer
 
@@ -783,8 +783,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Wizardmon (#21) | Champion | 12 | 2 | 115 | - | - | 80 | 23 | 36 | - | 1.85 | 268 | design | normal |
-| ShoeShoemon (#92) | Champion | 12 | 13 | 108 | - | - | 38 | - | 36 | - | 1.8 | 207 | canon | normal |
+| Wizardmon (#21) | Champion | 12 | 2 | 99 | - | - | 80 | 12 | 25 | - | 1.85 | 230 | design | normal |
+| ShoeShoemon (#92) | Champion | 12 | 13 | 99 | - | - | 21 | - | 25 | - | 1.8 | 170 | canon | normal |
 
 #### Muchomon (#96) - Rookie | Role Warrior | Physical | Data / Wind | Ovo: Beast
 
@@ -793,8 +793,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Birdramon (#60) | Champion | 12 | 2 | 133 | 66 | - | - | - | 88 | - | 1.85 | 301 | design | normal |
-| Cockatrimon (#97) | Champion | 12 | 13 | 133 | 66 | - | - | - | 45 | - | 1.8 | 269 | design | normal |
+| Birdramon (#60) | Champion | 12 | 2 | 107 | 55 | - | - | - | 88 | - | 1.85 | 264 | design | normal |
+| Cockatrimon (#97) | Champion | 12 | 13 | 107 | 55 | - | - | - | 32 | - | 1.8 | 219 | design | normal |
 
 #### Ghostmon (#102) - Rookie | Role Assassin | Special | Virus / Dark | Ovo: Dark
 
@@ -804,7 +804,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Devimon (#45) | Champion | 12 | 2 | 100 | - | - | 95 | - | 87 | Disc≤40 | 1.85 | 356 | design | normal |
-| Bakemon (#103) | Champion | 12 | 13 | 93 | - | - | 52 | - | 55 | - | 1.8 | 225 | design | normal |
+| Bakemon (#103) | Champion | 12 | 13 | 93 | - | - | 27 | - | 33 | - | 1.8 | 178 | design | normal |
 
 #### Sunarizamon (#109) - Rookie | Role Tank | Physical | Virus / Earth | Ovo: Beast
 
@@ -823,8 +823,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Bakemon (#103) | Champion | 12 | 2 | 103 | - | - | 92 | - | 53 | - | 1.8 | 262 | design | normal |
-| Snatchmon (#117) | Champion | 12 | 13 | 96 | - | - | 49 | - | 53 | - | 1.8 | 223 | design | normal |
+| Bakemon (#103) | Champion | 12 | 2 | 103 | - | - | 92 | - | 33 | - | 1.8 | 242 | design | normal |
+| Snatchmon (#117) | Champion | 12 | 13 | 96 | - | - | 38 | - | 33 | - | 1.8 | 192 | design | normal |
 
 #### Lucemon (#124) - Rookie | Role Assassin | Special | Data / Dark | Ovo: Dark
 
@@ -833,8 +833,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Angemon (#16) | Champion | 12 | 13 | 109 | - | - | 52 | - | 54 | - | 1.85 | 240 | design | normal |
-| Devimon (#45) | Champion | 12 | 2 | 109 | 88 | - | 52 | - | 54 | - | 1.85 | 317 | design | normal |
+| Angemon (#16) | Champion | 12 | 13 | 97 | - | - | 41 | - | 46 | - | 1.85 | 209 | design | normal |
+| Devimon (#45) | Champion | 12 | 2 | 97 | 88 | - | 41 | - | 46 | - | 1.85 | 286 | design | normal |
 
 #### Phascomon (#126) - Rookie | Role Tank | Physical | Data / Dark | Ovo: Dark
 
@@ -863,8 +863,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Coredramon (Green) (#133) | Champion | 12 | 13 | 123 | 55 | - | - | - | 47 | - | 1.8 | 250 | canon | normal |
-| Coredramon (Blue) (#136) | Champion | 18 | 5 | 152 | 66 | - | - | - | 108 | - | 1.9 | 349 | canon | normal |
+| Coredramon (Green) (#133) | Champion | 12 | 13 | 103 | 53 | - | - | - | 30 | - | 1.8 | 211 | canon | normal |
+| Coredramon (Blue) (#136) | Champion | 18 | 5 | 132 | 64 | - | - | - | 108 | - | 1.9 | 327 | canon | normal |
 
 #### Veemon (#139) - Rookie | Role Warrior | Physical | Vacine / Fire | Ovo: Dragon
 
@@ -873,8 +873,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Veedramon (#140) | Champion | 12 | 13 | 121 | 53 | - | - | - | 51 | - | 1.8 | 250 | canon | normal |
-| ExVeemon (#191) | Champion | 18 | 5 | 150 | 110 | - | - | - | 57 | - | 1.9 | 340 | canon | normal |
+| Veedramon (#140) | Champion | 12 | 13 | 102 | 44 | - | - | - | 43 | - | 1.8 | 214 | canon | normal |
+| ExVeemon (#191) | Champion | 18 | 5 | 131 | 110 | - | - | - | 49 | - | 1.9 | 313 | canon | normal |
 
 #### Kotemon (#145) - Rookie | Role Warrior | Physical | Data / Neutral | Ovo: Beast
 
@@ -893,9 +893,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Dorugamon (#150) | Champion | 12 | 13 | 119 | 51 | - | - | - | 53 | - | 1.8 | 248 | canon | normal |
-| Raptordramon (#153) | Champion | 18 | 5 | 148 | 120 | - | - | - | 58 | - | 1.9 | 349 | canon | normal |
-| DexDorugamon (#156) | Champion | 18 | 5 | 148 | 62 | - | - | - | 106 | - | 1.9 | 339 | canon | normal |
+| Dorugamon (#150) | Champion | 12 | 13 | 103 | 41 | - | - | - | 43 | - | 1.8 | 212 | canon | normal |
+| Raptordramon (#153) | Champion | 18 | 5 | 132 | 120 | - | - | - | 49 | - | 1.9 | 324 | canon | normal |
+| DexDorugamon (#156) | Champion | 18 | 5 | 132 | 53 | - | - | - | 106 | - | 1.9 | 314 | canon | normal |
 
 #### Hackmon (#163) - Rookie | Role Assassin | Physical | Data / Neutral | Ovo: Dark
 
@@ -904,8 +904,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| BaoHackmon (#164) | Champion | 12 | 13 | 122 | 57 | - | - | - | 56 | - | 1.8 | 260 | canon | normal |
-| Gladimon (#146) | Champion | 18 | 5 | 151 | 120 | 51 | - | - | 61 | - | 1.9 | 406 | design | normal |
+| BaoHackmon (#164) | Champion | 12 | 13 | 112 | 34 | - | - | - | 33 | - | 1.8 | 204 | canon | normal |
+| Gladimon (#146) | Champion | 18 | 5 | 140 | 120 | 43 | - | - | 38 | - | 1.9 | 364 | design | normal |
 
 #### Candlemon (#169) - Rookie | Role Ranged | Special | Virus / Fire | Ovo: Fire
 
@@ -914,8 +914,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Wizardmon (#21) | Champion | 12 | 13 | 110 | - | - | 49 | - | 45 | - | 1.85 | 229 | canon | normal |
-| Bakemon (#103) | Champion | 12 | 2 | 117 | - | - | 92 | - | 45 | - | 1.8 | 268 | design | normal |
+| Wizardmon (#21) | Champion | 12 | 13 | 110 | - | - | 49 | - | 44 | - | 1.85 | 228 | canon | normal |
+| Bakemon (#103) | Champion | 12 | 2 | 114 | - | - | 92 | - | 44 | - | 1.8 | 264 | design | normal |
 
 #### Wormmon (#197) - Rookie | Role Assassin | Physical | Vacine / Plant | Ovo: Forest
 
@@ -924,9 +924,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Kabuterimon (#15) | Champion | 12 | 13 | 114 | 47 | - | - | - | 55 | - | 1.85 | 241 | canon | normal |
-| Togemon (#17) | Champion | 12 | 2 | 114 | 90 | - | - | - | 55 | - | 1.85 | 273 | design | normal |
-| Stingmon (#198) | Champion | 12 | 2 | 113 | 47 | - | - | - | 98 | - | 1.85 | 272 | canon | normal |
+| Kabuterimon (#15) | Champion | 12 | 13 | 99 | 33 | - | - | - | 36 | - | 1.85 | 193 | canon | normal |
+| Togemon (#17) | Champion | 12 | 2 | 99 | 90 | - | - | - | 36 | - | 1.85 | 239 | design | normal |
+| Stingmon (#198) | Champion | 12 | 2 | 99 | 33 | - | - | - | 98 | - | 1.85 | 244 | canon | normal |
 
 ### Estágio Champion (35 Digimons)
 
@@ -937,8 +937,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| MetalGreymon (#39) | Ultimate | 20 | 5 | 292 | 191 | - | 67 | - | 36 | - | 1.6 | 611 | canon | normal |
-| RizeGreymon (#167) | Ultimate | 20 | 24 | 292 | 131 | 74 | 67 | - | - | - | 1.6 | 608 | design | normal |
+| MetalGreymon (#39) | Ultimate | 20 | 5 | 248 | 191 | - | 30 | - | 36 | - | 1.6 | 530 | canon | normal |
+| RizeGreymon (#167) | Ultimate | 20 | 24 | 248 | 131 | 74 | 30 | - | - | - | 1.6 | 527 | design | normal |
 
 #### Garurumon (#14) - Champion | Role Ranged | Special | Vacine / Fire | Ovo: Beast
 
@@ -947,8 +947,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| WereGarurumon (#40) | Ultimate | 20 | 5 | 248 | 34 | - | 127 | - | 113 | - | 1.6 | 547 | canon | normal |
-| MachGaogamon (#48) | Ultimate | 20 | 24 | 248 | - | - | 86 | - | 113 | - | 1.6 | 491 | design | normal |
+| WereGarurumon (#40) | Ultimate | 20 | 5 | 247 | 34 | - | 127 | - | 59 | - | 1.6 | 492 | canon | normal |
+| MachGaogamon (#48) | Ultimate | 20 | 24 | 247 | - | - | 38 | - | 59 | - | 1.6 | 388 | design | normal |
 
 #### Kabuterimon (#15) - Champion | Role Tank | Special | Vacine / Electric | Ovo: Forest
 
@@ -957,9 +957,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| MegaKabuterimon (#51) | Ultimate | 20 | 5 | 351 | - | 80 | 19 | 105 | - | - | 1.6 | 580 | canon | normal |
-| JewelBeemon (#199) | Ultimate | 20 | 24 | 351 | - | 80 | - | 65 | - | - | 1.6 | 540 | canon | normal |
-| Knightmon (#147) | Ultimate | 28 | 8 | 389 | - | 144 | - | 65 | - | - | 1.7 | 634 | design | normal |
+| MegaKabuterimon (#51) | Ultimate | 20 | 5 | 273 | - | 75 | 19 | 105 | - | - | 1.6 | 497 | canon | normal |
+| JewelBeemon (#199) | Ultimate | 20 | 24 | 273 | - | 75 | - | 36 | - | - | 1.6 | 428 | canon | normal |
+| Knightmon (#147) | Ultimate | 28 | 8 | 311 | - | 144 | - | 36 | - | - | 1.7 | 527 | design | normal |
 
 #### Angemon (#16) - Champion | Role Ranged | Special | Vacine / Light | Ovo: Light
 
@@ -968,8 +968,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| MagnaAngemon (#43) | Ultimate | 20 | 5 | 248 | - | - | 127 | - | 113 | Felic≥55 | 1.6 | 568 | canon | normal |
-| Angewomon (#72) | Ultimate | 20 | 24 | 248 | - | - | 86 | - | 113 | - | 1.6 | 491 | design | normal |
+| MagnaAngemon (#43) | Ultimate | 20 | 5 | 218 | - | - | 127 | - | 93 | Felic≥55 | 1.6 | 518 | canon | normal |
+| Angewomon (#72) | Ultimate | 20 | 24 | 218 | - | - | 52 | - | 93 | - | 1.6 | 407 | design | normal |
 | Lucemon Falldown Mode (#125) | Ultimate | 20 | 5 | 298 | - | - | 167 | - | 124 | Disc≤35 | 1.6 | 679 | design | normal |
 
 #### Togemon (#17) - Champion | Role Warrior | Physical | Data / Earth | Ovo: Forest
@@ -999,7 +999,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Rapidmon (#42) | Ultimate | 20 | 24 | 248 | 101 | - | - | - | 113 | - | 1.6 | 506 | canon | normal |
+| Rapidmon (#42) | Ultimate | 20 | 24 | 248 | 84 | - | - | - | 113 | - | 1.6 | 489 | canon | normal |
 | MachGaogamon (#48) | Ultimate | 20 | 5 | 248 | 143 | - | - | - | 113 | - | 1.6 | 529 | design | normal |
 
 #### Kyubimon (#20) - Champion | Role Ranged | Special | Data / Fire | Ovo: Beast
@@ -1009,8 +1009,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Taomon (#49) | Ultimate | 20 | 24 | 214 | - | - | 112 | - | 100 | - | 1.6 | 470 | canon | normal |
-| Mistymon (#170) | Ultimate | 20 | 5 | 214 | - | - | 112 | - | 142 | - | 1.6 | 493 | design | normal |
+| Taomon (#49) | Ultimate | 20 | 24 | 209 | - | - | 66 | - | 76 | - | 1.6 | 395 | canon | normal |
+| Mistymon (#170) | Ultimate | 20 | 5 | 209 | - | - | 66 | - | 142 | - | 1.6 | 442 | design | normal |
 
 #### Wizardmon (#21) - Champion | Role Ranged | Special | Virus / Dark | Ovo: Dark
 
@@ -1039,9 +1039,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Lillymon (#50) | Ultimate | 20 | 24 | 277 | - | 76 | - | 47 | 71 | - | 1.6 | 515 | design | normal |
-| Lilamon (#179) | Ultimate | 20 | 5 | 277 | - | 85 | - | 86 | 71 | Felic≥40 | 1.6 | 584 | canon | normal |
-| JewelBeemon (#199) | Ultimate | 20 | 5 | 277 | - | 77 | - | 47 | 111 | Felic≥40 | 1.6 | 577 | canon | normal |
+| Lillymon (#50) | Ultimate | 20 | 24 | 277 | - | 73 | - | 30 | 71 | - | 1.6 | 495 | design | normal |
+| Lilamon (#179) | Ultimate | 20 | 5 | 277 | - | 73 | - | 86 | 71 | Felic≥40 | 1.6 | 572 | canon | normal |
+| JewelBeemon (#199) | Ultimate | 20 | 5 | 277 | - | 73 | - | 30 | 111 | Felic≥40 | 1.6 | 556 | canon | normal |
 
 #### Geogreymon (#44) - Champion | Role Warrior | Physical | Vacine / Fire | Ovo: Dragon
 
@@ -1050,8 +1050,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| MetalGreymon (#39) | Ultimate | 20 | 5 | 292 | 149 | 70 | - | - | - | - | 1.6 | 536 | design | normal |
-| RizeGreymon (#167) | Ultimate | 20 | 24 | 292 | 120 | - | - | - | 44 | - | 1.6 | 500 | canon | normal |
+| MetalGreymon (#39) | Ultimate | 20 | 5 | 256 | 149 | 70 | - | - | - | - | 1.6 | 500 | design | normal |
+| RizeGreymon (#167) | Ultimate | 20 | 24 | 256 | 103 | - | - | - | 42 | - | 1.6 | 445 | canon | normal |
 
 #### Devimon (#45) - Champion | Role Assassin | Physical | Virus / Dark | Ovo: Dark
 
@@ -1060,8 +1060,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Lucemon Falldown Mode (#125) | Ultimate | 20 | 5 | 231 | 163 | - | - | - | 118 | - | 1.6 | 537 | design | normal |
-| LadyDevimon (#180) | Ultimate | 20 | 24 | 230 | 137 | - | - | - | 118 | - | 1.6 | 529 | design | normal |
+| Lucemon Falldown Mode (#125) | Ultimate | 20 | 5 | 214 | 163 | - | - | - | 89 | - | 1.6 | 491 | design | normal |
+| LadyDevimon (#180) | Ultimate | 20 | 24 | 214 | 95 | - | - | - | 89 | - | 1.6 | 442 | design | normal |
 | SkullSatamon (#181) | Ultimate | 20 | 5 | 235 | 215 | - | - | - | 140 | Disc≤40 | 1.6 | 675 | canon | normal |
 | Myotismon (#182) | Ultimate | 20 | 5 | 230 | - | - | 100 | - | 150 | Disc≤50 | 1.6 | 555 | canon | normal |
 
@@ -1072,8 +1072,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Destromon (#118) | Ultimate | 20 | 5 | 173 | 176 | - | - | - | 154 | - | 1.6 | 528 | design | normal |
-| Astamon (#127) | Ultimate | 20 | 24 | 173 | 176 | - | - | - | 129 | - | 1.6 | 522 | design | normal |
+| Destromon (#118) | Ultimate | 20 | 5 | 173 | 132 | - | - | - | 154 | - | 1.6 | 484 | design | normal |
+| Astamon (#127) | Ultimate | 20 | 24 | 173 | 132 | - | - | - | 126 | - | 1.6 | 475 | design | normal |
 
 #### Devidramon (#47) - Champion | Role Assassin | Physical | Virus / Dark | Ovo: Dragon
 
@@ -1082,8 +1082,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| WarGrowlmon (#41) | Ultimate | 20 | 5 | 199 | 201 | - | - | - | 161 | - | 1.6 | 586 | design | normal |
-| Lamiamon (#86) | Ultimate | 20 | 24 | 196 | 156 | - | - | - | 177 | - | 1.6 | 573 | design | normal |
+| WarGrowlmon (#41) | Ultimate | 20 | 5 | 199 | 201 | - | - | - | 138 | - | 1.6 | 563 | design | normal |
+| Lamiamon (#86) | Ultimate | 20 | 24 | 196 | 111 | - | - | - | 138 | - | 1.6 | 489 | design | normal |
 
 #### Birdramon (#60) - Champion | Role Ranged | Special | Vacine / Wind | Ovo: Beast
 
@@ -1092,8 +1092,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Garudamon (#61) | Ultimate | 20 | 5 | 248 | - | - | 127 | - | 113 | - | 1.6 | 513 | canon | normal |
-| Delumon (#98) | Ultimate | 20 | 24 | 248 | - | - | 86 | - | 113 | - | 1.6 | 491 | design | normal |
+| Garudamon (#61) | Ultimate | 20 | 5 | 220 | - | - | 127 | - | 77 | - | 1.6 | 449 | canon | normal |
+| Delumon (#98) | Ultimate | 20 | 24 | 220 | - | - | 45 | - | 77 | - | 1.6 | 386 | design | normal |
 
 #### Ikkakumon (#66) - Champion | Role Tank | Physical | Data / Water | Ovo: Water
 
@@ -1112,8 +1112,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Grand Galemon (#80) | Ultimate | 20 | 24 | 223 | - | - | 114 | - | 105 | - | 1.6 | 486 | canon | normal |
-| Wingdramon (#137) | Ultimate | 28 | 8 | 261 | - | - | 114 | - | 168 | - | 1.7 | 579 | design | normal |
+| Grand Galemon (#80) | Ultimate | 20 | 24 | 218 | - | - | 49 | - | 81 | - | 1.6 | 392 | canon | normal |
+| Wingdramon (#137) | Ultimate | 28 | 8 | 256 | - | - | 49 | - | 168 | - | 1.7 | 509 | design | normal |
 
 #### Dimetromon (#85) - Champion | Role Assassin | Special | Virus / Dark | Ovo: Dragon
 
@@ -1122,8 +1122,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Lamiamon (#86) | Ultimate | 20 | 24 | 204 | - | - | 112 | - | 110 | - | 1.6 | 470 | design | normal |
-| Triceramon (#111) | Ultimate | 20 | 5 | 204 | - | 94 | 112 | - | 110 | - | 1.6 | 545 | design | normal |
+| Lamiamon (#86) | Ultimate | 20 | 24 | 204 | - | - | 48 | - | 64 | - | 1.6 | 360 | design | normal |
+| Triceramon (#111) | Ultimate | 20 | 5 | 204 | - | 94 | 48 | - | 64 | - | 1.6 | 435 | design | normal |
 
 #### ShoeShoemon (#92) - Champion | Role Support | Special | Virus / Dark | Ovo: Dark | Suporte: Buffer
 
@@ -1132,8 +1132,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Chaperomon (#93) | Ultimate | 20 | 24 | 232 | - | - | 80 | - | 69 | - | 1.6 | 425 | design | normal |
-| LadyDevimon (#180) | Ultimate | 20 | 5 | 232 | - | 71 | 121 | 59 | - | - | 1.6 | 508 | design | normal |
+| Chaperomon (#93) | Ultimate | 20 | 24 | 223 | - | - | 55 | - | 53 | - | 1.6 | 375 | design | normal |
+| LadyDevimon (#180) | Ultimate | 20 | 5 | 223 | - | 71 | 121 | 37 | - | - | 1.6 | 477 | design | normal |
 
 #### Cockatrimon (#97) - Champion | Role Warrior | Physical | Data / Wind | Ovo: Beast
 
@@ -1142,8 +1142,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Garudamon (#61) | Ultimate | 20 | 5 | 265 | 128 | - | - | - | 125 | - | 1.6 | 543 | design | normal |
-| Delumon (#98) | Ultimate | 20 | 24 | 265 | 128 | - | - | - | 84 | - | 1.6 | 521 | design | normal |
+| Garudamon (#61) | Ultimate | 20 | 5 | 232 | 115 | - | - | - | 125 | - | 1.6 | 497 | design | normal |
+| Delumon (#98) | Ultimate | 20 | 24 | 232 | 115 | - | - | - | 68 | - | 1.6 | 459 | design | normal |
 
 #### Bakemon (#103) - Champion | Role Assassin | Special | Virus / Dark | Ovo: Dark
 
@@ -1152,8 +1152,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Fantomon (#104) | Ultimate | 20 | 24 | 232 | - | - | 106 | - | 83 | - | 1.6 | 465 | canon | normal |
-| Myotismon (#182) | Ultimate | 20 | 5 | 232 | - | - | 148 | - | 83 | - | 1.6 | 488 | design | normal |
+| Fantomon (#104) | Ultimate | 20 | 24 | 209 | - | - | 66 | - | 73 | - | 1.6 | 392 | canon | normal |
+| Myotismon (#182) | Ultimate | 20 | 5 | 209 | - | - | 148 | - | 73 | - | 1.6 | 455 | design | normal |
 
 #### Tortamon (#110) - Champion | Role Tank | Physical | Virus / Earth | Ovo: Beast
 
@@ -1162,8 +1162,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Triceramon (#111) | Ultimate | 20 | 24 | 282 | 128 | - | - | - | 57 | - | 1.6 | 511 | design | normal |
-| Groundramon (#134) | Ultimate | 28 | 8 | 320 | 143 | 168 | - | 52 | - | - | 1.7 | 719 | design | normal |
+| Triceramon (#111) | Ultimate | 20 | 24 | 233 | 89 | - | - | - | 53 | - | 1.6 | 419 | design | normal |
+| Groundramon (#134) | Ultimate | 28 | 8 | 271 | 104 | 168 | - | 29 | - | - | 1.7 | 608 | design | normal |
 
 #### Snatchmon (#117) - Champion | Role Ranged | Special | Virus / Dark | Ovo: Dark
 
@@ -1172,8 +1172,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Destromon (#118) | Ultimate | 20 | 24 | 202 | - | - | 99 | - | 97 | - | 1.6 | 442 | design | normal |
-| Astamon (#127) | Ultimate | 20 | 5 | 202 | - | - | 99 | - | 132 | - | 1.6 | 458 | design | normal |
+| Destromon (#118) | Ultimate | 20 | 24 | 202 | - | - | 80 | - | 61 | - | 1.6 | 387 | design | normal |
+| Astamon (#127) | Ultimate | 20 | 5 | 202 | - | - | 80 | - | 132 | - | 1.6 | 439 | design | normal |
 
 #### Reppamon (#130) - Champion | Role Ranged | Special | Vacine / Light | Ovo: Beast
 
@@ -1182,8 +1182,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Taomon (#49) | Ultimate | 20 | 24 | 190 | - | - | 158 | 57 | 106 | - | 1.6 | 555 | design | normal |
-| Chirinmon (#131) | Ultimate | 28 | 8 | 228 | - | - | 243 | 57 | 114 | - | 1.7 | 678 | canon | normal |
+| Taomon (#49) | Ultimate | 20 | 24 | 190 | - | - | 158 | 31 | 80 | - | 1.6 | 503 | design | normal |
+| Chirinmon (#131) | Ultimate | 28 | 8 | 228 | - | - | 243 | 31 | 88 | - | 1.7 | 626 | canon | normal |
 
 #### Coredramon (Green) (#133) - Champion | Role Warrior | Physical | Data / Earth | Ovo: Dragon
 
@@ -1192,8 +1192,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Groundramon (#134) | Ultimate | 20 | 24 | 247 | 109 | - | - | - | 45 | - | 1.6 | 445 | canon | normal |
-| Grademon (#154) | Ultimate | 28 | 8 | 285 | 183 | 96 | - | - | 95 | - | 1.7 | 695 | design | normal |
+| Groundramon (#134) | Ultimate | 20 | 24 | 225 | 109 | - | - | - | 45 | - | 1.6 | 423 | canon | normal |
+| Grademon (#154) | Ultimate | 28 | 8 | 263 | 183 | 93 | - | - | 70 | - | 1.7 | 645 | design | normal |
 
 #### Coredramon (Blue) (#136) - Champion | Role Ranged | Physical | Data / Wind | Ovo: Dragon
 
@@ -1212,8 +1212,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| AeroVeedramon (#141) | Ultimate | 20 | 24 | 245 | 105 | - | - | - | 95 | - | 1.6 | 489 | canon | normal |
-| Wingdramon (#137) | Ultimate | 28 | 8 | 283 | 120 | 92 | - | - | 160 | - | 1.7 | 691 | design | normal |
+| AeroVeedramon (#141) | Ultimate | 20 | 24 | 228 | 98 | - | - | - | 85 | - | 1.6 | 455 | canon | normal |
+| Wingdramon (#137) | Ultimate | 28 | 8 | 266 | 114 | 92 | - | - | 160 | - | 1.7 | 668 | design | normal |
 
 #### Gladimon (#146) - Champion | Role Warrior | Physical | Data / Neutral | Ovo: Beast
 
@@ -1222,8 +1222,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Knightmon (#147) | Ultimate | 20 | 24 | 308 | 140 | - | - | - | 77 | - | 1.6 | 569 | design | normal |
-| Grademon (#154) | Ultimate | 28 | 8 | 328 | 210 | 107 | - | - | 113 | - | 1.7 | 794 | design | normal |
+| Knightmon (#147) | Ultimate | 20 | 24 | 276 | 136 | - | - | - | 75 | - | 1.6 | 531 | design | normal |
+| Grademon (#154) | Ultimate | 28 | 8 | 314 | 210 | 99 | - | - | 82 | - | 1.7 | 741 | design | normal |
 
 #### Dorugamon (#150) - Champion | Role Warrior | Physical | Data / Wind | Ovo: Dragon
 
@@ -1232,8 +1232,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Dorugreymon (#151) | Ultimate | 20 | 24 | 241 | 102 | - | - | - | 90 | - | 1.6 | 477 | canon | normal |
-| DexDorugreymon (#157) | Ultimate | 28 | 8 | 279 | 176 | 87 | - | - | 105 | - | 1.7 | 683 | design | normal |
+| Dorugreymon (#151) | Ultimate | 20 | 24 | 224 | 93 | - | - | - | 85 | - | 1.6 | 446 | canon | normal |
+| DexDorugreymon (#157) | Ultimate | 28 | 8 | 262 | 176 | 87 | - | - | 93 | - | 1.7 | 654 | design | normal |
 
 #### Raptordramon (#153) - Champion | Role Warrior | Physical | Data / Earth | Ovo: Dragon
 
@@ -1242,8 +1242,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Grademon (#154) | Ultimate | 20 | 24 | 276 | 158 | - | - | - | 68 | - | 1.6 | 546 | canon | normal |
-| Dorugreymon (#151) | Ultimate | 28 | 8 | 314 | 274 | 80 | - | - | 114 | - | 1.7 | 818 | design | normal |
+| Grademon (#154) | Ultimate | 20 | 24 | 260 | 158 | - | - | - | 68 | - | 1.6 | 530 | canon | normal |
+| Dorugreymon (#151) | Ultimate | 28 | 8 | 298 | 274 | 80 | - | - | 102 | - | 1.7 | 790 | design | normal |
 
 #### DexDorugamon (#156) - Champion | Role Assassin | Physical | Virus / Dark | Ovo: Dragon
 
@@ -1252,7 +1252,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| DexDorugreymon (#157) | Ultimate | 20 | 24 | 276 | 115 | - | - | - | 108 | - | 1.6 | 543 | canon | normal |
+| DexDorugreymon (#157) | Ultimate | 20 | 24 | 260 | 104 | - | - | - | 108 | - | 1.6 | 516 | canon | normal |
 | Dorugreymon (#151) | Ultimate | 28 | 8 | 296 | 190 | 71 | - | - | 154 | - | 1.7 | 747 | design | normal |
 
 #### BaoHackmon (#164) - Champion | Role Assassin | Physical | Data / Neutral | Ovo: Dark
@@ -1262,8 +1262,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| SaviorHackmon (#165) | Ultimate | 20 | 24 | 247 | 113 | - | - | - | 103 | - | 1.6 | 507 | canon | normal |
-| Knightmon (#147) | Ultimate | 28 | 8 | 285 | 187 | 87 | - | - | 111 | - | 1.7 | 706 | design | normal |
+| SaviorHackmon (#165) | Ultimate | 20 | 24 | 239 | 83 | - | - | - | 75 | - | 1.6 | 441 | canon | normal |
+| Knightmon (#147) | Ultimate | 28 | 8 | 277 | 187 | 87 | - | - | 82 | - | 1.7 | 669 | design | normal |
 
 #### ExVeemon (#191) - Champion | Role Warrior | Physical | Vacine / Fire | Ovo: Dragon
 
@@ -1281,9 +1281,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| MegaKabuterimon (#51) | Ultimate | 20 | 24 | 236 | 129 | - | - | - | 176 | - | 1.6 | 585 | design | normal |
-| AeroVeedramon (#141) | Ultimate | 20 | 5 | 236 | 129 | - | - | - | 207 | Felic≥40 | 1.6 | 637 | design | normal |
-| JewelBeemon (#199) | Ultimate | 20 | 5 | 236 | 172 | - | - | - | 179 | - | 1.6 | 612 | canon | normal |
+| MegaKabuterimon (#51) | Ultimate | 20 | 24 | 222 | 96 | - | - | - | 176 | - | 1.6 | 538 | design | normal |
+| AeroVeedramon (#141) | Ultimate | 20 | 5 | 222 | 96 | - | - | - | 207 | Felic≥40 | 1.6 | 590 | design | normal |
+| JewelBeemon (#199) | Ultimate | 20 | 5 | 222 | 172 | - | - | - | 179 | - | 1.6 | 598 | canon | normal |
 
 ### Estágio Ultimate (38 Digimons)
 
@@ -1294,8 +1294,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| WarGreymon (#52) | Mega | 28 | 8 | 481 | 278 | - | 117 | - | 57 | Batalhas≥12; Vitórias≥55%; Felic≥55 | 1.7 | 1091 | canon | normal |
-| ShineGreymon (#168) | Mega | 28 | 50 | 481 | 221 | 121 | 117 | - | - | - | 1.7 | 1018 | design | normal |
+| WarGreymon (#52) | Mega | 28 | 8 | 436 | 278 | - | 56 | - | 57 | Batalhas≥12; Vitórias≥55%; Felic≥55 | 1.7 | 985 | canon | normal |
+| ShineGreymon (#168) | Mega | 28 | 50 | 436 | 221 | 121 | 56 | - | - | - | 1.7 | 912 | design | normal |
 
 #### WereGarurumon (#40) - Ultimate | Role Warrior | Physical | Vacine / Fire | Ovo: Beast
 
@@ -1304,8 +1304,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| MetalGarurumon (#53) | Mega | 28 | 8 | 437 | 187 | - | 192 | - | 85 | Batalhas≥12; Vitórias≥55%; Felic≥55 | 1.7 | 1059 | canon | normal |
-| Gankoomon (#162) | Mega | 28 | 50 | 437 | 132 | 90 | 175 | - | - | - | 1.7 | 912 | design | normal |
+| MetalGarurumon (#53) | Mega | 28 | 8 | 434 | 236 | - | 56 | - | 85 | Batalhas≥12; Vitórias≥55%; Felic≥55 | 1.7 | 969 | canon | normal |
+| Gankoomon (#162) | Mega | 28 | 50 | 434 | 132 | 90 | 56 | - | - | - | 1.7 | 790 | design | normal |
 
 #### WarGrowlmon (#41) - Ultimate | Role Warrior | Physical | Virus / Fire | Ovo: Dragon
 
@@ -1334,8 +1334,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Seraphimon (#56) | Mega | 28 | 8 | 415 | - | - | 251 | - | 179 | Batalhas≥12; Felic≥55 | 1.7 | 948 | canon | normal |
-| Magnadramon (#73) | Mega | 28 | 50 | 415 | - | - | 192 | - | 179 | - | 1.7 | 864 | design | normal |
+| Seraphimon (#56) | Mega | 28 | 8 | 387 | - | - | 251 | - | 155 | Batalhas≥12; Felic≥55 | 1.7 | 896 | canon | normal |
+| Magnadramon (#73) | Mega | 28 | 50 | 387 | - | - | 192 | - | 155 | - | 1.7 | 812 | design | normal |
 
 #### MachGaogamon (#48) - Ultimate | Role Warrior | Physical | Data / Wind | Ovo: Beast
 
@@ -1344,8 +1344,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Gankoomon (#162) | Mega | 28 | 50 | 460 | 169 | - | - | - | 136 | - | 1.7 | 843 | design | normal |
-| MirageGaogamon (#176) | Mega | 28 | 8 | 460 | 226 | - | - | - | 136 | Felic≥40 | 1.7 | 898 | canon | normal |
+| Gankoomon (#162) | Mega | 28 | 50 | 443 | 169 | - | - | - | 102 | - | 1.7 | 792 | design | normal |
+| MirageGaogamon (#176) | Mega | 28 | 8 | 443 | 226 | - | - | - | 102 | Felic≥40 | 1.7 | 847 | canon | normal |
 
 #### Taomon (#49) - Ultimate | Role Ranged | Special | Data / Fire | Ovo: Beast
 
@@ -1354,8 +1354,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Duftmon (#161) | Mega | 28 | 50 | 362 | - | - | 170 | - | 159 | - | 1.7 | 769 | design | normal |
-| Sakuyamon (#175) | Mega | 28 | 8 | 362 | - | - | 227 | - | 159 | Batalhas≥12; Felic≥55 | 1.7 | 851 | canon | normal |
+| Duftmon (#161) | Mega | 28 | 50 | 362 | - | - | 125 | - | 131 | - | 1.7 | 696 | design | normal |
+| Sakuyamon (#175) | Mega | 28 | 8 | 362 | - | - | 227 | - | 131 | Batalhas≥12; Felic≥55 | 1.7 | 823 | canon | normal |
 
 #### Lillymon (#50) - Ultimate | Role Ranged | Special | Data / Plant | Ovo: Forest
 
@@ -1364,8 +1364,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Rosemon (#75) | Mega | 28 | 50 | 458 | - | - | 151 | - | 115 | - | 1.7 | 802 | canon | normal |
-| Cendrillmon (#94) | Mega | 28 | 8 | 458 | - | - | 207 | - | 115 | - | 1.7 | 816 | design | normal |
+| Rosemon (#75) | Mega | 28 | 50 | 458 | - | - | 84 | - | 97 | - | 1.7 | 717 | canon | normal |
+| Cendrillmon (#94) | Mega | 28 | 8 | 458 | - | - | 207 | - | 97 | - | 1.7 | 798 | design | normal |
 
 #### MegaKabuterimon (#51) - Ultimate | Role Tank | Special | Vacine / Electric | Ovo: Forest
 
@@ -1374,8 +1374,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| HerculesKabuterimon (#74) | Mega | 28 | 50 | 593 | - | 131 | - | 115 | - | - | 1.7 | 917 | canon | normal |
-| Craniummon (#159) | Mega | 28 | 8 | 593 | - | 186 | - | 115 | - | - | 1.7 | 930 | design | normal |
+| HerculesKabuterimon (#74) | Mega | 28 | 50 | 473 | - | 129 | - | 71 | - | - | 1.7 | 751 | canon | normal |
+| Craniummon (#159) | Mega | 28 | 8 | 473 | - | 186 | - | 71 | - | - | 1.7 | 766 | design | normal |
 
 #### Garudamon (#61) - Ultimate | Role Ranged | Special | Vacine / Wind | Ovo: Beast
 
@@ -1384,8 +1384,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Hououmon (#62) | Mega | 28 | 50 | 415 | - | - | 192 | - | 179 | - | 1.7 | 864 | canon | normal |
-| Zephagamon (#81) | Mega | 28 | 8 | 415 | - | - | 251 | - | 179 | - | 1.7 | 881 | design | normal |
+| Hououmon (#62) | Mega | 28 | 50 | 390 | - | - | 76 | - | 132 | - | 1.7 | 676 | canon | normal |
+| Zephagamon (#81) | Mega | 28 | 8 | 390 | - | - | 251 | - | 132 | - | 1.7 | 809 | design | normal |
 
 #### Zudomon (#67) - Ultimate | Role Tank | Physical | Data / Water | Ovo: Water
 
@@ -1404,9 +1404,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Magnadramon (#73) | Mega | 28 | 50 | 415 | - | - | 156 | - | 179 | - | 1.7 | 828 | canon | normal |
-| Lilithmon (#95) | Mega | 28 | 8 | 415 | - | - | 156 | 108 | 179 | - | 1.7 | 894 | design | normal |
-| Ophanimon (#178) | Mega | 28 | 8 | 415 | - | - | 213 | - | 179 | Felic≥40 | 1.7 | 883 | canon | normal |
+| Magnadramon (#73) | Mega | 28 | 50 | 387 | - | - | 112 | - | 155 | - | 1.7 | 732 | canon | normal |
+| Lilithmon (#95) | Mega | 28 | 8 | 387 | - | - | 112 | 108 | 155 | - | 1.7 | 798 | design | normal |
+| Ophanimon (#178) | Mega | 28 | 8 | 387 | - | - | 213 | - | 155 | Felic≥40 | 1.7 | 831 | canon | normal |
 
 #### Grand Galemon (#80) - Ultimate | Role Ranged | Special | Data / Wind | Ovo: Dragon
 
@@ -1415,8 +1415,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Zephagamon (#81) | Mega | 28 | 8 | 380 | 53 | - | 230 | - | 167 | - | 1.7 | 866 | design | normal |
-| Dynasmon (#160) | Mega | 28 | 50 | 380 | - | - | 172 | - | 167 | - | 1.7 | 797 | design | normal |
+| Zephagamon (#81) | Mega | 28 | 8 | 380 | 53 | - | 230 | - | 137 | - | 1.7 | 836 | design | normal |
+| Dynasmon (#160) | Mega | 28 | 50 | 380 | - | - | 113 | - | 137 | - | 1.7 | 708 | design | normal |
 
 #### Lamiamon (#86) - Ultimate | Role Assassin | Special | Virus / Dark | Ovo: Dragon
 
@@ -1425,7 +1425,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Medusamon (#87) | Mega | 28 | 50 | 370 | - | - | 170 | - | 174 | - | 1.7 | 792 | canon | normal |
+| Medusamon (#87) | Mega | 28 | 50 | 370 | - | - | 73 | - | 114 | - | 1.7 | 635 | canon | normal |
 | Leviamon (#88) | Mega | 28 | 8 | 510 | 120 | - | - | - | 140 | Disc≤30 | 1.7 | 876 | design | normal |
 
 #### Chaperomon (#93) - Ultimate | Role Support | Special | Virus / Dark | Ovo: Dark | Suporte: Buffer
@@ -1445,8 +1445,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Hououmon (#62) | Mega | 28 | 50 | 418 | 181 | - | - | - | 146 | - | 1.7 | 823 | design | normal |
-| AncientSphinxmon (#112) | Mega | 28 | 8 | 418 | 239 | - | - | - | 140 | - | 1.7 | 833 | design | normal |
+| Hououmon (#62) | Mega | 28 | 50 | 400 | 144 | - | - | - | 116 | - | 1.7 | 738 | design | normal |
+| AncientSphinxmon (#112) | Mega | 28 | 8 | 400 | 239 | - | - | - | 116 | - | 1.7 | 791 | design | normal |
 
 #### Fantomon (#104) - Ultimate | Role Assassin | Special | Virus / Dark | Ovo: Dark
 
@@ -1455,9 +1455,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Boltmon (#113) | Mega | 28 | 50 | 390 | - | - | 161 | - | 133 | - | 1.7 | 762 | design | normal |
-| Ragnamon (#119) | Mega | 28 | 8 | 390 | - | - | 218 | - | 133 | - | 1.7 | 777 | design | normal |
-| Piedmon (#194) | Mega | 28 | 8 | 390 | - | - | 161 | - | 189 | Disc≥60 | 1.7 | 836 | design | normal |
+| Boltmon (#113) | Mega | 28 | 50 | 373 | - | - | 126 | - | 124 | - | 1.7 | 701 | design | normal |
+| Ragnamon (#119) | Mega | 28 | 8 | 373 | - | - | 218 | - | 124 | - | 1.7 | 751 | design | normal |
+| Piedmon (#194) | Mega | 28 | 8 | 373 | - | - | 126 | - | 189 | Disc≥60 | 1.7 | 784 | design | normal |
 
 #### Triceramon (#111) - Ultimate | Role Tank | Physical | Virus / Earth | Ovo: Beast
 
@@ -1478,7 +1478,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Demon (#105) | Mega | 28 | 8 | 548 | - | - | 285 | - | 185 | Disc≤35 | 1.7 | 1119 | design | normal |
-| Boltmon (#113) | Mega | 28 | 50 | 375 | - | - | 152 | - | 154 | - | 1.7 | 759 | design | normal |
+| Boltmon (#113) | Mega | 28 | 50 | 375 | - | - | 74 | - | 110 | - | 1.7 | 637 | design | normal |
 | Belphemon Sleep Mode (#128) | Mega | 36 | 13 | 413 | - | 89 | - | 136 | 90 | - | 1.8 | 777 | design | normal |
 
 #### Lucemon Falldown Mode (#125) - Ultimate | Role Assassin | Special | Virus / Dark | Ovo: Dark
@@ -1488,8 +1488,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Demon (#105) | Mega | 28 | 50 | 399 | 130 | - | 166 | - | 161 | - | 1.7 | 934 | design | normal |
-| Lucemon Satan Mode (#121) | Mega | 36 | 12 | 437 | - | 96 | 243 | - | 175 | - | 1.8 | 999 | canon | normal |
+| Demon (#105) | Mega | 28 | 50 | 387 | 130 | - | 89 | - | 150 | - | 1.7 | 834 | design | normal |
+| Lucemon Satan Mode (#121) | Mega | 36 | 12 | 425 | - | 96 | 243 | - | 157 | - | 1.8 | 969 | canon | normal |
 
 #### Astamon (#127) - Ultimate | Role Ranged | Physical | Virus / Dark | Ovo: Dark
 
@@ -1499,7 +1499,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Beelzebumon (#106) | Mega | 28 | 8 | 555 | 212 | - | - | - | 175 | Disc≤40 | 1.7 | 1038 | design | normal |
-| Ragnamon (#119) | Mega | 28 | 50 | 380 | 148 | - | - | - | 176 | - | 1.7 | 782 | design | normal |
+| Ragnamon (#119) | Mega | 28 | 50 | 380 | 129 | - | - | - | 176 | - | 1.7 | 763 | design | normal |
 
 #### Chirinmon (#131) - Ultimate | Role Ranged | Special | Vacine / Light | Ovo: Beast
 
@@ -1509,7 +1509,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Kentaurusmon (#144) | Mega | 28 | 50 | 368 | - | - | 198 | - | 117 | - | 1.7 | 761 | design | normal |
-| Sleipmon (#177) | Mega | 36 | 12 | 406 | 154 | 95 | - | - | 150 | Felic≥40 | 1.8 | 893 | canon | normal |
+| Sleipmon (#177) | Mega | 36 | 12 | 406 | 265 | 95 | - | - | 150 | Felic≥40 | 1.8 | 1004 | canon | normal |
 
 #### Groundramon (#134) - Ultimate | Role Tank | Physical | Data / Earth | Ovo: Dragon
 
@@ -1518,8 +1518,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Breakdramon (#135) | Mega | 28 | 50 | 418 | 180 | - | - | - | 76 | - | 1.7 | 752 | canon | normal |
-| Dorugoramon (#155) | Mega | 36 | 12 | 456 | 195 | 210 | - | 76 | - | - | 1.8 | 985 | design | normal |
+| Breakdramon (#135) | Mega | 28 | 50 | 405 | 177 | - | - | - | 76 | - | 1.7 | 736 | canon | normal |
+| Dorugoramon (#155) | Mega | 36 | 12 | 443 | 192 | 210 | - | 56 | - | - | 1.8 | 949 | design | normal |
 
 #### Wingdramon (#137) - Ultimate | Role Ranged | Physical | Data / Wind | Ovo: Dragon
 
@@ -1528,8 +1528,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Dynasmon (#160) | Mega | 28 | 8 | 611 | 194 | 117 | - | - | 160 | - | 1.7 | 1118 | design | normal |
-| SlayerDramon (#138) | Mega | 36 | 12 | 600 | 235 | 105 | - | - | 180 | - | 1.8 | 1168 | canon | normal |
+| Dynasmon (#160) | Mega | 28 | 50 | 436 | 134 | 117 | - | - | 160 | - | 1.7 | 925 | design | normal |
+| SlayerDramon (#138) | Mega | 36 | 12 | 474 | 235 | 105 | - | - | 180 | - | 1.8 | 1042 | canon | normal |
 
 #### AeroVeedramon (#141) - Ultimate | Role Ranged | Physical | Vacine / Wind | Ovo: Dragon
 
@@ -1538,8 +1538,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Magnamon (#143) | Mega | 28 | 50 | 410 | 174 | 91 | - | - | 145 | - | 1.7 | 898 | design | normal |
-| UlforceVeedramon (#142) | Mega | 36 | 12 | 448 | 268 | 106 | - | - | 159 | - | 1.8 | 1029 | canon | normal |
+| Magnamon (#143) | Mega | 28 | 50 | 393 | 170 | 91 | - | - | 144 | - | 1.7 | 876 | design | normal |
+| UlforceVeedramon (#142) | Mega | 36 | 12 | 431 | 268 | 106 | - | - | 152 | - | 1.8 | 1005 | canon | normal |
 
 #### Knightmon (#147) - Ultimate | Role Tank | Physical | Data / Neutral | Ovo: Beast
 
@@ -1558,8 +1558,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Dorugoramon (#155) | Mega | 28 | 50 | 408 | 171 | 105 | - | - | 106 | - | 1.7 | 868 | canon | normal |
-| Alphamon (#152) | Mega | 36 | 12 | 446 | 265 | 120 | - | - | 152 | - | 1.8 | 1031 | canon | normal |
+| Dorugoramon (#155) | Mega | 28 | 50 | 400 | 166 | 105 | - | - | 106 | - | 1.7 | 855 | canon | normal |
+| Alphamon (#152) | Mega | 36 | 12 | 438 | 265 | 120 | - | - | 152 | - | 1.8 | 1023 | canon | normal |
 
 #### Grademon (#154) - Ultimate | Role Tank | Physical | Virus / Earth | Ovo: Dragon
 
@@ -1568,8 +1568,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Dynasmon (#160) | Mega | 28 | 8 | 693 | 262 | 165 | - | - | - | - | 1.7 | 1156 | design | normal |
-| Alphamon (#152) | Mega | 36 | 12 | 720 | 262 | 160 | - | - | 150 | - | 1.8 | 1340 | design | normal |
+| Dynasmon (#160) | Mega | 28 | 50 | 446 | 262 | 157 | - | - | - | - | 1.7 | 943 | design | normal |
+| Alphamon (#152) | Mega | 36 | 12 | 484 | 262 | 160 | - | - | 192 | - | 1.8 | 1146 | design | normal |
 
 #### DexDorugreymon (#157) - Ultimate | Role Assassin | Physical | Virus / Dark | Ovo: Dragon
 
@@ -1578,8 +1578,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| DexDorugoramon (#158) | Mega | 28 | 50 | 457 | 190 | - | - | - | 135 | - | 1.7 | 860 | canon | normal |
-| Dorugoramon (#155) | Mega | 36 | 12 | 495 | 284 | 111 | - | - | 128 | - | 1.8 | 1066 | design | normal |
+| DexDorugoramon (#158) | Mega | 28 | 50 | 445 | 182 | - | - | - | 135 | - | 1.7 | 840 | canon | normal |
+| Dorugoramon (#155) | Mega | 36 | 12 | 483 | 284 | 111 | - | - | 128 | - | 1.8 | 1054 | design | normal |
 
 #### SaviorHackmon (#165) - Ultimate | Role Assassin | Physical | Virus / Light | Ovo: Dark
 
@@ -1588,8 +1588,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Gankoomon (#162) | Mega | 28 | 8 | 636 | 217 | 130 | - | - | 140 | - | 1.7 | 1159 | design | normal |
-| Jesmon (#166) | Mega | 36 | 12 | 690 | 255 | 130 | - | - | 185 | - | 1.8 | 1308 | canon | normal |
+| Gankoomon (#162) | Mega | 28 | 50 | 420 | 150 | 130 | - | - | 128 | - | 1.7 | 906 | design | normal |
+| Jesmon (#166) | Mega | 36 | 12 | 458 | 165 | 130 | - | - | 185 | - | 1.8 | 986 | canon | normal |
 
 #### RizeGreymon (#167) - Ultimate | Role Warrior | Physical | Vacine / Fire | Ovo: Dragon
 
@@ -1598,8 +1598,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| WarGreymon (#52) | Mega | 28 | 50 | 481 | 197 | 111 | - | - | - | - | 1.7 | 867 | design | normal |
-| ShineGreymon (#168) | Mega | 28 | 8 | 481 | 256 | - | - | - | 74 | - | 1.7 | 847 | canon | normal |
+| WarGreymon (#52) | Mega | 28 | 50 | 451 | 180 | 111 | - | - | - | - | 1.7 | 820 | design | normal |
+| ShineGreymon (#168) | Mega | 28 | 8 | 451 | 256 | - | - | - | 74 | - | 1.7 | 817 | canon | normal |
 
 #### Mistymon (#170) - Ultimate | Role Assassin | Physical | Data / Dark | Ovo: Fire
 
@@ -1608,7 +1608,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Barbamon (#122) | Mega | 28 | 50 | 362 | 152 | - | - | - | 182 | - | 1.7 | 774 | design | normal |
+| Barbamon (#122) | Mega | 28 | 50 | 362 | 140 | - | - | - | 182 | - | 1.7 | 762 | design | normal |
 | Piedmon (#194) | Mega | 28 | 8 | 577 | 190 | - | - | - | 196 | Disc≤40 | 1.7 | 1059 | design | normal |
 
 #### Lilamon (#179) - Ultimate | Role Support | Special | Data / Plant | Ovo: Forest | Suporte: Healer
@@ -1618,8 +1618,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Rosemon (#75) | Mega | 28 | 8 | 458 | - | - | 198 | - | 115 | - | 1.7 | 807 | canon | normal |
-| Cendrillmon (#94) | Mega | 28 | 50 | 458 | - | - | 142 | 111 | 115 | - | 1.7 | 904 | design | normal |
+| Rosemon (#75) | Mega | 28 | 8 | 458 | - | - | 198 | - | 94 | - | 1.7 | 786 | canon | normal |
+| Cendrillmon (#94) | Mega | 28 | 50 | 458 | - | - | 80 | 55 | 94 | - | 1.7 | 765 | design | normal |
 
 #### LadyDevimon (#180) - Ultimate | Role Assassin | Special | Virus / Dark | Ovo: Dark
 
@@ -1628,7 +1628,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Medusamon (#87) | Mega | 28 | 50 | 390 | - | - | 184 | - | 129 | - | 1.7 | 781 | design | normal |
+| Medusamon (#87) | Mega | 28 | 50 | 380 | - | - | 85 | - | 106 | - | 1.7 | 649 | design | normal |
 | Lilithmon (#95) | Mega | 28 | 8 | 530 | - | - | 250 | - | 190 | Disc≤30; Felic≤40 | 1.7 | 1136 | canon | normal |
 
 #### SkullSatamon (#181) - Ultimate | Role Assassin | Physical | Virus / Dark | Ovo: Dark
@@ -1649,7 +1649,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Beelzebumon (#106) | Mega | 28 | 8 | 584 | - | - | 239 | - | 141 | Disc≤40 | 1.7 | 1060 | design | normal |
-| Piedmon (#194) | Mega | 28 | 50 | 390 | - | - | 225 | - | 133 | - | 1.7 | 826 | design | normal |
+| Piedmon (#194) | Mega | 28 | 50 | 373 | - | - | 152 | - | 124 | - | 1.7 | 727 | design | normal |
 
 #### Paildramon (#192) - Ultimate | Role Ranged | Physical | Vacine / Fire | Ovo: Dragon
 
@@ -1668,9 +1668,9 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| HerculesKabuterimon (#74) | Mega | 28 | 50 | 534 | 167 | - | - | - | 129 | - | 1.7 | 908 | canon | normal |
-| Imperialdramon (#193) | Mega | 28 | 8 | 527 | 167 | - | - | - | 180 | Felic≥40 | 1.7 | 950 | canon | normal |
-| GrandisKuwagamon (#200) | Mega | 28 | 8 | 527 | 224 | - | - | - | 129 | - | 1.7 | 916 | canon | normal |
+| HerculesKabuterimon (#74) | Mega | 28 | 50 | 393 | 132 | - | - | - | 104 | - | 1.7 | 707 | canon | normal |
+| Imperialdramon (#193) | Mega | 28 | 8 | 393 | 132 | - | - | - | 180 | Felic≥40 | 1.7 | 781 | canon | normal |
+| GrandisKuwagamon (#200) | Mega | 28 | 8 | 393 | 224 | - | - | - | 104 | - | 1.7 | 757 | canon | normal |
 
 ### Estágio Mega (49 Digimons)
 

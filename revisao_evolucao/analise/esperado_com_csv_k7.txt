@@ -5,6 +5,8 @@ A. Inalcançáveis mirando nelas: 0
 
 B. Formas padrão atropeladas por irmã que sai só de subir de nível: 0
 
+E. Formas padrão que um Digimon sem treino (rota mais fraca) não alcança: 0
+
 C. Empates de score entre irmãs: 0
 
-D. Pais sem forma padrão (Idade >= teto-2): 48  (informativo: nesses, quem não treina a assinatura de nenhuma irmã depende de cumprir uma delas)
+D. Pais sem forma padrão (Idade >= teto-2): 45  (informativo: nesses, quem não treina a assinatura de nenhuma irmã depende de cumprir uma delas)

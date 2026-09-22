@@ -11,7 +11,7 @@
       "physicalDefense": 0,
       "specialDamage": 198,
       "specialDefense": 0,
-      "speed": 115
+      "speed": 94
     }
   },
   {
@@ -24,9 +24,9 @@
       "healthPoints": 458,
       "physicalDamage": 0,
       "physicalDefense": 0,
-      "specialDamage": 142,
-      "specialDefense": 111,
-      "speed": 115
+      "specialDamage": 80,
+      "specialDefense": 55,
+      "speed": 94
     }
   }
 ]

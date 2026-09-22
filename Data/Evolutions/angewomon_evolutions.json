@@ -6,12 +6,12 @@
     "requiredAgeInDays": 50,
     "statMultiplier": 1.7,
     "requiredStats": {
-      "healthPoints": 415,
+      "healthPoints": 387,
       "physicalDamage": 0,
       "physicalDefense": 0,
-      "specialDamage": 156,
+      "specialDamage": 112,
       "specialDefense": 0,
-      "speed": 179
+      "speed": 155
     }
   },
   {
@@ -21,12 +21,12 @@
     "requiredAgeInDays": 8,
     "statMultiplier": 1.7,
     "requiredStats": {
-      "healthPoints": 415,
+      "healthPoints": 387,
       "physicalDamage": 0,
       "physicalDefense": 0,
       "specialDamage": 213,
       "specialDefense": 0,
-      "speed": 179
+      "speed": 155
     },
     "minHappiness": 40
   },
@@ -37,12 +37,12 @@
     "requiredAgeInDays": 8,
     "statMultiplier": 1.7,
     "requiredStats": {
-      "healthPoints": 415,
+      "healthPoints": 387,
       "physicalDamage": 0,
       "physicalDefense": 0,
-      "specialDamage": 156,
+      "specialDamage": 112,
       "specialDefense": 108,
-      "speed": 179
+      "speed": 155
     }
   }
 ]

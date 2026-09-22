@@ -9,9 +9,9 @@
       "healthPoints": 362,
       "physicalDamage": 0,
       "physicalDefense": 0,
-      "specialDamage": 170,
+      "specialDamage": 125,
       "specialDefense": 0,
-      "speed": 159
+      "speed": 131
     }
   },
   {
@@ -26,7 +26,7 @@
       "physicalDefense": 0,
       "specialDamage": 227,
       "specialDefense": 0,
-      "speed": 159
+      "speed": 131
     },
     "requiredBattles": 12,
     "minHappiness": 55
