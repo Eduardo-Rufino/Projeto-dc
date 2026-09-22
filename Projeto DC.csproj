@@ -6,6 +6,12 @@
     <RootNamespace>ProjetoDC</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Ferramentas da revisão de requisitos de evolução (revisao_evolucao/) - só servem pra
+         validar essa revisão, não fazem parte do jogo. Fora da compilação (não só do PCK via
+         export_presets.cfg exclude_filter) pra não carregar código de teste morto no build. -->
+    <Compile Remove="revisao_evolucao\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Data\Itens\meat.json" />
     <Content Include="Data\Itens\medicine.json" />
     <Content Include="Data\Itens\folha_floresta.json" />

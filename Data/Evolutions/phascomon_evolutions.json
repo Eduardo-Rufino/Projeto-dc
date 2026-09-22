@@ -8,10 +8,10 @@
     "requiredStats": {
       "healthPoints": 134,
       "physicalDamage": 61,
-      "physicalDefense": 59,
+      "physicalDefense": 40,
       "specialDamage": 0,
-      "specialDefense": 51,
-      "speed": 0
+      "specialDefense": 0,
+      "speed": 70
     },
     "maxDiscipline": 40
   },
@@ -23,9 +23,9 @@
     "statMultiplier": 1.8,
     "requiredStats": {
       "healthPoints": 136,
-      "physicalDamage": 50,
+      "physicalDamage": 0,
       "physicalDefense": 64,
-      "specialDamage": 0,
+      "specialDamage": 48,
       "specialDefense": 55,
       "speed": 0
     },

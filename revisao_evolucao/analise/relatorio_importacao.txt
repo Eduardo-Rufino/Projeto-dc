@@ -1,0 +1,753 @@
+Importacao concluida.
+CSV: 337 ligacoes (249 marcadas 'sim', 88 'nao').
+Arquivos tocados: 113
+Ligacoes com bloco JSON reescrito: 249
+Ligacoes marcadas 'sim' cujo texto ja era identico ao final (nao regravadas): 0
+
+  AeroVeedramon -> UlforceVeedramon  (aeroveedramon_evolutions.json)
+    antes: { "fromDigimonId": 141, "toDigimonId": 142, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 612, "physicalDamage": 221, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 158 } }
+    depois: { "fromDigimonId": 141, "toDigimonId": 142, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 448, "physicalDamage": 268, "physicalDefense": 106, "specialDamage": 0, "specialDefense": 0, "speed": 159 } }
+  AeroVeedramon -> Magnamon  (aeroveedramon_evolutions.json)
+    antes: { "fromDigimonId": 141, "toDigimonId": 143, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 628, "physicalDamage": 224, "physicalDefense": 112, "specialDamage": 0, "specialDefense": 0, "speed": 145 } }
+    depois: { "fromDigimonId": 141, "toDigimonId": 143, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 410, "physicalDamage": 174, "physicalDefense": 91, "specialDamage": 0, "specialDefense": 0, "speed": 145 } }
+  Agumon -> Greymon  (agumon_evolutions.json)
+    antes: { "fromDigimonId": 1, "toDigimonId": 13, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 150, "physicalDamage": 61, "physicalDefense": 0, "specialDamage": 61, "specialDefense": 0, "speed": 24 } }
+    depois: { "fromDigimonId": 1, "toDigimonId": 13, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 150, "physicalDamage": 61, "physicalDefense": 55, "specialDamage": 0, "specialDefense": 0, "speed": 24 } }
+  Agumon -> Devimon  (agumon_evolutions.json)
+    antes: { "fromDigimonId": 1, "toDigimonId": 45, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 151, "physicalDamage": 70, "physicalDefense": 37, "specialDamage": 55, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 1, "toDigimonId": 45, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 151, "physicalDamage": 70, "physicalDefense": 37, "specialDamage": 0, "specialDefense": 0, "speed": 45 }, "maxDiscipline": 45 }
+  Agumon -> Dimetromon  (agumon_evolutions.json)
+    antes: { "fromDigimonId": 1, "toDigimonId": 85, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 152, "physicalDamage": 59, "physicalDefense": 38, "specialDamage": 70, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 1, "toDigimonId": 85, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 152, "physicalDamage": 59, "physicalDefense": 38, "specialDamage": 58, "specialDefense": 0, "speed": 40 } }
+  Agumon (Savers) -> Geogreymon  (agumon_savers_evolutions.json)
+    antes: { "fromDigimonId": 11, "toDigimonId": 44, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 165, "physicalDamage": 84, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 22 } }
+    depois: { "fromDigimonId": 11, "toDigimonId": 44, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 145, "physicalDamage": 60, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 21 } }
+  Agumon (Savers) -> Greymon  (agumon_savers_evolutions.json)
+    antes: { "fromDigimonId": 11, "toDigimonId": 13, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 165, "physicalDamage": 96, "physicalDefense": 51, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 11, "toDigimonId": 13, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 145, "physicalDamage": 85, "physicalDefense": 43, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Angemon -> MagnaAngemon  (angemon_evolutions.json)
+    antes: { "fromDigimonId": 16, "toDigimonId": 43, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 280, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 155, "specialDefense": 0, "speed": 122 } }
+    depois: { "fromDigimonId": 16, "toDigimonId": 43, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 248, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 127, "specialDefense": 0, "speed": 113 }, "minHappiness": 55 }
+  Angemon -> Angewomon  (angemon_evolutions.json)
+    antes: { "fromDigimonId": 16, "toDigimonId": 72, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 296, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 167, "specialDefense": 0, "speed": 134 } }
+    depois: { "fromDigimonId": 16, "toDigimonId": 72, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 248, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 86, "specialDefense": 0, "speed": 113 } }
+  Angemon -> Lucemon Falldown Mode  (angemon_evolutions.json)
+    antes: { "fromDigimonId": 16, "toDigimonId": 125, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 298, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 167, "specialDefense": 0, "speed": 124 } }
+    depois: { "fromDigimonId": 16, "toDigimonId": 125, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 298, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 167, "specialDefense": 0, "speed": 124 }, "maxDiscipline": 35 }
+  Angewomon -> Magnadramon  (angewomon_evolutions.json)
+    antes: { "fromDigimonId": 72, "toDigimonId": 73, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 512, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 264, "specialDefense": 0, "speed": 224 } }
+    depois: { "fromDigimonId": 72, "toDigimonId": 73, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 415, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 156, "specialDefense": 0, "speed": 179 } }
+  Angewomon -> Ophanimon  (angewomon_evolutions.json)
+    antes: { "fromDigimonId": 72, "toDigimonId": 178, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 512, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 264, "specialDefense": 0, "speed": 224 }, "minHappiness": 40 }
+    depois: { "fromDigimonId": 72, "toDigimonId": 178, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 415, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 213, "specialDefense": 0, "speed": 179 }, "minHappiness": 40 }
+  Angewomon -> Lilithmon  (angewomon_evolutions.json)
+    antes: { "fromDigimonId": 72, "toDigimonId": 95, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 494, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 294, "specialDefense": 0, "speed": 223 } }
+    depois: { "fromDigimonId": 72, "toDigimonId": 95, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 415, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 156, "specialDefense": 108, "speed": 179 } }
+  Astamon -> Beelzebumon  (astamon_evolutions.json)
+    antes: { "fromDigimonId": 127, "toDigimonId": 106, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 555, "physicalDamage": 212, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 175 } }
+    depois: { "fromDigimonId": 127, "toDigimonId": 106, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 555, "physicalDamage": 212, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 175 }, "maxDiscipline": 40 }
+  Astamon -> Ragnamon  (astamon_evolutions.json)
+    antes: { "fromDigimonId": 127, "toDigimonId": 119, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 556, "physicalDamage": 206, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 176 } }
+    depois: { "fromDigimonId": 127, "toDigimonId": 119, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 380, "physicalDamage": 148, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 176 } }
+  Bakemon -> Fantomon  (bakemon_evolutions.json)
+    antes: { "fromDigimonId": 103, "toDigimonId": 104, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 248, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 168, "specialDefense": 0, "speed": 120 } }
+    depois: { "fromDigimonId": 103, "toDigimonId": 104, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 232, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 106, "specialDefense": 0, "speed": 83 } }
+  Bakemon -> Myotismon  (bakemon_evolutions.json)
+    antes: { "fromDigimonId": 103, "toDigimonId": 182, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 264, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 206, "specialDefense": 0, "speed": 139 } }
+    depois: { "fromDigimonId": 103, "toDigimonId": 182, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 232, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 148, "specialDefense": 0, "speed": 83 } }
+  BaoHackmon -> SaviorHackmon  (baohackmon_evolutions.json)
+    antes: { "fromDigimonId": 164, "toDigimonId": 165, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 338, "physicalDamage": 131, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 117 } }
+    depois: { "fromDigimonId": 164, "toDigimonId": 165, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 247, "physicalDamage": 113, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 103 } }
+  BaoHackmon -> Knightmon  (baohackmon_evolutions.json)
+    antes: { "fromDigimonId": 164, "toDigimonId": 147, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 312, "physicalDamage": 142, "physicalDefense": 0, "specialDamage": 88, "specialDefense": 0, "speed": 146 } }
+    depois: { "fromDigimonId": 164, "toDigimonId": 147, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 285, "physicalDamage": 187, "physicalDefense": 87, "specialDamage": 0, "specialDefense": 0, "speed": 111 } }
+  BEMmon -> Snatchmon  (bemmon_evolutions.json)
+    antes: { "fromDigimonId": 116, "toDigimonId": 117, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 96, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 78, "specialDefense": 0, "speed": 69 } }
+    depois: { "fromDigimonId": 116, "toDigimonId": 117, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 96, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 49, "specialDefense": 0, "speed": 53 } }
+  BEMmon -> Bakemon  (bemmon_evolutions.json)
+    antes: { "fromDigimonId": 116, "toDigimonId": 103, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 103, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 114, "specialDefense": 0, "speed": 83 } }
+    depois: { "fromDigimonId": 116, "toDigimonId": 103, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 103, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 92, "specialDefense": 0, "speed": 53 } }
+  Birdramon -> Garudamon  (birdramon_evolutions.json)
+    antes: { "fromDigimonId": 60, "toDigimonId": 61, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 298, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 146, "specialDefense": 0, "speed": 122 } }
+    depois: { "fromDigimonId": 60, "toDigimonId": 61, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 248, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 127, "specialDefense": 0, "speed": 113 } }
+  Birdramon -> Delumon  (birdramon_evolutions.json)
+    antes: { "fromDigimonId": 60, "toDigimonId": 98, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 298, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 134, "specialDefense": 0, "speed": 123 } }
+    depois: { "fromDigimonId": 60, "toDigimonId": 98, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 248, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 86, "specialDefense": 0, "speed": 113 } }
+  Botamon -> Koromon  (botamon_evolutions.json)
+    antes: { "fromDigimonId": 25, "toDigimonId": 29, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 30, "physicalDamage": 16, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 6 } }
+    depois: { "fromDigimonId": 25, "toDigimonId": 29, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 13, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 5 } }
+  Botamon -> Wanyamon  (botamon_evolutions.json)
+    antes: { "fromDigimonId": 25, "toDigimonId": 37, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 31, "physicalDamage": 19, "physicalDefense": 10, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 25, "toDigimonId": 37, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 13, "physicalDefense": 14, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Botamon -> Tsunomon  (botamon_evolutions.json)
+    antes: { "fromDigimonId": 25, "toDigimonId": 30, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 31, "physicalDamage": 19, "physicalDefense": 10, "specialDamage": 0, "specialDefense": 0, "speed": 0 }, "requiredBattles": 8 }
+    depois: { "fromDigimonId": 25, "toDigimonId": 30, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 25, "physicalDamage": 22, "physicalDefense": 8, "specialDamage": 0, "specialDefense": 0, "speed": 0 }, "requiredBattles": 8 }
+  Candlemon -> Wizardmon  (candlemon_evolutions.json)
+    antes: { "fromDigimonId": 169, "toDigimonId": 21, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 110, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 85, "specialDefense": 0, "speed": 65 } }
+    depois: { "fromDigimonId": 169, "toDigimonId": 21, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 110, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 49, "specialDefense": 0, "speed": 45 } }
+  Candlemon -> Bakemon  (candlemon_evolutions.json)
+    antes: { "fromDigimonId": 169, "toDigimonId": 103, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 178, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 138, "specialDefense": 0, "speed": 54 } }
+    depois: { "fromDigimonId": 169, "toDigimonId": 103, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 117, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 92, "specialDefense": 0, "speed": 45 } }
+  Chibomon -> DemiVeemon  (chibomon_evolutions.json)
+    antes: { "fromDigimonId": 183, "toDigimonId": 184, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 30, "physicalDamage": 14, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 8 } }
+    depois: { "fromDigimonId": 183, "toDigimonId": 184, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 11, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 6 } }
+  Chibomon -> Koromon  (chibomon_evolutions.json)
+    antes: { "fromDigimonId": 183, "toDigimonId": 29, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 31, "physicalDamage": 16, "physicalDefense": 11, "specialDamage": 0, "specialDefense": 0, "speed": 8 } }
+    depois: { "fromDigimonId": 183, "toDigimonId": 29, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 20, "physicalDefense": 9, "specialDamage": 0, "specialDefense": 0, "speed": 6 } }
+  Chirinmon -> Kentaurusmon  (chirinmon_evolutions.json)
+    antes: { "fromDigimonId": 131, "toDigimonId": 144, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 648, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 198, "specialDefense": 0, "speed": 117 } }
+    depois: { "fromDigimonId": 131, "toDigimonId": 144, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 368, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 198, "specialDefense": 0, "speed": 117 } }
+  Chirinmon -> Sleipmon  (chirinmon_evolutions.json)
+    antes: { "fromDigimonId": 131, "toDigimonId": 177, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 648, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 198, "specialDefense": 0, "speed": 117 }, "minHappiness": 40 }
+    depois: { "fromDigimonId": 131, "toDigimonId": 177, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 406, "physicalDamage": 154, "physicalDefense": 95, "specialDamage": 0, "specialDefense": 0, "speed": 150 }, "minHappiness": 40 }
+  Cockatrimon -> Delumon  (cockatrimon_evolutions.json)
+    antes: { "fromDigimonId": 97, "toDigimonId": 98, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 315, "physicalDamage": 165, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 105 } }
+    depois: { "fromDigimonId": 97, "toDigimonId": 98, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 265, "physicalDamage": 128, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 84 } }
+  Cockatrimon -> Garudamon  (cockatrimon_evolutions.json)
+    antes: { "fromDigimonId": 97, "toDigimonId": 61, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 334, "physicalDamage": 161, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 123 } }
+    depois: { "fromDigimonId": 97, "toDigimonId": 61, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 265, "physicalDamage": 128, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 125 } }
+  Coredramon (Blue) -> Wingdramon  (coredramon_blue_evolutions.json)
+    antes: { "fromDigimonId": 136, "toDigimonId": 137, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 324, "physicalDamage": 117, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 126 } }
+    depois: { "fromDigimonId": 136, "toDigimonId": 137, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 208, "physicalDamage": 75, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 126 } }
+  Coredramon (Blue) -> AeroVeedramon  (coredramon_blue_evolutions.json)
+    antes: { "fromDigimonId": 136, "toDigimonId": 141, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 288, "physicalDamage": 125, "physicalDefense": 81, "specialDamage": 0, "specialDefense": 0, "speed": 171 } }
+    depois: { "fromDigimonId": 136, "toDigimonId": 141, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 246, "physicalDamage": 147, "physicalDefense": 71, "specialDamage": 0, "specialDefense": 0, "speed": 171 } }
+  Coredramon (Green) -> Groundramon  (coredramon_green_evolutions.json)
+    antes: { "fromDigimonId": 133, "toDigimonId": 134, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 360, "physicalDamage": 135, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 45 } }
+    depois: { "fromDigimonId": 133, "toDigimonId": 134, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 247, "physicalDamage": 109, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 45 } }
+  Coredramon (Green) -> Grademon  (coredramon_green_evolutions.json)
+    antes: { "fromDigimonId": 133, "toDigimonId": 154, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 320, "physicalDamage": 142, "physicalDefense": 107, "specialDamage": 0, "specialDefense": 0, "speed": 100 } }
+    depois: { "fromDigimonId": 133, "toDigimonId": 154, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 285, "physicalDamage": 183, "physicalDefense": 96, "specialDamage": 0, "specialDefense": 0, "speed": 95 } }
+  Delumon -> AncientSphinxmon  (delumon_evolutions.json)
+    antes: { "fromDigimonId": 98, "toDigimonId": 112, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 619, "physicalDamage": 312, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 140 } }
+    depois: { "fromDigimonId": 98, "toDigimonId": 112, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 418, "physicalDamage": 239, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 140 } }
+  Delumon -> Hououmon  (delumon_evolutions.json)
+    antes: { "fromDigimonId": 98, "toDigimonId": 62, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 615, "physicalDamage": 248, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 146 } }
+    depois: { "fromDigimonId": 98, "toDigimonId": 62, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 418, "physicalDamage": 181, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 146 } }
+  Destromon -> Belphemon Sleep Mode  (destromon_evolutions.json)
+    antes: { "fromDigimonId": 118, "toDigimonId": 128, "requiredLevel": 37, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 554, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 226, "specialDefense": 0, "speed": 166 } }
+    depois: { "fromDigimonId": 118, "toDigimonId": 128, "requiredLevel": 36, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 413, "physicalDamage": 0, "physicalDefense": 89, "specialDamage": 0, "specialDefense": 136, "speed": 90 } }
+  Destromon -> Boltmon  (destromon_evolutions.json)
+    antes: { "fromDigimonId": 118, "toDigimonId": 113, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 550, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 231, "specialDefense": 0, "speed": 172 } }
+    depois: { "fromDigimonId": 118, "toDigimonId": 113, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 375, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 152, "specialDefense": 0, "speed": 154 } }
+  Destromon -> Demon  (destromon_evolutions.json)
+    antes: { "fromDigimonId": 118, "toDigimonId": 105, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 548, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 285, "specialDefense": 0, "speed": 185 } }
+    depois: { "fromDigimonId": 118, "toDigimonId": 105, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 548, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 285, "specialDefense": 0, "speed": 185 }, "maxDiscipline": 35 }
+  Devidramon -> Lamiamon  (devidramon_evolutions.json)
+    antes: { "fromDigimonId": 47, "toDigimonId": 86, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 196, "physicalDamage": 226, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 177 } }
+    depois: { "fromDigimonId": 47, "toDigimonId": 86, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 196, "physicalDamage": 156, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 177 } }
+  Devidramon -> WarGrowlmon  (devidramon_evolutions.json)
+    antes: { "fromDigimonId": 47, "toDigimonId": 41, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 199, "physicalDamage": 274, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 161 } }
+    depois: { "fromDigimonId": 47, "toDigimonId": 41, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 199, "physicalDamage": 201, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 161 } }
+  Devimon -> LadyDevimon  (devimon_evolutions.json)
+    antes: { "fromDigimonId": 45, "toDigimonId": 180, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 230, "physicalDamage": 192, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 159 } }
+    depois: { "fromDigimonId": 45, "toDigimonId": 180, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 230, "physicalDamage": 137, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 118 } }
+  Devimon -> Lucemon Falldown Mode  (devimon_evolutions.json)
+    antes: { "fromDigimonId": 45, "toDigimonId": 125, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 231, "physicalDamage": 207, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 150 } }
+    depois: { "fromDigimonId": 45, "toDigimonId": 125, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 231, "physicalDamage": 163, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 118 } }
+  DexDorugamon -> DexDorugreymon  (dexdorugamon_evolutions.json)
+    antes: { "fromDigimonId": 156, "toDigimonId": 157, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 329, "physicalDamage": 140, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 108 } }
+    depois: { "fromDigimonId": 156, "toDigimonId": 157, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 276, "physicalDamage": 115, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 108 } }
+  DexDorugamon -> Dorugreymon  (dexdorugamon_evolutions.json)
+    antes: { "fromDigimonId": 156, "toDigimonId": 151, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 296, "physicalDamage": 153, "physicalDefense": 82, "specialDamage": 0, "specialDefense": 0, "speed": 154 } }
+    depois: { "fromDigimonId": 156, "toDigimonId": 151, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 296, "physicalDamage": 190, "physicalDefense": 71, "specialDamage": 0, "specialDefense": 0, "speed": 154 } }
+  DexDorugreymon -> DexDorugoramon  (dexdorugreymon_evolutions.json)
+    antes: { "fromDigimonId": 157, "toDigimonId": 158, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 576, "physicalDamage": 194, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 135 } }
+    depois: { "fromDigimonId": 157, "toDigimonId": 158, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 457, "physicalDamage": 190, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 135 } }
+  DexDorugreymon -> Dorugoramon  (dexdorugreymon_evolutions.json)
+    antes: { "fromDigimonId": 157, "toDigimonId": 155, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 621, "physicalDamage": 232, "physicalDefense": 118, "specialDamage": 0, "specialDefense": 0, "speed": 128 } }
+    depois: { "fromDigimonId": 157, "toDigimonId": 155, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 495, "physicalDamage": 284, "physicalDefense": 111, "specialDamage": 0, "specialDefense": 0, "speed": 128 } }
+  Dimetromon -> Lamiamon  (dimetromon_evolutions.json)
+    antes: { "fromDigimonId": 85, "toDigimonId": 86, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 263, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 177, "specialDefense": 0, "speed": 123 } }
+    depois: { "fromDigimonId": 85, "toDigimonId": 86, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 204, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 112, "specialDefense": 0, "speed": 110 } }
+  Dimetromon -> Triceramon  (dimetromon_evolutions.json)
+    antes: { "fromDigimonId": 85, "toDigimonId": 111, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 282, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 174, "specialDefense": 0, "speed": 127 } }
+    depois: { "fromDigimonId": 85, "toDigimonId": 111, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 204, "physicalDamage": 0, "physicalDefense": 94, "specialDamage": 112, "specialDefense": 0, "speed": 110 } }
+  Dorugamon -> Dorugreymon  (dorugamon_evolutions.json)
+    antes: { "fromDigimonId": 150, "toDigimonId": 151, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 351, "physicalDamage": 149, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 90 } }
+    depois: { "fromDigimonId": 150, "toDigimonId": 151, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 241, "physicalDamage": 102, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 90 } }
+  Dorugamon -> DexDorugreymon  (dorugamon_evolutions.json)
+    antes: { "fromDigimonId": 150, "toDigimonId": 157, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 311, "physicalDamage": 147, "physicalDefense": 88, "specialDamage": 0, "specialDefense": 0, "speed": 147 } }
+    depois: { "fromDigimonId": 150, "toDigimonId": 157, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 279, "physicalDamage": 176, "physicalDefense": 87, "specialDamage": 0, "specialDefense": 0, "speed": 105 } }
+  Dorugreymon -> Alphamon  (dorugreymon_evolutions.json)
+    antes: { "fromDigimonId": 151, "toDigimonId": 152, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 630, "physicalDamage": 216, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 144 } }
+    depois: { "fromDigimonId": 151, "toDigimonId": 152, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 446, "physicalDamage": 265, "physicalDefense": 120, "specialDamage": 0, "specialDefense": 0, "speed": 152 } }
+  Dorugreymon -> Dorugoramon  (dorugreymon_evolutions.json)
+    antes: { "fromDigimonId": 151, "toDigimonId": 155, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 662, "physicalDamage": 247, "physicalDefense": 131, "specialDamage": 0, "specialDefense": 0, "speed": 106 } }
+    depois: { "fromDigimonId": 151, "toDigimonId": 155, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 408, "physicalDamage": 171, "physicalDefense": 105, "specialDamage": 0, "specialDefense": 0, "speed": 106 } }
+  Dorumon -> Dorugamon  (dorumon_evolutions.json)
+    antes: { "fromDigimonId": 149, "toDigimonId": 150, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 176, "physicalDamage": 79, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 72 } }
+    depois: { "fromDigimonId": 149, "toDigimonId": 150, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 119, "physicalDamage": 51, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 53 } }
+  Dorumon -> Raptordramon  (dorumon_evolutions.json)
+    antes: { "fromDigimonId": 149, "toDigimonId": 153, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 189, "physicalDamage": 90, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 59 } }
+    depois: { "fromDigimonId": 149, "toDigimonId": 153, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 148, "physicalDamage": 120, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 58 } }
+  Dorumon -> DexDorugamon  (dorumon_evolutions.json)
+    antes: { "fromDigimonId": 149, "toDigimonId": 156, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 167, "physicalDamage": 83, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 79 } }
+    depois: { "fromDigimonId": 149, "toDigimonId": 156, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 148, "physicalDamage": 62, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 106 } }
+  Dracomon -> Coredramon (Green)  (dracomon_evolutions.json)
+    antes: { "fromDigimonId": 132, "toDigimonId": 133, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 180, "physicalDamage": 77, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 54 } }
+    depois: { "fromDigimonId": 132, "toDigimonId": 133, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 123, "physicalDamage": 55, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 47 } }
+  Dracomon -> Coredramon (Blue)  (dracomon_evolutions.json)
+    antes: { "fromDigimonId": 132, "toDigimonId": 136, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 162, "physicalDamage": 68, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 81 } }
+    depois: { "fromDigimonId": 132, "toDigimonId": 136, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 152, "physicalDamage": 66, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 108 } }
+  Elizamon -> Dimetromon  (elizamon_evolutions.json)
+    antes: { "fromDigimonId": 84, "toDigimonId": 85, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 87, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 93, "specialDefense": 0, "speed": 81 } }
+    depois: { "fromDigimonId": 84, "toDigimonId": 85, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 87, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 58, "specialDefense": 0, "speed": 60 } }
+  Elizamon -> Devidramon  (elizamon_evolutions.json)
+    antes: { "fromDigimonId": 84, "toDigimonId": 47, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 93, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 105, "specialDefense": 0, "speed": 97 } }
+    depois: { "fromDigimonId": 84, "toDigimonId": 47, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 93, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 58, "specialDefense": 0, "speed": 104 } }
+  Elizamon -> Tortamon  (elizamon_evolutions.json)
+    antes: { "fromDigimonId": 84, "toDigimonId": 110, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 96, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 108, "specialDefense": 0, "speed": 89 } }
+    depois: { "fromDigimonId": 84, "toDigimonId": 110, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 96, "physicalDamage": 0, "physicalDefense": 74, "specialDamage": 58, "specialDefense": 0, "speed": 60 } }
+  ExVeemon -> AeroVeedramon  (exveemon_evolutions.json)
+    antes: { "fromDigimonId": 191, "toDigimonId": 141, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 327, "physicalDamage": 153, "physicalDefense": 88, "specialDamage": 0, "specialDefense": 0, "speed": 152 } }
+    depois: { "fromDigimonId": 191, "toDigimonId": 141, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 327, "physicalDamage": 153, "physicalDefense": 88, "specialDamage": 0, "specialDefense": 0, "speed": 152 } }
+  Fantomon -> Piedmon  (fantomon_evolutions.json)
+    antes: { "fromDigimonId": 104, "toDigimonId": 194, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 540, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 255, "specialDefense": 0, "speed": 185 }, "minDiscipline": 60 }
+    depois: { "fromDigimonId": 104, "toDigimonId": 194, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 390, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 161, "specialDefense": 0, "speed": 189 }, "minDiscipline": 60 }
+  Fantomon -> Boltmon  (fantomon_evolutions.json)
+    antes: { "fromDigimonId": 104, "toDigimonId": 113, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 535, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 238, "specialDefense": 0, "speed": 180 } }
+    depois: { "fromDigimonId": 104, "toDigimonId": 113, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 390, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 161, "specialDefense": 0, "speed": 133 } }
+  Fantomon -> Ragnamon  (fantomon_evolutions.json)
+    antes: { "fromDigimonId": 104, "toDigimonId": 119, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 533, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 294, "specialDefense": 0, "speed": 192 } }
+    depois: { "fromDigimonId": 104, "toDigimonId": 119, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 390, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 218, "specialDefense": 0, "speed": 133 } }
+  Fluffymon -> Pteromon  (fluffymon_evolutions.json)
+    antes: { "fromDigimonId": 77, "toDigimonId": 78, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 65, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 30, "specialDefense": 0, "speed": 27 } }
+    depois: { "fromDigimonId": 77, "toDigimonId": 78, "requiredLevel": 2, "requiredAgeInDays": 5, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 43, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 21, "specialDefense": 0, "speed": 18 } }
+  Fluffymon -> Biyomon  (fluffymon_evolutions.json)
+    antes: { "fromDigimonId": 77, "toDigimonId": 59, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 64, "physicalDamage": 0, "physicalDefense": 16, "specialDamage": 29, "specialDefense": 0, "speed": 31 } }
+    depois: { "fromDigimonId": 77, "toDigimonId": 59, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 43, "physicalDamage": 0, "physicalDefense": 10, "specialDamage": 21, "specialDefense": 0, "speed": 35 } }
+  Fluffymon -> Muchomon  (fluffymon_evolutions.json)
+    antes: { "fromDigimonId": 77, "toDigimonId": 96, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 64, "physicalDamage": 0, "physicalDefense": 16, "specialDamage": 29, "specialDefense": 0, "speed": 31 }, "requiredBattles": 8 }
+    depois: { "fromDigimonId": 77, "toDigimonId": 96, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 43, "physicalDamage": 24, "physicalDefense": 10, "specialDamage": 21, "specialDefense": 0, "speed": 18 }, "requiredBattles": 8 }
+  Galemon -> Grand Galemon  (galemon_evolutions.json)
+    antes: { "fromDigimonId": 79, "toDigimonId": 80, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 300, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 180, "specialDefense": 0, "speed": 130 } }
+    depois: { "fromDigimonId": 79, "toDigimonId": 80, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 223, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 114, "specialDefense": 0, "speed": 105 } }
+  Galemon -> Wingdramon  (galemon_evolutions.json)
+    antes: { "fromDigimonId": 79, "toDigimonId": 137, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 311, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 196, "specialDefense": 0, "speed": 162 } }
+    depois: { "fromDigimonId": 79, "toDigimonId": 137, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 261, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 114, "specialDefense": 0, "speed": 168 } }
+  Gaomon -> Gaogamon  (gaomon_evolutions.json)
+    antes: { "fromDigimonId": 5, "toDigimonId": 23, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 165, "physicalDamage": 80, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 37 } }
+    depois: { "fromDigimonId": 5, "toDigimonId": 23, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 146, "physicalDamage": 108, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 30 } }
+  Gaomon -> Garurumon  (gaomon_evolutions.json)
+    antes: { "fromDigimonId": 5, "toDigimonId": 14, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 166, "physicalDamage": 73, "physicalDefense": 40, "specialDamage": 0, "specialDefense": 0, "speed": 41 } }
+    depois: { "fromDigimonId": 5, "toDigimonId": 14, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 146, "physicalDamage": 64, "physicalDefense": 39, "specialDamage": 0, "specialDefense": 0, "speed": 30 } }
+  Gaomon -> Gladimon  (gaomon_evolutions.json)
+    antes: { "fromDigimonId": 5, "toDigimonId": 146, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 166, "physicalDamage": 92, "physicalDefense": 44, "specialDamage": 0, "specialDefense": 0, "speed": 39 } }
+    depois: { "fromDigimonId": 5, "toDigimonId": 146, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 166, "physicalDamage": 76, "physicalDefense": 51, "specialDamage": 0, "specialDefense": 0, "speed": 82 } }
+  Gargomon -> Rapidmon  (gargomon_evolutions.json)
+    antes: { "fromDigimonId": 19, "toDigimonId": 42, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 280, "physicalDamage": 155, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 122 } }
+    depois: { "fromDigimonId": 19, "toDigimonId": 42, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 248, "physicalDamage": 101, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 113 } }
+  Gargomon -> MachGaogamon  (gargomon_evolutions.json)
+    antes: { "fromDigimonId": 19, "toDigimonId": 48, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 299, "physicalDamage": 167, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 123 } }
+    depois: { "fromDigimonId": 19, "toDigimonId": 48, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 248, "physicalDamage": 143, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 113 } }
+  Garudamon -> Hououmon  (garudamon_evolutions.json)
+    antes: { "fromDigimonId": 61, "toDigimonId": 62, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 544, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 254, "specialDefense": 0, "speed": 211 } }
+    depois: { "fromDigimonId": 61, "toDigimonId": 62, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 415, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 192, "specialDefense": 0, "speed": 179 } }
+  Garudamon -> Zephagamon  (garudamon_evolutions.json)
+    antes: { "fromDigimonId": 61, "toDigimonId": 81, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 526, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 283, "specialDefense": 0, "speed": 214 } }
+    depois: { "fromDigimonId": 61, "toDigimonId": 81, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 415, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 251, "specialDefense": 0, "speed": 179 } }
+  Garurumon -> WereGarurumon  (garurumon_evolutions.json)
+    antes: { "fromDigimonId": 14, "toDigimonId": 40, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 280, "physicalDamage": 34, "physicalDefense": 0, "specialDamage": 155, "specialDefense": 0, "speed": 122 } }
+    depois: { "fromDigimonId": 14, "toDigimonId": 40, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 248, "physicalDamage": 34, "physicalDefense": 0, "specialDamage": 127, "specialDefense": 0, "speed": 113 } }
+  Garurumon -> MachGaogamon  (garurumon_evolutions.json)
+    antes: { "fromDigimonId": 14, "toDigimonId": 48, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 299, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 133, "specialDefense": 0, "speed": 123 } }
+    depois: { "fromDigimonId": 14, "toDigimonId": 48, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 248, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 86, "specialDefense": 0, "speed": 113 } }
+  Gatomon -> Angemon  (gatomon_evolutions.json)
+    antes: { "fromDigimonId": 71, "toDigimonId": 16, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 90, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 135, "specialDefense": 0, "speed": 94 }, "minHappiness": 40 }
+    depois: { "fromDigimonId": 71, "toDigimonId": 16, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 90, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 58, "specialDefense": 0, "speed": 57 } }
+  Gatomon -> Wizardmon  (gatomon_evolutions.json)
+    antes: { "fromDigimonId": 71, "toDigimonId": 21, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 90, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 135, "specialDefense": 0, "speed": 94 }, "maxDiscipline": 40 }
+    depois: { "fromDigimonId": 71, "toDigimonId": 21, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 90, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 100, "specialDefense": 0, "speed": 80 }, "maxDiscipline": 40 }
+  Geogreymon -> RizeGreymon  (geogreymon_evolutions.json)
+    antes: { "fromDigimonId": 44, "toDigimonId": 167, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 400, "physicalDamage": 154, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 46 } }
+    depois: { "fromDigimonId": 44, "toDigimonId": 167, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 292, "physicalDamage": 120, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 44 } }
+  Geogreymon -> MetalGreymon  (geogreymon_evolutions.json)
+    antes: { "fromDigimonId": 44, "toDigimonId": 39, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 398, "physicalDamage": 177, "physicalDefense": 97, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 44, "toDigimonId": 39, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 292, "physicalDamage": 149, "physicalDefense": 70, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Ghostmon -> Bakemon  (ghostmon_evolutions.json)
+    antes: { "fromDigimonId": 102, "toDigimonId": 103, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 93, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 83, "specialDefense": 0, "speed": 72 } }
+    depois: { "fromDigimonId": 102, "toDigimonId": 103, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 93, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 52, "specialDefense": 0, "speed": 55 } }
+  Ghostmon -> Devimon  (ghostmon_evolutions.json)
+    antes: { "fromDigimonId": 102, "toDigimonId": 45, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 100, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 95, "specialDefense": 0, "speed": 87 } }
+    depois: { "fromDigimonId": 102, "toDigimonId": 45, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 100, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 95, "specialDefense": 0, "speed": 87 }, "maxDiscipline": 40 }
+  Gigimon -> Guilmon  (gigimon_evolutions.json)
+    antes: { "fromDigimonId": 33, "toDigimonId": 7, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 30, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 26 } }
+    depois: { "fromDigimonId": 33, "toDigimonId": 7, "requiredLevel": 2, "requiredAgeInDays": 5, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 19, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 16 } }
+  Gigimon -> Elizamon  (gigimon_evolutions.json)
+    antes: { "fromDigimonId": 33, "toDigimonId": 84, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 30, "specialDefense": 0, "speed": 26 } }
+    depois: { "fromDigimonId": 33, "toDigimonId": 84, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 34, "specialDefense": 0, "speed": 26 }, "maxDiscipline": 45 }
+  Gigimon -> Dorumon  (gigimon_evolutions.json)
+    antes: { "fromDigimonId": 33, "toDigimonId": 149, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 32, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 29 }, "requiredBattles": 8 }
+    depois: { "fromDigimonId": 33, "toDigimonId": 149, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 19, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 33 }, "requiredBattles": 8 }
+  Gladimon -> Knightmon  (gladimon_evolutions.json)
+    antes: { "fromDigimonId": 146, "toDigimonId": 147, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 342, "physicalDamage": 144, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 77 } }
+    depois: { "fromDigimonId": 146, "toDigimonId": 147, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 308, "physicalDamage": 140, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 77 } }
+  Gladimon -> Grademon  (gladimon_evolutions.json)
+    antes: { "fromDigimonId": 146, "toDigimonId": 154, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 328, "physicalDamage": 167, "physicalDefense": 107, "specialDamage": 0, "specialDefense": 0, "speed": 113 } }
+    depois: { "fromDigimonId": 146, "toDigimonId": 154, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 328, "physicalDamage": 210, "physicalDefense": 107, "specialDamage": 0, "specialDefense": 0, "speed": 113 } }
+  Grademon -> Alphamon  (grademon_evolutions.json)
+    antes: { "fromDigimonId": 154, "toDigimonId": 152, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 694, "physicalDamage": 262, "physicalDefense": 160, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 154, "toDigimonId": 152, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 720, "physicalDamage": 262, "physicalDefense": 160, "specialDamage": 0, "specialDefense": 0, "speed": 150 } }
+  Grand Galemon -> Zephagamon  (grandgalemon_evolutions.json)
+    antes: { "fromDigimonId": 80, "toDigimonId": 81, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 560, "physicalDamage": 75, "physicalDefense": 0, "specialDamage": 265, "specialDefense": 0, "speed": 195 } }
+    depois: { "fromDigimonId": 80, "toDigimonId": 81, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 380, "physicalDamage": 53, "physicalDefense": 0, "specialDamage": 230, "specialDefense": 0, "speed": 167 } }
+  Grand Galemon -> Dynasmon  (grandgalemon_evolutions.json)
+    antes: { "fromDigimonId": 80, "toDigimonId": 160, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 557, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 256, "specialDefense": 0, "speed": 207 } }
+    depois: { "fromDigimonId": 80, "toDigimonId": 160, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 380, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 172, "specialDefense": 0, "speed": 167 } }
+  Greymon -> MetalGreymon  (greymon_evolutions.json)
+    antes: { "fromDigimonId": 13, "toDigimonId": 39, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 345, "physicalDamage": 120, "physicalDefense": 0, "specialDamage": 120, "specialDefense": 0, "speed": 48 } }
+    depois: { "fromDigimonId": 13, "toDigimonId": 39, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 292, "physicalDamage": 191, "physicalDefense": 0, "specialDamage": 67, "specialDefense": 0, "speed": 36 } }
+  Greymon -> RizeGreymon  (greymon_evolutions.json)
+    antes: { "fromDigimonId": 13, "toDigimonId": 167, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 368, "physicalDamage": 131, "physicalDefense": 74, "specialDamage": 103, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 13, "toDigimonId": 167, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 292, "physicalDamage": 131, "physicalDefense": 74, "specialDamage": 67, "specialDefense": 0, "speed": 0 } }
+  Groundramon -> Breakdramon  (groundramon_evolutions.json)
+    antes: { "fromDigimonId": 134, "toDigimonId": 135, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 630, "physicalDamage": 207, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 81 } }
+    depois: { "fromDigimonId": 134, "toDigimonId": 135, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 418, "physicalDamage": 180, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 76 } }
+  Groundramon -> Dorugoramon  (groundramon_evolutions.json)
+    antes: { "fromDigimonId": 134, "toDigimonId": 155, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 679, "physicalDamage": 224, "physicalDefense": 194, "specialDamage": 0, "specialDefense": 101, "speed": 0 } }
+    depois: { "fromDigimonId": 134, "toDigimonId": 155, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 456, "physicalDamage": 195, "physicalDefense": 210, "specialDamage": 0, "specialDefense": 76, "speed": 0 } }
+  Guilmon -> Growlmon  (guilmon_evolutions.json)
+    antes: { "fromDigimonId": 7, "toDigimonId": 18, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 165, "physicalDamage": 84, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 31 } }
+    depois: { "fromDigimonId": 7, "toDigimonId": 18, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 146, "physicalDamage": 104, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 28 } }
+  Guilmon -> Dimetromon  (guilmon_evolutions.json)
+    antes: { "fromDigimonId": 7, "toDigimonId": 85, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 166, "physicalDamage": 81, "physicalDefense": 44, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 7, "toDigimonId": 85, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 146, "physicalDamage": 60, "physicalDefense": 41, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Hackmon -> BaoHackmon  (hackmon_evolutions.json)
+    antes: { "fromDigimonId": 163, "toDigimonId": 164, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 176, "physicalDamage": 77, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 77 } }
+    depois: { "fromDigimonId": 163, "toDigimonId": 164, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 122, "physicalDamage": 57, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 56 } }
+  Hackmon -> Gladimon  (hackmon_evolutions.json)
+    antes: { "fromDigimonId": 163, "toDigimonId": 146, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 180, "physicalDamage": 88, "physicalDefense": 0, "specialDamage": 59, "specialDefense": 0, "speed": 79 } }
+    depois: { "fromDigimonId": 163, "toDigimonId": 146, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 151, "physicalDamage": 120, "physicalDefense": 51, "specialDamage": 0, "specialDefense": 0, "speed": 61 } }
+  IceDevimon -> Astamon  (icedevimon_evolutions.json)
+    antes: { "fromDigimonId": 46, "toDigimonId": 127, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 173, "physicalDamage": 259, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 222 } }
+    depois: { "fromDigimonId": 46, "toDigimonId": 127, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 173, "physicalDamage": 176, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 129 } }
+  IceDevimon -> Destromon  (icedevimon_evolutions.json)
+    antes: { "fromDigimonId": 46, "toDigimonId": 118, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 173, "physicalDamage": 212, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 218 } }
+    depois: { "fromDigimonId": 46, "toDigimonId": 118, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 173, "physicalDamage": 176, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 154 } }
+  Impmon -> Wizardmon  (impmon_evolutions.json)
+    antes: { "fromDigimonId": 10, "toDigimonId": 21, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 120, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 80, "specialDefense": 0, "speed": 60 } }
+    depois: { "fromDigimonId": 10, "toDigimonId": 21, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 114, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 82, "specialDefense": 0, "speed": 41 }, "minHappiness": 55 }
+  Impmon -> Devimon  (impmon_evolutions.json)
+    antes: { "fromDigimonId": 10, "toDigimonId": 45, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 121, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 72, "specialDefense": 0, "speed": 63 } }
+    depois: { "fromDigimonId": 10, "toDigimonId": 45, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 121, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 72, "specialDefense": 0, "speed": 63 }, "maxDiscipline": 40 }
+  Impmon -> Bakemon  (impmon_evolutions.json)
+    antes: { "fromDigimonId": 10, "toDigimonId": 103, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 122, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 92, "specialDefense": 0, "speed": 63 } }
+    depois: { "fromDigimonId": 10, "toDigimonId": 103, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 114, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 39, "specialDefense": 0, "speed": 41 } }
+  JewelBeemon -> GrandisKuwagamon  (jewelbeemon_evolutions.json)
+    antes: { "fromDigimonId": 199, "toDigimonId": 200, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 527, "physicalDamage": 285, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 202 } }
+    depois: { "fromDigimonId": 199, "toDigimonId": 200, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 527, "physicalDamage": 224, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 129 } }
+  JewelBeemon -> HerculesKabuterimon  (jewelbeemon_evolutions.json)
+    antes: { "fromDigimonId": 199, "toDigimonId": 74, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 534, "physicalDamage": 232, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 190 } }
+    depois: { "fromDigimonId": 199, "toDigimonId": 74, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 534, "physicalDamage": 167, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 129 } }
+  JewelBeemon -> Imperialdramon  (jewelbeemon_evolutions.json)
+    antes: { "fromDigimonId": 199, "toDigimonId": 193, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 527, "physicalDamage": 285, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 205 }, "minHappiness": 40 }
+    depois: { "fromDigimonId": 199, "toDigimonId": 193, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 527, "physicalDamage": 167, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 180 }, "minHappiness": 40 }
+  Jyarimon -> Gigimon  (jyarimon_evolutions.json)
+    antes: { "fromDigimonId": 83, "toDigimonId": 33, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 34, "physicalDamage": 14, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 11 } }
+    depois: { "fromDigimonId": 83, "toDigimonId": 33, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 27, "physicalDamage": 10, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 7 } }
+  Jyarimon -> Koromon  (jyarimon_evolutions.json)
+    antes: { "fromDigimonId": 83, "toDigimonId": 29, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 34, "physicalDamage": 14, "physicalDefense": 12, "specialDamage": 0, "specialDefense": 0, "speed": 10 } }
+    depois: { "fromDigimonId": 83, "toDigimonId": 29, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 27, "physicalDamage": 19, "physicalDefense": 10, "specialDamage": 0, "specialDefense": 0, "speed": 7 } }
+  Kabuterimon -> MegaKabuterimon  (kabuterimon_evolutions.json)
+    antes: { "fromDigimonId": 15, "toDigimonId": 51, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 528, "physicalDamage": 0, "physicalDefense": 110, "specialDamage": 32, "specialDefense": 110, "speed": 0 } }
+    depois: { "fromDigimonId": 15, "toDigimonId": 51, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 351, "physicalDamage": 0, "physicalDefense": 80, "specialDamage": 19, "specialDefense": 105, "speed": 0 } }
+  Kabuterimon -> Knightmon  (kabuterimon_evolutions.json)
+    antes: { "fromDigimonId": 15, "toDigimonId": 147, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 521, "physicalDamage": 0, "physicalDefense": 119, "specialDamage": 0, "specialDefense": 110, "speed": 0 } }
+    depois: { "fromDigimonId": 15, "toDigimonId": 147, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 389, "physicalDamage": 0, "physicalDefense": 144, "specialDamage": 0, "specialDefense": 65, "speed": 0 } }
+  Kabuterimon -> JewelBeemon  (kabuterimon_evolutions.json)
+    antes: { "fromDigimonId": 15, "toDigimonId": 199, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 520, "physicalDamage": 0, "physicalDefense": 107, "specialDamage": 0, "specialDefense": 107, "speed": 0 } }
+    depois: { "fromDigimonId": 15, "toDigimonId": 199, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 351, "physicalDamage": 0, "physicalDefense": 80, "specialDamage": 0, "specialDefense": 65, "speed": 0 } }
+  Keemon -> Yaamon  (keemon_evolutions.json)
+    antes: { "fromDigimonId": 28, "toDigimonId": 38, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 33, "physicalDamage": 3, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 14 } }
+    depois: { "fromDigimonId": 28, "toDigimonId": 38, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 3, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 9 } }
+  Keemon -> Kyaromon  (keemon_evolutions.json)
+    antes: { "fromDigimonId": 28, "toDigimonId": 90, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 31, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 17, "specialDefense": 0, "speed": 13 } }
+    depois: { "fromDigimonId": 28, "toDigimonId": 90, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 19, "specialDefense": 0, "speed": 9 } }
+  Knightmon -> Crusadermon  (knightmon_evolutions.json)
+    antes: { "fromDigimonId": 147, "toDigimonId": 148, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 594, "physicalDamage": 203, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 108 } }
+    depois: { "fromDigimonId": 147, "toDigimonId": 148, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 640, "physicalDamage": 240, "physicalDefense": 150, "specialDamage": 0, "specialDefense": 0, "speed": 120 } }
+  Koromon -> Agumon  (koromon_evolutions.json)
+    antes: { "fromDigimonId": 29, "toDigimonId": 1, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 33, "physicalDefense": 0, "specialDamage": 6, "specialDefense": 0, "speed": 14 } }
+    depois: { "fromDigimonId": 29, "toDigimonId": 1, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 38, "physicalDefense": 0, "specialDamage": 3, "specialDefense": 0, "speed": 8 } }
+  Koromon -> Agumon (Savers)  (koromon_evolutions.json)
+    antes: { "fromDigimonId": 29, "toDigimonId": 11, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 82, "physicalDamage": 35, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 29, "toDigimonId": 11, "requiredLevel": 2, "requiredAgeInDays": 5, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 20, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Koromon -> Veemon  (koromon_evolutions.json)
+    antes: { "fromDigimonId": 29, "toDigimonId": 139, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 36, "physicalDefense": 18, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 29, "toDigimonId": 139, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 20, "physicalDefense": 11, "specialDamage": 0, "specialDefense": 0, "speed": 25 } }
+  Kotemon -> Gladimon  (kotemon_evolutions.json)
+    antes: { "fromDigimonId": 145, "toDigimonId": 146, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 185, "physicalDamage": 90, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 61 } }
+    depois: { "fromDigimonId": 145, "toDigimonId": 146, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 195, "physicalDamage": 90, "physicalDefense": 70, "specialDamage": 0, "specialDefense": 0, "speed": 61 } }
+  Kotemon -> Gaogamon  (kotemon_evolutions.json)
+    antes: { "fromDigimonId": 145, "toDigimonId": 23, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 200, "physicalDamage": 110, "physicalDefense": 73, "specialDamage": 0, "specialDefense": 0, "speed": 64 } }
+    depois: { "fromDigimonId": 145, "toDigimonId": 23, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 170, "physicalDamage": 90, "physicalDefense": 50, "specialDamage": 0, "specialDefense": 0, "speed": 50 } }
+  Kudamon -> Reppamon  (kudamon_evolutions.json)
+    antes: { "fromDigimonId": 129, "toDigimonId": 130, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 171, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 86, "specialDefense": 0, "speed": 77 } }
+    depois: { "fromDigimonId": 129, "toDigimonId": 130, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 180, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 100, "specialDefense": 60, "speed": 77 } }
+  Kudamon -> Angemon  (kudamon_evolutions.json)
+    antes: { "fromDigimonId": 129, "toDigimonId": 16, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 181, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 124, "specialDefense": 0, "speed": 91 } }
+    depois: { "fromDigimonId": 129, "toDigimonId": 16, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 150, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 98, "specialDefense": 0, "speed": 80 } }
+  Kuramon -> Tsumemon  (kuramon_evolutions.json)
+    antes: { "fromDigimonId": 114, "toDigimonId": 115, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 28, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 14, "specialDefense": 0, "speed": 11 } }
+    depois: { "fromDigimonId": 114, "toDigimonId": 115, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 24, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 18, "specialDefense": 0, "speed": 8 } }
+  Kuramon -> Yaamon  (kuramon_evolutions.json)
+    antes: { "fromDigimonId": 114, "toDigimonId": 38, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 28, "physicalDamage": 0, "physicalDefense": 8, "specialDamage": 12, "specialDefense": 0, "speed": 11 } }
+    depois: { "fromDigimonId": 114, "toDigimonId": 38, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 23, "physicalDamage": 0, "physicalDefense": 7, "specialDamage": 9, "specialDefense": 0, "speed": 8 } }
+  Kyubimon -> Taomon  (kyubimon_evolutions.json)
+    antes: { "fromDigimonId": 20, "toDigimonId": 49, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 298, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 146, "specialDefense": 0, "speed": 122 } }
+    depois: { "fromDigimonId": 20, "toDigimonId": 49, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 214, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 112, "specialDefense": 0, "speed": 100 } }
+  Kyubimon -> Mistymon  (kyubimon_evolutions.json)
+    antes: { "fromDigimonId": 20, "toDigimonId": 170, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 297, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 134, "specialDefense": 0, "speed": 140 } }
+    depois: { "fromDigimonId": 20, "toDigimonId": 170, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 214, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 112, "specialDefense": 0, "speed": 142 } }
+  LadyDevimon -> Lilithmon  (ladydevimon_evolutions.json)
+    antes: { "fromDigimonId": 180, "toDigimonId": 95, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 530, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 250, "specialDefense": 0, "speed": 190 }, "maxDiscipline": 30 }
+    depois: { "fromDigimonId": 180, "toDigimonId": 95, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 530, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 250, "specialDefense": 0, "speed": 190 }, "maxDiscipline": 30, "maxHappiness": 40 }
+  LadyDevimon -> Medusamon  (ladydevimon_evolutions.json)
+    antes: { "fromDigimonId": 180, "toDigimonId": 87, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 576, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 247, "specialDefense": 0, "speed": 144 } }
+    depois: { "fromDigimonId": 180, "toDigimonId": 87, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 390, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 184, "specialDefense": 0, "speed": 129 } }
+  Lalamon -> Sunflowmon  (lalamon_evolutions.json)
+    antes: { "fromDigimonId": 12, "toDigimonId": 24, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 150, "physicalDamage": 0, "physicalDefense": 44, "specialDamage": 0, "specialDefense": 44, "speed": 48 } }
+    depois: { "fromDigimonId": 12, "toDigimonId": 24, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 136, "physicalDamage": 0, "physicalDefense": 40, "specialDamage": 0, "specialDefense": 21, "speed": 36 } }
+  Lalamon -> Togemon  (lalamon_evolutions.json)
+    antes: { "fromDigimonId": 12, "toDigimonId": 17, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 152, "physicalDamage": 0, "physicalDefense": 48, "specialDamage": 0, "specialDefense": 43, "speed": 46 } }
+    depois: { "fromDigimonId": 12, "toDigimonId": 17, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 136, "physicalDamage": 65, "physicalDefense": 40, "specialDamage": 0, "specialDefense": 21, "speed": 36 } }
+  Lamiamon -> Medusamon  (lamiamon_evolutions.json)
+    antes: { "fromDigimonId": 86, "toDigimonId": 87, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 525, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 252, "specialDefense": 0, "speed": 177 } }
+    depois: { "fromDigimonId": 86, "toDigimonId": 87, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 370, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 170, "specialDefense": 0, "speed": 174 } }
+  Lilamon -> Rosemon  (lilamon_evolutions.json)
+    antes: { "fromDigimonId": 179, "toDigimonId": 75, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 544, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 240, "specialDefense": 0, "speed": 160 } }
+    depois: { "fromDigimonId": 179, "toDigimonId": 75, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 458, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 198, "specialDefense": 0, "speed": 115 } }
+  Lilamon -> Cendrillmon  (lilamon_evolutions.json)
+    antes: { "fromDigimonId": 179, "toDigimonId": 94, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 609, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 224, "specialDefense": 111, "speed": 118 } }
+    depois: { "fromDigimonId": 179, "toDigimonId": 94, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 458, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 142, "specialDefense": 111, "speed": 115 } }
+  Lillymon -> Rosemon  (lillymon_evolutions.json)
+    antes: { "fromDigimonId": 50, "toDigimonId": 75, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 544, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 254, "specialDefense": 0, "speed": 176 } }
+    depois: { "fromDigimonId": 50, "toDigimonId": 75, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 458, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 151, "specialDefense": 0, "speed": 115 } }
+  Lillymon -> Cendrillmon  (lillymon_evolutions.json)
+    antes: { "fromDigimonId": 50, "toDigimonId": 94, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 525, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 283, "specialDefense": 0, "speed": 183 } }
+    depois: { "fromDigimonId": 50, "toDigimonId": 94, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 458, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 207, "specialDefense": 0, "speed": 115 } }
+  Lucemon -> Angemon  (lucemon_evolutions.json)
+    antes: { "fromDigimonId": 124, "toDigimonId": 16, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 113, "physicalDamage": 52, "physicalDefense": 0, "specialDamage": 120, "specialDefense": 0, "speed": 90 } }
+    depois: { "fromDigimonId": 124, "toDigimonId": 16, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 109, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 52, "specialDefense": 0, "speed": 54 } }
+  Lucemon -> Devimon  (lucemon_evolutions.json)
+    antes: { "fromDigimonId": 124, "toDigimonId": 45, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 112, "physicalDamage": 66, "physicalDefense": 0, "specialDamage": 95, "specialDefense": 0, "speed": 87 } }
+    depois: { "fromDigimonId": 124, "toDigimonId": 45, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 109, "physicalDamage": 88, "physicalDefense": 0, "specialDamage": 52, "specialDefense": 0, "speed": 54 } }
+  Lucemon Falldown Mode -> Lucemon Satan Mode  (lucemon_falldown_evolutions.json)
+    antes: { "fromDigimonId": 125, "toDigimonId": 121, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 600, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 230, "specialDefense": 0, "speed": 140 } }
+    depois: { "fromDigimonId": 125, "toDigimonId": 121, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 437, "physicalDamage": 0, "physicalDefense": 96, "specialDamage": 243, "specialDefense": 0, "speed": 175 } }
+  Lucemon Falldown Mode -> Demon  (lucemon_falldown_evolutions.json)
+    antes: { "fromDigimonId": 125, "toDigimonId": 105, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 586, "physicalDamage": 130, "physicalDefense": 0, "specialDamage": 312, "specialDefense": 0, "speed": 161 } }
+    depois: { "fromDigimonId": 125, "toDigimonId": 105, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 399, "physicalDamage": 130, "physicalDefense": 0, "specialDamage": 166, "specialDefense": 0, "speed": 161 } }
+  MachGaogamon -> Gankoomon  (machgaogamon_evolutions.json)
+    antes: { "fromDigimonId": 48, "toDigimonId": 162, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 712, "physicalDamage": 259, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 136 } }
+    depois: { "fromDigimonId": 48, "toDigimonId": 162, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 460, "physicalDamage": 169, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 136 } }
+  MachGaogamon -> MirageGaogamon  (machgaogamon_evolutions.json)
+    antes: { "fromDigimonId": 48, "toDigimonId": 176, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 712, "physicalDamage": 259, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 136 }, "minHappiness": 40 }
+    depois: { "fromDigimonId": 48, "toDigimonId": 176, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 460, "physicalDamage": 226, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 136 }, "minHappiness": 40 }
+  MagnaAngemon -> Seraphimon  (magnaangemon_evolutions.json)
+    antes: { "fromDigimonId": 43, "toDigimonId": 56, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 544, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 254, "specialDefense": 0, "speed": 211 } }
+    depois: { "fromDigimonId": 43, "toDigimonId": 56, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 415, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 251, "specialDefense": 0, "speed": 179 }, "requiredBattles": 12, "minHappiness": 55 }
+  MagnaAngemon -> Magnadramon  (magnaangemon_evolutions.json)
+    antes: { "fromDigimonId": 43, "toDigimonId": 73, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 525, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 283, "specialDefense": 0, "speed": 206 } }
+    depois: { "fromDigimonId": 43, "toDigimonId": 73, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 415, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 192, "specialDefense": 0, "speed": 179 } }
+  MegaKabuterimon -> HerculesKabuterimon  (megakabuterimon_evolutions.json)
+    antes: { "fromDigimonId": 51, "toDigimonId": 74, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 936, "physicalDamage": 0, "physicalDefense": 195, "specialDamage": 56, "specialDefense": 195, "speed": 0 } }
+    depois: { "fromDigimonId": 51, "toDigimonId": 74, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 593, "physicalDamage": 0, "physicalDefense": 131, "specialDamage": 0, "specialDefense": 115, "speed": 0 } }
+  MegaKabuterimon -> Craniummon  (megakabuterimon_evolutions.json)
+    antes: { "fromDigimonId": 51, "toDigimonId": 159, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 898, "physicalDamage": 0, "physicalDefense": 217, "specialDamage": 0, "specialDefense": 201, "speed": 0 } }
+    depois: { "fromDigimonId": 51, "toDigimonId": 159, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 593, "physicalDamage": 0, "physicalDefense": 186, "specialDamage": 0, "specialDefense": 115, "speed": 0 } }
+  MetalGreymon -> WarGreymon  (metalgreymon_evolutions.json)
+    antes: { "fromDigimonId": 39, "toDigimonId": 52, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 672, "physicalDamage": 198, "physicalDefense": 0, "specialDamage": 198, "specialDefense": 0, "speed": 85 }, "minHappiness": 55, "requiredBattles": 12, "requiredWinRate": 0.55 }
+    depois: { "fromDigimonId": 39, "toDigimonId": 52, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 481, "physicalDamage": 278, "physicalDefense": 0, "specialDamage": 117, "specialDefense": 0, "speed": 57 }, "requiredBattles": 12, "requiredWinRate": 0.55, "minHappiness": 55 }
+  MetalGreymon -> ShineGreymon  (metalgreymon_evolutions.json)
+    antes: { "fromDigimonId": 39, "toDigimonId": 168, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 651, "physicalDamage": 221, "physicalDefense": 126, "specialDamage": 175, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 39, "toDigimonId": 168, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 481, "physicalDamage": 221, "physicalDefense": 121, "specialDamage": 117, "specialDefense": 0, "speed": 0 } }
+  Minomon -> Palmon  (minomon_evolutions.json)
+    antes: { "fromDigimonId": 196, "toDigimonId": 6, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 0, "physicalDefense": 14, "specialDamage": 20, "specialDefense": 0, "speed": 29 } }
+    depois: { "fromDigimonId": 196, "toDigimonId": 6, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 0, "physicalDefense": 8, "specialDamage": 20, "specialDefense": 0, "speed": 30 } }
+  Minomon -> Tentomon  (minomon_evolutions.json)
+    antes: { "fromDigimonId": 196, "toDigimonId": 3, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 68, "physicalDamage": 0, "physicalDefense": 16, "specialDamage": 16, "specialDefense": 0, "speed": 31 } }
+    depois: { "fromDigimonId": 196, "toDigimonId": 3, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 0, "physicalDefense": 25, "specialDamage": 16, "specialDefense": 0, "speed": 13 } }
+  Minomon -> Wormmon  (minomon_evolutions.json)
+    antes: { "fromDigimonId": 196, "toDigimonId": 197, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 0, "physicalDefense": 13, "specialDamage": 25, "specialDefense": 0, "speed": 24 } }
+    depois: { "fromDigimonId": 196, "toDigimonId": 197, "requiredLevel": 2, "requiredAgeInDays": 5, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 0, "physicalDefense": 8, "specialDamage": 20, "specialDefense": 0, "speed": 13 } }
+  Mistymon -> Barbamon  (mistymon_evolutions.json)
+    antes: { "fromDigimonId": 170, "toDigimonId": 122, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 577, "physicalDamage": 174, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 182 } }
+    depois: { "fromDigimonId": 170, "toDigimonId": 122, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 362, "physicalDamage": 152, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 182 } }
+  Muchomon -> Cockatrimon  (muchomon_evolutions.json)
+    antes: { "fromDigimonId": 96, "toDigimonId": 97, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 135, "physicalDamage": 75, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 57 } }
+    depois: { "fromDigimonId": 96, "toDigimonId": 97, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 133, "physicalDamage": 66, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 45 } }
+  Muchomon -> Birdramon  (muchomon_evolutions.json)
+    antes: { "fromDigimonId": 96, "toDigimonId": 60, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 144, "physicalDamage": 87, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 71 } }
+    depois: { "fromDigimonId": 96, "toDigimonId": 60, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 133, "physicalDamage": 66, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 88 } }
+  Myotismon -> Piedmon  (myotismon_evolutions.json)
+    antes: { "fromDigimonId": 182, "toDigimonId": 194, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 585, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 239, "specialDefense": 0, "speed": 144 } }
+    depois: { "fromDigimonId": 182, "toDigimonId": 194, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 390, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 225, "specialDefense": 0, "speed": 133 } }
+  Myotismon -> Beelzebumon  (myotismon_evolutions.json)
+    antes: { "fromDigimonId": 182, "toDigimonId": 106, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 584, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 239, "specialDefense": 0, "speed": 141 } }
+    depois: { "fromDigimonId": 182, "toDigimonId": 106, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 584, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 239, "specialDefense": 0, "speed": 141 }, "maxDiscipline": 40 }
+  Nyokimon -> Yokomon  (nyokimon_evolutions.json)
+    antes: { "fromDigimonId": 189, "toDigimonId": 58, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 30, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 15, "specialDefense": 0, "speed": 11 } }
+    depois: { "fromDigimonId": 189, "toDigimonId": 58, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 10, "specialDefense": 0, "speed": 9 } }
+  Nyokimon -> Budmon  (nyokimon_evolutions.json)
+    antes: { "fromDigimonId": 189, "toDigimonId": 190, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 32, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 12, "specialDefense": 0, "speed": 14 } }
+    depois: { "fromDigimonId": 189, "toDigimonId": 190, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 26, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 10, "specialDefense": 0, "speed": 18 } }
+  Nyokimon -> Tanemon  (nyokimon_evolutions.json)
+    antes: { "fromDigimonId": 189, "toDigimonId": 36, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 31, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 17, "specialDefense": 0, "speed": 14 } }
+    depois: { "fromDigimonId": 189, "toDigimonId": 36, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 19, "specialDefense": 0, "speed": 9 } }
+  Pafumon -> Kyaromon  (pafumon_evolutions.json)
+    antes: { "fromDigimonId": 89, "toDigimonId": 90, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 28, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 13, "specialDefense": 0, "speed": 9 } }
+    depois: { "fromDigimonId": 89, "toDigimonId": 90, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 23, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 8, "specialDefense": 0, "speed": 6 } }
+  Pafumon -> PetiMeramon  (pafumon_evolutions.json)
+    antes: { "fromDigimonId": 89, "toDigimonId": 101, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 28, "physicalDamage": 0, "physicalDefense": 13, "specialDamage": 14, "specialDefense": 13, "speed": 0 } }
+    depois: { "fromDigimonId": 89, "toDigimonId": 101, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 23, "physicalDamage": 0, "physicalDefense": 10, "specialDamage": 17, "specialDefense": 8, "speed": 0 } }
+  Pafumon -> Yaamon  (pafumon_evolutions.json)
+    antes: { "fromDigimonId": 89, "toDigimonId": 38, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 28, "physicalDamage": 0, "physicalDefense": 12, "specialDamage": 11, "specialDefense": 12, "speed": 0 } }
+    depois: { "fromDigimonId": 89, "toDigimonId": 38, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 23, "physicalDamage": 13, "physicalDefense": 10, "specialDamage": 8, "specialDefense": 8, "speed": 0 } }
+  Paildramon -> Imperialdramon  (paildramon_evolutions.json)
+    antes: { "fromDigimonId": 192, "toDigimonId": 193, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 600, "physicalDamage": 225, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 152 } }
+    depois: { "fromDigimonId": 192, "toDigimonId": 193, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 484, "physicalDamage": 198, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 152 } }
+  Paildramon -> UlforceVeedramon  (paildramon_evolutions.json)
+    antes: { "fromDigimonId": 192, "toDigimonId": 142, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 636, "physicalDamage": 232, "physicalDefense": 106, "specialDamage": 0, "specialDefense": 0, "speed": 164 } }
+    depois: { "fromDigimonId": 192, "toDigimonId": 142, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 522, "physicalDamage": 293, "physicalDefense": 106, "specialDamage": 0, "specialDefense": 0, "speed": 164 } }
+  Phascomon -> IceDevimon  (phascomon_evolutions.json)
+    antes: { "fromDigimonId": 126, "toDigimonId": 46, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 134, "physicalDamage": 61, "physicalDefense": 59, "specialDamage": 0, "specialDefense": 51, "speed": 0 }, "maxDiscipline": 40 }
+    depois: { "fromDigimonId": 126, "toDigimonId": 46, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 134, "physicalDamage": 61, "physicalDefense": 40, "specialDamage": 0, "specialDefense": 0, "speed": 70 }, "maxDiscipline": 40 }
+  Phascomon -> Snatchmon  (phascomon_evolutions.json)
+    antes: { "fromDigimonId": 126, "toDigimonId": 117, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 136, "physicalDamage": 50, "physicalDefense": 64, "specialDamage": 0, "specialDefense": 55, "speed": 0 }, "maxDiscipline": 40 }
+    depois: { "fromDigimonId": 126, "toDigimonId": 117, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 136, "physicalDamage": 0, "physicalDefense": 64, "specialDamage": 48, "specialDefense": 55, "speed": 0 }, "maxDiscipline": 40 }
+  Pichimon -> Bukamon  (pichimon_evolutions.json)
+    antes: { "fromDigimonId": 63, "toDigimonId": 64, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 30, "physicalDamage": 16, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 6 } }
+    depois: { "fromDigimonId": 63, "toDigimonId": 64, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 13, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 5 } }
+  Pichimon -> Tsunomon  (pichimon_evolutions.json)
+    antes: { "fromDigimonId": 63, "toDigimonId": 30, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 31, "physicalDamage": 19, "physicalDefense": 10, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 63, "toDigimonId": 30, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 25, "physicalDamage": 22, "physicalDefense": 8, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Poyomon -> Tokomon  (poyomon_evolutions.json)
+    antes: { "fromDigimonId": 57, "toDigimonId": 31, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 31, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 14, "specialDefense": 0, "speed": 14 } }
+    depois: { "fromDigimonId": 57, "toDigimonId": 31, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 10, "specialDefense": 0, "speed": 9 } }
+  Poyomon -> Salamon  (poyomon_evolutions.json)
+    antes: { "fromDigimonId": 57, "toDigimonId": 70, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 32, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 14, "specialDefense": 0, "speed": 14 }, "requiredBattles": 8 }
+    depois: { "fromDigimonId": 57, "toDigimonId": 70, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 10, "specialDefense": 0, "speed": 18 }, "requiredBattles": 8 }
+  Poyomon -> Yokomon  (poyomon_evolutions.json)
+    antes: { "fromDigimonId": 57, "toDigimonId": 58, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 31, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 14, "specialDefense": 0, "speed": 14 }, "requiredBattles": 8 }
+    depois: { "fromDigimonId": 57, "toDigimonId": 58, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 12, "physicalDefense": 0, "specialDamage": 10, "specialDefense": 0, "speed": 9 }, "requiredBattles": 8 }
+  Pteromon -> Galemon  (pteromon_evolutions.json)
+    antes: { "fromDigimonId": 78, "toDigimonId": 79, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 105, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 90, "specialDefense": 0, "speed": 75 } }
+    depois: { "fromDigimonId": 78, "toDigimonId": 79, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 105, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 55, "specialDefense": 0, "speed": 57 } }
+  Pteromon -> Birdramon  (pteromon_evolutions.json)
+    antes: { "fromDigimonId": 78, "toDigimonId": 60, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 110, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 127, "specialDefense": 0, "speed": 94 } }
+    depois: { "fromDigimonId": 78, "toDigimonId": 60, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 110, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 98, "specialDefense": 0, "speed": 57 } }
+  Pteromon -> Coredramon (Blue)  (pteromon_evolutions.json)
+    antes: { "fromDigimonId": 78, "toDigimonId": 136, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 110, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 112, "specialDefense": 0, "speed": 98 }, "requiredBattles": 8 }
+    depois: { "fromDigimonId": 78, "toDigimonId": 136, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 110, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 55, "specialDefense": 0, "speed": 108 }, "requiredBattles": 8 }
+  Punimon -> Tsunomon  (punimon_evolutions.json)
+    antes: { "fromDigimonId": 26, "toDigimonId": 30, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 38, "physicalDamage": 6, "physicalDefense": 4, "specialDamage": 0, "specialDefense": 0, "speed": 14 } }
+    depois: { "fromDigimonId": 26, "toDigimonId": 30, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 25, "physicalDamage": 12, "physicalDefense": 4, "specialDamage": 0, "specialDefense": 0, "speed": 5 } }
+  Punimon -> Viximon  (punimon_evolutions.json)
+    antes: { "fromDigimonId": 26, "toDigimonId": 35, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 28, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 6, "specialDefense": 0, "speed": 12 } }
+    depois: { "fromDigimonId": 26, "toDigimonId": 35, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 14, "specialDamage": 6, "specialDefense": 0, "speed": 5 } }
+  Punimon -> Gummymon  (punimon_evolutions.json)
+    antes: { "fromDigimonId": 26, "toDigimonId": 34, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 31, "physicalDamage": 0, "physicalDefense": 9, "specialDamage": 15, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 26, "toDigimonId": 34, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 26, "physicalDamage": 0, "physicalDefense": 8, "specialDamage": 11, "specialDefense": 0, "speed": 0 } }
+  Puttimon -> Babydmon  (puttimon_evolutions.json)
+    antes: { "fromDigimonId": 172, "toDigimonId": 173, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 30, "physicalDamage": 8, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 12 } }
+    depois: { "fromDigimonId": 172, "toDigimonId": 173, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 27, "physicalDamage": 7, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 10 } }
+  Puttimon -> Fluffymon  (puttimon_evolutions.json)
+    antes: { "fromDigimonId": 172, "toDigimonId": 77, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 34, "physicalDamage": 8, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 16 }, "requiredBattles": 8 }
+    depois: { "fromDigimonId": 172, "toDigimonId": 77, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 27, "physicalDamage": 7, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 19 }, "requiredBattles": 8 }
+  Puttimon -> Tokomon  (puttimon_evolutions.json)
+    antes: { "fromDigimonId": 172, "toDigimonId": 31, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 34, "physicalDamage": 9, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 15 } }
+    depois: { "fromDigimonId": 172, "toDigimonId": 31, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 27, "physicalDamage": 16, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 10 } }
+  Rapidmon -> MegaGargomon  (rapidmon_evolutions.json)
+    antes: { "fromDigimonId": 42, "toDigimonId": 55, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 544, "physicalDamage": 254, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 211 } }
+    depois: { "fromDigimonId": 42, "toDigimonId": 55, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 544, "physicalDamage": 254, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 211 }, "requiredBattles": 12, "requiredWinRate": 0.55 }
+  Rapidmon -> Magnamon  (rapidmon_evolutions.json)
+    antes: { "fromDigimonId": 42, "toDigimonId": 143, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 528, "physicalDamage": 283, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 200 } }
+    depois: { "fromDigimonId": 42, "toDigimonId": 143, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 600, "physicalDamage": 283, "physicalDefense": 150, "specialDamage": 0, "specialDefense": 0, "speed": 200 } }
+  Raptordramon -> Grademon  (raptordramon_evolutions.json)
+    antes: { "fromDigimonId": 153, "toDigimonId": 154, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 369, "physicalDamage": 158, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 68 } }
+    depois: { "fromDigimonId": 153, "toDigimonId": 154, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 276, "physicalDamage": 158, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 68 } }
+  Raptordramon -> Dorugreymon  (raptordramon_evolutions.json)
+    antes: { "fromDigimonId": 153, "toDigimonId": 151, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 335, "physicalDamage": 167, "physicalDefense": 96, "specialDamage": 0, "specialDefense": 0, "speed": 114 } }
+    depois: { "fromDigimonId": 153, "toDigimonId": 151, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 314, "physicalDamage": 274, "physicalDefense": 80, "specialDamage": 0, "specialDefense": 0, "speed": 114 } }
+  Renamon -> Kyubimon  (renamon_evolutions.json)
+    antes: { "fromDigimonId": 9, "toDigimonId": 20, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 80, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 129, "specialDefense": 0, "speed": 80 } }
+    depois: { "fromDigimonId": 9, "toDigimonId": 20, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 80, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 64, "specialDefense": 0, "speed": 53 } }
+  Renamon -> Reppamon  (renamon_evolutions.json)
+    antes: { "fromDigimonId": 9, "toDigimonId": 130, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 82, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 149, "specialDefense": 0, "speed": 89 } }
+    depois: { "fromDigimonId": 9, "toDigimonId": 130, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 82, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 114, "specialDefense": 0, "speed": 58 } }
+  Reppamon -> Chirinmon  (reppamon_evolutions.json)
+    antes: { "fromDigimonId": 130, "toDigimonId": 131, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 324, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 149, "specialDefense": 0, "speed": 104 } }
+    depois: { "fromDigimonId": 130, "toDigimonId": 131, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 228, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 243, "specialDefense": 57, "speed": 114 } }
+  Reppamon -> Taomon  (reppamon_evolutions.json)
+    antes: { "fromDigimonId": 130, "toDigimonId": 49, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 303, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 158, "specialDefense": 84, "speed": 159 } }
+    depois: { "fromDigimonId": 130, "toDigimonId": 49, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 190, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 158, "specialDefense": 57, "speed": 106 } }
+  RizeGreymon -> ShineGreymon  (rizegreymon_evolutions.json)
+    antes: { "fromDigimonId": 167, "toDigimonId": 168, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 736, "physicalDamage": 269, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 82 } }
+    depois: { "fromDigimonId": 167, "toDigimonId": 168, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 481, "physicalDamage": 256, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 74 } }
+  RizeGreymon -> WarGreymon  (rizegreymon_evolutions.json)
+    antes: { "fromDigimonId": 167, "toDigimonId": 52, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 778, "physicalDamage": 251, "physicalDefense": 137, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 167, "toDigimonId": 52, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 481, "physicalDamage": 197, "physicalDefense": 111, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Salamon -> Gatomon  (salamon_evolutions.json)
+    antes: { "fromDigimonId": 70, "toDigimonId": 71, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 30, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 26 } }
+    depois: { "fromDigimonId": 70, "toDigimonId": 71, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 28, "specialDefense": 0, "speed": 26 } }
+  Salamon -> Lucemon  (salamon_evolutions.json)
+    antes: { "fromDigimonId": 70, "toDigimonId": 124, "requiredLevel": 3, "requiredAgeInDays": 1, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 30, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 28 }, "maxDiscipline": 40 }
+    depois: { "fromDigimonId": 70, "toDigimonId": 124, "requiredLevel": 3, "requiredAgeInDays": 1, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 30, "specialDefense": 0, "speed": 28 }, "maxDiscipline": 40 }
+  SaviorHackmon -> Jesmon  (saviorhackmon_evolutions.json)
+    antes: { "fromDigimonId": 165, "toDigimonId": 166, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 639, "physicalDamage": 225, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 162 } }
+    depois: { "fromDigimonId": 165, "toDigimonId": 166, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 690, "physicalDamage": 255, "physicalDefense": 130, "specialDamage": 0, "specialDefense": 0, "speed": 185 } }
+  SaviorHackmon -> Gankoomon  (saviorhackmon_evolutions.json)
+    antes: { "fromDigimonId": 165, "toDigimonId": 162, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 636, "physicalDamage": 217, "physicalDefense": 0, "specialDamage": 137, "specialDefense": 0, "speed": 140 } }
+    depois: { "fromDigimonId": 165, "toDigimonId": 162, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 636, "physicalDamage": 217, "physicalDefense": 130, "specialDamage": 0, "specialDefense": 0, "speed": 140 } }
+  Shoemon -> ShoeShoemon  (shoemon_evolutions.json)
+    antes: { "fromDigimonId": 91, "toDigimonId": 92, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 108, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 60, "specialDefense": 0, "speed": 42 } }
+    depois: { "fromDigimonId": 91, "toDigimonId": 92, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 108, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 38, "specialDefense": 0, "speed": 36 } }
+  Shoemon -> Wizardmon  (shoemon_evolutions.json)
+    antes: { "fromDigimonId": 91, "toDigimonId": 21, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 116, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 87, "specialDefense": 46, "speed": 52 } }
+    depois: { "fromDigimonId": 91, "toDigimonId": 21, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 115, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 80, "specialDefense": 23, "speed": 36 } }
+  ShoeShoemon -> Chaperomon  (shoeshoemon_evolutions.json)
+    antes: { "fromDigimonId": 92, "toDigimonId": 93, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 308, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 128, "specialDefense": 0, "speed": 72 } }
+    depois: { "fromDigimonId": 92, "toDigimonId": 93, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 232, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 80, "specialDefense": 0, "speed": 69 } }
+  ShoeShoemon -> LadyDevimon  (shoeshoemon_evolutions.json)
+    antes: { "fromDigimonId": 92, "toDigimonId": 180, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 326, "physicalDamage": 0, "physicalDefense": 90, "specialDamage": 156, "specialDefense": 98, "speed": 0 } }
+    depois: { "fromDigimonId": 92, "toDigimonId": 180, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 232, "physicalDamage": 0, "physicalDefense": 71, "specialDamage": 121, "specialDefense": 59, "speed": 0 } }
+  SkullSatamon -> Demon  (skullsatamon_evolutions.json)
+    antes: { "fromDigimonId": 181, "toDigimonId": 105, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 601, "physicalDamage": 200, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 135 } }
+    depois: { "fromDigimonId": 181, "toDigimonId": 105, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 601, "physicalDamage": 200, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 135 }, "maxHappiness": 40 }
+  Snatchmon -> Destromon  (snatchmon_evolutions.json)
+    antes: { "fromDigimonId": 117, "toDigimonId": 118, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 255, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 158, "specialDefense": 0, "speed": 117 } }
+    depois: { "fromDigimonId": 117, "toDigimonId": 118, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 202, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 99, "specialDefense": 0, "speed": 97 } }
+  Snatchmon -> Astamon  (snatchmon_evolutions.json)
+    antes: { "fromDigimonId": 117, "toDigimonId": 127, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 272, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 164, "specialDefense": 0, "speed": 135 } }
+    depois: { "fromDigimonId": 117, "toDigimonId": 127, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 202, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 99, "specialDefense": 0, "speed": 132 } }
+  Stingmon -> AeroVeedramon  (stingmon_evolutions.json)
+    antes: { "fromDigimonId": 198, "toDigimonId": 141, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 273, "physicalDamage": 221, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 206 }, "minHappiness": 40 }
+    depois: { "fromDigimonId": 198, "toDigimonId": 141, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 236, "physicalDamage": 129, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 207 }, "minHappiness": 40 }
+  Stingmon -> JewelBeemon  (stingmon_evolutions.json)
+    antes: { "fromDigimonId": 198, "toDigimonId": 199, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 272, "physicalDamage": 221, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 201 } }
+    depois: { "fromDigimonId": 198, "toDigimonId": 199, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 236, "physicalDamage": 172, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 179 } }
+  Stingmon -> MegaKabuterimon  (stingmon_evolutions.json)
+    antes: { "fromDigimonId": 198, "toDigimonId": 51, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 278, "physicalDamage": 180, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 176 } }
+    depois: { "fromDigimonId": 198, "toDigimonId": 51, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 236, "physicalDamage": 129, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 176 } }
+  Sunflowmon -> Lilamon  (sunflowmon_evolutions.json)
+    antes: { "fromDigimonId": 24, "toDigimonId": 179, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 380, "physicalDamage": 0, "physicalDefense": 88, "specialDamage": 0, "specialDefense": 88, "speed": 100 }, "minHappiness": 40 }
+    depois: { "fromDigimonId": 24, "toDigimonId": 179, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 277, "physicalDamage": 0, "physicalDefense": 85, "specialDamage": 0, "specialDefense": 86, "speed": 71 }, "minHappiness": 40 }
+  Sunflowmon -> Lillymon  (sunflowmon_evolutions.json)
+    antes: { "fromDigimonId": 24, "toDigimonId": 50, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 365, "physicalDamage": 0, "physicalDefense": 76, "specialDamage": 0, "specialDefense": 77, "speed": 103 } }
+    depois: { "fromDigimonId": 24, "toDigimonId": 50, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 277, "physicalDamage": 0, "physicalDefense": 76, "specialDamage": 0, "specialDefense": 47, "speed": 71 } }
+  Sunflowmon -> JewelBeemon  (sunflowmon_evolutions.json)
+    antes: { "fromDigimonId": 24, "toDigimonId": 199, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 365, "physicalDamage": 0, "physicalDefense": 77, "specialDamage": 0, "specialDefense": 77, "speed": 106 }, "minHappiness": 40 }
+    depois: { "fromDigimonId": 24, "toDigimonId": 199, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 277, "physicalDamage": 0, "physicalDefense": 77, "specialDamage": 0, "specialDefense": 47, "speed": 111 }, "minHappiness": 40 }
+  Taomon -> Duftmon  (taomon_evolutions.json)
+    antes: { "fromDigimonId": 49, "toDigimonId": 161, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 530, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 259, "specialDefense": 0, "speed": 216 } }
+    depois: { "fromDigimonId": 49, "toDigimonId": 161, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 362, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 170, "specialDefense": 0, "speed": 159 } }
+  Taomon -> Sakuyamon  (taomon_evolutions.json)
+    antes: { "fromDigimonId": 49, "toDigimonId": 175, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 530, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 259, "specialDefense": 0, "speed": 216 }, "minHappiness": 40 }
+    depois: { "fromDigimonId": 49, "toDigimonId": 175, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 362, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 227, "specialDefense": 0, "speed": 159 }, "requiredBattles": 12, "minHappiness": 55 }
+  Tentomon -> Kabuterimon  (tentomon_evolutions.json)
+    antes: { "fromDigimonId": 3, "toDigimonId": 15, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 215, "physicalDamage": 0, "physicalDefense": 61, "specialDamage": 0, "specialDefense": 61, "speed": 0 } }
+    depois: { "fromDigimonId": 3, "toDigimonId": 15, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 175, "physicalDamage": 0, "physicalDefense": 49, "specialDamage": 0, "specialDefense": 30, "speed": 0 } }
+  Tentomon -> Togemon  (tentomon_evolutions.json)
+    antes: { "fromDigimonId": 3, "toDigimonId": 17, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 216, "physicalDamage": 0, "physicalDefense": 67, "specialDamage": 0, "specialDefense": 60, "speed": 0 } }
+    depois: { "fromDigimonId": 3, "toDigimonId": 17, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 175, "physicalDamage": 69, "physicalDefense": 49, "specialDamage": 0, "specialDefense": 30, "speed": 0 } }
+  Tortamon -> Triceramon  (tortamon_evolutions.json)
+    antes: { "fromDigimonId": 110, "toDigimonId": 111, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 368, "physicalDamage": 143, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 57 } }
+    depois: { "fromDigimonId": 110, "toDigimonId": 111, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 282, "physicalDamage": 128, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 57 } }
+  Tortamon -> Groundramon  (tortamon_evolutions.json)
+    antes: { "fromDigimonId": 110, "toDigimonId": 134, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 390, "physicalDamage": 175, "physicalDefense": 159, "specialDamage": 0, "specialDefense": 89, "speed": 0 } }
+    depois: { "fromDigimonId": 110, "toDigimonId": 134, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 320, "physicalDamage": 143, "physicalDefense": 168, "specialDamage": 0, "specialDefense": 52, "speed": 0 } }
+  Triceramon -> GrandisKuwagamon  (triceramon_evolutions.json)
+    antes: { "fromDigimonId": 111, "toDigimonId": 200, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 678, "physicalDamage": 267, "physicalDefense": 229, "specialDamage": 0, "specialDefense": 148, "speed": 0 }, "maxDiscipline": 40 }
+    depois: { "fromDigimonId": 111, "toDigimonId": 200, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 678, "physicalDamage": 267, "physicalDefense": 229, "specialDamage": 0, "specialDefense": 100, "speed": 120 }, "maxDiscipline": 40 }
+  Tsunomon -> Gabumon  (tsunomon_evolutions.json)
+    antes: { "fromDigimonId": 30, "toDigimonId": 2, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.3, "requiredStats": { "healthPoints": 67, "physicalDamage": 20, "physicalDefense": 0, "specialDamage": 10, "specialDefense": 0, "speed": 24 } }
+    depois: { "fromDigimonId": 30, "toDigimonId": 2, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.3, "requiredStats": { "healthPoints": 45, "physicalDamage": 20, "physicalDefense": 0, "specialDamage": 3, "specialDefense": 0, "speed": 25 } }
+  Tsunomon -> Elizamon  (tsunomon_evolutions.json)
+    antes: { "fromDigimonId": 30, "toDigimonId": 84, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 66, "physicalDamage": 31, "physicalDefense": 16, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 30, "toDigimonId": 84, "requiredLevel": 2, "requiredAgeInDays": 5, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 20, "physicalDefense": 11, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Tsunomon -> Kotemon  (tsunomon_evolutions.json)
+    antes: { "fromDigimonId": 30, "toDigimonId": 145, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 37, "physicalDefense": 19, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 30, "toDigimonId": 145, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 38, "physicalDefense": 11, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Veedramon -> AeroVeedramon  (veedramon_evolutions.json)
+    antes: { "fromDigimonId": 140, "toDigimonId": 141, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 333, "physicalDamage": 135, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 122 } }
+    depois: { "fromDigimonId": 140, "toDigimonId": 141, "requiredLevel": 20, "requiredAgeInDays": 24, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 245, "physicalDamage": 105, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 95 } }
+  Veedramon -> Wingdramon  (veedramon_evolutions.json)
+    antes: { "fromDigimonId": 140, "toDigimonId": 137, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 335, "physicalDamage": 155, "physicalDefense": 97, "specialDamage": 0, "specialDefense": 0, "speed": 137 } }
+    depois: { "fromDigimonId": 140, "toDigimonId": 137, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 283, "physicalDamage": 120, "physicalDefense": 92, "specialDamage": 0, "specialDefense": 0, "speed": 160 } }
+  Veemon -> Veedramon  (veemon_evolutions.json)
+    antes: { "fromDigimonId": 139, "toDigimonId": 140, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 189, "physicalDamage": 86, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 63 } }
+    depois: { "fromDigimonId": 139, "toDigimonId": 140, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 121, "physicalDamage": 53, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 51 } }
+  Veemon -> ExVeemon  (veemon_evolutions.json)
+    antes: { "fromDigimonId": 139, "toDigimonId": 191, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 189, "physicalDamage": 70, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 80 } }
+    depois: { "fromDigimonId": 139, "toDigimonId": 191, "requiredLevel": 18, "requiredAgeInDays": 5, "statMultiplier": 1.9, "requiredStats": { "healthPoints": 150, "physicalDamage": 110, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 57 } }
+  Wanyamon -> Gaomon  (wanyamon_evolutions.json)
+    antes: { "fromDigimonId": 37, "toDigimonId": 5, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 38, "physicalDefense": 18, "specialDamage": 0, "specialDefense": 0, "speed": 0 }, "requiredBattles": 8 }
+    depois: { "fromDigimonId": 37, "toDigimonId": 5, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 38, "physicalDefense": 15, "specialDamage": 0, "specialDefense": 0, "speed": 0 }, "requiredBattles": 8 }
+  Wanyamon -> Kotemon  (wanyamon_evolutions.json)
+    antes: { "fromDigimonId": 37, "toDigimonId": 145, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 37, "physicalDefense": 19, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 37, "toDigimonId": 145, "requiredLevel": 2, "requiredAgeInDays": 5, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 20, "physicalDefense": 15, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Wanyamon -> Kudamon  (wanyamon_evolutions.json)
+    antes: { "fromDigimonId": 37, "toDigimonId": 129, "requiredLevel": 3, "requiredAgeInDays": 1, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 32, "physicalDefense": 17, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 37, "toDigimonId": 129, "requiredLevel": 3, "requiredAgeInDays": 1, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 50, "physicalDamage": 22, "physicalDefense": 17, "specialDamage": 0, "specialDefense": 0, "speed": 26 } }
+  WereGarurumon -> MetalGarurumon  (weregarurumon_evolutions.json)
+    antes: { "fromDigimonId": 40, "toDigimonId": 53, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 672, "physicalDamage": 197, "physicalDefense": 0, "specialDamage": 197, "specialDefense": 0, "speed": 85 } }
+    depois: { "fromDigimonId": 40, "toDigimonId": 53, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 437, "physicalDamage": 187, "physicalDefense": 0, "specialDamage": 192, "specialDefense": 0, "speed": 85 }, "requiredBattles": 12, "requiredWinRate": 0.55, "minHappiness": 55 }
+  WereGarurumon -> Gankoomon  (weregarurumon_evolutions.json)
+    antes: { "fromDigimonId": 40, "toDigimonId": 162, "requiredLevel": 28, "requiredAgeInDays": 8, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 648, "physicalDamage": 219, "physicalDefense": 125, "specialDamage": 175, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 40, "toDigimonId": 162, "requiredLevel": 28, "requiredAgeInDays": 50, "statMultiplier": 1.7, "requiredStats": { "healthPoints": 437, "physicalDamage": 132, "physicalDefense": 90, "specialDamage": 175, "specialDefense": 0, "speed": 0 } }
+  Wingdramon -> SlayerDramon  (wingdramon_evolutions.json)
+    antes: { "fromDigimonId": 137, "toDigimonId": 138, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 558, "physicalDamage": 198, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 149 } }
+    depois: { "fromDigimonId": 137, "toDigimonId": 138, "requiredLevel": 36, "requiredAgeInDays": 12, "statMultiplier": 1.8, "requiredStats": { "healthPoints": 600, "physicalDamage": 235, "physicalDefense": 105, "specialDamage": 0, "specialDefense": 0, "speed": 180 } }
+  Wizardmon -> Mistymon  (wizardmon_evolutions.json)
+    antes: { "fromDigimonId": 21, "toDigimonId": 170, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 280, "physicalDamage": 130, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 140 } }
+    depois: { "fromDigimonId": 21, "toDigimonId": 170, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 280, "physicalDamage": 95, "physicalDefense": 0, "specialDamage": 120, "specialDefense": 0, "speed": 140 } }
+  Wizardmon -> Fantomon  (wizardmon_evolutions.json)
+    antes: { "fromDigimonId": 21, "toDigimonId": 104, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 297, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 167, "specialDefense": 0, "speed": 130 } }
+    depois: { "fromDigimonId": 21, "toDigimonId": 104, "requiredLevel": 20, "requiredAgeInDays": 5, "statMultiplier": 1.6, "requiredStats": { "healthPoints": 297, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 167, "specialDefense": 0, "speed": 130 }, "maxDiscipline": 45 }
+  Wormmon -> Kabuterimon  (wormmon_evolutions.json)
+    antes: { "fromDigimonId": 197, "toDigimonId": 15, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 115, "physicalDamage": 53, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 78 } }
+    depois: { "fromDigimonId": 197, "toDigimonId": 15, "requiredLevel": 12, "requiredAgeInDays": 13, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 114, "physicalDamage": 47, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 55 } }
+  Wormmon -> Stingmon  (wormmon_evolutions.json)
+    antes: { "fromDigimonId": 197, "toDigimonId": 198, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 113, "physicalDamage": 66, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 93 } }
+    depois: { "fromDigimonId": 197, "toDigimonId": 198, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 113, "physicalDamage": 47, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 98 } }
+  Wormmon -> Togemon  (wormmon_evolutions.json)
+    antes: { "fromDigimonId": 197, "toDigimonId": 17, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 115, "physicalDamage": 66, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 80 } }
+    depois: { "fromDigimonId": 197, "toDigimonId": 17, "requiredLevel": 12, "requiredAgeInDays": 2, "statMultiplier": 1.85, "requiredStats": { "healthPoints": 114, "physicalDamage": 90, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 55 } }
+  Yaamon -> Impmon  (yaamon_evolutions.json)
+    antes: { "fromDigimonId": 38, "toDigimonId": 10, "requiredLevel": 3, "requiredAgeInDays": 1, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 6, "specialDefense": 0, "speed": 14 } }
+    depois: { "fromDigimonId": 38, "toDigimonId": 10, "requiredLevel": 3, "requiredAgeInDays": 1, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 50, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 3, "specialDefense": 0, "speed": 27 } }
+  Yaamon -> Shoemon  (yaamon_evolutions.json)
+    antes: { "fromDigimonId": 38, "toDigimonId": 91, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 31, "physicalDefense": 18, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 38, "toDigimonId": 91, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 20, "physicalDefense": 28, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Yaamon -> Ghostmon  (yaamon_evolutions.json)
+    antes: { "fromDigimonId": 38, "toDigimonId": 102, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 66, "physicalDamage": 31, "physicalDefense": 17, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 38, "toDigimonId": 102, "requiredLevel": 2, "requiredAgeInDays": 5, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 20, "physicalDefense": 11, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Yokomon -> Biyomon  (yokomon_evolutions.json)
+    antes: { "fromDigimonId": 58, "toDigimonId": 59, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 30, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 26 } }
+    depois: { "fromDigimonId": 58, "toDigimonId": 59, "requiredLevel": 2, "requiredAgeInDays": 5, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 19, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 16 } }
+  Yokomon -> Muchomon  (yokomon_evolutions.json)
+    antes: { "fromDigimonId": 58, "toDigimonId": 96, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 72, "physicalDamage": 40, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+    depois: { "fromDigimonId": 58, "toDigimonId": 96, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 36, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 0 } }
+  Yokomon -> Wormmon  (yokomon_evolutions.json)
+    antes: { "fromDigimonId": 58, "toDigimonId": 197, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 67, "physicalDamage": 31, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 29 } }
+    depois: { "fromDigimonId": 58, "toDigimonId": 197, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.25, "requiredStats": { "healthPoints": 45, "physicalDamage": 19, "physicalDefense": 0, "specialDamage": 0, "specialDefense": 0, "speed": 33 } }
+  Yolkmon -> Fluffymon  (yolkmon_evolutions.json)
+    antes: { "fromDigimonId": 76, "toDigimonId": 77, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 30, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 16, "specialDefense": 0, "speed": 13 } }
+    depois: { "fromDigimonId": 76, "toDigimonId": 77, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.2, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 19, "specialDefense": 0, "speed": 9 } }
+  Yolkmon -> Babydmon  (yolkmon_evolutions.json)
+    antes: { "fromDigimonId": 76, "toDigimonId": 173, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 31, "physicalDamage": 0, "physicalDefense": 8, "specialDamage": 14, "specialDefense": 0, "speed": 13 } }
+    depois: { "fromDigimonId": 76, "toDigimonId": 173, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 26, "physicalDamage": 0, "physicalDefense": 7, "specialDamage": 10, "specialDefense": 0, "speed": 9 } }
+  Yuramon -> Tanemon  (yuramon_evolutions.json)
+    antes: { "fromDigimonId": 27, "toDigimonId": 36, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 30, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 12, "specialDefense": 0, "speed": 12 } }
+    depois: { "fromDigimonId": 27, "toDigimonId": 36, "requiredLevel": 2, "requiredAgeInDays": 2, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 10, "specialDefense": 0, "speed": 9 } }
+  Yuramon -> Budmon  (yuramon_evolutions.json)
+    antes: { "fromDigimonId": 27, "toDigimonId": 190, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 31, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 17, "specialDefense": 0, "speed": 14 }, "requiredBattles": 8 }
+    depois: { "fromDigimonId": 27, "toDigimonId": 190, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 10, "specialDefense": 0, "speed": 18 }, "requiredBattles": 8 }
+  Yuramon -> Yokomon  (yuramon_evolutions.json)
+    antes: { "fromDigimonId": 27, "toDigimonId": 58, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 31, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 14, "specialDefense": 0, "speed": 14 } }
+    depois: { "fromDigimonId": 27, "toDigimonId": 58, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 12, "physicalDefense": 0, "specialDamage": 10, "specialDefense": 0, "speed": 9 } }
+  Yuramon -> Minomon  (yuramon_evolutions.json)
+    antes: { "fromDigimonId": 27, "toDigimonId": 196, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 31, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 17, "specialDefense": 0, "speed": 14 } }
+    depois: { "fromDigimonId": 27, "toDigimonId": 196, "requiredLevel": 2, "requiredAgeInDays": 0, "statMultiplier": 1.15, "requiredStats": { "healthPoints": 25, "physicalDamage": 0, "physicalDefense": 0, "specialDamage": 19, "specialDefense": 0, "speed": 9 } }

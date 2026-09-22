@@ -12,7 +12,9 @@
       "specialDamage": 0,
       "specialDefense": 0,
       "speed": 211
-    }
+    },
+    "requiredBattles": 12,
+    "requiredWinRate": 0.55
   },
   {
     "fromDigimonId": 42,
@@ -21,9 +23,9 @@
     "requiredAgeInDays": 12,
     "statMultiplier": 1.8,
     "requiredStats": {
-      "healthPoints": 528,
+      "healthPoints": 600,
       "physicalDamage": 283,
-      "physicalDefense": 0,
+      "physicalDefense": 150,
       "specialDamage": 0,
       "specialDefense": 0,
       "speed": 200

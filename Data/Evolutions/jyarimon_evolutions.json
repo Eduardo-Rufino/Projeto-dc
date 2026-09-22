@@ -3,15 +3,15 @@
     "fromDigimonId": 83,
     "toDigimonId": 33,
     "requiredLevel": 2,
-    "requiredAgeInDays": 0,
+    "requiredAgeInDays": 2,
     "statMultiplier": 1.2,
     "requiredStats": {
-      "healthPoints": 34,
-      "physicalDamage": 14,
+      "healthPoints": 27,
+      "physicalDamage": 10,
       "physicalDefense": 0,
       "specialDamage": 0,
       "specialDefense": 0,
-      "speed": 11
+      "speed": 7
     }
   },
   {
@@ -21,12 +21,12 @@
     "requiredAgeInDays": 0,
     "statMultiplier": 1.15,
     "requiredStats": {
-      "healthPoints": 34,
-      "physicalDamage": 14,
-      "physicalDefense": 12,
+      "healthPoints": 27,
+      "physicalDamage": 19,
+      "physicalDefense": 10,
       "specialDamage": 0,
       "specialDefense": 0,
-      "speed": 10
+      "speed": 7
     }
   }
 ]
