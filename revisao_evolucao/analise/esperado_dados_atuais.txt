@@ -1,0 +1,41 @@
+Arquivo: REQUISITOS_EVOLUCAO.md  |  treinos entre checagens: 1
+Ligações: 337 | pais com 2+ saídas: 147 | formas-alvo testadas: 335
+
+A. Inalcançáveis mirando nelas: 28
+   [Ultimate->Mega] AeroVeedramon -> Magnamon (Lv 36) — dispara antes: UlforceVeedramon
+   [Ultimate->Mega] Angewomon -> Magnadramon (Lv 28) — dispara antes: Ophanimon
+   [Ultimate->Mega] Angewomon -> Lilithmon (Lv 28) — dispara antes: Ophanimon
+   [Baby->InTraining] Botamon -> Wanyamon (Lv 2) — dispara antes: Koromon
+   [Ultimate->Mega] Chirinmon -> Kentaurusmon (Lv 36) — dispara antes: Sleipmon
+   [Ultimate->Mega] Destromon -> Belphemon Sleep Mode (Lv 37) — dispara antes: Boltmon
+   [Ultimate->Mega] Fantomon -> Boltmon (Lv 28) — dispara antes: Piedmon
+   [Ultimate->Mega] Fantomon -> Ragnamon (Lv 28) — dispara antes: Piedmon
+   [InTraining->Rookie] Fluffymon -> Biyomon (Lv 2) — dispara antes: Muchomon
+   [Champion->Ultimate] Galemon -> Wingdramon (Lv 28) — dispara antes: Grand Galemon
+   [Rookie->Champion] Gaomon -> Gladimon (Lv 18) — dispara antes: Gaogamon
+   [Rookie->Champion] Guilmon -> Growlmon (Lv 12) — dispara antes: Dimetromon
+   [Champion->Ultimate] Kabuterimon -> Knightmon (Lv 28) — dispara antes: JewelBeemon
+   [Baby->InTraining] Kuramon -> Tsumemon (Lv 2) — dispara antes: Yaamon
+   [Champion->Ultimate] Kyubimon -> Taomon (Lv 20) — dispara antes: Mistymon
+   [Ultimate->Mega] Lamiamon -> Leviamon (Lv 28) — dispara antes: Medusamon
+   [Ultimate->Mega] MachGaogamon -> Gankoomon (Lv 28) — dispara antes: MirageGaogamon
+   [Ultimate->Mega] Myotismon -> Beelzebumon (Lv 28) — dispara antes: Piedmon
+   [Baby->InTraining] Poyomon -> Tokomon (Lv 2) — dispara antes: Salamon
+   [Baby->InTraining] Poyomon -> Yokomon (Lv 2) — dispara antes: Salamon
+   [Rookie->Champion] Pteromon -> Coredramon (Blue) (Lv 18) — dispara antes: Galemon
+   [Rookie->Champion] Renamon -> Reppamon (Lv 18) — dispara antes: Kyubimon
+   [Ultimate->Mega] Taomon -> Duftmon (Lv 28) — dispara antes: Sakuyamon
+   [Champion->Ultimate] Tortamon -> Groundramon (Lv 28) — dispara antes: Triceramon
+   [InTraining->Rookie] Wanyamon -> Kotemon (Lv 2) — dispara antes: Gaomon
+   [InTraining->Rookie] Yaamon -> Ghostmon (Lv 2) — dispara antes: Shoemon
+   [Baby->InTraining] Yolkmon -> Fluffymon (Lv 2) — dispara antes: Babydmon
+   [Baby->InTraining] Yuramon -> Minomon (Lv 2) — dispara antes: Tanemon
+
+B. Formas padrão atropeladas por irmã que sai só de subir de nível: 0
+
+C. Empates de score entre irmãs: 3
+   Dracomon: score 334 -> Coredramon (Green), Coredramon (Blue)
+   Gigimon: score 125 -> Guilmon, Elizamon
+   Phascomon: score 379 -> IceDevimon, Snatchmon
+
+D. Pais sem forma padrão (Idade >= teto-2): 147  (informativo: nesses, quem não treina a assinatura de nenhuma irmã depende de cumprir uma delas)
