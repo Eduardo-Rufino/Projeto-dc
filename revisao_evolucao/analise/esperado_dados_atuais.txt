@@ -1,4 +1,4 @@
-Arquivo: REQUISITOS_EVOLUCAO.md  |  treinos entre checagens: 1
+Arquivo: /home/claude/dc/req.md  |  treinos entre checagens: 1
 Ligações: 337 | pais com 2+ saídas: 147 | formas-alvo testadas: 335
 
 A. Inalcançáveis mirando nelas: 29
@@ -34,6 +34,40 @@ A. Inalcançáveis mirando nelas: 29
 
 B. Formas padrão atropeladas por irmã que sai só de subir de nível: 0
 
+F. Inalcançáveis mirando nelas vindo por ALGUMA rota de entrada (carry-over): 32
+   [Ultimate->Mega] AeroVeedramon -> UlforceVeedramon (Lv 36) — dispara antes: Magnamon  [6 de 16 rotas]
+   [Champion->Ultimate] Angemon -> MagnaAngemon (Lv 20) — dispara antes: Angewomon  [3 de 11 rotas]
+   [Champion->Ultimate] Angemon -> Angewomon (Lv 20) — dispara antes: MagnaAngemon  [4 de 11 rotas]
+   [Champion->Ultimate] Angemon -> Lucemon Falldown Mode (Lv 20) — dispara antes: Angewomon/MagnaAngemon  [7 de 11 rotas]
+   [Ultimate->Mega] Astamon -> Ragnamon (Lv 28) — dispara antes: Beelzebumon  [6 de 11 rotas]
+   [Champion->Ultimate] Birdramon -> Delumon (Lv 20) — dispara antes: Garudamon  [2 de 10 rotas]
+   [Ultimate->Mega] Destromon -> Belphemon Sleep Mode (Lv 37) — dispara antes: Boltmon  [3 de 11 rotas]
+   [Champion->Ultimate] Dimetromon -> Lamiamon (Lv 20) — dispara antes: Triceramon  [3 de 7 rotas]
+   [Rookie->Champion] Dracomon -> Coredramon (Blue) (Lv 18) — dispara antes: Coredramon (Green)  [1 de 3 rotas]
+   [Ultimate->Mega] Fantomon -> Piedmon (Lv 28) — dispara antes: Boltmon/Ragnamon  [11 de 20 rotas]
+   [Champion->Ultimate] Gaogamon -> MachGaogamon (Lv 20) — dispara antes: WereGarurumon  [3 de 6 rotas]
+   [Ultimate->Mega] Garudamon -> Hououmon (Lv 28) — dispara antes: Zephagamon  [2 de 16 rotas]
+   [Ultimate->Mega] Grademon -> Alphamon (Lv 36) — dispara antes: Dynasmon  [3 de 16 rotas]
+   [Champion->Ultimate] Greymon -> MetalGreymon (Lv 20) — dispara antes: RizeGreymon  [3 de 6 rotas]
+   [Ultimate->Mega] Groundramon -> Breakdramon (Lv 36) — dispara antes: Dorugoramon  [3 de 6 rotas]
+   [Ultimate->Mega] JewelBeemon -> HerculesKabuterimon (Lv 28) — dispara antes: Imperialdramon  [5 de 21 rotas]
+   [Ultimate->Mega] JewelBeemon -> GrandisKuwagamon (Lv 28) — dispara antes: HerculesKabuterimon/Imperialdramon  [10 de 21 rotas]
+   [Champion->Ultimate] Kabuterimon -> MegaKabuterimon (Lv 20) — dispara antes: JewelBeemon  [1 de 7 rotas]
+   [Ultimate->Mega] Knightmon -> Crusadermon (Lv 36) — dispara antes: Craniummon  [5 de 19 rotas]
+   [Ultimate->Mega] Lamiamon -> Leviamon (Lv 28) — dispara antes: Medusamon  [4 de 12 rotas]
+   [Ultimate->Mega] Lilamon -> Rosemon (Lv 28) — dispara antes: Cendrillmon  [14 de 25 rotas]
+   [Ultimate->Mega] Lucemon Falldown Mode -> Lucemon Satan Mode (Lv 36) — dispara antes: Demon  [7 de 20 rotas]
+   [Ultimate->Mega] MagnaAngemon -> Seraphimon (Lv 28) — dispara antes: Magnadramon  [7 de 9 rotas]
+   [Ultimate->Mega] MegaKabuterimon -> Craniummon (Lv 28) — dispara antes: HerculesKabuterimon  [9 de 12 rotas]
+   [Ultimate->Mega] Myotismon -> Piedmon (Lv 28) — dispara antes: Beelzebumon  [2 de 25 rotas]
+   [Ultimate->Mega] RizeGreymon -> WarGreymon (Lv 28) — dispara antes: ShineGreymon  [4 de 9 rotas]
+   [Ultimate->Mega] SkullSatamon -> Piedmon (Lv 28) — dispara antes: Demon  [4 de 11 rotas]
+   [Champion->Ultimate] Sunflowmon -> Lillymon (Lv 20) — dispara antes: JewelBeemon  [6 de 9 rotas]
+   [Champion->Ultimate] Togemon -> Lillymon (Lv 20) — dispara antes: Lilamon  [2 de 16 rotas]
+   [Ultimate->Mega] WarGrowlmon -> Gallantmon (Lv 28) — dispara antes: Medieval Dukemon  [4 de 7 rotas]
+   [Ultimate->Mega] WereGarurumon -> MetalGarurumon (Lv 28) — dispara antes: Gankoomon  [9 de 11 rotas]
+   [Champion->Ultimate] Wizardmon -> Mistymon (Lv 20) — dispara antes: Fantomon  [1 de 7 rotas]
+
 E. Formas padrão que um Digimon sem treino (rota mais fraca) não alcança: 0
 
 C. Empates de score entre irmãs: 3
@@ -42,3 +76,5 @@ C. Empates de score entre irmãs: 3
    Phascomon: score 379 -> IceDevimon, Snatchmon
 
 D. Pais sem forma padrão (Idade >= teto-2): 147  (informativo: nesses, quem não treina a assinatura de nenhuma irmã depende de cumprir uma delas)
+
+G. Formas padrão que alguma rota de entrada pula (irmã sai de graça): 0  (informativo: carry-over — quem já chega forte ganha a irmã sem treinar)

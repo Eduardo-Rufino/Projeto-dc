@@ -118,7 +118,7 @@ def evolve(pre, mult, ficha):
     return out
 
 
-def anchors(D, inc):
+def anchors(D, inc, worst=True):
     """Pior caso pela cadeia completa desde o ovo, por TODAS as rotas de entrada: para cada
     forma, o menor valor de cada stat com que um Digimon pode chegar nela sem treinar além do
     que os requisitos exigiram. Como o crescimento é linear no nível, guarda a âncora
@@ -133,17 +133,32 @@ def anchors(D, inc):
             proj = {s: anc[e['src']][s] + GROWTH[s] * L for s in STATS}
             arr = evolve({s: max(proj[s], e[s]) for s in STATS}, e['mult'], D[n]['base'])
             a = {s: arr[s] - GROWTH[s] * L for s in STATS}
-            best = a if best is None else {s: min(best[s], a[s]) for s in STATS}
+            agg = min if worst else max
+            best = a if best is None else {s: agg(best[s], a[s]) for s in STATS}
         anc[n] = best or {s: D[n]['base'][s] - GROWTH[s] for s in STATS}   # ovo ou Jogress: ficha no Lv 1
         lvmin[n] = min((e['lv'] for e in inc[n]), default=1)
     return anc, lvmin
 
 
+def route_anchors(D, inc):
+    """Uma âncora por CAMINHO desde o ovo (sem misturar stats de rotas diferentes)."""
+    R = {}
+    for n in sorted(D, key=lambda n: ORDER.index(D[n]['stage']) if D[n]['stage'] in ORDER else 99):
+        vs = set()
+        for e in inc[n]:
+            for a in R.get(e['src'], ()):
+                a = dict(zip(STATS, a)); L = e['lv']
+                arr = evolve({s: max(a[s] + GROWTH[s] * L, e[s]) for s in STATS}, e['mult'], D[n]['base'])
+                vs.add(tuple(arr[s] - GROWTH[s] * L for s in STATS))
+        R[n] = vs or {tuple(D[n]['base'][s] - GROWTH[s] for s in STATS)}
+    return R
+
+
 _ANC = {}
 
 
-def entry(D, inc, name):
-    anc, lvmin = _ANC['anc'], _ANC['lvmin']
+def entry(D, inc, name, key='anc'):
+    anc, lvmin = _ANC[key], _ANC['lvmin']
     lv = lvmin[name]
     return {s: anc[name][s] + GROWTH[s] * lv for s in STATS}, lv
 
@@ -254,12 +269,16 @@ def main():
         if e['tipo'] == 'normal':
             inc[e['dst']].append(e); out[e['src']].append(e)
     _ANC['anc'], _ANC['lvmin'] = anchors(D, inc)
+    ROT = route_anchors(D, inc)
     bloqueadas, padrao_ruim, empates, sem_rede, padrao_inalc = [], [], [], [], []
+    forte_bloq, forte_padrao = [], []
     n_alvo = 0
     for src, sibs in sorted(out.items()):
         if len(sibs) < 2:
             continue
         st0, lv0 = entry(D, inc, src)
+        lvx = _ANC['lvmin'][src]
+        rotas = [{s: a[i] + GROWTH[s] * lvx for i, s in enumerate(STATS)} for a in sorted(ROT[src])]
         stg = D[src]['stage']
         for T in sibs:
             n_alvo += 1
@@ -274,10 +293,29 @@ def main():
                     v = [o for o in sibs if o is not T and valid(o, stL, L, beh)]
                     if v:
                         padrao_ruim.append((src, T['dst'], v[0]['dst'])); break
+                # por rota de entrada: alguma irmã já sai de graça (carry-over)?
+                ruins = set()
+                for sf0 in rotas:
+                    for L in range(lv0, max(o['lv'] for o in sibs) + 1):
+                        stL = {s: sf0[s] + GROWTH[s] * (L - lv0) for s in STATS}
+                        v = [o for o in sibs if o is not T and valid(o, stL, L, beh)]
+                        if v:
+                            ruins.add(v[0]['dst']); break
+                if ruins:
+                    forte_padrao.append((src, T['dst'], '/'.join(sorted(ruins))))
                 continue
             ok, who, tr = simulate(T, sibs, st0, lv0)
             if not ok:
                 bloqueadas.append((T['src_stage'] + '->' + T['dst_stage'], src, T['dst'], T['lv'], who))
+            else:
+                quem, nb = set(), 0
+                for sf0 in rotas:
+                    ok2, who2, _ = simulate(T, sibs, sf0, lv0)
+                    if not ok2:
+                        quem.add(who2); nb += 1
+                if nb:
+                    forte_bloq.append((T['src_stage'] + '->' + T['dst_stage'], src, T['dst'], T['lv'],
+                                       '/'.join(sorted(quem)) + f'  [{nb} de {len(rotas)} rotas]'))
         sc = defaultdict(list)
         for e in sibs:
             sc[e['score']].append(e['dst'])
@@ -293,6 +331,9 @@ def main():
     print(f"\nB. Formas padrão atropeladas por irmã que sai só de subir de nível: {len(padrao_ruim)}")
     for p in padrao_ruim:
         print(f"   {p[0]} -> {p[1]}: {p[2]} fica válida sem treino")
+    print(f"\nF. Inalcançáveis mirando nelas vindo por ALGUMA rota de entrada (carry-over): {len(forte_bloq)}")
+    for b in forte_bloq:
+        print(f"   [{b[0]}] {b[1]} -> {b[2]} (Lv {b[3]}) — dispara antes: {b[4]}")
     print(f"\nE. Formas padrão que um Digimon sem treino (rota mais fraca) não alcança: {len(padrao_inalc)}")
     for p in padrao_inalc:
         print(f"   {p[0]} -> {p[1]} (Lv {p[2]}): falta " + ', '.join(f'{k} +{v}' for k, v in p[3].items()))
@@ -301,8 +342,10 @@ def main():
         print(f"   {p[0]}: score {p[1]} -> {', '.join(p[2])}")
     print(f"\nD. Pais sem forma padrão (Idade >= teto-2): {len(sem_rede)}  (informativo: nesses, quem"
           f" não treina a assinatura de nenhuma irmã depende de cumprir uma delas)")
+    print(f"\nG. Formas padrão que alguma rota de entrada pula (irmã sai de graça): {len(forte_padrao)}"
+          f"  (informativo: carry-over — quem já chega forte ganha a irmã sem treinar)")
     if a.json:
-        json.dump(dict(bloqueadas=bloqueadas, padrao_ruim=padrao_ruim, padrao_inalc=padrao_inalc, empates=empates, sem_rede=sem_rede),
+        json.dump(dict(forte_bloq=forte_bloq, forte_padrao=forte_padrao, bloqueadas=bloqueadas, padrao_ruim=padrao_ruim, padrao_inalc=padrao_inalc, empates=empates, sem_rede=sem_rede),
                   open(a.json, 'w'), ensure_ascii=False, indent=1)
 
 

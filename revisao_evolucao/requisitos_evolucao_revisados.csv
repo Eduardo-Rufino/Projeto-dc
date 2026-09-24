@@ -189,8 +189,8 @@ Kabuterimon,Knightmon,Champion->Ultimate,28,8,311,0,144,0,36,0,0,0,0,100,0,100,1
 Angemon,MagnaAngemon,Champion->Ultimate,20,5,218,0,0,127,0,93,0,0,0,100,55,100,1.6,518,EA,sim
 Angemon,Angewomon,Champion->Ultimate,20,24,218,0,0,52,0,93,0,0,0,100,0,100,1.6,407,padrao,sim
 Angemon,Lucemon Falldown Mode,Champion->Ultimate,20,5,298,0,0,167,0,124,0,0,0,35,0,100,1.6,679,,sim
-Togemon,Lillymon,Champion->Ultimate,20,5,400,131,0,0,0,54,0,0,0,100,0,100,1.6,610,,nao
-Togemon,Lilamon,Champion->Ultimate,20,5,397,119,106,0,0,0,0,0,0,100,0,100,1.6,647,,nao
+Togemon,Lillymon,Champion->Ultimate,20,24,243,129,0,0,0,51,0,0,0,100,0,100,1.6,467,padrao,sim
+Togemon,Lilamon,Champion->Ultimate,20,5,243,119,74,0,62,0,0,0,0,100,0,100,1.6,523,ED,sim
 Growlmon,MetalGreymon,Champion->Ultimate,20,5,398,177,88,0,0,0,0,0,0,100,0,100,1.6,688,,nao
 Growlmon,WarGrowlmon,Champion->Ultimate,20,5,375,163,0,0,0,61,0,0,0,100,0,100,1.6,624,,nao
 Gargomon,Rapidmon,Champion->Ultimate,20,24,248,84,0,0,0,113,0,0,0,100,0,100,1.6,489,padrao,sim
@@ -199,8 +199,8 @@ Kyubimon,Taomon,Champion->Ultimate,20,24,209,0,0,66,0,76,0,0,0,100,0,100,1.6,395
 Kyubimon,Mistymon,Champion->Ultimate,20,5,209,0,0,66,0,142,0,0,0,100,0,100,1.6,442,Vel,sim
 Wizardmon,Fantomon,Champion->Ultimate,20,5,297,0,0,167,0,130,0,0,0,45,0,100,1.6,674,,sim
 Wizardmon,Mistymon,Champion->Ultimate,20,5,280,95,0,120,0,140,0,0,0,100,0,100,1.6,660,,sim
-Gaogamon,WereGarurumon,Champion->Ultimate,20,5,398,167,80,0,0,75,0,0,0,100,0,100,1.6,745,,nao
-Gaogamon,MachGaogamon,Champion->Ultimate,20,5,400,146,0,0,0,77,0,0,0,100,0,100,1.6,648,,nao
+Gaogamon,WereGarurumon,Champion->Ultimate,20,5,258,167,73,47,0,49,0,0,0,100,0,100,1.6,619,EA,sim
+Gaogamon,MachGaogamon,Champion->Ultimate,20,24,258,146,0,0,0,49,0,0,0,100,0,100,1.6,497,padrao,sim
 Sunflowmon,Lillymon,Champion->Ultimate,20,24,277,0,73,0,30,71,0,0,0,100,0,100,1.6,495,padrao,sim
 Sunflowmon,Lilamon,Champion->Ultimate,20,5,277,0,73,0,86,71,0,0,0,100,40,100,1.6,572,ED,sim
 Sunflowmon,JewelBeemon,Champion->Ultimate,20,5,277,0,73,0,30,111,0,0,0,100,40,100,1.6,556,Vel,sim
@@ -256,20 +256,20 @@ Stingmon,AeroVeedramon,Champion->Ultimate,20,5,222,96,0,0,0,207,0,0,0,100,40,100
 Stingmon,JewelBeemon,Champion->Ultimate,20,5,222,172,0,0,0,179,0,0,0,100,0,100,1.6,598,PA,sim
 MetalGreymon,WarGreymon,Ultimate->Mega,28,8,436,278,0,56,0,57,12,55,0,100,55,100,1.7,985,PA,sim
 MetalGreymon,ShineGreymon,Ultimate->Mega,28,50,436,221,121,56,0,0,0,0,0,100,0,100,1.7,912,padrao,sim
-WereGarurumon,MetalGarurumon,Ultimate->Mega,28,8,434,236,0,56,0,85,12,55,0,100,55,100,1.7,969,PA,sim
-WereGarurumon,Gankoomon,Ultimate->Mega,28,50,434,132,90,56,0,0,0,0,0,100,0,100,1.7,790,padrao,sim
-WarGrowlmon,Gallantmon,Ultimate->Mega,28,8,736,269,0,0,0,107,12,55,0,100,55,100,1.7,1270,,nao
-WarGrowlmon,Medieval Dukemon,Ultimate->Mega,28,8,710,299,145,0,0,0,0,0,0,100,0,100,1.7,1190,,nao
+WereGarurumon,MetalGarurumon,Ultimate->Mega,28,8,434,236,0,89,0,85,12,55,0,100,55,100,1.7,1002,PA,sim
+WereGarurumon,Gankoomon,Ultimate->Mega,28,50,434,132,90,89,0,0,0,0,0,100,0,100,1.7,823,padrao,sim
+WarGrowlmon,Gallantmon,Ultimate->Mega,28,50,418,269,0,0,0,99,0,0,0,100,0,100,1.7,864,padrao,sim
+WarGrowlmon,Medieval Dukemon,Ultimate->Mega,28,8,418,299,180,0,0,0,0,0,0,100,0,100,1.7,933,PD,sim
 Rapidmon,MegaGargomon,Ultimate->Mega,28,8,544,254,0,0,0,211,12,55,0,100,0,100,1.7,1112,,sim
 Rapidmon,Magnamon,Ultimate->Mega,36,12,600,283,150,0,0,200,0,0,0,100,0,100,1.8,1281,,sim
 MagnaAngemon,Seraphimon,Ultimate->Mega,28,8,387,0,0,251,0,155,12,0,0,100,55,100,1.7,896,EA,sim
 MagnaAngemon,Magnadramon,Ultimate->Mega,28,50,387,0,0,192,0,155,0,0,0,100,0,100,1.7,812,padrao,sim
-MachGaogamon,Gankoomon,Ultimate->Mega,28,50,443,169,0,0,0,102,0,0,0,100,0,100,1.7,792,padrao,sim
-MachGaogamon,MirageGaogamon,Ultimate->Mega,28,8,443,226,0,0,0,102,0,0,0,100,40,100,1.7,847,PA,sim
+MachGaogamon,Gankoomon,Ultimate->Mega,28,50,443,169,0,0,0,86,0,0,0,100,0,100,1.7,776,padrao,sim
+MachGaogamon,MirageGaogamon,Ultimate->Mega,28,8,443,226,0,0,0,86,0,0,0,100,40,100,1.7,831,PA,sim
 Taomon,Duftmon,Ultimate->Mega,28,50,362,0,0,125,0,131,0,0,0,100,0,100,1.7,696,padrao,sim
 Taomon,Sakuyamon,Ultimate->Mega,28,8,362,0,0,227,0,131,12,0,0,100,55,100,1.7,823,EA,sim
-Lillymon,Rosemon,Ultimate->Mega,28,50,458,0,0,84,0,97,0,0,0,100,0,100,1.7,717,padrao,sim
-Lillymon,Cendrillmon,Ultimate->Mega,28,8,458,0,0,207,0,97,0,0,0,100,0,100,1.7,798,EA,sim
+Lillymon,Rosemon,Ultimate->Mega,28,50,426,0,0,84,0,97,0,0,0,100,0,100,1.7,685,padrao,sim
+Lillymon,Cendrillmon,Ultimate->Mega,28,8,426,0,0,207,0,97,0,0,0,100,0,100,1.7,766,EA,sim
 MegaKabuterimon,HerculesKabuterimon,Ultimate->Mega,28,50,473,0,129,0,71,0,0,0,0,100,0,100,1.7,751,padrao,sim
 MegaKabuterimon,Craniummon,Ultimate->Mega,28,8,473,0,186,0,71,0,0,0,0,100,0,100,1.7,766,PD,sim
 Garudamon,Hououmon,Ultimate->Mega,28,50,390,0,0,76,0,132,0,0,0,100,0,100,1.7,676,padrao,sim
@@ -278,7 +278,7 @@ Zudomon,Vikemon,Ultimate->Mega,28,8,800,240,216,0,0,0,0,0,0,100,0,100,1.7,1292,,
 Zudomon,Leviamon,Ultimate->Mega,28,8,768,267,228,0,129,0,0,0,0,100,0,100,1.7,1428,,nao
 Angewomon,Magnadramon,Ultimate->Mega,28,50,387,0,0,112,0,155,0,0,0,100,0,100,1.7,732,padrao,sim
 Angewomon,Lilithmon,Ultimate->Mega,28,8,387,0,0,112,108,155,0,0,0,100,0,100,1.7,798,ED,sim
-Angewomon,Ophanimon,Ultimate->Mega,28,8,387,0,0,213,0,155,0,0,0,100,40,100,1.7,831,EA,sim
+Angewomon,Ophanimon,Ultimate->Mega,28,8,350,0,0,213,0,155,0,0,0,100,40,100,1.7,794,EA,sim
 Grand Galemon,Zephagamon,Ultimate->Mega,28,8,380,53,0,230,0,137,0,0,0,100,0,100,1.7,836,EA,sim
 Grand Galemon,Dynasmon,Ultimate->Mega,28,50,380,0,0,113,0,137,0,0,0,100,0,100,1.7,708,padrao,sim
 Lamiamon,Medusamon,Ultimate->Mega,28,50,370,0,0,73,0,114,0,0,0,100,0,100,1.7,635,padrao,sim
@@ -308,8 +308,8 @@ Wingdramon,Dynasmon,Ultimate->Mega,28,50,436,134,117,0,0,160,0,0,0,100,0,100,1.7
 Wingdramon,SlayerDramon,Ultimate->Mega,36,12,474,235,105,0,0,180,0,0,0,100,0,100,1.8,1042,PA,sim
 AeroVeedramon,UlforceVeedramon,Ultimate->Mega,36,12,431,268,106,0,0,152,0,0,0,100,0,100,1.8,1005,PA,sim
 AeroVeedramon,Magnamon,Ultimate->Mega,28,50,393,170,91,0,0,144,0,0,0,100,0,100,1.7,876,padrao,sim
-Knightmon,Craniummon,Ultimate->Mega,28,8,647,236,179,0,0,89,0,0,0,100,0,100,1.7,1187,,nao
-Knightmon,Crusadermon,Ultimate->Mega,36,12,640,240,150,0,0,120,0,0,0,100,0,100,1.8,1198,,sim
+Knightmon,Craniummon,Ultimate->Mega,28,50,471,137,150,0,0,89,0,0,0,100,0,100,1.7,925,padrao,sim
+Knightmon,Crusadermon,Ultimate->Mega,36,12,509,152,150,0,0,147,0,0,0,100,0,100,1.8,1006,Vel,sim
 Dorugreymon,Alphamon,Ultimate->Mega,36,12,438,265,120,0,0,152,0,0,0,100,0,100,1.8,1023,PA,sim
 Dorugreymon,Dorugoramon,Ultimate->Mega,28,50,400,166,105,0,0,106,0,0,0,100,0,100,1.7,855,padrao,sim
 Grademon,Dynasmon,Ultimate->Mega,28,50,446,262,157,0,0,0,0,0,0,100,0,100,1.7,943,padrao,sim
@@ -322,8 +322,8 @@ RizeGreymon,WarGreymon,Ultimate->Mega,28,50,451,180,111,0,0,0,0,0,0,100,0,100,1.
 RizeGreymon,ShineGreymon,Ultimate->Mega,28,8,451,256,0,0,0,74,0,0,0,100,0,100,1.7,817,PA,sim
 Mistymon,Barbamon,Ultimate->Mega,28,50,362,140,0,0,0,182,0,0,0,100,0,100,1.7,762,padrao,sim
 Mistymon,Piedmon,Ultimate->Mega,28,8,577,190,0,0,0,196,0,0,0,40,0,100,1.7,1059,,nao
-Lilamon,Rosemon,Ultimate->Mega,28,8,458,0,0,198,0,94,0,0,0,100,0,100,1.7,786,EA,sim
-Lilamon,Cendrillmon,Ultimate->Mega,28,50,458,0,0,80,55,94,0,0,0,100,0,100,1.7,765,padrao,sim
+Lilamon,Rosemon,Ultimate->Mega,28,8,426,0,0,198,0,94,0,0,0,100,0,100,1.7,754,EA,sim
+Lilamon,Cendrillmon,Ultimate->Mega,28,50,426,0,0,80,94,94,0,0,0,100,0,100,1.7,772,padrao,sim
 LadyDevimon,Medusamon,Ultimate->Mega,28,50,380,0,0,85,0,106,0,0,0,100,0,100,1.7,649,padrao,sim
 LadyDevimon,Lilithmon,Ultimate->Mega,28,8,530,0,0,250,0,190,0,0,0,30,0,40,1.7,1136,,sim
 SkullSatamon,Demon,Ultimate->Mega,28,8,601,200,0,0,0,135,0,0,0,100,0,40,1.7,1032,,sim
@@ -333,6 +333,6 @@ Myotismon,Piedmon,Ultimate->Mega,28,50,373,0,0,152,0,124,0,0,0,100,0,100,1.7,727
 Paildramon,UlforceVeedramon,Ultimate->Mega,36,12,522,293,106,0,0,164,0,0,0,100,0,100,1.8,1133,PA,sim
 Paildramon,Imperialdramon,Ultimate->Mega,28,50,484,198,0,0,0,152,0,0,0,100,0,100,1.7,912,padrao,sim
 JewelBeemon,HerculesKabuterimon,Ultimate->Mega,28,50,393,132,0,0,0,104,0,0,0,100,0,100,1.7,707,padrao,sim
-JewelBeemon,Imperialdramon,Ultimate->Mega,28,8,393,132,0,0,0,180,0,0,0,100,40,100,1.7,781,Vel,sim
+JewelBeemon,Imperialdramon,Ultimate->Mega,28,8,393,132,0,0,99,104,0,0,0,100,40,100,1.7,804,ED,sim
 JewelBeemon,GrandisKuwagamon,Ultimate->Mega,28,8,393,224,0,0,0,104,0,0,0,100,0,100,1.7,757,PA,sim
 Belphemon Sleep Mode,Belphemon Rage Mode,Mega->Mega,45,14,752,135,180,0,141,0,15,0,0,40,0,40,1.1,1402,,nao

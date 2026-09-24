@@ -104,8 +104,8 @@ A intenção de design: com esforço moderado o Digimon chega a uma **forma mais
 | Baby -> InTraining | 49 | 2 / 2 / 2 | 0 / 0 / 2 | 37 / 53 / 70 | 6 | 1.15-1.2 |
 | InTraining -> Rookie | 59 | 2 / 2 / 3 | 0 / 0 / 5 | 20 / 97 / 152 | 6 | 1.25-1.3 |
 | Rookie -> Champion | 72 | 12 / 12 / 18 | 2 / 2 / 13 | 145 / 242 / 417 | 10 | 1.8-1.9 |
-| Champion -> Ultimate | 75 | 20 / 20 / 28 | 5 / 8 / 24 | 316 / 473 / 813 | 8 | 1.6-1.7 |
-| Ultimate -> Mega | 81 | 28 / 28 / 36 | 8 / 12 / 50 | 557 / 781 / 1394 | 21 | 1.7-1.8 |
+| Champion -> Ultimate | 75 | 20 / 20 / 28 | 5 / 8 / 24 | 316 / 472 / 813 | 8 | 1.6-1.7 |
+| Ultimate -> Mega | 81 | 28 / 28 / 36 | 8 / 12 / 50 | 557 / 781 / 1394 | 20 | 1.7-1.8 |
 | Mega -> Mega | 1 | 45 / 45 / 45 | 14 / 14 / 14 | 1208 / 1208 / 1208 | 1 | 1.1-1.1 |
 
 ## 5. Pontos de atenção detectados automaticamente
@@ -126,7 +126,7 @@ Total: **0**
 - nenhum
 
 ### 5.5 Evoluções que exigem EA/ED sem o Digimon de origem ter Role/AttackType especial
-Origem com `AttackType` Physical exigindo EA/ED > 0: **32** evoluções (EA/ED só sobem por treino). Exemplos: Agumon->Dimetromon (EA 58, ED 0); Belphemon Sleep Mode->Belphemon Rage Mode (EA 0, ED 141); Biyomon->Birdramon (EA 17, ED 0); Devimon->Myotismon (EA 100, ED 0); Gabumon->Garurumon (EA 17, ED 0); Gigimon->Elizamon (EA 34, ED 0); Gomamon->Tortamon (EA 0, ED 43); Goromon->Kotemon (EA 0, ED 18); Greymon->MetalGreymon (EA 30, ED 0); Greymon->RizeGreymon (EA 30, ED 0); Groundramon->Dorugoramon (EA 0, ED 56); Gummymon->Terriermon (EA 6, ED 0)
+Origem com `AttackType` Physical exigindo EA/ED > 0: **35** evoluções (EA/ED só sobem por treino). Exemplos: Agumon->Dimetromon (EA 58, ED 0); Belphemon Sleep Mode->Belphemon Rage Mode (EA 0, ED 141); Biyomon->Birdramon (EA 17, ED 0); Devimon->Myotismon (EA 100, ED 0); Gabumon->Garurumon (EA 17, ED 0); Gaogamon->WereGarurumon (EA 47, ED 0); Gigimon->Elizamon (EA 34, ED 0); Gomamon->Tortamon (EA 0, ED 43); Goromon->Kotemon (EA 0, ED 18); Greymon->MetalGreymon (EA 30, ED 0); Greymon->RizeGreymon (EA 30, ED 0); Groundramon->Dorugoramon (EA 0, ED 56)
 
 ## 6. Receitas Jogress (fusão de dois Digimons)
 
@@ -979,8 +979,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Lillymon (#50) | Ultimate | 20 | 5 | 400 | 131 | - | - | - | 54 | - | 1.6 | 610 | canon | normal |
-| Lilamon (#179) | Ultimate | 20 | 5 | 397 | 119 | 106 | - | - | - | - | 1.6 | 647 | design | normal |
+| Lillymon (#50) | Ultimate | 20 | 24 | 243 | 129 | - | - | - | 51 | - | 1.6 | 467 | canon | normal |
+| Lilamon (#179) | Ultimate | 20 | 5 | 243 | 119 | 74 | - | 62 | - | - | 1.6 | 523 | design | normal |
 
 #### Growlmon (#18) - Champion | Role Warrior | Physical | Virus / Fire | Ovo: Dragon
 
@@ -1029,8 +1029,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| WereGarurumon (#40) | Ultimate | 20 | 5 | 398 | 167 | 80 | - | - | 75 | - | 1.6 | 745 | design | normal |
-| MachGaogamon (#48) | Ultimate | 20 | 5 | 400 | 146 | - | - | - | 77 | - | 1.6 | 648 | canon | normal |
+| WereGarurumon (#40) | Ultimate | 20 | 5 | 258 | 167 | 73 | 47 | - | 49 | - | 1.6 | 619 | design | normal |
+| MachGaogamon (#48) | Ultimate | 20 | 24 | 258 | 146 | - | - | - | 49 | - | 1.6 | 497 | canon | normal |
 
 #### Sunflowmon (#24) - Champion | Role Support | Special | Data / Earth | Ovo: Forest | Suporte: Debuffer
 
@@ -1304,8 +1304,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| MetalGarurumon (#53) | Mega | 28 | 8 | 434 | 236 | - | 56 | - | 85 | Batalhas≥12; Vitórias≥55%; Felic≥55 | 1.7 | 969 | canon | normal |
-| Gankoomon (#162) | Mega | 28 | 50 | 434 | 132 | 90 | 56 | - | - | - | 1.7 | 790 | design | normal |
+| MetalGarurumon (#53) | Mega | 28 | 8 | 434 | 236 | - | 89 | - | 85 | Batalhas≥12; Vitórias≥55%; Felic≥55 | 1.7 | 1002 | canon | normal |
+| Gankoomon (#162) | Mega | 28 | 50 | 434 | 132 | 90 | 89 | - | - | - | 1.7 | 823 | design | normal |
 
 #### WarGrowlmon (#41) - Ultimate | Role Warrior | Physical | Virus / Fire | Ovo: Dragon
 
@@ -1314,8 +1314,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Gallantmon (#54) | Mega | 28 | 8 | 736 | 269 | - | - | - | 107 | Batalhas≥12; Vitórias≥55%; Felic≥55 | 1.7 | 1270 | canon | normal |
-| Medieval Dukemon (#99) | Mega | 28 | 8 | 710 | 299 | 145 | - | - | - | - | 1.7 | 1190 | design | normal |
+| Gallantmon (#54) | Mega | 28 | 50 | 418 | 269 | - | - | - | 99 | - | 1.7 | 864 | canon | normal |
+| Medieval Dukemon (#99) | Mega | 28 | 8 | 418 | 299 | 180 | - | - | - | - | 1.7 | 933 | design | normal |
 
 #### Rapidmon (#42) - Ultimate | Role Ranged | Physical | Vacine / Wind | Ovo: Beast
 
@@ -1344,8 +1344,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Gankoomon (#162) | Mega | 28 | 50 | 443 | 169 | - | - | - | 102 | - | 1.7 | 792 | design | normal |
-| MirageGaogamon (#176) | Mega | 28 | 8 | 443 | 226 | - | - | - | 102 | Felic≥40 | 1.7 | 847 | canon | normal |
+| Gankoomon (#162) | Mega | 28 | 50 | 443 | 169 | - | - | - | 86 | - | 1.7 | 776 | design | normal |
+| MirageGaogamon (#176) | Mega | 28 | 8 | 443 | 226 | - | - | - | 86 | Felic≥40 | 1.7 | 831 | canon | normal |
 
 #### Taomon (#49) - Ultimate | Role Ranged | Special | Data / Fire | Ovo: Beast
 
@@ -1364,8 +1364,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Rosemon (#75) | Mega | 28 | 50 | 458 | - | - | 84 | - | 97 | - | 1.7 | 717 | canon | normal |
-| Cendrillmon (#94) | Mega | 28 | 8 | 458 | - | - | 207 | - | 97 | - | 1.7 | 798 | design | normal |
+| Rosemon (#75) | Mega | 28 | 50 | 426 | - | - | 84 | - | 97 | - | 1.7 | 685 | canon | normal |
+| Cendrillmon (#94) | Mega | 28 | 8 | 426 | - | - | 207 | - | 97 | - | 1.7 | 766 | design | normal |
 
 #### MegaKabuterimon (#51) - Ultimate | Role Tank | Special | Vacine / Electric | Ovo: Forest
 
@@ -1406,7 +1406,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Magnadramon (#73) | Mega | 28 | 50 | 387 | - | - | 112 | - | 155 | - | 1.7 | 732 | canon | normal |
 | Lilithmon (#95) | Mega | 28 | 8 | 387 | - | - | 112 | 108 | 155 | - | 1.7 | 798 | design | normal |
-| Ophanimon (#178) | Mega | 28 | 8 | 387 | - | - | 213 | - | 155 | Felic≥40 | 1.7 | 831 | canon | normal |
+| Ophanimon (#178) | Mega | 28 | 8 | 350 | - | - | 213 | - | 155 | Felic≥40 | 1.7 | 794 | canon | normal |
 
 #### Grand Galemon (#80) - Ultimate | Role Ranged | Special | Data / Wind | Ovo: Dragon
 
@@ -1548,8 +1548,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Craniummon (#159) | Mega | 28 | 8 | 647 | 236 | 179 | - | - | 89 | - | 1.7 | 1187 | design | normal |
-| Crusadermon (#148) | Mega | 36 | 12 | 640 | 240 | 150 | - | - | 120 | - | 1.8 | 1198 | design | normal |
+| Craniummon (#159) | Mega | 28 | 50 | 471 | 137 | 150 | - | - | 89 | - | 1.7 | 925 | design | normal |
+| Crusadermon (#148) | Mega | 36 | 12 | 509 | 152 | 150 | - | - | 147 | - | 1.8 | 1006 | design | normal |
 
 #### Dorugreymon (#151) - Ultimate | Role Warrior | Physical | Data / Fire | Ovo: Dragon
 
@@ -1618,8 +1618,8 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Rosemon (#75) | Mega | 28 | 8 | 458 | - | - | 198 | - | 94 | - | 1.7 | 786 | canon | normal |
-| Cendrillmon (#94) | Mega | 28 | 50 | 458 | - | - | 80 | 55 | 94 | - | 1.7 | 765 | design | normal |
+| Rosemon (#75) | Mega | 28 | 8 | 426 | - | - | 198 | - | 94 | - | 1.7 | 754 | canon | normal |
+| Cendrillmon (#94) | Mega | 28 | 50 | 426 | - | - | 80 | 94 | 94 | - | 1.7 | 772 | design | normal |
 
 #### LadyDevimon (#180) - Ultimate | Role Assassin | Special | Virus / Dark | Ovo: Dark
 
@@ -1669,7 +1669,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | HerculesKabuterimon (#74) | Mega | 28 | 50 | 393 | 132 | - | - | - | 104 | - | 1.7 | 707 | canon | normal |
-| Imperialdramon (#193) | Mega | 28 | 8 | 393 | 132 | - | - | - | 180 | Felic≥40 | 1.7 | 781 | canon | normal |
+| Imperialdramon (#193) | Mega | 28 | 8 | 393 | 132 | - | - | 99 | 104 | Felic≥40 | 1.7 | 804 | canon | normal |
 | GrandisKuwagamon (#200) | Mega | 28 | 8 | 393 | 224 | - | - | - | 104 | - | 1.7 | 757 | canon | normal |
 
 ### Estágio Mega (49 Digimons)

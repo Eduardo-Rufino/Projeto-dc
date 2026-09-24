@@ -51,6 +51,7 @@ namespace ProjetoDC.Revisao
             CaseF_NovasFormasPadrao();
             CaseG_PremiumsViaCadeiaMinima();
             CaseH_Chirinmon();
+            CaseI_SeisArestasV4();
 
             GD.Print($"===== EvolutionCheckpointTestFase3: {_ok} ok, {_fail} falha(s) =====");
             GetTree().Quit(_fail > 0 ? 1 : 0);
@@ -195,6 +196,28 @@ namespace ProjetoDC.Revisao
             Gm.ApplyTeamBattleReward(BattleResult.PlayerWon);
         }
 
+        /// <summary>Mesmo checkpoint real (COM XP), mas com um inimigo Rookie no mesmo nível (em
+        /// vez do Mega+10 de <see cref="BattleCheckpointWithLevelUp"/>) - XP bem menor por
+        /// batalha, sobe no máximo ~1 nível por vez. Usado só quando o salto grande da versão
+        /// normal pula direto por cima de uma janela estreita entre duas irmãs (ex.: Caso I3,
+        /// Growlmon -> WarGrowlmon/MetalGreymon só ~14 PA / 23 HP de diferença) e a checagem de
+        /// verdade (que roda uma vez por chamada, depois de aplicar TODO o XP daquela chamada)
+        /// nunca via o nível exato em que só a forma-alvo já era válida.</summary>
+        private void SlowBattleCheckpoint(DigimonInstance member)
+        {
+            var t = typeof(GameManager);
+
+            var enemySpecies = Db.GetAllDigimons().First(s => s.Stage == DigimonStage.Rookie);
+            var enemy = new DigimonInstance(enemySpecies) { Level = member.Level };
+
+            t.GetProperty("PlayerBattleTeam").GetSetMethod(true)
+                .Invoke(Gm, new object[] { new List<DigimonInstance> { member } });
+            t.GetProperty("EnemyBattleTeam").GetSetMethod(true)
+                .Invoke(Gm, new object[] { new List<DigimonInstance> { enemy } });
+
+            Gm.ApplyTeamBattleReward(BattleResult.PlayerWon);
+        }
+
         /// <summary>Checkpoint real: virada de dia (ClockSystem.DayPassed -> OnDayPassed). Cura
         /// doença na hora (Heal() real) - sem isso, TryBecomeSick (aleatório, todo dia) podia
         /// deixar o Digimon doente vários dias seguidos e arriscar uma morte por negligência
@@ -249,6 +272,24 @@ namespace ProjetoDC.Revisao
 
             for (int i = 0; i < maxBattles && d.Level < requiredLevel && d.BaseData.Id == startId; i++)
                 BattleCheckpointWithLevelUp(d);
+
+            for (int i = 0; i < maxDays && d.AgeInDays < requiredAge && d.BaseData.Id == startId; i++)
+                DayPassedCheckpoint(d);
+        }
+
+        /// <summary>Mesma coisa que a sobrecarga multi-stat de <see cref="GrowLeg"/>, mas subindo
+        /// de nível com <see cref="SlowBattleCheckpoint"/> (granularidade fina) em vez de
+        /// <see cref="BattleCheckpointWithLevelUp"/> - ver o comentário de SlowBattleCheckpoint.</summary>
+        private void GrowLegPrecise(DigimonInstance d, int requiredLevel, int requiredAge,
+            (TrainingType stat, int floor)[] stats, int maxBattles = 400, int maxDays = 60)
+        {
+            int startId = d.BaseData.Id;
+
+            foreach (var (stat, floor) in stats)
+                TrainUntilStat(d, stat, StatReader(stat), floor);
+
+            for (int i = 0; i < maxBattles && d.Level < requiredLevel && d.BaseData.Id == startId; i++)
+                SlowBattleCheckpoint(d);
 
             for (int i = 0; i < maxDays && d.AgeInDays < requiredAge && d.BaseData.Id == startId; i++)
                 DayPassedCheckpoint(d);
@@ -378,13 +419,14 @@ namespace ProjetoDC.Revisao
             const int kotemonId = 145;
 
             // "MachGaogamon vindo de Gaogamon": Gaogamon (Champion) sozinho, criado do zero no
-            // Lv 1, não chega nem perto de Gaogamon->MachGaogamon (essa aresta não foi tocada
-            // pela revisão - alterada=nao - e pede mais HP/Vel do que a espécie ganha só subindo
-            // de nível a partir da própria ficha). Um Gaogamon de verdade só existe por ter
-            // evoluído de algo - testei primeiro a rota Gaomon (assinatura PA, Caso B) mas ela
-            // não dá HP suficiente pro próximo passo (ver relatório); a rota mais forte é
-            // Kotemon (HP+PA+PD, sem "assinatura" de um stat só) - depois disso, "sem treinar"
-            // vale a partir daqui.
+            // Lv 1, não chega nem perto de Gaogamon->MachGaogamon. Um Gaogamon de verdade só
+            // existe por ter evoluído de algo - testei primeiro a rota Gaomon (assinatura PA,
+            // Caso B) mas ela não dá HP suficiente pro próximo passo (ver relatório); a rota mais
+            // forte é Kotemon (HP+PA+PD, sem "assinatura" de um stat só) - depois disso, "sem
+            // treinar" vale a partir daqui. NOTA (Fase 3 v3): essa aresta era o achado original do
+            // usuário (carry-over pela rota Kotemon fazia WereGarurumon atropelar MachGaogamon) -
+            // o CSV v4 corrigiu subindo a Idade de MachGaogamon de 5 pra 24 (ver Caso I1, que
+            // cobre as duas rotas de entrada - Gaomon e Kotemon - lado a lado).
             DigimonInstance ChegarEmGaogamon()
             {
                 var d = SpawnNatural(kotemonId);
@@ -406,7 +448,7 @@ namespace ProjetoDC.Revisao
             Check(d.BaseData.Name == "Gaogamon", $"D-1: chegou em Gaogamon vindo de Kotemon (HP+PA+PD) - {d.BaseData.Name}");
             GD.Print($"  [diagnóstico D-1] Lv{d.Level} Age{d.AgeInDays} HP{d.CurrentStats.HealthPoints} PA{d.CurrentStats.PhysicalDamage} PD{d.CurrentStats.PhysicalDefense} Vel{d.CurrentStats.Speed}");
 
-            GrowLeg(d, requiredLevel: 20, requiredAge: 5, maxBattles: 150);
+            GrowLeg(d, requiredLevel: 20, requiredAge: 24, maxBattles: 150);
 
             GD.Print($"  [diagnóstico D0] Lv{d.Level} Age{d.AgeInDays} HP{d.CurrentStats.HealthPoints} PA{d.CurrentStats.PhysicalDamage} PD{d.CurrentStats.PhysicalDefense} Vel{d.CurrentStats.Speed} nome={d.BaseData.Name}");
             Check(d.BaseData.Name == "MachGaogamon", $"D0: chegou em MachGaogamon vindo de Gaogamon sem treino - {d.BaseData.Name}");
@@ -424,7 +466,7 @@ namespace ProjetoDC.Revisao
 
             var lowHappy = ChegarEmGaogamon();
 
-            GrowLeg(lowHappy, requiredLevel: 20, requiredAge: 5);
+            GrowLeg(lowHappy, requiredLevel: 20, requiredAge: 24);
             GrowLeg(lowHappy, requiredLevel: 28, requiredAge: 50 - 1); // fica 1 dia aquém de propósito
             lowHappy.Happiness = 30;
             DayPassedCheckpoint(lowHappy); // completa a Idade 50 já com a Felicidade baixa
@@ -662,6 +704,281 @@ namespace ProjetoDC.Revisao
 
             Check(none.BaseData.Name == "Kentaurusmon",
                 $"H2 (Reppamon -> Chirinmon -> sem mais treino, até a Idade 50): resultado {none.BaseData.Name} (esperado Kentaurusmon - forma padrão)");
+        }
+
+        // ------------------------------------------------------------------ caso i) Fase 3 v3 - as 6 arestas corrigidas pelo CSV v4
+
+        /// <summary>Fase 3 v3: o achado do usuário era uma classe de problema que a Fase 3 v2 não
+        /// enxergava - a checagem F do verificador (rota por rota, sem misturar stats de rotas
+        /// diferentes). Gaogamon->MachGaogamon e mais 5 pares tinham o mesmo defeito: quem chega
+        /// pela rota FORTE já carrega PD/PA/EA/ED altos o bastante pra validar a irmã de Score
+        /// maior junto, então a forma "padrão" (calibrada pela rota fraca) nunca dispara por essa
+        /// rota. O CSV v4 corrige subindo a idade/stat da forma canônica e movendo a assinatura da
+        /// irmã pra um stat que NENHUMA rota de entrada já traz alto. Cada caso abaixo testa as
+        /// DUAS rotas de entrada (quando existem) pra confirmar que a forma "padrão" agora dispara
+        /// mesmo vindo pela rota mais forte, e que a assinatura ainda funciona treinando só ela.</summary>
+        private void CaseI_SeisArestasV4()
+        {
+            GD.Print("\n--- Caso I: Fase 3 v3 - as 6 arestas corrigidas pelo CSV v4 (carry-over rota-a-rota) ---");
+
+            CaseI1_Gaogamon();
+            CaseI2_Togemon();
+            CaseI3_WarGrowlmon();
+            CaseI4_JewelBeemon();
+            CaseI5_Angewomon();
+            CaseI6_Knightmon();
+        }
+
+        private void CaseI1_Gaogamon()
+        {
+            GD.Print("\n--- Caso I1: Gaogamon -> WereGarurumon / MachGaogamon, via Gaomon e via Kotemon ---");
+
+            const int gaomonId = 5;
+            const int kotemonId = 145;
+
+            DigimonInstance ViaGaomon()
+            {
+                var d = SpawnNatural(gaomonId);
+                GrowLeg(d, requiredLevel: 12, requiredAge: 2, stat: TrainingType.Attack, floor: 108);
+                return d;
+            }
+
+            DigimonInstance ViaKotemon()
+            {
+                var d = SpawnNatural(kotemonId);
+                GrowLeg(d, requiredLevel: 12, requiredAge: 2,
+                    new (TrainingType, int)[] { (TrainingType.HealthPoints, 170), (TrainingType.Attack, 90) });
+                return d;
+            }
+
+            foreach (var (rota, chegar) in new (string, Func<DigimonInstance>)[] { ("Gaomon", ViaGaomon), ("Kotemon", ViaKotemon) })
+            {
+                ResetScratch();
+                var were = chegar();
+                Check(were.BaseData.Name == "Gaogamon", $"I1-{rota}: chegou em Gaogamon - {were.BaseData.Name}");
+
+                GrowLeg(were, requiredLevel: 20, requiredAge: 5, stat: TrainingType.SpecialAttack, floor: 47);
+
+                Check(were.BaseData.Name == "WereGarurumon",
+                    $"I1a ({rota} -> Gaogamon -> só EA até 47, Lv 20): resultado {were.BaseData.Name} (esperado WereGarurumon)");
+
+                ResetScratch();
+                var mach = chegar();
+                GrowLeg(mach, requiredLevel: 20, requiredAge: 24);
+
+                Check(mach.BaseData.Name == "MachGaogamon",
+                    $"I1b ({rota} -> Gaogamon -> sem treino, até a Idade 24): resultado {mach.BaseData.Name} (esperado MachGaogamon - forma padrão)");
+            }
+        }
+
+        private void CaseI2_Togemon()
+        {
+            GD.Print("\n--- Caso I2: Togemon -> Lilamon / Lillymon, via Palmon ---");
+
+            const int palmonId = 6;
+
+            DigimonInstance ChegarEmTogemon()
+            {
+                var d = SpawnNatural(palmonId);
+                GrowLeg(d, requiredLevel: 12, requiredAge: 2,
+                    new (TrainingType, int)[] { (TrainingType.HealthPoints, 136), (TrainingType.Attack, 67), (TrainingType.Speed, 51) });
+                return d;
+            }
+
+            ResetScratch();
+            var lila = ChegarEmTogemon();
+            Check(lila.BaseData.Name == "Togemon", $"I2-0: chegou em Togemon vindo de Palmon - {lila.BaseData.Name}");
+
+            GrowLeg(lila, requiredLevel: 20, requiredAge: 5, stat: TrainingType.SpecialDefense, floor: 62);
+
+            Check(lila.BaseData.Name == "Lilamon",
+                $"I2a (Palmon -> Togemon -> só ED até 62, Lv 20): resultado {lila.BaseData.Name} (esperado Lilamon)");
+
+            ResetScratch();
+            var lily = ChegarEmTogemon();
+            GrowLeg(lily, requiredLevel: 20, requiredAge: 24);
+
+            Check(lily.BaseData.Name == "Lillymon",
+                $"I2b (Palmon -> Togemon -> sem treino, até a Idade 24): resultado {lily.BaseData.Name} (esperado Lillymon - forma padrão)");
+        }
+
+        /// <summary>Growlmon e Devidramon são ambos Champion (a própria aresta testada é
+        /// Champion->Ultimate) - spawná-los direto no Lv 1 comete o MESMO erro de modelo que o
+        /// Caso D já corrigiu pro Gaogamon (rota mais fraca != rota mais barata). Por isso cada
+        /// rota aqui parte do Rookie de verdade (Guilmon/Elizamon) e sobe por TryToEvolve, igual
+        /// ao resto do arquivo - primeira tentativa (spawn direto) deu WarGrowlmon->MetalGreymon
+        /// pela rota Growlmon e nenhuma evolução pela rota Devidramon (PD/Vel de carry-over baixos
+        /// demais sem a evolução real por trás).</summary>
+        private void CaseI3_WarGrowlmon()
+        {
+            GD.Print("\n--- Caso I3: WarGrowlmon -> Medieval Dukemon / Gallantmon, via Growlmon (Guilmon) e via Devidramon (Elizamon) ---");
+
+            const int guilmonId = 7;
+            const int elizamonId = 84;
+
+            DigimonInstance ViaGuilmon() // chega em Growlmon pela cadeia real - mesma receita do Caso A (só PA)
+            {
+                var d = SpawnNatural(guilmonId);
+                GrowLeg(d, requiredLevel: 12, requiredAge: 2, stat: TrainingType.Attack, floor: 104);
+                return d;
+            }
+
+            DigimonInstance ViaElizamon() // chega em Devidramon pela cadeia real - só Vel (assinatura)
+            {
+                var d = SpawnNatural(elizamonId);
+                GrowLeg(d, requiredLevel: 12, requiredAge: 2, stat: TrainingType.Speed, floor: 104);
+                return d;
+            }
+
+            ResetScratch();
+            var duke1 = ViaGuilmon();
+            Check(duke1.BaseData.Name == "Growlmon", $"I3-Guilmon: chegou em Growlmon vindo de Guilmon (só PA) - {duke1.BaseData.Name}");
+            GD.Print($"  [diagnóstico I3-Guilmon pré] Lv{duke1.Level} Age{duke1.AgeInDays} HP{duke1.CurrentStats.HealthPoints} PA{duke1.CurrentStats.PhysicalDamage} PD{duke1.CurrentStats.PhysicalDefense} Vel{duke1.CurrentStats.Speed}");
+
+            // GrowLeg normal (bate num inimigo Mega+10) dá XP demais aqui - PA163/HP375 (WarGrowlmon)
+            // e PA177/HP398/PD88 (MetalGreymon) ficam só ~14 PA / ~23 HP / ~88 PD de distância um
+            // do outro, e um salto de vários níveis de uma vez pula direto por cima dessa janela -
+            // GrowLegPrecise sobe em incrementos pequenos (inimigo Rookie no mesmo nível) pra
+            // checar a evolução perto de cada nível, não só no fim de um salto grande.
+            GrowLegPrecise(duke1, requiredLevel: 20, requiredAge: 5,
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61) });
+
+            GD.Print($"  [diagnóstico I3-Guilmon pós] Lv{duke1.Level} Age{duke1.AgeInDays} HP{duke1.CurrentStats.HealthPoints} PA{duke1.CurrentStats.PhysicalDamage} PD{duke1.CurrentStats.PhysicalDefense} Vel{duke1.CurrentStats.Speed} nome={duke1.BaseData.Name}");
+            Check(duke1.BaseData.Name == "WarGrowlmon", $"I3-Guilmon-WarGrowlmon: chegou em WarGrowlmon vindo de Growlmon (HP+PA+Vel) - {duke1.BaseData.Name}");
+
+            GrowLeg(duke1, requiredLevel: 28, requiredAge: 8, stat: TrainingType.Defense, floor: 180);
+
+            Check(duke1.BaseData.Name == "Medieval Dukemon",
+                $"I3a (Guilmon -> Growlmon -> WarGrowlmon -> só PD até 180, Lv 28): resultado {duke1.BaseData.Name} (esperado Medieval Dukemon)");
+
+            ResetScratch();
+            var duke2 = ViaElizamon();
+            Check(duke2.BaseData.Name == "Devidramon", $"I3-Elizamon: chegou em Devidramon vindo de Elizamon (só Vel) - {duke2.BaseData.Name}");
+
+            GrowLeg(duke2, requiredLevel: 20, requiredAge: 5, stat: TrainingType.Attack, floor: 201);
+
+            Check(duke2.BaseData.Name == "WarGrowlmon", $"I3-Elizamon-WarGrowlmon: chegou em WarGrowlmon vindo de Devidramon (só PA) - {duke2.BaseData.Name}");
+
+            GrowLeg(duke2, requiredLevel: 28, requiredAge: 8, stat: TrainingType.Defense, floor: 180);
+
+            Check(duke2.BaseData.Name == "Medieval Dukemon",
+                $"I3b (Elizamon -> Devidramon -> WarGrowlmon -> só PD até 180, Lv 28): resultado {duke2.BaseData.Name} (esperado Medieval Dukemon)");
+
+            ResetScratch();
+            var gallant = ViaGuilmon();
+            GrowLegPrecise(gallant, requiredLevel: 20, requiredAge: 5,
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61) });
+            GrowLeg(gallant, requiredLevel: 28, requiredAge: 50);
+
+            Check(gallant.BaseData.Name == "Gallantmon",
+                $"I3c (Guilmon -> Growlmon -> WarGrowlmon -> sem mais treino, até a Idade 50): resultado {gallant.BaseData.Name} (esperado Gallantmon - forma padrão)");
+        }
+
+        /// <summary>Stingmon e Kabuterimon também são Champion - mesmo cuidado do Caso I3: sobem
+        /// da cadeia real (Wormmon/Tentomon), não spawnados direto.</summary>
+        private void CaseI4_JewelBeemon()
+        {
+            GD.Print("\n--- Caso I4: JewelBeemon -> Imperialdramon / GrandisKuwagamon, via Stingmon (Wormmon) e via Kabuterimon (Tentomon) ---");
+
+            const int wormmonId = 197;
+            const int tentomonId = 3;
+
+            ResetScratch();
+            var imp = SpawnNatural(wormmonId);
+            GrowLeg(imp, requiredLevel: 12, requiredAge: 2, stat: TrainingType.Speed, floor: 98);
+
+            Check(imp.BaseData.Name == "Stingmon", $"I4-Wormmon: chegou em Stingmon vindo de Wormmon (só Vel) - {imp.BaseData.Name}");
+
+            GrowLeg(imp, requiredLevel: 20, requiredAge: 5, stat: TrainingType.Attack, floor: 172);
+
+            Check(imp.BaseData.Name == "JewelBeemon", $"I4-Wormmon-JewelBeemon: chegou em JewelBeemon vindo de Stingmon (só PA) - {imp.BaseData.Name}");
+
+            GrowLeg(imp, requiredLevel: 28, requiredAge: 8, stat: TrainingType.SpecialDefense, floor: 99);
+
+            Check(imp.BaseData.Name == "Imperialdramon",
+                $"I4a (Wormmon -> Stingmon -> JewelBeemon -> só ED até 99, Lv 28): resultado {imp.BaseData.Name} (esperado Imperialdramon, não GrandisKuwagamon)");
+
+            ResetScratch();
+            var grandis = SpawnNatural(tentomonId);
+            GrowLeg(grandis, requiredLevel: 12, requiredAge: 13); // Tentomon -> Kabuterimon é o padrão
+
+            Check(grandis.BaseData.Name == "Kabuterimon", $"I4-Tentomon: chegou em Kabuterimon vindo de Tentomon (padrão) - {grandis.BaseData.Name}");
+
+            GrowLeg(grandis, requiredLevel: 20, requiredAge: 24); // Kabuterimon -> JewelBeemon é o padrão
+
+            Check(grandis.BaseData.Name == "JewelBeemon", $"I4-Tentomon-JewelBeemon: chegou em JewelBeemon vindo de Kabuterimon (padrão) - {grandis.BaseData.Name}");
+            GD.Print($"  [diagnóstico I4b pré] Lv{grandis.Level} Age{grandis.AgeInDays} HP{grandis.CurrentStats.HealthPoints} PA{grandis.CurrentStats.PhysicalDamage} EA{grandis.CurrentStats.SpecialDamage} ED{grandis.CurrentStats.SpecialDefense} Vel{grandis.CurrentStats.Speed}");
+
+            GrowLeg(grandis, requiredLevel: 28, requiredAge: 8, stat: TrainingType.Attack, floor: 224);
+
+            GD.Print($"  [diagnóstico I4b pós] Lv{grandis.Level} Age{grandis.AgeInDays} HP{grandis.CurrentStats.HealthPoints} PA{grandis.CurrentStats.PhysicalDamage} EA{grandis.CurrentStats.SpecialDamage} ED{grandis.CurrentStats.SpecialDefense} Vel{grandis.CurrentStats.Speed} nome={grandis.BaseData.Name}");
+            Check(grandis.BaseData.Name == "GrandisKuwagamon",
+                $"I4b (Tentomon -> Kabuterimon -> JewelBeemon -> só PA até 224, Lv 28): resultado {grandis.BaseData.Name} (esperado GrandisKuwagamon)");
+        }
+
+        private void CaseI5_Angewomon()
+        {
+            GD.Print("\n--- Caso I5: Angewomon -> Lilithmon, via Kudamon -> Angemon ---");
+
+            const int kudamonId = 129;
+
+            ResetScratch();
+
+            var d = SpawnNatural(kudamonId);
+
+            // Kudamon,Angemon: HP150 PA0 PD0 EA98 ED0 Vel80 - a assinatura é EA, mas HP150 e Vel80
+            // também são exigidos (colunas do CSV são HP,PA,PD,EA,ED,Vel - ED aqui é 0, não Vel).
+            // EA/ED têm GROWTH=0 por nível (só sobem com treino de verdade) - e o HP natural de um
+            // Kudamon nunca-evoluído não cobre 150 sozinho até o Lv 12 (GROWTH HP=5/nível), então
+            // HP entra no treino também.
+            GrowLeg(d, requiredLevel: 12, requiredAge: 2,
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 150), (TrainingType.SpecialAttack, 98), (TrainingType.Speed, 80) });
+
+            Check(d.BaseData.Name == "Angemon", $"I5-0: chegou em Angemon vindo de Kudamon (HP+EA+Vel) - {d.BaseData.Name}");
+
+            GrowLeg(d, requiredLevel: 20, requiredAge: 24); // Angemon -> Angewomon é o padrão (Caso C)
+
+            Check(d.BaseData.Name == "Angewomon", $"I5-1: chegou em Angewomon (padrão de Angemon) - {d.BaseData.Name}");
+
+            GrowLeg(d, requiredLevel: 28, requiredAge: 8, stat: TrainingType.SpecialDefense, floor: 108);
+
+            Check(d.BaseData.Name == "Lilithmon",
+                $"I5a (Kudamon -> Angemon -> Angewomon padrão -> só ED até 108, Lv 28): resultado {d.BaseData.Name} (esperado Lilithmon, não Ophanimon)");
+        }
+
+        private void CaseI6_Knightmon()
+        {
+            GD.Print("\n--- Caso I6: Knightmon -> Craniummon / Crusadermon, via Tentomon -> Kabuterimon ---");
+
+            const int tentomonId = 3;
+
+            DigimonInstance ChegarEmKnightmon()
+            {
+                var d = SpawnNatural(tentomonId);
+                GrowLeg(d, requiredLevel: 12, requiredAge: 13); // Tentomon -> Kabuterimon é o padrão
+
+                Check(d.BaseData.Name == "Kabuterimon", $"I6-0: chegou em Kabuterimon vindo de Tentomon (padrão) - {d.BaseData.Name}");
+
+                GrowLeg(d, requiredLevel: 28, requiredAge: 8, stat: TrainingType.Defense, floor: 144);
+
+                Check(d.BaseData.Name == "Knightmon", $"I6-1: chegou em Knightmon vindo de Kabuterimon (só PD) - {d.BaseData.Name}");
+
+                return d;
+            }
+
+            ResetScratch();
+            var crani = ChegarEmKnightmon();
+            GrowLeg(crani, requiredLevel: 28, requiredAge: 50);
+
+            Check(crani.BaseData.Name == "Craniummon",
+                $"I6a (Tentomon -> Kabuterimon -> Knightmon -> sem treino, até a Idade 50): resultado {crani.BaseData.Name} (esperado Craniummon - forma padrão)");
+
+            ResetScratch();
+            var crusader = ChegarEmKnightmon();
+            GrowLeg(crusader, requiredLevel: 36, requiredAge: 12, stat: TrainingType.Speed, floor: 147, maxBattles: 260);
+
+            Check(crusader.BaseData.Name == "Crusadermon",
+                $"I6b (Tentomon -> Kabuterimon -> Knightmon -> só Vel até 147, Lv 36 antes da Idade 50): resultado {crusader.BaseData.Name} (esperado Crusadermon)");
         }
     }
 }
