@@ -67,5 +67,9 @@ namespace ProjetoDC.Scripts.Data
 
         /// <summary>Atributos que podem entrar (ex.: só Virus).</summary>
         public List<DigimonAttribute> AllowedAttributes { get; set; } = new();
+
+        /// <summary>Pontos de medalha da temporada (o ano do calendário) ao vencer este campeonato - uma
+        /// medalha por campeonato por temporada (ver CalendarSystem.MedalsThisSeason). 0 = não dá medalha.</summary>
+        public int MedalValue { get; set; }
     }
 }

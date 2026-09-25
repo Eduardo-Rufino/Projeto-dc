@@ -10,10 +10,12 @@ namespace ProjetoDC.Scripts.UI
     {
         private Button _tournamentButton;
         private Button _freeBattleButton;
+        private Button _medalsButton;
         private Button _backButton;
 
         public event Action TournamentSelected;
         public event Action FreeBattleSelected;
+        public event Action MedalsSelected;
         public event Action BackPressed;
 
         public override void _Ready()
@@ -30,12 +32,17 @@ namespace ProjetoDC.Scripts.UI
                 "Window/MarginContainer/VBoxContainer/FreeBattleButton"
             );
 
+            _medalsButton = GetNode<Button>(
+                "Window/MarginContainer/VBoxContainer/MedalsButton"
+            );
+
             _backButton = GetNode<Button>(
                 "Window/MarginContainer/VBoxContainer/BackButton"
             );
 
             _tournamentButton.Pressed += () => TournamentSelected?.Invoke();
             _freeBattleButton.Pressed += () => FreeBattleSelected?.Invoke();
+            _medalsButton.Pressed += () => MedalsSelected?.Invoke();
             _backButton.Pressed += () => BackPressed?.Invoke();
         }
     }

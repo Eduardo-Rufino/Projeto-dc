@@ -13,5 +13,6 @@
   "DurationDays": 3,
   "AnnounceDaysBefore": 5,
   "AllowedStages": ["Rookie"],
-  "AllowedAttributes": []
+  "AllowedAttributes": [],
+  "MedalValue": 0
 }

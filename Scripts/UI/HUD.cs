@@ -479,6 +479,7 @@ namespace ProjetoDC.Scripts.UI
             // texto de placeholder do .tscn ("Botamon Lv. 1") até isso acontecer.
             GameManager.Instance.PlayerDigimonChanged += OnPlayerDigimonChanged;
             GameManager.Instance.CookingFinished += OnCookingFinished;
+            GameManager.Instance.MedalWon += OnMedalWon;
 
             if (GameManager.Instance.PlayerDigimon != null)
                 InspectDigimon(GameManager.Instance.PlayerDigimon);
@@ -496,7 +497,8 @@ namespace ProjetoDC.Scripts.UI
         {
             var world = GameManager.Instance.Save.World;
 
-            _dateLabel.Text = $"Dia {world.CurrentDay}";
+            var medals = GameManager.Instance.GetSeasonMedals();
+            _dateLabel.Text = $"Dia {world.CurrentDay} • Medalhas: {medals.Earned}/{medals.Total}";
             // RefreshDateTime roda a cada MinutePassed, que o ClockSystem dispara logo depois do
             // DayPassed na virada do dia - então o calendário acompanha a troca de dia sem gancho extra.
             _calendarLabel.Text = CalendarSystem.IsLoaded
@@ -540,6 +542,7 @@ namespace ProjetoDC.Scripts.UI
             {
                 GameManager.Instance.PlayerDigimonChanged -= OnPlayerDigimonChanged;
                 GameManager.Instance.CookingFinished -= OnCookingFinished;
+                GameManager.Instance.MedalWon -= OnMedalWon;
             }
 
             if (_inspectedDigimon != null)
@@ -675,6 +678,12 @@ namespace ProjetoDC.Scripts.UI
         {
             foreach (var message in GameManager.Instance.GetTournamentAnnouncementMessages())
                 ShowTournamentNotice(message);
+        }
+
+        private void OnMedalWon(Data.TournamentData tournament, int points)
+        {
+            ShowTournamentNotice($"Medalha conquistada: {tournament.Name} (+{points})");
+            RefreshDateTime();
         }
 
         /// <summary>Enfileira um aviso de campeonato - um de cada vez, com fade, some sozinho.</summary>

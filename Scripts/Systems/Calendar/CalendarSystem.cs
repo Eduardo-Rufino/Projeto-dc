@@ -390,6 +390,62 @@ namespace ProjetoDC.Scripts.Systems.Calendar
 
         private static string DaysText(int n) => n == 1 ? "1 dia" : $"{n} dias";
 
+        // ------------------------------------------------------------------ medalhas da temporada (funções puras)
+        // Temporada = ano do calendário. Não há estado novo: a medalha sai de LastWonEdition - vale se a
+        // edição vencida COMEÇOU na temporada atual.
+
+        /// <summary>Temporada (ano) em que a edição <paramref name="edition"/> do campeonato começa.
+        /// Window/Fixed: a própria edição (já é o ano). Recurring: o ano da abertura daquele ciclo.</summary>
+        public static int EditionSeason(CalendarData cal, TournamentData tournament, int edition)
+        {
+            if (tournament.ScheduleType != TournamentScheduleType.Recurring)
+                return edition;
+
+            if (edition < 0 || tournament.IntervalDays <= 0)
+                return 0;
+
+            return Year(cal, tournament.OffsetDays + edition * tournament.IntervalDays);
+        }
+
+        /// <summary>Se o campeonato dá medalha e foi vencido numa edição que começou na temporada do dia.</summary>
+        public static bool HasSeasonMedal(CalendarData cal, TournamentData tournament, int dayIndex, IReadOnlyDictionary<int, int> lastWonEdition) =>
+            tournament.MedalValue > 0 &&
+            lastWonEdition != null &&
+            lastWonEdition.TryGetValue(tournament.Id, out int won) &&
+            EditionSeason(cal, tournament, won) == Year(cal, dayIndex);
+
+        /// <summary>Soma de MedalValue dos campeonatos vencidos nesta temporada.</summary>
+        public static int MedalsThisSeason(CalendarData cal, IEnumerable<TournamentData> tournaments, int dayIndex, IReadOnlyDictionary<int, int> lastWonEdition) =>
+            tournaments.Where(t => HasSeasonMedal(cal, t, dayIndex, lastWonEdition)).Sum(t => t.MedalValue);
+
+        /// <summary>Soma de MedalValue de todos os campeonatos (o máximo de uma temporada).</summary>
+        public static int MedalsTotal(IEnumerable<TournamentData> tournaments) => tournaments.Sum(t => t.MedalValue);
+
+        /// <summary>Se ainda dá pra conquistar a medalha nesta temporada: dá medalha, está destravado, não
+        /// foi conquistada e o campeonato está aberto agora ou abre de novo antes da virada do ano.</summary>
+        public static bool IsMedalReachable(
+            CalendarData cal, TournamentData tournament, int dayIndex,
+            IEnumerable<int> clearedTournamentIds, IReadOnlyDictionary<int, int> lastWonEdition)
+        {
+            if (tournament.MedalValue <= 0 || HasSeasonMedal(cal, tournament, dayIndex, lastWonEdition))
+                return false;
+
+            if (!IsUnlocked(tournament, clearedTournamentIds))
+                return false;
+
+            int until = DaysUntilOpen(cal, tournament, dayIndex);
+            return until >= 0 && Year(cal, ClampIndex(dayIndex) + until) == Year(cal, dayIndex);
+        }
+
+        /// <summary>Soma de MedalValue ainda alcançável nesta temporada (ver IsMedalReachable).</summary>
+        public static int MedalsAvailable(
+            CalendarData cal, IEnumerable<TournamentData> tournaments, int dayIndex,
+            IEnumerable<int> clearedTournamentIds, IReadOnlyDictionary<int, int> lastWonEdition)
+        {
+            var cleared = clearedTournamentIds.ToList();
+            return tournaments.Where(t => IsMedalReachable(cal, t, dayIndex, cleared, lastWonEdition)).Sum(t => t.MedalValue);
+        }
+
         public static bool IsOpen(TournamentData tournament, int dayIndex) => IsOpen(Data, tournament, dayIndex);
 
         public static int DaysUntilOpen(TournamentData tournament, int dayIndex) => DaysUntilOpen(Data, tournament, dayIndex);

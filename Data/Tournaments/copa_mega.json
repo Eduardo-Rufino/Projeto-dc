@@ -14,5 +14,6 @@
   "DurationDays": 3,
   "AnnounceDaysBefore": 5,
   "AllowedStages": ["Mega"],
-  "AllowedAttributes": []
+  "AllowedAttributes": [],
+  "MedalValue": 3
 }

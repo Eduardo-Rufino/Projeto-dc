@@ -14,5 +14,6 @@
   "EndDayOfYear": 35,
   "AnnounceDaysBefore": 5,
   "AllowedStages": [],
-  "AllowedAttributes": []
+  "AllowedAttributes": [],
+  "MedalValue": 1
 }

@@ -112,6 +112,9 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 ("exploration", ExplorationRuntime),
                 ("flows", BattleFlows),
                 ("battles", RandomBattles),
+                // antes de "scenes": ela destrói o CenterScreen legado, que deixa TeamBattleFinished assinado
+                // (ObjectDisposedException em qualquer batalha depois dela)
+                ("medals", SeasonMedals),
                 ("scenes", ScenesLoad),
                 ("misc", Misc),
                 ("suddendeath", SuddenDeath),
@@ -144,7 +147,10 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 catch (Exception e)
                 {
                     _fail++;
-                    string line = $"[{name}] EXCEÇÃO NÃO TRATADA: {e.GetType().Name}: {e.Message}\n{e.StackTrace}";
+                    // Invoke por reflexão (OkPressed etc.) embrulha a exceção real em TargetInvocationException.
+                    var inner = e.GetBaseException();
+                    string line = $"[{name}] EXCEÇÃO NÃO TRATADA: {e.GetType().Name}: {e.Message}\n{e.StackTrace}" +
+                        (inner != e ? $"\n  causa: {inner.GetType().Name}: {inner.Message}\n{inner.StackTrace}" : "");
                     _failures.Add(line);
                     GD.PrintErr($"[AUDIT-FALHOU] {line}");
                 }
@@ -2445,6 +2451,146 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 if (label == "dados reais")
                     for (int i = 0; i < year; i++)
                         GD.Print($"[AUDIT-AGENDA-INICIO] {i + 1}|{string.Join(",", pool.Where(t => CalendarSystem.IsOpen(cal, t, i)).Select(t => t.Id))}");
+            }
+        }
+
+        // Medalhas da temporada (CalendarSystem.MedalsThisSeason/MedalsAvailable + GameManager.MedalWon): a
+        // tabela de MedalValue, os casos da fase 6 com vitórias de verdade e o save real (somente leitura).
+        private async Task SeasonMedals()
+        {
+            var cal = CalendarSystem.Data;
+            var db = Db;
+            var tournaments = db.GetAllTournaments().ToList();
+            var strongPool = AllSpecies().Where(s => s.Stage == DigimonStage.Mega)
+                .OrderByDescending(s => Math.Max(s.BaseStats.PhysicalDamage, s.BaseStats.SpecialDamage) + s.BaseStats.Speed).Take(6).ToList();
+
+            // ---- tabela
+            var expected = new Dictionary<int, int> { [1] = 0, [2] = 0, [3] = 1, [4] = 1, [5] = 1, [6] = 2, [7] = 2, [8] = 3, [9] = 2, [10] = 2, [11] = 3, [12] = 3 };
+            int explicitCount = 0;
+            using (var dir = DirAccess.Open("res://Data/Tournaments/"))
+                foreach (var file in dir.GetFiles().Where(f => f.EndsWith(".json")))
+                {
+                    using var doc = JsonDocument.Parse(Godot.FileAccess.GetFileAsString("res://Data/Tournaments/" + file));
+                    if (doc.RootElement.TryGetProperty("MedalValue", out _)) explicitCount++;
+                }
+            foreach (var t in tournaments)
+                Check(expected.TryGetValue(t.Id, out int mv) && t.MedalValue == mv, $"medalhas: {t.Id} {t.Name} MedalValue {t.MedalValue}");
+            int total = CalendarSystem.MedalsTotal(tournaments);
+            Check(explicitCount == 12 && total == 20, $"medalhas: {explicitCount}/12 com MedalValue explícito, soma {total} (esperado 20)");
+            Info($"tabela: {explicitCount}/12 definidos, soma {total}: " + string.Join(", ", tournaments.Select(t => $"{t.Id}={t.MedalValue}")));
+
+            var results = new List<string>();
+            void Case(string name, bool ok, string detail)
+            {
+                Check(ok, $"medalhas: caso '{name}' falhou ({detail})");
+                results.Add($"{(ok ? "OK" : "FALHOU")} - {name}: {detail}");
+            }
+
+            int medalEvents = 0;
+            void OnMedal(TournamentData t, int n) => medalEvents++;
+            Gm.MedalWon += OnMedal;
+
+            try
+            {
+                var t1 = db.GetTournament(1); var t2 = db.GetTournament(2); var t3 = db.GetTournament(3);
+
+                // 1) sem vitórias = 0
+                ResetScratch(bits: 0, capacity: 1000);
+                SetDayIndex(9);
+                Case("sem vitórias", Gm.GetSeasonMedals().Earned == 0, $"medalhas {Gm.GetSeasonMedals().Earned}");
+
+                // 2) vencer o 3 = 1 (Desafio Champion abre no dia 10 = índice 9)
+                medalEvents = 0;
+                int preview = 0;
+                Gm.StartTournamentBattle(t3, StrongTeam(t3, strongPool));
+                if (Gm.IsBattleActive)
+                {
+                    preview = Gm.PreviewActiveTournamentMedal();
+                    await DriveArenaToEnd(300);
+                }
+                Case("vencer o 3", Gm.GetSeasonMedals().Earned == 1 && medalEvents == 1 && preview == 1,
+                    $"medalhas {Gm.GetSeasonMedals().Earned}, avisos de medalha {medalEvents}, prévia do resultado +{preview}");
+
+                // 3) vencer o 3 de novo na mesma edição: recusado, continua 1
+                SetDayIndex(12);
+                Gm.StartTournamentBattle(t3, StrongTeam(t3, strongPool));
+                bool secondStarted = Gm.IsBattleActive;
+                if (secondStarted) await DriveArenaToEnd(300);
+                Case("vencer o 3 duas vezes na mesma edição", !secondStarted && Gm.GetSeasonMedals().Earned == 1 && medalEvents == 1,
+                    $"2ª inscrição {(secondStarted ? "ACEITA" : "recusada")}, medalhas {Gm.GetSeasonMedals().Earned}");
+
+                // 4) virada de ano zera
+                SetDayIndex(60);
+                Case("virada de ano zera", Gm.GetSeasonMedals().Earned == 0, $"ano 2 dia 1: medalhas {Gm.GetSeasonMedals().Earned}");
+
+                // 5) no ano 2, vencer o 3 de novo dá 1
+                SetDayIndex(69);
+                medalEvents = 0;
+                await WinTournament(t3, strongPool, "Desafio Champion no ano 2");
+                Case("ano 2 vencer de novo", Gm.GetSeasonMedals().Earned == 1 && medalEvents == 1, $"medalhas {Gm.GetSeasonMedals().Earned}, avisos {medalEvents}");
+
+                // 6) vencer 1 e 2 não dá medalha
+                ResetScratch(bits: 0, capacity: 1000);
+                SetDayIndex(0);
+                medalEvents = 0;
+                await WinTournament(t1, strongPool, "Copa Novato");
+                await WinTournament(t2, strongPool, "Torneio Rookie");
+                Case("vencer 1 e 2", Gm.GetSeasonMedals().Earned == 0 && medalEvents == 0, $"medalhas {Gm.GetSeasonMedals().Earned}, avisos {medalEvents}");
+
+                // 7) soma máxima = 20 (todos vencidos na edição que começa no ano 1)
+                var allWon = tournaments.ToDictionary(t => t.Id, t => CalendarSystem.EditionId(cal, t, FirstDayIndex(t, open: true)));
+                int max = CalendarSystem.MedalsThisSeason(cal, tournaments, 59, allWon);
+                Case("soma máxima", max == 20, $"{max} de 20");
+
+                // extra: o 10 (Recurring) conta pela temporada, não pelo ciclo
+                var t10 = db.GetTournament(10);
+                var won10 = new Dictionary<int, int> { [10] = 1 }; // ciclo 1 = índices 20-24, ano 1
+                bool keeps = CalendarSystem.MedalsThisSeason(cal, new[] { t10 }, 45, won10) == 2;
+                bool resets = CalendarSystem.MedalsThisSeason(cal, new[] { t10 }, 60, won10) == 0;
+                Case("10 recorrente vale a temporada inteira", keeps && resets, $"no ciclo 2 {(keeps ? "mantém" : "PERDE")}, no ano 2 {(resets ? "zera" : "NÃO zera")}");
+
+                // extra: disponíveis
+                var none = new List<int>();
+                int avail0 = CalendarSystem.MedalsAvailable(cal, tournaments, 0, none, new Dictionary<int, int>());
+                int availLate = CalendarSystem.MedalsAvailable(cal, tournaments, 56, none, new Dictionary<int, int>());
+                int availUnlocked = CalendarSystem.MedalsAvailable(cal, tournaments, 0, new List<int> { 3, 8 }, new Dictionary<int, int>());
+                Case("disponíveis", avail0 == 12 && availLate == 3 && availUnlocked == 20,
+                    $"início sem vitórias {avail0} (10/11/12 travados), dia 57 {availLate} (só a Copa Mega), com 3 e 8 vencidos {availUnlocked}");
+
+                // 6) DEBUG_IGNORE_CALENDAR não dá medalha sozinho: Copa Ultimate fechada no dia 1
+                ResetScratch(bits: 0, capacity: 1000);
+                SetDayIndex(0);
+                medalEvents = 0;
+                var t6 = db.GetTournament(6);
+                Gm.IgnoreCalendar = true;
+                if (Gm.IgnoreCalendar)
+                {
+                    Gm.StartTournamentBattle(t6, StrongTeam(t6, strongPool));
+                    int debugPreview = Gm.IsBattleActive ? Gm.PreviewActiveTournamentMedal() : -1;
+                    if (Gm.IsBattleActive) await DriveArenaToEnd(300);
+                    Gm.IgnoreCalendar = false;
+                    Case("IgnoreCalendar não dá medalha", Gm.GetSeasonMedals().Earned == 0 && medalEvents == 0 && !Gm.Save.Center.LastWonEdition.ContainsKey(6) && debugPreview == 0,
+                        $"medalhas {Gm.GetSeasonMedals().Earned}, avisos {medalEvents}, edição registrada {Gm.Save.Center.LastWonEdition.ContainsKey(6)}, prévia {debugPreview}");
+                }
+                Gm.IgnoreCalendar = false;
+            }
+            finally
+            {
+                Gm.MedalWon -= OnMedal;
+                Gm.IgnoreCalendar = false;
+            }
+
+            foreach (var r in results)
+                Info(r);
+
+            // ---- save real (somente leitura): dia e contador que a HUD mostraria
+            string path = ProjectSettings.GlobalizePath("user://save.json");
+            if (System.IO.File.Exists(path))
+            {
+                var real = JsonSerializer.Deserialize<SaveData>(System.IO.File.ReadAllText(path));
+                int di = CalendarSystem.DayIndexFromCurrentDay(real.World.CurrentDay);
+                int earned = CalendarSystem.MedalsThisSeason(cal, tournaments, di, real.Center.LastWonEdition);
+                Info($"save real: dia {real.World.CurrentDay}, vencidos antes [{string.Join(",", real.Center.ClearedTournamentIds)}], LastWonEdition {real.Center.LastWonEdition.Count} entrada(s) -> HUD \"Medalhas: {earned}/{total}\", alcançáveis {CalendarSystem.MedalsAvailable(cal, tournaments, di, real.Center.ClearedTournamentIds, real.Center.LastWonEdition)}");
             }
         }
 

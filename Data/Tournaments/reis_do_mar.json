@@ -12,5 +12,6 @@
   "DurationDays": 3,
   "AnnounceDaysBefore": 5,
   "AllowedStages": [],
-  "AllowedAttributes": []
+  "AllowedAttributes": [],
+  "MedalValue": 2
 }

@@ -892,6 +892,57 @@ namespace ProjetoDC.Scripts.Managers
         // registra essa, mesmo que o dia vire durante a luta.
         private int _activeTournamentEdition;
 
+        // Se a luta em andamento valeria sem o DEBUG_IGNORE_CALENDAR (aberta, destravada, edição livre e
+        // time dentro da regra) - só assim a vitória registra a edição e pode dar medalha.
+        private bool _activeTournamentCountsForSeason;
+
+        /// <summary>Vitória que deu a medalha da temporada pela primeira vez: campeonato e pontos.</summary>
+        public event Action<TournamentData, int> MedalWon;
+
+        private bool CountsForSeason(TournamentData tournament, List<DigimonInstance> team)
+        {
+            if (!CalendarSystem.IsLoaded)
+                return true;
+
+            var real = CalendarSystem.GetAvailability(
+                CalendarSystem.Data, tournament, CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay),
+                Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition);
+
+            return real.CanStart && TournamentRules.ValidateTeam(tournament, team).IsValid;
+        }
+
+        /// <summary>Medalhas da temporada atual: conquistadas, ainda alcançáveis e o total possível.</summary>
+        public (int Earned, int Available, int Total) GetSeasonMedals()
+        {
+            var tournaments = DatabaseManager.Instance.GetAllTournaments().ToList();
+            int total = CalendarSystem.MedalsTotal(tournaments);
+
+            if (!CalendarSystem.IsLoaded)
+                return (0, 0, total);
+
+            int dayIndex = CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay);
+            return (
+                CalendarSystem.MedalsThisSeason(CalendarSystem.Data, tournaments, dayIndex, Save.Center.LastWonEdition),
+                CalendarSystem.MedalsAvailable(CalendarSystem.Data, tournaments, dayIndex, Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition),
+                total);
+        }
+
+        /// <summary>Prévia pra tela de resultado: pontos de medalha que a vitória no campeonato em andamento
+        /// vai dar (0 se não dá medalha, já tem nesta temporada ou a luta não conta - ver
+        /// _activeTournamentCountsForSeason). Chamar antes de ApplyTeamBattleReward.</summary>
+        public int PreviewActiveTournamentMedal()
+        {
+            if (ActiveTournament == null || ActiveTournament.MedalValue <= 0 || !_activeTournamentCountsForSeason || !CalendarSystem.IsLoaded)
+                return 0;
+
+            int dayIndex = CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay);
+            if (CalendarSystem.HasSeasonMedal(CalendarSystem.Data, ActiveTournament, dayIndex, Save.Center.LastWonEdition))
+                return 0;
+
+            var after = new Dictionary<int, int>(Save.Center.LastWonEdition) { [ActiveTournament.Id] = _activeTournamentEdition };
+            return CalendarSystem.HasSeasonMedal(CalendarSystem.Data, ActiveTournament, dayIndex, after) ? ActiveTournament.MedalValue : 0;
+        }
+
         /// <summary>Próximos campeonatos (CalendarSystem.GetUpcoming) pro dia atual e o estado do save - vazio
         /// com IgnoreCalendar (tudo liberado, nada a anunciar) ou sem calendário carregado.</summary>
         public List<UpcomingTournament> GetUpcomingTournaments()
@@ -1009,6 +1060,7 @@ namespace ProjetoDC.Scripts.Managers
 
             ActiveTournament = tournament;
             _activeTournamentEdition = availability.Edition;
+            _activeTournamentCountsForSeason = CountsForSeason(tournament, playerTeam);
             BattleFromExploration = false;
 
             LaunchBattle(playerTeam, enemyTeam);
@@ -1389,8 +1441,24 @@ namespace ProjetoDC.Scripts.Managers
             if (ActiveTournament == null)
                 return;
 
-            // Toda vitória fecha a edição atual (ver GetTournamentAvailability), não só a primeira.
-            Save.Center.LastWonEdition[ActiveTournament.Id] = _activeTournamentEdition;
+            // Toda vitória fecha a edição atual (ver GetTournamentAvailability), não só a primeira - e é daí
+            // que sai a medalha da temporada (CalendarSystem.HasSeasonMedal). Uma luta que só começou por
+            // causa do DEBUG_IGNORE_CALENDAR (fora da data, travada ou fora da regra) não registra edição,
+            // então não dá medalha sozinha.
+            if (_activeTournamentCountsForSeason)
+            {
+                int dayIndex = CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay);
+                bool hadMedal = CalendarSystem.IsLoaded &&
+                    CalendarSystem.HasSeasonMedal(CalendarSystem.Data, ActiveTournament, dayIndex, Save.Center.LastWonEdition);
+
+                Save.Center.LastWonEdition[ActiveTournament.Id] = _activeTournamentEdition;
+
+                if (!hadMedal && CalendarSystem.IsLoaded &&
+                    CalendarSystem.HasSeasonMedal(CalendarSystem.Data, ActiveTournament, dayIndex, Save.Center.LastWonEdition))
+                {
+                    MedalWon?.Invoke(ActiveTournament, ActiveTournament.MedalValue);
+                }
+            }
 
             if (Save.Center.ClearedTournamentIds.Contains(ActiveTournament.Id))
                 return;

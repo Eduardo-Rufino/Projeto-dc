@@ -16,5 +16,6 @@
   "UnlockAfterTournamentId": 3,
   "AnnounceDaysBefore": 5,
   "AllowedStages": ["Ultimate"],
-  "AllowedAttributes": []
+  "AllowedAttributes": [],
+  "MedalValue": 2
 }

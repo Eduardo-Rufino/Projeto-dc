@@ -59,6 +59,7 @@ public partial class Center : Node2D
     private TeamSelectionScreen _teamSelectionScreen;
     private BattleTypeScreen _battleTypeScreen;
     private TournamentListScreen _tournamentListScreen;
+    private MedalsScreen _medalsScreen;
 
     // Pra qual tela o botão Voltar da TeamSelectionScreen deve retornar - varia conforme
     // ela foi aberta pela Batalha Livre (BattleTypeScreen) ou por um campeonato específico
@@ -172,12 +173,16 @@ public partial class Center : Node2D
 
         _battleTypeScreen.FreeBattleSelected += OnFreeBattleSelected;
         _battleTypeScreen.TournamentSelected += OnTournamentMenuSelected;
+        _battleTypeScreen.MedalsSelected += OnMedalsMenuSelected;
         _battleTypeScreen.BackPressed += OnBattleTypeBackPressed;
 
         _tournamentListScreen = GetNode<TournamentListScreen>("CanvasLayer/TournamentListScreen");
 
         _tournamentListScreen.BackPressed += OnTournamentListBackPressed;
         _tournamentListScreen.TournamentSelected += OnTournamentSelected;
+
+        _medalsScreen = GetNode<MedalsScreen>("CanvasLayer/MedalsScreen");
+        _medalsScreen.BackPressed += OnMedalsBackPressed;
 
         _evolutionCapacityScreen = GetNode<EvolutionCapacityScreen>("CanvasLayer/EvolutionCapacityScreen");
         _evolutionOverlay = GetNode<EvolutionOverlay>("CanvasLayer/EvolutionOverlay");
@@ -1407,6 +1412,22 @@ public partial class Center : Node2D
         _tournamentListScreen.Visible = true;
     }
 
+    private void OnMedalsMenuSelected()
+    {
+        _battleTypeScreen.Visible = false;
+
+        _medalsScreen.RefreshUI();
+
+        _medalsScreen.Visible = true;
+    }
+
+    private void OnMedalsBackPressed()
+    {
+        _medalsScreen.Visible = false;
+
+        _battleTypeScreen.Visible = true;
+    }
+
     private void OnTournamentListBackPressed()
     {
         _tournamentListScreen.Visible = false;
@@ -1541,6 +1562,7 @@ public partial class Center : Node2D
             || (_inventoryScreen?.Visible ?? false)
             || (_battleTypeScreen?.Visible ?? false)
             || (_tournamentListScreen?.Visible ?? false)
+            || (_medalsScreen?.Visible ?? false)
             || (_tutorialScreen?.Visible ?? false)
             || (_patchNotesScreen?.Visible ?? false)
             || (_evolutionGuideScreen?.Visible ?? false)

@@ -14,5 +14,6 @@
   "EndDayOfYear": 25,
   "AnnounceDaysBefore": 5,
   "AllowedStages": ["Champion"],
-  "AllowedAttributes": []
+  "AllowedAttributes": [],
+  "MedalValue": 1
 }

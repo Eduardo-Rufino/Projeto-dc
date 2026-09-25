@@ -1,4 +1,5 @@
 using Godot;
+using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Systems.Battle;
 using System;
@@ -50,6 +51,12 @@ namespace ProjetoDC.Scripts.UI
                           (reward.BonusBitsGained > 0 ? $" | +{reward.BonusBitsGained} Bits de bônus!" : "") +
                           (reward.DropDescriptions.Count > 0 ? $" | Itens: {string.Join(", ", reward.DropDescriptions)}" : "")
                         : "Parabéns!";
+
+                    // Medalha da temporada (só se essa vitória é a que dá a medalha - ver
+                    // GameManager.PreviewActiveTournamentMedal; a vitória é aplicada depois, no OK).
+                    int medal = GameManager.Instance?.PreviewActiveTournamentMedal() ?? 0;
+                    if (medal > 0)
+                        _rewardLabel.Text += $"\nMedalha conquistada: {GameManager.Instance.ActiveTournament.Name} (+{medal})";
                     break;
 
                 case BattleResult.EnemyWon:
