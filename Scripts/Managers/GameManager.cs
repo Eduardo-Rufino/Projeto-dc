@@ -15,6 +15,7 @@ using ProjetoDC.Scripts.Systems.Jogress;
 using ProjetoDC.Scripts.Systems.Passives;
 using ProjetoDC.Scripts.Systems.Results;
 using ProjetoDC.Scripts.Systems.Save;
+using ProjetoDC.Scripts.Systems.Tournaments;
 using ProjetoDC.Scripts.Systems.Training;
 using ProjetoDC.Scripts.UI;
 using System;
@@ -875,8 +876,9 @@ namespace ProjetoDC.Scripts.Managers
         }
 
         /// <summary>
-        /// Debug: libera todos os campeonatos, ignorando data, trava e edição (ver
-        /// GetTournamentAvailability). Só funciona em build de debug; liga com DEBUG_IGNORE_CALENDAR=1.
+        /// Debug: libera todos os campeonatos, ignorando data, trava, edição (ver
+        /// GetTournamentAvailability) e regras de inscrição (ver ValidateTournamentTeam). Só funciona em
+        /// build de debug; liga com DEBUG_IGNORE_CALENDAR=1.
         /// </summary>
         public bool IgnoreCalendar
         {
@@ -889,6 +891,16 @@ namespace ProjetoDC.Scripts.Managers
         // Edição (CalendarSystem.EditionId) do campeonato em andamento, fixada ao iniciar - a vitória
         // registra essa, mesmo que o dia vire durante a luta.
         private int _activeTournamentEdition;
+
+        /// <summary>Regras de inscrição do campeonato (TournamentRules) aplicadas ao time - com
+        /// IgnoreCalendar ligado, todo time é válido. Usado por StartTournamentBattle e pela
+        /// TeamSelectionScreen.</summary>
+        public TeamValidation ValidateTournamentTeam(TournamentData tournament, IEnumerable<DigimonInstance> team) =>
+            IgnoreCalendar ? new TeamValidation() : TournamentRules.ValidateTeam(tournament, team);
+
+        /// <summary>Motivo de o Digimon não poder entrar no campeonato, ou null (sempre null com IgnoreCalendar).</summary>
+        public string GetTournamentIneligibilityReason(TournamentData tournament, DigimonInstance digimon) =>
+            IgnoreCalendar ? null : TournamentRules.GetIneligibilityReason(tournament, digimon.BaseData);
 
         /// <summary>
         /// Se o campeonato pode ser iniciado hoje (aberto, destravado e não vencido nesta edição) e,
@@ -937,6 +949,15 @@ namespace ProjetoDC.Scripts.Managers
             if (playerTeam == null || playerTeam.Count != tournament.Opponents.Count)
             {
                 GD.PrintErr($"StartTournamentBattle exige {tournament.Opponents.Count} Digimon(s) pra '{tournament.Name}'.");
+                return;
+            }
+
+            var validation = ValidateTournamentTeam(tournament, playerTeam);
+
+            if (!validation.IsValid)
+            {
+                GD.PrintErr($"StartTournamentBattle: time fora das regras de '{tournament.Name}': " +
+                    string.Join("; ", validation.Invalid.Select(i => $"{i.Digimon.DisplayName} ({i.Reason})")));
                 return;
             }
 

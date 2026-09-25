@@ -12,5 +12,7 @@
   "ScheduleType": "Window",
   "StartDayOfYear": 20,
   "EndDayOfYear": 35,
-  "AnnounceDaysBefore": 5
+  "AnnounceDaysBefore": 5,
+  "AllowedStages": [],
+  "AllowedAttributes": []
 }

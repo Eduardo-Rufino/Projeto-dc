@@ -14,5 +14,7 @@
   "OffsetDays": 0,
   "DurationDays": 5,
   "UnlockAfterTournamentId": 3,
-  "AnnounceDaysBefore": 5
+  "AnnounceDaysBefore": 5,
+  "AllowedStages": ["Ultimate"],
+  "AllowedAttributes": []
 }

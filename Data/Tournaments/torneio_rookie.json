@@ -13,5 +13,7 @@
   "IntervalDays": 10,
   "OffsetDays": 0,
   "DurationDays": 4,
-  "AnnounceDaysBefore": 5
+  "AnnounceDaysBefore": 5,
+  "AllowedStages": ["Rookie"],
+  "AllowedAttributes": []
 }

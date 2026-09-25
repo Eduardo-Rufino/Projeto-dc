@@ -2,8 +2,10 @@ using Godot;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.Systems.Tournaments;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjetoDC.Scripts.UI
 {
@@ -101,6 +103,18 @@ namespace ProjetoDC.Scripts.UI
                 _warningLabel.Visible = false;
             }
 
+            // Campeonato com regra de inscrição (TournamentRules): quem não cumpre fica desabilitado.
+            if (_pendingTournament != null && TournamentRules.HasRules(_pendingTournament) && roster.Count >= RequiredTeamSize)
+            {
+                int eligible = roster.Count(d => Game.GetTournamentIneligibilityReason(_pendingTournament, d) == null);
+
+                if (eligible < RequiredTeamSize)
+                {
+                    _warningLabel.Visible = true;
+                    _warningLabel.Text = $"{TournamentRules.Describe(_pendingTournament)}: você tem {eligible} Digimon(s) elegível(is), precisa de {RequiredTeamSize}.";
+                }
+            }
+
             foreach (var digimon in roster)
             {
                 var card = _cardScene.Instantiate<DigimonSelectCard>();
@@ -109,6 +123,13 @@ namespace ProjetoDC.Scripts.UI
 
                 card.SetDigimon(digimon);
                 card.ToggledSelection += OnCardToggled;
+
+                string reason = _pendingTournament != null
+                    ? Game.GetTournamentIneligibilityReason(_pendingTournament, digimon)
+                    : null;
+
+                if (reason != null)
+                    card.SetBlockedReason(reason);
 
                 _cards.Add(card);
             }
@@ -138,6 +159,10 @@ namespace ProjetoDC.Scripts.UI
             UpdateSelectionState();
         }
 
+        // Os cards fora da regra já vêm desabilitados, mas confere de novo antes de liberar o botão.
+        private bool IsValidTeam() => IsValidTeamSize(_selected.Count) &&
+            (_pendingTournament == null || Game.ValidateTournamentTeam(_pendingTournament, _selected).IsValid);
+
         private bool IsValidTeamSize(int count) => _pendingTournament != null
             ? count == RequiredTeamSize
             : count == SoloTeamSize || count == FullTeamSize;
@@ -159,12 +184,12 @@ namespace ProjetoDC.Scripts.UI
                 };
             }
 
-            _battleButton.Disabled = !IsValidTeamSize(_selected.Count);
+            _battleButton.Disabled = !IsValidTeam();
         }
 
         private void OnBattlePressed()
         {
-            if (!IsValidTeamSize(_selected.Count))
+            if (!IsValidTeam())
                 return;
 
             if (_pendingTournament != null)

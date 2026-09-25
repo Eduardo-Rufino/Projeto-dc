@@ -12,5 +12,7 @@
   "ScheduleType": "Fixed",
   "StartDayOfYear": 30,
   "DurationDays": 3,
-  "AnnounceDaysBefore": 5
+  "AnnounceDaysBefore": 5,
+  "AllowedStages": ["Ultimate"],
+  "AllowedAttributes": []
 }

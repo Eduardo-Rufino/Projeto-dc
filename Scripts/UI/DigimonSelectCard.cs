@@ -44,5 +44,28 @@ namespace ProjetoDC.Scripts.UI
             if (ResourceLoader.Exists(path))
                 _portrait.Texture = GD.Load<Texture2D>(path);
         }
+
+        /// <summary>Marca o card como fora da regra do campeonato: desabilitado (estilo "disabled" da cena),
+        /// esmaecido e com "🔒 Bloqueado" + o motivo embaixo (ex.: "Estágio Champion não permitido").</summary>
+        public void SetBlockedReason(string reason)
+        {
+            Disabled = true;
+            Modulate = new Color(1f, 1f, 1f, 0.75f);
+            TooltipText = reason;
+
+            var label = new Label
+            {
+                Text = $"🔒 Bloqueado\n{reason}",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                AutowrapMode = TextServer.AutowrapMode.WordSmart,
+                MouseFilter = MouseFilterEnum.Ignore,
+            };
+            label.AddThemeFontSizeOverride("font_size", 10);
+            label.AddThemeColorOverride("font_color", new Color(1f, 0.6f, 0.4f));
+            _roleLabel.AddSibling(label);
+
+            // Button não cresce com os filhos: abre espaço pro indicador + motivo (até 3 linhas) dentro da borda.
+            CustomMinimumSize = new Vector2(CustomMinimumSize.X, CustomMinimumSize.Y + 50);
+        }
     }
 }

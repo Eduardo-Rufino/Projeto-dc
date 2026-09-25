@@ -3,6 +3,7 @@ using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Systems.Calendar;
+using ProjetoDC.Scripts.Systems.Tournaments;
 using System;
 using System.Linq;
 
@@ -19,6 +20,7 @@ namespace ProjetoDC.Scripts.UI
         private Label _rewardLabel;
         private Button _challengeButton;
         private Label _availabilityLabel;
+        private Label _rulesLabel;
 
         private TournamentData _tournament;
 
@@ -40,6 +42,12 @@ namespace ProjetoDC.Scripts.UI
             _availabilityLabel.AddThemeFontSizeOverride("font_size", 11);
             var levelLabel = GetNode<Label>("Pad/VBoxContainer/LevelLabel");
             levelLabel.AddSibling(_availabilityLabel);
+
+            // Regras de inscrição ("Só Rookie", "Só Vírus"), logo abaixo do nível recomendado.
+            _rulesLabel = new Label();
+            _rulesLabel.AddThemeFontSizeOverride("font_size", 11);
+            _rulesLabel.AddThemeColorOverride("font_color", new Color(1f, 0.86f, 0.31f));
+            levelLabel.AddSibling(_rulesLabel);
         }
 
         public void SetTournament(TournamentData tournament, bool cleared, TournamentAvailability availability)
@@ -56,6 +64,7 @@ namespace ProjetoDC.Scripts.UI
             _nameLabel.Text = cleared ? $"{tournament.Name} ✓" : tournament.Name;
             _formatLabel.Text = tournament.Opponents.Count == 1 ? "1x1" : "3x3";
             _levelLabel.Text = $"Nível recomendado: {tournament.RecommendedLevel}";
+            _rulesLabel.Text = TournamentRules.Describe(tournament);
 
             var opponentNames = tournament.Opponents.Select(o =>
             {

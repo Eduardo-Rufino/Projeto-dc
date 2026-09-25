@@ -12,6 +12,7 @@ using ProjetoDC.Scripts.Systems.Center;
 using ProjetoDC.Scripts.Systems.Eggs;
 using ProjetoDC.Scripts.Systems.Passives;
 using ProjetoDC.Scripts.Systems.Results;
+using ProjetoDC.Scripts.Systems.Tournaments;
 using ProjetoDC.Scripts.World;
 using System;
 using System.Collections.Generic;
@@ -116,6 +117,8 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 ("suddendeath", SuddenDeath),
                 ("lifespan", Lifespan),
                 ("calendar", Calendar),
+                ("rules", TournamentRulesSection),
+                ("winrate", TournamentWinRate),
             };
 
             // A bateria testa a regra de elegibilidade de campeonatos de verdade (DEBUG_IGNORE_CALENDAR fora).
@@ -1518,11 +1521,28 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
         private List<DigimonInstance> StrongTeam(TournamentData t, List<DigimonData> strongPool)
         {
+            var pool = RulePool(t, strongPool);
             var team = new List<DigimonInstance>();
             for (int i = 0; i < t.Opponents.Count; i++)
-                team.Add(MakeDigimon(strongPool[i % strongPool.Count], 100, addToCenter: true));
+                team.Add(MakeDigimon(pool[i % pool.Count], 100, addToCenter: true));
             return team;
         }
+
+        // Espécies mais fortes que cumprem a regra de inscrição do campeonato (TournamentRules): Mega se
+        // houver, senão o maior estágio permitido. Sem regra, o mesmo strongPool de antes.
+        private static List<DigimonData> RulePool(TournamentData t, List<DigimonData> strongPool)
+        {
+            if (!TournamentRules.HasRules(t))
+                return strongPool;
+
+            var eligible = AllSpecies().Where(sp => TournamentRules.IsEligible(t, sp)).ToList();
+            var stage = eligible.Any(sp => sp.Stage == DigimonStage.Mega) ? DigimonStage.Mega : eligible.Max(sp => sp.Stage);
+            return eligible.Where(sp => sp.Stage == stage)
+                .OrderByDescending(sp => Math.Max(sp.BaseStats.PhysicalDamage, sp.BaseStats.SpecialDamage) + sp.BaseStats.Speed)
+                .Take(6).ToList();
+        }
+
+        private int _rulesInvalidRefused, _rulesValidAccepted, _rulesTournaments, _noRulesAccepted;
 
         private async Task<BattleResult?> WinTournament(TournamentData t, List<DigimonData> strongPool, string what)
         {
@@ -1608,6 +1628,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
             Gm.StartTournamentBattle(t10, StrongTeam(t10, strongPool));
             Check(!Gm.IsBattleActive, "elegibilidade: Trio Guardião 02 iniciou travado");
             await WinTournament(t3, strongPool, "Desafio Champion (destrava o 10)");
+            // Só Ultimate: um time Ultimate nível 100 destrava e vence
             await WinTournament(t10, strongPool, "Trio Guardião 02 depois de vencer o 3");
 
             // virada de ano: agenda de teste (cópia da Copa Novato) aberta nos dias 59, 60 e 1
@@ -1684,9 +1705,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
                 ResetScratch(bits: 0, capacity: 1000);
                 var c = Gm.Save.Center;
-                var team = new List<DigimonInstance>();
-                for (int i = 0; i < t.Opponents.Count; i++)
-                    team.Add(MakeDigimon(strongPool[i % strongPool.Count], 100, addToCenter: true));
+                var team = StrongTeam(t, strongPool);
 
                 int cap = c.CapacityLimit;
                 string n = $"campeonato {t.Id} {t.Name}";
@@ -1710,9 +1729,27 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 if (refusedClosed) _tournamentRefusedClosed++;
 
                 SetDayIndex(FirstDayIndex(t, open: true));
+
+                // regra de inscrição: o mesmo time com 1 Digimon fora da regra é recusado
+                if (TournamentRules.HasRules(t))
+                {
+                    _rulesTournaments++;
+                    var outsider = AllSpecies().First(sp => !TournamentRules.IsEligible(t, sp));
+                    var invalidTeam = new List<DigimonInstance>(team);
+                    invalidTeam[0] = MakeDigimon(outsider, 100, addToCenter: true);
+                    Gm.StartTournamentBattle(t, invalidTeam);
+                    Check(!Gm.IsBattleActive, $"{n}: iniciou com {outsider.Name} ({outsider.Stage}/{outsider.Attribute}) fora da regra {TournamentRules.Describe(t)}");
+                    if (!Gm.IsBattleActive) _rulesInvalidRefused++;
+                }
+
+                Check(TournamentRules.ValidateTeam(t, team).IsValid, $"{n}: o time de teste não cumpre {TournamentRules.Describe(t)}");
                 Gm.StartTournamentBattle(t, team);
                 Check(Gm.IsBattleActive, $"{n}: não iniciou aberto e destravado (dia {Gm.Save.World.CurrentDay})");
-                if (Gm.IsBattleActive) _tournamentAcceptedOpen++;
+                if (Gm.IsBattleActive)
+                {
+                    _tournamentAcceptedOpen++;
+                    if (TournamentRules.HasRules(t)) _rulesValidAccepted++; else _noRulesAccepted++;
+                }
 
                 var result = await DriveArenaToEnd(300);
                 bool stalledT = _lastTimedOut;
@@ -1732,13 +1769,16 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 }
                 else if (result.HasValue)
                 {
-                    Warn($"{n}: um time nível 100 de {strongData.Name} perdeu ({result}) - campeonato muito forte ou bug");
+                    Warn($"{n}: um time nível 100 de {string.Join("/", team.Select(d => d.BaseData.Name))} ({TournamentRules.Describe(t)}) perdeu ({result}) - campeonato muito forte ou bug");
                     Check(!c.ClearedTournamentIds.Contains(t.Id), $"{n}: derrota marcou como concluído");
                 }
             }
 
             if (string.IsNullOrEmpty(onlyT))
+            {
                 Info($"campeonatos: recusados fechados {_tournamentRefusedClosed}/12, aceitos abertos e destravados {_tournamentAcceptedOpen}/12");
+                Info($"regras: com regra {_rulesTournaments} - time válido aceito {_rulesValidAccepted}/{_rulesTournaments}, time com 1 inválido recusado {_rulesInvalidRefused}/{_rulesTournaments}; sem regra aceitos {_noRulesAccepted}/{12 - _rulesTournaments}");
+            }
 
             if (!string.IsNullOrEmpty(onlyT))
                 return;
@@ -2405,6 +2445,180 @@ namespace ProjetoDC.Scripts.Systems.Audit
                     for (int i = 0; i < year; i++)
                         GD.Print($"[AUDIT-AGENDA-INICIO] {i + 1}|{string.Join(",", pool.Where(t => CalendarSystem.IsOpen(cal, t, i)).Select(t => t.Id))}");
             }
+        }
+
+        // Só medição (não entra no audit normal - liga com DEBUG_AUDIT_WINRATE=1): taxa de vitória de times de
+        // 3 Ultimate sorteados (semente fixa) no Trio Guardião 02, em 50 batalhas por nível. Não ajusta nada.
+        private async Task TournamentWinRate()
+        {
+            if (OS.GetEnvironment("DEBUG_AUDIT_WINRATE") != "1")
+            {
+                Info("pulada (DEBUG_AUDIT_WINRATE=1 pra rodar)");
+                return;
+            }
+
+            var t10 = Db.GetTournament(10);
+            var ultimates = AllSpecies().Where(sp => sp.Stage == DigimonStage.Ultimate).ToList();
+            const int battles = 50;
+
+            foreach (int level in new[] { 22, 30 })
+            {
+                var rng = new Random(2026 + level);
+                int won = 0, lost = 0, stalled = 0;
+                var lostTeams = new List<string>();
+
+                for (int b = 0; b < battles; b++)
+                {
+                    ResetScratch(bits: 0, capacity: 1000);
+                    Gm.Save.Center.ClearedTournamentIds.Add(t10.UnlockAfterTournamentId);
+                    SetDayIndex(FirstDayIndex(t10, open: true));
+
+                    var team = Enumerable.Range(0, 3).Select(_ => MakeDigimon(ultimates[rng.Next(ultimates.Count)], level, addToCenter: true)).ToList();
+                    Gm.StartTournamentBattle(t10, team);
+                    Check(Gm.IsBattleActive, $"winrate: batalha {b} (nível {level}) não iniciou");
+                    if (!Gm.IsBattleActive)
+                        continue;
+
+                    var result = await DriveArenaToEnd(300);
+                    if (_lastTimedOut) stalled++;
+                    else if (result == BattleResult.PlayerWon) won++;
+                    else
+                    {
+                        lost++;
+                        lostTeams.Add(string.Join("/", team.Select(d => d.BaseData.Name)));
+                    }
+                }
+
+                Info($"Trio Guardião 02, 3 Ultimate nível {level}: {won}/{battles} vitórias ({won * 100 / battles}%), {lost} derrotas, {stalled} impasses");
+                GD.Print($"[AUDIT-WINRATE] nivel={level} vitorias={won} derrotas={lost} impasses={stalled} times_que_perderam={string.Join("; ", lostTeams.Take(10))}");
+            }
+        }
+
+        // Regras de inscrição (TournamentRules): dado explícito nos 12 JSONs, funções puras e o relatório de
+        // elegibilidade do save real (somente leitura).
+        private Task TournamentRulesSection()
+        {
+            var tournaments = Db.GetAllTournaments().ToList();
+
+            // 12/12 com os dois campos escritos no JSON (lista vazia = "sem restrição" explícito)
+            int explicitCount = 0;
+            using (var dir = DirAccess.Open("res://Data/Tournaments/"))
+            {
+                foreach (var file in dir.GetFiles().Where(f => f.EndsWith(".json")))
+                {
+                    using var doc = JsonDocument.Parse(Godot.FileAccess.GetFileAsString("res://Data/Tournaments/" + file));
+                    bool has = doc.RootElement.TryGetProperty("AllowedStages", out _) && doc.RootElement.TryGetProperty("AllowedAttributes", out _);
+                    Check(has, $"regras: {file} sem AllowedStages/AllowedAttributes explícitos");
+                    if (has) explicitCount++;
+                }
+            }
+            Info($"{explicitCount}/{tournaments.Count} campeonatos com regra explícita no JSON");
+
+            var byRule = tournaments.GroupBy(t => t.AllowedStages.Count > 0 ? "estágio" : t.AllowedAttributes.Count > 0 ? "atributo" : "sem restrição");
+            Info("contagem por tipo de regra: " + string.Join(", ", byRule.Select(g => $"{g.Key}={g.Count()} ({string.Join(",", g.Select(t => t.Id))})")));
+            foreach (var t in tournaments)
+                Info($"  {t.Id} {t.Name}: {TournamentRules.Describe(t)}");
+
+            // tabela da fase 4
+            var expected = new Dictionary<int, string>
+            {
+                [1] = "Só Rookie", [2] = "Só Rookie", [3] = "Só Champion", [4] = "Só Vírus", [5] = "Sem restrição",
+                [6] = "Só Ultimate", [7] = "Sem restrição", [8] = "Só Mega", [9] = "Só Vacina", [10] = "Só Ultimate",
+                [11] = "Sem restrição", [12] = "Só Mega",
+            };
+            foreach (var t in tournaments)
+                Check(expected.TryGetValue(t.Id, out var e) && TournamentRules.Describe(t) == e, $"regras: {t.Id} {t.Name} = {TournamentRules.Describe(t)}, esperado {(expected.TryGetValue(t.Id, out var e2) ? e2 : "?")}");
+
+            // funções puras
+            var rookieOnly = new TournamentData { AllowedStages = { DigimonStage.Rookie } };
+            var virusOnly = new TournamentData { AllowedAttributes = { DigimonAttribute.Virus } };
+            var both = new TournamentData { AllowedStages = { DigimonStage.Champion }, AllowedAttributes = { DigimonAttribute.Data } };
+            var species = AllSpecies();
+            var rookie = species.First(sp => sp.Stage == DigimonStage.Rookie);
+            var champion = species.First(sp => sp.Stage == DigimonStage.Champion && sp.Attribute == DigimonAttribute.Vacine);
+            var virus = species.First(sp => sp.Attribute == DigimonAttribute.Virus);
+            var data = species.First(sp => sp.Attribute == DigimonAttribute.Data && sp.Stage == DigimonStage.Champion);
+            Check(TournamentRules.GetIneligibilityReason(rookieOnly, rookie) == null, "regras: Rookie recusado num Só Rookie");
+            Check(TournamentRules.GetIneligibilityReason(rookieOnly, champion) == "Estágio Champion não permitido", $"regras: motivo errado pra Champion num Só Rookie: {TournamentRules.GetIneligibilityReason(rookieOnly, champion)}");
+            Check(TournamentRules.GetIneligibilityReason(virusOnly, virus) == null, "regras: Vírus recusado num Só Vírus");
+            Check(TournamentRules.GetIneligibilityReason(virusOnly, champion) == "Atributo Vacina não permitido", $"regras: motivo errado pra Vacina num Só Vírus: {TournamentRules.GetIneligibilityReason(virusOnly, champion)}");
+            Check(TournamentRules.IsEligible(both, data) && !TournamentRules.IsEligible(both, champion), "regras: estágio + atributo combinados");
+            var mixed = new List<DigimonInstance> { MakeDigimon(rookie), MakeDigimon(champion), MakeDigimon(virus) };
+            var v = TournamentRules.ValidateTeam(rookieOnly, mixed);
+            Check(!v.IsValid && v.Invalid.All(i => i.Digimon.BaseData.Stage != DigimonStage.Rookie) && v.Invalid.Count == mixed.Count(d => d.BaseData.Stage != DigimonStage.Rookie),
+                "regras: ValidateTeam não apontou exatamente os Digimon fora da regra");
+            Check(TournamentRules.ValidateTeam(new TournamentData(), mixed).IsValid, "regras: campeonato sem regra recusou um time misto");
+
+            // "Só Mega" aceita MegaPlus (Omegamon, Examon); outras regras de estágio não
+            var megaPlus = species.Where(sp => sp.Stage == DigimonStage.MegaPlus).ToList();
+            Check(megaPlus.Count > 0, "regras: nenhuma espécie MegaPlus pra testar");
+            var megaOnly = tournaments.First(t => t.Id == 8);
+            var ultimateOnly = tournaments.First(t => t.Id == 6);
+            int megaPlusAccepted = 0, megaPlusCases = 0;
+            foreach (var mp in species.Where(sp => sp.Name is "Omegamon" or "Examon"))
+            {
+                foreach (var t in tournaments.Where(t => t.Id is 8 or 12))
+                {
+                    megaPlusCases++;
+                    bool ok = TournamentRules.IsEligible(t, mp) && TournamentRules.ValidateTeam(t, new[] { MakeDigimon(mp) }).IsValid;
+                    Check(ok, $"regras: {mp.Name} ({mp.Stage}) recusado no {t.Id} {t.Name}");
+                    if (ok) megaPlusAccepted++;
+                }
+                foreach (var t in tournaments.Where(t => t.AllowedStages.Count > 0 && !t.AllowedStages.Contains(DigimonStage.Mega)))
+                    Check(!TournamentRules.IsEligible(t, mp), $"regras: {mp.Name} aceito no {t.Id} {t.Name} ({TournamentRules.Describe(t)})");
+            }
+            Check(megaPlusCases == 4, $"regras: {megaPlusCases} casos Omegamon/Examon x 8/12, esperado 4");
+            Info($"Omegamon/Examon aceitos em 8 e 12: {megaPlusAccepted}/{megaPlusCases}; recusados em {TournamentRules.Describe(ultimateOnly)} (6 e 10)");
+            foreach (var mp in megaPlus)
+                Check(TournamentRules.IsEligible(megaOnly, mp), $"regras: {mp.Name} (MegaPlus) recusado num Só Mega");
+
+            // DEBUG_IGNORE_CALENDAR também ignora as regras de inscrição
+            var rookieTeam = new List<DigimonInstance> { MakeDigimon(rookie), MakeDigimon(rookie), MakeDigimon(rookie) };
+            Check(!Gm.ValidateTournamentTeam(megaOnly, rookieTeam).IsValid, "regras: time de Rookies aceito na Copa Mega sem IgnoreCalendar");
+            Gm.IgnoreCalendar = true;
+            if (Gm.IgnoreCalendar)
+            {
+                Check(Gm.ValidateTournamentTeam(megaOnly, rookieTeam).IsValid, "regras: IgnoreCalendar não ignorou a regra Só Mega");
+                Check(Gm.GetTournamentIneligibilityReason(megaOnly, rookieTeam[0]) == null, "regras: IgnoreCalendar ainda mostra motivo de bloqueio");
+                Check(Gm.GetTournamentAvailability(megaOnly).CanStart, "regras: IgnoreCalendar não liberou a data/trava");
+                Info("IgnoreCalendar: regras, data e trava ignoradas");
+            }
+            else
+            {
+                Warn("regras: IgnoreCalendar não liga fora de build de debug - teste pulado");
+            }
+            Gm.IgnoreCalendar = false;
+
+            // sem regra: qualquer time é válido (100 times aleatórios)
+            var free = tournaments.Where(t => !TournamentRules.HasRules(t)).ToList();
+            int randomOk = 0;
+            for (int k = 0; k < 100; k++)
+            {
+                var team = Enumerable.Range(0, 3).Select(_ => MakeDigimon(species[_rng.Next(species.Count)])).ToList();
+                if (free.All(t => TournamentRules.ValidateTeam(t, team).IsValid)) randomOk++;
+            }
+            Check(randomOk == 100, $"regras: campeonato sem regra recusou {100 - randomOk} de 100 times aleatórios");
+
+            // save real (somente leitura): quantos Digimon do Center são elegíveis por campeonato
+            string path = ProjectSettings.GlobalizePath("user://save.json");
+            if (System.IO.File.Exists(path))
+            {
+                var real = JsonSerializer.Deserialize<SaveData>(System.IO.File.ReadAllText(path));
+                var roster = real.Center.Digimons;
+                Info($"save real: dia {real.World.CurrentDay}, {roster.Count} Digimon no Center: " +
+                    string.Join(", ", roster.Select(d => $"{d.BaseData.Name} ({d.BaseData.Stage}/{TournamentRules.AttributeName(d.BaseData.Attribute)})")));
+                var cannot = new List<string>();
+                foreach (var t in tournaments)
+                {
+                    int eligible = roster.Count(d => TournamentRules.IsEligible(t, d.BaseData));
+                    int need = t.Opponents.Count;
+                    Info($"  {t.Id} {t.Name} ({TournamentRules.Describe(t)}, {need}x{need}): {eligible} de {roster.Count} elegíveis{(eligible < need ? " - NÃO monta" : "")}");
+                    if (eligible < need) cannot.Add($"{t.Id} {t.Name}");
+                }
+                Info($"save real: não montam hoje: {(cannot.Count == 0 ? "nenhum" : string.Join(", ", cannot))}");
+            }
+
+            return Task.CompletedTask;
         }
 
         private Task Lifespan()

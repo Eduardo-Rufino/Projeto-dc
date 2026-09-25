@@ -58,5 +58,14 @@ namespace ProjetoDC.Scripts.Data
 
         /// <summary>Quantos dias antes da abertura o campeonato é anunciado.</summary>
         public int AnnounceDaysBefore { get; set; }
+
+        // ---- Regras de inscrição (ver TournamentRules). Lista vazia = sem restrição naquele critério;
+        // sem os campos no JSON o campeonato aceita qualquer Digimon, como antes.
+
+        /// <summary>Estágios que podem entrar (ex.: só Rookie).</summary>
+        public List<DigimonStage> AllowedStages { get; set; } = new();
+
+        /// <summary>Atributos que podem entrar (ex.: só Virus).</summary>
+        public List<DigimonAttribute> AllowedAttributes { get; set; } = new();
     }
 }

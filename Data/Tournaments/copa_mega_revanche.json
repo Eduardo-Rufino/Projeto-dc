@@ -13,5 +13,7 @@
   "StartDayOfYear": 58,
   "DurationDays": 3,
   "UnlockAfterTournamentId": 8,
-  "AnnounceDaysBefore": 5
+  "AnnounceDaysBefore": 5,
+  "AllowedStages": ["Mega"],
+  "AllowedAttributes": []
 }

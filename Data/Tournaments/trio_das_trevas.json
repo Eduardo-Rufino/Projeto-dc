@@ -12,5 +12,7 @@
   "ScheduleType": "Fixed",
   "StartDayOfYear": 40,
   "DurationDays": 3,
-  "AnnounceDaysBefore": 5
+  "AnnounceDaysBefore": 5,
+  "AllowedStages": [],
+  "AllowedAttributes": ["Virus"]
 }

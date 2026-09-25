@@ -12,5 +12,7 @@
   "ScheduleType": "Fixed",
   "StartDayOfYear": 15,
   "DurationDays": 3,
-  "AnnounceDaysBefore": 5
+  "AnnounceDaysBefore": 5,
+  "AllowedStages": [],
+  "AllowedAttributes": ["Vacine"]
 }
