@@ -8,8 +8,8 @@
     "requiredStats": {
       "healthPoints": 150,
       "physicalDamage": 61,
-      "physicalDefense": 0,
-      "specialDamage": 61,
+      "physicalDefense": 55,
+      "specialDamage": 0,
       "specialDefense": 0,
       "speed": 24
     }
@@ -24,10 +24,11 @@
       "healthPoints": 151,
       "physicalDamage": 70,
       "physicalDefense": 37,
-      "specialDamage": 55,
+      "specialDamage": 0,
       "specialDefense": 0,
-      "speed": 0
-    }
+      "speed": 45
+    },
+    "maxDiscipline": 45
   },
   {
     "fromDigimonId": 1,
@@ -39,9 +40,9 @@
       "healthPoints": 152,
       "physicalDamage": 59,
       "physicalDefense": 38,
-      "specialDamage": 70,
+      "specialDamage": 58,
       "specialDefense": 0,
-      "speed": 0
+      "speed": 40
     }
   }
 ]

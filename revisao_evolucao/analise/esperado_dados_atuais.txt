@@ -1,0 +1,98 @@
+Arquivo: /home/claude/dc/req.md  |  treinos entre checagens: 1
+Ligações: 337 | pais com 2+ saídas: 147 | formas-alvo testadas: 335
+
+A. Inalcançáveis mirando nelas: 29
+   [Ultimate->Mega] AeroVeedramon -> Magnamon (Lv 36) — dispara antes: UlforceVeedramon
+   [Ultimate->Mega] Angewomon -> Magnadramon (Lv 28) — dispara antes: Ophanimon
+   [Ultimate->Mega] Angewomon -> Lilithmon (Lv 28) — dispara antes: Ophanimon
+   [Baby->InTraining] Botamon -> Wanyamon (Lv 2) — dispara antes: Koromon
+   [Ultimate->Mega] Chirinmon -> Kentaurusmon (Lv 36) — dispara antes: Sleipmon
+   [Ultimate->Mega] DexDorugreymon -> Dorugoramon (Lv 36) — dispara antes: DexDorugoramon
+   [Ultimate->Mega] Dorugreymon -> Dorugoramon (Lv 36) — dispara antes: Alphamon
+   [Ultimate->Mega] Fantomon -> Boltmon (Lv 28) — dispara antes: Piedmon
+   [Ultimate->Mega] Fantomon -> Ragnamon (Lv 28) — dispara antes: Piedmon
+   [InTraining->Rookie] Fluffymon -> Biyomon (Lv 2) — dispara antes: Muchomon
+   [Champion->Ultimate] Galemon -> Wingdramon (Lv 28) — dispara antes: Grand Galemon
+   [Rookie->Champion] Gaomon -> Gladimon (Lv 18) — dispara antes: Gaogamon
+   [Ultimate->Mega] Grand Galemon -> Dynasmon (Lv 28) — dispara antes: Zephagamon
+   [Champion->Ultimate] Kabuterimon -> Knightmon (Lv 28) — dispara antes: JewelBeemon
+   [Baby->InTraining] Kuramon -> Tsumemon (Lv 2) — dispara antes: Yaamon
+   [Champion->Ultimate] Kyubimon -> Taomon (Lv 20) — dispara antes: Mistymon
+   [Ultimate->Mega] MachGaogamon -> Gankoomon (Lv 28) — dispara antes: MirageGaogamon
+   [Ultimate->Mega] Myotismon -> Beelzebumon (Lv 28) — dispara antes: Piedmon
+   [Baby->InTraining] Poyomon -> Tokomon (Lv 2) — dispara antes: Salamon
+   [Baby->InTraining] Poyomon -> Yokomon (Lv 2) — dispara antes: Salamon
+   [Rookie->Champion] Pteromon -> Coredramon (Blue) (Lv 18) — dispara antes: Galemon
+   [Rookie->Champion] Renamon -> Reppamon (Lv 18) — dispara antes: Kyubimon
+   [Ultimate->Mega] RizeGreymon -> ShineGreymon (Lv 28) — dispara antes: WarGreymon
+   [Ultimate->Mega] Taomon -> Duftmon (Lv 28) — dispara antes: Sakuyamon
+   [Champion->Ultimate] Tortamon -> Groundramon (Lv 28) — dispara antes: Triceramon
+   [Ultimate->Mega] Wingdramon -> SlayerDramon (Lv 36) — dispara antes: Dynasmon
+   [InTraining->Rookie] Yaamon -> Ghostmon (Lv 2) — dispara antes: Shoemon
+   [Baby->InTraining] Yolkmon -> Fluffymon (Lv 2) — dispara antes: Babydmon
+   [Baby->InTraining] Yuramon -> Minomon (Lv 2) — dispara antes: Tanemon
+
+B. Formas padrão atropeladas por irmã que sai só de subir de nível: 0
+
+F. Inalcançáveis mirando nelas vindo por ALGUMA rota de entrada (carry-over): 32
+   [Ultimate->Mega] AeroVeedramon -> UlforceVeedramon (Lv 36) — dispara antes: Magnamon  [6 de 16 rotas]
+   [Champion->Ultimate] Angemon -> MagnaAngemon (Lv 20) — dispara antes: Angewomon  [3 de 11 rotas]
+   [Champion->Ultimate] Angemon -> Angewomon (Lv 20) — dispara antes: MagnaAngemon  [4 de 11 rotas]
+   [Champion->Ultimate] Angemon -> Lucemon Falldown Mode (Lv 20) — dispara antes: Angewomon/MagnaAngemon  [7 de 11 rotas]
+   [Ultimate->Mega] Astamon -> Ragnamon (Lv 28) — dispara antes: Beelzebumon  [6 de 11 rotas]
+   [Champion->Ultimate] Birdramon -> Delumon (Lv 20) — dispara antes: Garudamon  [2 de 10 rotas]
+   [Ultimate->Mega] Destromon -> Belphemon Sleep Mode (Lv 37) — dispara antes: Boltmon  [3 de 11 rotas]
+   [Champion->Ultimate] Dimetromon -> Lamiamon (Lv 20) — dispara antes: Triceramon  [3 de 7 rotas]
+   [Rookie->Champion] Dracomon -> Coredramon (Blue) (Lv 18) — dispara antes: Coredramon (Green)  [1 de 3 rotas]
+   [Ultimate->Mega] Fantomon -> Piedmon (Lv 28) — dispara antes: Boltmon/Ragnamon  [11 de 20 rotas]
+   [Champion->Ultimate] Gaogamon -> MachGaogamon (Lv 20) — dispara antes: WereGarurumon  [3 de 6 rotas]
+   [Ultimate->Mega] Garudamon -> Hououmon (Lv 28) — dispara antes: Zephagamon  [2 de 16 rotas]
+   [Ultimate->Mega] Grademon -> Alphamon (Lv 36) — dispara antes: Dynasmon  [3 de 16 rotas]
+   [Champion->Ultimate] Greymon -> MetalGreymon (Lv 20) — dispara antes: RizeGreymon  [3 de 6 rotas]
+   [Ultimate->Mega] Groundramon -> Breakdramon (Lv 36) — dispara antes: Dorugoramon  [3 de 6 rotas]
+   [Ultimate->Mega] JewelBeemon -> HerculesKabuterimon (Lv 28) — dispara antes: Imperialdramon  [5 de 21 rotas]
+   [Ultimate->Mega] JewelBeemon -> GrandisKuwagamon (Lv 28) — dispara antes: HerculesKabuterimon/Imperialdramon  [10 de 21 rotas]
+   [Champion->Ultimate] Kabuterimon -> MegaKabuterimon (Lv 20) — dispara antes: JewelBeemon  [1 de 7 rotas]
+   [Ultimate->Mega] Knightmon -> Crusadermon (Lv 36) — dispara antes: Craniummon  [5 de 19 rotas]
+   [Ultimate->Mega] Lamiamon -> Leviamon (Lv 28) — dispara antes: Medusamon  [4 de 12 rotas]
+   [Ultimate->Mega] Lilamon -> Rosemon (Lv 28) — dispara antes: Cendrillmon  [14 de 25 rotas]
+   [Ultimate->Mega] Lucemon Falldown Mode -> Lucemon Satan Mode (Lv 36) — dispara antes: Demon  [7 de 20 rotas]
+   [Ultimate->Mega] MagnaAngemon -> Seraphimon (Lv 28) — dispara antes: Magnadramon  [7 de 9 rotas]
+   [Ultimate->Mega] MegaKabuterimon -> Craniummon (Lv 28) — dispara antes: HerculesKabuterimon  [9 de 12 rotas]
+   [Ultimate->Mega] Myotismon -> Piedmon (Lv 28) — dispara antes: Beelzebumon  [2 de 25 rotas]
+   [Ultimate->Mega] RizeGreymon -> WarGreymon (Lv 28) — dispara antes: ShineGreymon  [4 de 9 rotas]
+   [Ultimate->Mega] SkullSatamon -> Piedmon (Lv 28) — dispara antes: Demon  [4 de 11 rotas]
+   [Champion->Ultimate] Sunflowmon -> Lillymon (Lv 20) — dispara antes: JewelBeemon  [6 de 9 rotas]
+   [Champion->Ultimate] Togemon -> Lillymon (Lv 20) — dispara antes: Lilamon  [2 de 16 rotas]
+   [Ultimate->Mega] WarGrowlmon -> Gallantmon (Lv 28) — dispara antes: Medieval Dukemon  [4 de 7 rotas]
+   [Ultimate->Mega] WereGarurumon -> MetalGarurumon (Lv 28) — dispara antes: Gankoomon  [9 de 11 rotas]
+   [Champion->Ultimate] Wizardmon -> Mistymon (Lv 20) — dispara antes: Fantomon  [1 de 7 rotas]
+
+H. Alvos que um rival de Score maior atropela só subindo de nível: 16
+   [Champion->Ultimate] Angemon -> Lucemon Falldown Mode (Lv 20) — Angewomon fica válido sozinho no Lv 24
+   [Ultimate->Mega] Angewomon -> Lilithmon (Lv 28) — Ophanimon fica válido sozinho no Lv 30
+   [Champion->Ultimate] Coredramon (Green) -> Groundramon (Lv 28) — Grademon fica válido sozinho no Lv 32
+   [InTraining->Rookie] Dorimon -> Dorumon (Lv 2) — Hackmon fica válido sozinho no Lv 10
+   [Rookie->Champion] Gaomon -> Gaogamon (Lv 12) — Garurumon fica válido sozinho no Lv 18
+   [Ultimate->Mega] Garudamon -> Hououmon (Lv 28) — Zephagamon fica válido sozinho no Lv 30
+   [Ultimate->Mega] JewelBeemon -> HerculesKabuterimon (Lv 28) — Imperialdramon fica válido sozinho no Lv 34
+   [Baby->InTraining] Jyarimon -> Gigimon (Lv 2) — Koromon fica válido sozinho no Lv 4
+   [InTraining->Rookie] Koromon -> Agumon (Savers) (Lv 2) — Agumon fica válido sozinho no Lv 10
+   [Ultimate->Mega] Lucemon Falldown Mode -> Lucemon Satan Mode (Lv 36) — Demon fica válido sozinho no Lv 42
+   [Ultimate->Mega] MagnaAngemon -> Seraphimon (Lv 28) — Magnadramon fica válido sozinho no Lv 36
+   [Baby->InTraining] Punimon -> Gummymon (Lv 2) — Tsunomon fica válido sozinho no Lv 10
+   [InTraining->Rookie] Tsunomon -> Gabumon (Lv 2) — Kotemon fica válido sozinho no Lv 10
+   [InTraining->Rookie] Tsunomon -> Elizamon (Lv 2) — Gabumon fica válido sozinho no Lv 10
+   [InTraining->Rookie] Viximon -> Renamon (Lv 3) — Kudamon fica válido sozinho no Lv 9
+   [Champion->Ultimate] Wizardmon -> Mistymon (Lv 20) — Fantomon fica válido sozinho no Lv 23
+
+E. Formas padrão que um Digimon sem treino (rota mais fraca) não alcança: 0
+
+C. Empates de score entre irmãs: 3
+   Dracomon: score 334 -> Coredramon (Green), Coredramon (Blue)
+   Gigimon: score 125 -> Guilmon, Elizamon
+   Phascomon: score 379 -> IceDevimon, Snatchmon
+
+D. Pais sem forma padrão (Idade >= teto-2): 147  (informativo: nesses, quem não treina a assinatura de nenhuma irmã depende de cumprir uma delas)
+
+G. Formas padrão que alguma rota de entrada pula (irmã sai de graça): 0  (informativo: carry-over — quem já chega forte ganha a irmã sem treinar)

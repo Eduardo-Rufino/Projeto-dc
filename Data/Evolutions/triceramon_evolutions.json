@@ -40,8 +40,8 @@
       "physicalDamage": 267,
       "physicalDefense": 229,
       "specialDamage": 0,
-      "specialDefense": 148,
-      "speed": 0
+      "specialDefense": 100,
+      "speed": 120
     },
     "maxDiscipline": 40
   }

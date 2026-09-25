@@ -12,7 +12,8 @@
       "specialDamage": 0,
       "specialDefense": 0,
       "speed": 135
-    }
+    },
+    "maxHappiness": 40
   },
   {
     "fromDigimonId": 181,

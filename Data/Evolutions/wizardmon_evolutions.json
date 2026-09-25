@@ -7,9 +7,9 @@
     "statMultiplier": 1.6,
     "requiredStats": {
       "healthPoints": 280,
-      "physicalDamage": 130,
+      "physicalDamage": 95,
       "physicalDefense": 0,
-      "specialDamage": 0,
+      "specialDamage": 120,
       "specialDefense": 0,
       "speed": 140
     }
@@ -27,6 +27,7 @@
       "specialDamage": 167,
       "specialDefense": 0,
       "speed": 130
-    }
+    },
+    "maxDiscipline": 45
   }
 ]
