@@ -727,6 +727,7 @@ namespace ProjetoDC.Revisao
             CaseI4_JewelBeemon();
             CaseI5_Angewomon();
             CaseI6_Knightmon();
+            CaseI7_GrowlmonMetalGreymon();
         }
 
         private void CaseI1_Gaogamon()
@@ -833,18 +834,17 @@ namespace ProjetoDC.Revisao
             ResetScratch();
             var duke1 = ViaGuilmon();
             Check(duke1.BaseData.Name == "Growlmon", $"I3-Guilmon: chegou em Growlmon vindo de Guilmon (só PA) - {duke1.BaseData.Name}");
-            GD.Print($"  [diagnóstico I3-Guilmon pré] Lv{duke1.Level} Age{duke1.AgeInDays} HP{duke1.CurrentStats.HealthPoints} PA{duke1.CurrentStats.PhysicalDamage} PD{duke1.CurrentStats.PhysicalDefense} Vel{duke1.CurrentStats.Speed}");
 
-            // GrowLeg normal (bate num inimigo Mega+10) dá XP demais aqui - PA163/HP375 (WarGrowlmon)
-            // e PA177/HP398/PD88 (MetalGreymon) ficam só ~14 PA / ~23 HP / ~88 PD de distância um
-            // do outro, e um salto de vários níveis de uma vez pula direto por cima dessa janela -
-            // GrowLegPrecise sobe em incrementos pequenos (inimigo Rookie no mesmo nível) pra
-            // checar a evolução perto de cada nível, não só no fim de um salto grande.
-            GrowLegPrecise(duke1, requiredLevel: 20, requiredAge: 5,
+            // Fase 5: Growlmon->MetalGreymon agora exige EA>=60 (CSV v5) - EA tem GROWTH=0 (só
+            // sobe com treino de verdade), então sem treinar EA o MetalGreymon fica permanentemente
+            // fora de alcance por essa rota, não importa quanto PA/HP/PD a batalha empurre por
+            // cima - WarGrowlmon (sem exigência de EA) é quem sobra. Não precisa mais de
+            // granularidade fina de batalha (GrowLegPrecise) pra isso - ver Caso I7 pro teste
+            // dedicado dos dois lados (sem EA -> WarGrowlmon / com EA -> MetalGreymon).
+            GrowLeg(duke1, requiredLevel: 20, requiredAge: 5,
                 new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61) });
 
-            GD.Print($"  [diagnóstico I3-Guilmon pós] Lv{duke1.Level} Age{duke1.AgeInDays} HP{duke1.CurrentStats.HealthPoints} PA{duke1.CurrentStats.PhysicalDamage} PD{duke1.CurrentStats.PhysicalDefense} Vel{duke1.CurrentStats.Speed} nome={duke1.BaseData.Name}");
-            Check(duke1.BaseData.Name == "WarGrowlmon", $"I3-Guilmon-WarGrowlmon: chegou em WarGrowlmon vindo de Growlmon (HP+PA+Vel) - {duke1.BaseData.Name}");
+            Check(duke1.BaseData.Name == "WarGrowlmon", $"I3-Guilmon-WarGrowlmon: chegou em WarGrowlmon vindo de Growlmon (HP+PA+Vel, sem EA) - {duke1.BaseData.Name}");
 
             GrowLeg(duke1, requiredLevel: 28, requiredAge: 8, stat: TrainingType.Defense, floor: 180);
 
@@ -866,7 +866,7 @@ namespace ProjetoDC.Revisao
 
             ResetScratch();
             var gallant = ViaGuilmon();
-            GrowLegPrecise(gallant, requiredLevel: 20, requiredAge: 5,
+            GrowLeg(gallant, requiredLevel: 20, requiredAge: 5,
                 new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61) });
             GrowLeg(gallant, requiredLevel: 28, requiredAge: 50);
 
@@ -979,6 +979,66 @@ namespace ProjetoDC.Revisao
 
             Check(crusader.BaseData.Name == "Crusadermon",
                 $"I6b (Tentomon -> Kabuterimon -> Knightmon -> só Vel até 147, Lv 36 antes da Idade 50): resultado {crusader.BaseData.Name} (esperado Crusadermon)");
+        }
+
+        /// <summary>Fase 5: conserto do par Growlmon -> {MetalGreymon, WarGrowlmon} (CSV v5 - único
+        /// stat que muda é o EA de MetalGreymon, 0 -> 60). Sem treinar EA (que tem GROWTH=0, nunca
+        /// sobe sozinho), MetalGreymon fica permanentemente fora de alcance por essa rota e
+        /// WarGrowlmon vira a evolução natural da linhagem; treinando só EA até 60, MetalGreymon.
+        /// A rota já existente Agumon -> Greymon -> MetalGreymon (não tocada pelo CSV v5) continua
+        /// funcionando do mesmo jeito de sempre.</summary>
+        private void CaseI7_GrowlmonMetalGreymon()
+        {
+            GD.Print("\n--- Caso I7: Fase 5 - Growlmon -> WarGrowlmon (natural) / MetalGreymon (EA), + Greymon -> MetalGreymon ---");
+
+            const int guilmonId = 7;
+            const int agumonId = 1;
+
+            DigimonInstance ViaGuilmon()
+            {
+                var d = SpawnNatural(guilmonId);
+                GrowLeg(d, requiredLevel: 12, requiredAge: 2, stat: TrainingType.Attack, floor: 104);
+                return d;
+            }
+
+            ResetScratch();
+            var natural = ViaGuilmon();
+            Check(natural.BaseData.Name == "Growlmon", $"I7-0: chegou em Growlmon vindo de Guilmon (só PA) - {natural.BaseData.Name}");
+
+            GrowLeg(natural, requiredLevel: 20, requiredAge: 5,
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61) });
+
+            Check(natural.BaseData.Name == "WarGrowlmon",
+                $"I7a (Guilmon -> Growlmon -> sem treinar EA, até o Lv 20): resultado {natural.BaseData.Name} (esperado WarGrowlmon - forma natural da linhagem)");
+
+            ResetScratch();
+            var metal = ViaGuilmon();
+
+            // "Só EA" é o treino ADICIONAL em cima da mesma base de HP/PA/Vel que qualquer
+            // Growlmon precisa pra chegar a esse ponto da árvore (mesma base do I7a) - sem isso
+            // nem WarGrowlmon nem MetalGreymon têm HP/PA/Vel suficiente (o nível sozinho não
+            // cobre, GROWTH por nível é pequeno) - é exatamente o cenário do relatório original
+            // (HP675/PA395/PD163 no Lv 20 por essa rota).
+            GrowLeg(metal, requiredLevel: 20, requiredAge: 5,
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61), (TrainingType.SpecialAttack, 60) });
+
+            Check(metal.BaseData.Name == "MetalGreymon",
+                $"I7b (Guilmon -> Growlmon -> mesma base + EA até 60, Lv 20): resultado {metal.BaseData.Name} (esperado MetalGreymon)");
+
+            // Rota já existente (Agumon -> Greymon -> MetalGreymon), não tocada pelo CSV v5 -
+            // continua funcionando normalmente.
+            ResetScratch();
+            var viaGreymon = SpawnNatural(agumonId);
+            GrowLeg(viaGreymon, requiredLevel: 12, requiredAge: 2,
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 150), (TrainingType.Attack, 61), (TrainingType.Defense, 55), (TrainingType.Speed, 24) });
+
+            Check(viaGreymon.BaseData.Name == "Greymon", $"I7-1: chegou em Greymon vindo de Agumon (HP+PA+PD+Vel) - {viaGreymon.BaseData.Name}");
+
+            GrowLeg(viaGreymon, requiredLevel: 20, requiredAge: 5,
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 248), (TrainingType.Attack, 191), (TrainingType.SpecialAttack, 30), (TrainingType.Speed, 36) });
+
+            Check(viaGreymon.BaseData.Name == "MetalGreymon",
+                $"I7c (Agumon -> Greymon -> MetalGreymon, rota já existente): resultado {viaGreymon.BaseData.Name} (esperado MetalGreymon - continua funcionando)");
         }
     }
 }

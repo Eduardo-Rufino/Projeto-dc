@@ -191,8 +191,8 @@ Angemon,Angewomon,Champion->Ultimate,20,24,218,0,0,52,0,93,0,0,0,100,0,100,1.6,4
 Angemon,Lucemon Falldown Mode,Champion->Ultimate,20,5,298,0,0,167,0,124,0,0,0,35,0,100,1.6,679,,sim
 Togemon,Lillymon,Champion->Ultimate,20,24,243,129,0,0,0,51,0,0,0,100,0,100,1.6,467,padrao,sim
 Togemon,Lilamon,Champion->Ultimate,20,5,243,119,74,0,62,0,0,0,0,100,0,100,1.6,523,ED,sim
-Growlmon,MetalGreymon,Champion->Ultimate,20,5,398,177,88,0,0,0,0,0,0,100,0,100,1.6,688,,nao
-Growlmon,WarGrowlmon,Champion->Ultimate,20,5,375,163,0,0,0,61,0,0,0,100,0,100,1.6,624,,nao
+Growlmon,MetalGreymon,Champion->Ultimate,20,5,398,177,88,60,0,0,0,0,0,100,0,100,1.6,748,EA,sim
+Growlmon,WarGrowlmon,Champion->Ultimate,20,5,375,163,0,0,0,61,0,0,0,100,0,100,1.6,624,natural,nao
 Gargomon,Rapidmon,Champion->Ultimate,20,24,248,84,0,0,0,113,0,0,0,100,0,100,1.6,489,padrao,sim
 Gargomon,MachGaogamon,Champion->Ultimate,20,5,248,143,0,0,0,113,0,0,0,100,0,100,1.6,529,PA,sim
 Kyubimon,Taomon,Champion->Ultimate,20,24,209,0,0,66,0,76,0,0,0,100,0,100,1.6,395,padrao,sim

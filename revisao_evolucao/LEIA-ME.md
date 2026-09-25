@@ -14,3 +14,7 @@ Arquivos:
 - PROMPT_FASE3_V3.md — correção do achado Gaogamon→MachGaogamon e dos 5 pais com o mesmo defeito.
 - verificar.py ganhou as checagens F (inalcançável por alguma rota de entrada) e G (informativo: carry-over).
 - CSV v4: 18 ligações diferentes do v3.
+
+## v5 (Fase 5 — fechamento)
+- PROMPT_FINAL.md — conserto do par Growlmon (EA 60 no MetalGreymon), consulta das rotas medidas e merge na development.
+- CSV v5: 1 ligação diferente do v4.

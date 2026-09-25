@@ -126,7 +126,7 @@ Total: **0**
 - nenhum
 
 ### 5.5 Evoluções que exigem EA/ED sem o Digimon de origem ter Role/AttackType especial
-Origem com `AttackType` Physical exigindo EA/ED > 0: **35** evoluções (EA/ED só sobem por treino). Exemplos: Agumon->Dimetromon (EA 58, ED 0); Belphemon Sleep Mode->Belphemon Rage Mode (EA 0, ED 141); Biyomon->Birdramon (EA 17, ED 0); Devimon->Myotismon (EA 100, ED 0); Gabumon->Garurumon (EA 17, ED 0); Gaogamon->WereGarurumon (EA 47, ED 0); Gigimon->Elizamon (EA 34, ED 0); Gomamon->Tortamon (EA 0, ED 43); Goromon->Kotemon (EA 0, ED 18); Greymon->MetalGreymon (EA 30, ED 0); Greymon->RizeGreymon (EA 30, ED 0); Groundramon->Dorugoramon (EA 0, ED 56)
+Origem com `AttackType` Physical exigindo EA/ED > 0: **36** evoluções (EA/ED só sobem por treino). Exemplos: Agumon->Dimetromon (EA 58, ED 0); Belphemon Sleep Mode->Belphemon Rage Mode (EA 0, ED 141); Biyomon->Birdramon (EA 17, ED 0); Devimon->Myotismon (EA 100, ED 0); Gabumon->Garurumon (EA 17, ED 0); Gaogamon->WereGarurumon (EA 47, ED 0); Gigimon->Elizamon (EA 34, ED 0); Gomamon->Tortamon (EA 0, ED 43); Goromon->Kotemon (EA 0, ED 18); Greymon->MetalGreymon (EA 30, ED 0); Greymon->RizeGreymon (EA 30, ED 0); Groundramon->Dorugoramon (EA 0, ED 56)
 
 ## 6. Receitas Jogress (fusão de dois Digimons)
 
@@ -989,7 +989,7 @@ Legenda das colunas: `Lv`, `Idade`, stats (`HP PA PD EA ED Vel`), `Outros` (Bata
 
 | Para | Estágio | Lv | Idade | HP | PA | PD | EA | ED | Vel | Outros | xMult | Score | Fonte | Tipo |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| MetalGreymon (#39) | Ultimate | 20 | 5 | 398 | 177 | 88 | - | - | - | - | 1.6 | 688 | design | normal |
+| MetalGreymon (#39) | Ultimate | 20 | 5 | 398 | 177 | 88 | 60 | - | - | - | 1.6 | 748 | design | normal |
 | WarGrowlmon (#41) | Ultimate | 20 | 5 | 375 | 163 | - | - | - | 61 | - | 1.6 | 624 | canon | normal |
 
 #### Gargomon (#19) - Champion | Role Ranged | Physical | Vacine / Wind | Ovo: Beast
