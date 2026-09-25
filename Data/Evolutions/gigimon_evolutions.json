@@ -6,12 +6,12 @@
     "requiredAgeInDays": 5,
     "statMultiplier": 1.25,
     "requiredStats": {
-      "healthPoints": 37,
+      "healthPoints": 36,
       "physicalDamage": 14,
       "physicalDefense": 0,
       "specialDamage": 0,
       "specialDefense": 0,
-      "speed": 11
+      "speed": 10
     }
   },
   {
@@ -21,12 +21,12 @@
     "requiredAgeInDays": 0,
     "statMultiplier": 1.25,
     "requiredStats": {
-      "healthPoints": 67,
+      "healthPoints": 36,
       "physicalDamage": 0,
       "physicalDefense": 0,
-      "specialDamage": 34,
-      "specialDefense": 0,
-      "speed": 26
+      "specialDamage": 6,
+      "specialDefense": 13,
+      "speed": 10
     },
     "maxDiscipline": 45
   },
@@ -37,12 +37,12 @@
     "requiredAgeInDays": 0,
     "statMultiplier": 1.25,
     "requiredStats": {
-      "healthPoints": 37,
+      "healthPoints": 36,
       "physicalDamage": 14,
       "physicalDefense": 0,
-      "specialDamage": 0,
+      "specialDamage": 13,
       "specialDefense": 0,
-      "speed": 33
+      "speed": 10
     },
     "requiredBattles": 8
   }

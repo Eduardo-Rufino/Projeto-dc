@@ -6,7 +6,7 @@
     "requiredAgeInDays": 13,
     "statMultiplier": 1.8,
     "requiredStats": {
-      "healthPoints": 413,
+      "healthPoints": 411,
       "physicalDamage": 0,
       "physicalDefense": 89,
       "specialDamage": 0,
@@ -21,7 +21,7 @@
     "requiredAgeInDays": 50,
     "statMultiplier": 1.7,
     "requiredStats": {
-      "healthPoints": 375,
+      "healthPoints": 373,
       "physicalDamage": 0,
       "physicalDefense": 0,
       "specialDamage": 74,

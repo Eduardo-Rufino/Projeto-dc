@@ -38,12 +38,12 @@
     "requiredAgeInDays": 24,
     "statMultiplier": 1.6,
     "requiredStats": {
-      "healthPoints": 214,
+      "healthPoints": 213,
       "physicalDamage": 95,
       "physicalDefense": 0,
       "specialDamage": 0,
       "specialDefense": 0,
-      "speed": 89
+      "speed": 78
     }
   },
   {
@@ -53,12 +53,12 @@
     "requiredAgeInDays": 5,
     "statMultiplier": 1.6,
     "requiredStats": {
-      "healthPoints": 214,
+      "healthPoints": 213,
       "physicalDamage": 163,
       "physicalDefense": 0,
       "specialDamage": 0,
       "specialDefense": 0,
-      "speed": 89
+      "speed": 78
     }
   }
 ]

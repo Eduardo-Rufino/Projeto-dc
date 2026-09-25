@@ -68,6 +68,24 @@ F. Inalcançáveis mirando nelas vindo por ALGUMA rota de entrada (carry-over): 
    [Ultimate->Mega] WereGarurumon -> MetalGarurumon (Lv 28) — dispara antes: Gankoomon  [9 de 11 rotas]
    [Champion->Ultimate] Wizardmon -> Mistymon (Lv 20) — dispara antes: Fantomon  [1 de 7 rotas]
 
+H. Alvos que um rival de Score maior atropela só subindo de nível: 16
+   [Champion->Ultimate] Angemon -> Lucemon Falldown Mode (Lv 20) — Angewomon fica válido sozinho no Lv 24
+   [Ultimate->Mega] Angewomon -> Lilithmon (Lv 28) — Ophanimon fica válido sozinho no Lv 30
+   [Champion->Ultimate] Coredramon (Green) -> Groundramon (Lv 28) — Grademon fica válido sozinho no Lv 32
+   [InTraining->Rookie] Dorimon -> Dorumon (Lv 2) — Hackmon fica válido sozinho no Lv 10
+   [Rookie->Champion] Gaomon -> Gaogamon (Lv 12) — Garurumon fica válido sozinho no Lv 18
+   [Ultimate->Mega] Garudamon -> Hououmon (Lv 28) — Zephagamon fica válido sozinho no Lv 30
+   [Ultimate->Mega] JewelBeemon -> HerculesKabuterimon (Lv 28) — Imperialdramon fica válido sozinho no Lv 34
+   [Baby->InTraining] Jyarimon -> Gigimon (Lv 2) — Koromon fica válido sozinho no Lv 4
+   [InTraining->Rookie] Koromon -> Agumon (Savers) (Lv 2) — Agumon fica válido sozinho no Lv 10
+   [Ultimate->Mega] Lucemon Falldown Mode -> Lucemon Satan Mode (Lv 36) — Demon fica válido sozinho no Lv 42
+   [Ultimate->Mega] MagnaAngemon -> Seraphimon (Lv 28) — Magnadramon fica válido sozinho no Lv 36
+   [Baby->InTraining] Punimon -> Gummymon (Lv 2) — Tsunomon fica válido sozinho no Lv 10
+   [InTraining->Rookie] Tsunomon -> Gabumon (Lv 2) — Kotemon fica válido sozinho no Lv 10
+   [InTraining->Rookie] Tsunomon -> Elizamon (Lv 2) — Gabumon fica válido sozinho no Lv 10
+   [InTraining->Rookie] Viximon -> Renamon (Lv 3) — Kudamon fica válido sozinho no Lv 9
+   [Champion->Ultimate] Wizardmon -> Mistymon (Lv 20) — Fantomon fica válido sozinho no Lv 23
+
 E. Formas padrão que um Digimon sem treino (rota mais fraca) não alcança: 0
 
 C. Empates de score entre irmãs: 3

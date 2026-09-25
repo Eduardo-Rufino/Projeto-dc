@@ -21,7 +21,7 @@
     "requiredAgeInDays": 0,
     "statMultiplier": 1.2,
     "requiredStats": {
-      "healthPoints": 23,
+      "healthPoints": 22,
       "physicalDamage": 0,
       "physicalDefense": 10,
       "specialDamage": 17,
@@ -37,10 +37,10 @@
     "statMultiplier": 1.15,
     "requiredStats": {
       "healthPoints": 23,
-      "physicalDamage": 13,
+      "physicalDamage": 4,
       "physicalDefense": 10,
       "specialDamage": 8,
-      "specialDefense": 8,
+      "specialDefense": 13,
       "speed": 0
     }
   }

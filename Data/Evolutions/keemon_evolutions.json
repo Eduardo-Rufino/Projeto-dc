@@ -36,12 +36,12 @@
     "requiredAgeInDays": 0,
     "statMultiplier": 1.2,
     "requiredStats": {
-      "healthPoints": 31,
+      "healthPoints": 25,
       "physicalDamage": 0,
       "physicalDefense": 0,
-      "specialDamage": 17,
-      "specialDefense": 0,
-      "speed": 14
+      "specialDamage": 10,
+      "specialDefense": 8,
+      "speed": 9
     },
     "maxDiscipline": 40
   }

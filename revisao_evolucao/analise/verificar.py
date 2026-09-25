@@ -271,7 +271,7 @@ def main():
     _ANC['anc'], _ANC['lvmin'] = anchors(D, inc)
     ROT = route_anchors(D, inc)
     bloqueadas, padrao_ruim, empates, sem_rede, padrao_inalc = [], [], [], [], []
-    forte_bloq, forte_padrao = [], []
+    forte_bloq, forte_padrao, nivel_livre = [], [], []
     n_alvo = 0
     for src, sibs in sorted(out.items()):
         if len(sibs) < 2:
@@ -288,7 +288,7 @@ def main():
                 falta = {s: T[s] - natL[s] for s in STATS if T[s] > natL[s]}
                 if falta:
                     padrao_inalc.append((src, T['dst'], T['lv'], falta))
-                for L in range(lv0, max(o['lv'] for o in sibs) + 1):
+                for L in range(lv0, max(o['lv'] for o in sibs) + 9):
                     stL = {s: st0[s] + GROWTH[s] * (L - lv0) for s in STATS}
                     v = [o for o in sibs if o is not T and valid(o, stL, L, beh)]
                     if v:
@@ -304,6 +304,21 @@ def main():
                 if ruins:
                     forte_padrao.append((src, T['dst'], '/'.join(sorted(ruins))))
                 continue
+            # H. rival de score maior que fica válido SÓ subindo de nível (o jogo só checa após
+            # batalha/meia-noite, e batalha traz nível; o alvo exige treino, o rival não)
+            for sf0 in rotas:
+                mal = None
+                for L in range(T['lv'], T['lv'] + 9):
+                    stL = {s: sf0[s] + GROWTH[s] * (L - lv0) for s in STATS}
+                    precisa = any(stL[s] < T[s] for s in STATS)
+                    # quem mira em T e precisa treinar já mexeu em Disciplina/Felicidade (+5/+10)
+                    livres = [o for o in sibs if o is not T and o['score'] > T['score']
+                              and valid(o, stL, L, behaviour(T, 1 if precisa else 0))]
+                    if livres and precisa:
+                        mal = (livres[0]['dst'], L); break
+                if mal:
+                    nivel_livre.append((T['src_stage'] + '->' + T['dst_stage'], src, T['dst'],
+                                        T['lv'], mal[0], mal[1])); break
             ok, who, tr = simulate(T, sibs, st0, lv0)
             if not ok:
                 bloqueadas.append((T['src_stage'] + '->' + T['dst_stage'], src, T['dst'], T['lv'], who))
@@ -334,6 +349,9 @@ def main():
     print(f"\nF. Inalcançáveis mirando nelas vindo por ALGUMA rota de entrada (carry-over): {len(forte_bloq)}")
     for b in forte_bloq:
         print(f"   [{b[0]}] {b[1]} -> {b[2]} (Lv {b[3]}) — dispara antes: {b[4]}")
+    print(f"\nH. Alvos que um rival de Score maior atropela só subindo de nível: {len(nivel_livre)}")
+    for b in nivel_livre:
+        print(f"   [{b[0]}] {b[1]} -> {b[2]} (Lv {b[3]}) — {b[4]} fica válido sozinho no Lv {b[5]}")
     print(f"\nE. Formas padrão que um Digimon sem treino (rota mais fraca) não alcança: {len(padrao_inalc)}")
     for p in padrao_inalc:
         print(f"   {p[0]} -> {p[1]} (Lv {p[2]}): falta " + ', '.join(f'{k} +{v}' for k, v in p[3].items()))
@@ -345,7 +363,7 @@ def main():
     print(f"\nG. Formas padrão que alguma rota de entrada pula (irmã sai de graça): {len(forte_padrao)}"
           f"  (informativo: carry-over — quem já chega forte ganha a irmã sem treinar)")
     if a.json:
-        json.dump(dict(forte_bloq=forte_bloq, forte_padrao=forte_padrao, bloqueadas=bloqueadas, padrao_ruim=padrao_ruim, padrao_inalc=padrao_inalc, empates=empates, sem_rede=sem_rede),
+        json.dump(dict(nivel_livre=nivel_livre, forte_bloq=forte_bloq, forte_padrao=forte_padrao, bloqueadas=bloqueadas, padrao_ruim=padrao_ruim, padrao_inalc=padrao_inalc, empates=empates, sem_rede=sem_rede),
                   open(a.json, 'w'), ensure_ascii=False, indent=1)
 
 

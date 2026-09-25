@@ -18,3 +18,8 @@ Arquivos:
 ## v5 (Fase 5 — fechamento)
 - PROMPT_FINAL.md — conserto do par Growlmon (EA 60 no MetalGreymon), consulta das rotas medidas e merge na development.
 - CSV v5: 1 ligação diferente do v4.
+
+## v6 (Fase 6)
+- PROMPT_FASE6.md — Baby/InTraining passam a assinar por EA/ED (stats que o nível não dá), mais o arrasto nos estágios seguintes.
+- verificar.py ganhou a checagem H (rival de Score maior que fica válido só subindo de nível).
+- CSV v6: 189 ligações diferentes do v5.

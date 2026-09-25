@@ -22,9 +22,9 @@
     "statMultiplier": 1.25,
     "requiredStats": {
       "healthPoints": 35,
-      "physicalDamage": 36,
+      "physicalDamage": 9,
       "physicalDefense": 0,
-      "specialDamage": 0,
+      "specialDamage": 18,
       "specialDefense": 0,
       "speed": 0
     }
@@ -40,8 +40,8 @@
       "physicalDamage": 9,
       "physicalDefense": 0,
       "specialDamage": 0,
-      "specialDefense": 0,
-      "speed": 33
+      "specialDefense": 15,
+      "speed": 12
     }
   }
 ]

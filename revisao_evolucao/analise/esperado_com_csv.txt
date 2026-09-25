@@ -7,10 +7,12 @@ B. Formas padrão atropeladas por irmã que sai só de subir de nível: 0
 
 F. Inalcançáveis mirando nelas vindo por ALGUMA rota de entrada (carry-over): 0
 
+H. Alvos que um rival de Score maior atropela só subindo de nível: 0
+
 E. Formas padrão que um Digimon sem treino (rota mais fraca) não alcança: 0
 
 C. Empates de score entre irmãs: 0
 
-D. Pais sem forma padrão (Idade >= teto-2): 41  (informativo: nesses, quem não treina a assinatura de nenhuma irmã depende de cumprir uma delas)
+D. Pais sem forma padrão (Idade >= teto-2): 19  (informativo: nesses, quem não treina a assinatura de nenhuma irmã depende de cumprir uma delas)
 
-G. Formas padrão que alguma rota de entrada pula (irmã sai de graça): 27  (informativo: carry-over — quem já chega forte ganha a irmã sem treinar)
+G. Formas padrão que alguma rota de entrada pula (irmã sai de graça): 24  (informativo: carry-over — quem já chega forte ganha a irmã sem treinar)

@@ -11,7 +11,7 @@
       "physicalDefense": 0,
       "specialDamage": 125,
       "specialDefense": 0,
-      "speed": 131
+      "speed": 127
     }
   },
   {
@@ -26,7 +26,7 @@
       "physicalDefense": 0,
       "specialDamage": 227,
       "specialDefense": 0,
-      "speed": 131
+      "speed": 127
     },
     "requiredBattles": 12,
     "minHappiness": 55

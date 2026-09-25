@@ -248,7 +248,7 @@ namespace ProjetoDC.Revisao
         /// poder dar certo, testado numa cópia isolada), sobe de nível por batalha até o
         /// exigido e avança dias até a idade exigida - devolve se o resultado bateu com o alvo
         /// pretendido (edge.ToDigimonId) ou se outra coisa disparou primeiro / nada evoluiu.</summary>
-        private bool GrowToEdge(DigimonInstance d, EvolutionData edge, int maxBattles = 260, int maxDays = 60)
+        private bool GrowToEdge(DigimonInstance d, EvolutionData edge, int maxBattles = 1000, int maxDays = 60)
         {
             int startId = d.BaseData.Id;
             var req = edge.RequiredStats;

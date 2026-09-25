@@ -251,26 +251,33 @@ namespace ProjetoDC.Revisao
         /// idade exigida - checando evolução (via os checkpoints reais) a cada passo o tempo
         /// todo. Para quando evolui (BaseData.Id muda) ou quando os requisitos batem.</summary>
         private void GrowLeg(DigimonInstance d, int requiredLevel, int requiredAge,
-            TrainingType? stat = null, int floor = 0, int maxBattles = 90, int maxDays = 60)
+            TrainingType? stat = null, int floor = 0, int maxBattles = 90, int maxDays = 60,
+            int requiredBattles = 0, float requiredWinRate = 0f)
         {
             GrowLeg(d, requiredLevel, requiredAge,
                 stat.HasValue ? new[] { (stat.Value, floor) } : Array.Empty<(TrainingType, int)>(),
-                maxBattles, maxDays);
+                maxBattles, maxDays, requiredBattles, requiredWinRate);
         }
 
         /// <summary>Mesma coisa que a sobrecarga acima, mas treinando VÁRIOS stats (todos de
         /// verdade, um de cada vez até o piso) antes de deixar subir de nível/idade - usado
         /// quando a aresta em si (não uma "assinatura" limpa de um só stat) pede mais de um stat
-        /// ao mesmo tempo pra ficar alcançável.</summary>
+        /// ao mesmo tempo pra ficar alcançável. <paramref name="requiredBattles"/>/<paramref
+        /// name="requiredWinRate"/> continuam a batalha mesmo depois do Nível bater, pra arestas
+        /// que também exigem um mínimo de RequiredBattles/RequiredWinRate (achado na Fase 6 -
+        /// Yuramon -> Budmon pede 8 batalhas, e o Nível 2 sozinho não gera batalha suficiente).</summary>
         private void GrowLeg(DigimonInstance d, int requiredLevel, int requiredAge,
-            (TrainingType stat, int floor)[] stats, int maxBattles = 90, int maxDays = 60)
+            (TrainingType stat, int floor)[] stats, int maxBattles = 90, int maxDays = 60,
+            int requiredBattles = 0, float requiredWinRate = 0f)
         {
             int startId = d.BaseData.Id;
 
             foreach (var (stat, floor) in stats)
                 TrainUntilStat(d, stat, StatReader(stat), floor);
 
-            for (int i = 0; i < maxBattles && d.Level < requiredLevel && d.BaseData.Id == startId; i++)
+            for (int i = 0; i < maxBattles && d.BaseData.Id == startId &&
+                 (d.Level < requiredLevel || d.BattlesFought < requiredBattles ||
+                  (requiredWinRate > 0 && d.WinRate < requiredWinRate)); i++)
                 BattleCheckpointWithLevelUp(d);
 
             for (int i = 0; i < maxDays && d.AgeInDays < requiredAge && d.BaseData.Id == startId; i++)
@@ -477,36 +484,35 @@ namespace ProjetoDC.Revisao
 
         // ------------------------------------------------------------------ caso e) Gigimon
 
+        /// <summary>Fase 6: Gigimon (InTraining) entrou nos 189 ligações revisadas - o empate de
+        /// Score original (o motivo do nome antigo "NoTie") não existe mais, Elizamon e Dorumon
+        /// agora assinam por ED/EA como qualquer outro par do Caso I8. Reescrito no mesmo formato.</summary>
         private void CaseE_GigimonNoTie()
         {
-            GD.Print("\n--- Caso E: Gigimon (id 33) - já é o estágio sendo testado - sem mais empate de Score ---");
+            GD.Print("\n--- Caso E: Gigimon (InTraining) -> Guilmon (padrão) / Elizamon (ED) / Dorumon (EA+8 batalhas) ---");
 
             const int gigimonId = 33;
 
-            var results = new Dictionary<string, int>();
+            ResetScratch();
+            var guilmon = SpawnNatural(gigimonId);
+            GrowLeg(guilmon, requiredLevel: 2, requiredAge: 5);
+            Check(guilmon.BaseData.Name == "Guilmon", $"E1 (Gigimon -> sem treino, até a Idade 5): resultado {guilmon.BaseData.Name} (esperado Guilmon - forma padrão)");
 
-            for (int i = 0; i < 20; i++)
-            {
-                ResetScratch();
+            ResetScratch();
+            var elizamon = SpawnNatural(gigimonId);
+            // Elizamon também exige EA>=6 (a ficha base de Gigimon só tem EA4) e Disciplina<=45 -
+            // treino de verdade sobe Disciplina +5 a cada sucesso (mesmo bug encontrado na
+            // ferramenta da Fase 4), então a Disciplina só pode ser ajustada DEPOIS do treino.
+            TrainUntilStat(elizamon, TrainingType.SpecialAttack, s => s.SpecialDamage, 6);
+            TrainUntilStat(elizamon, TrainingType.SpecialDefense, s => s.SpecialDefense, 13);
+            elizamon.Discipline = 30;
+            BattleCheckpointWithLevelUp(elizamon);
+            Check(elizamon.BaseData.Name == "Elizamon", $"E2 (Gigimon -> EA até 6 + ED até 13, Disciplina<=45): resultado {elizamon.BaseData.Name} (esperado Elizamon)");
 
-                var d = SpawnNatural(gigimonId, level: 2, age: 5);
-
-                TrainUntilStat(d, TrainingType.HealthPoints, s => s.HealthPoints, 67);
-                TrainUntilStat(d, TrainingType.SpecialAttack, s => s.SpecialDamage, 34);
-                TrainUntilStat(d, TrainingType.Speed, s => s.Speed, 26);
-
-                d.Discipline = 30;
-                BattleCheckpoint(d);
-
-                string name = d.BaseData.Name;
-                results[name] = results.GetValueOrDefault(name) + 1;
-            }
-
-            GD.Print("  Resultado das 20 checagens: " + string.Join(", ", results.Select(kv => $"{kv.Key}={kv.Value}")));
-
-            Check(results.Count == 1 && results.ContainsKey("Elizamon"),
-                $"E (20 checagens, Guilmon e Elizamon ambos válidos): resultado(s) {string.Join("/", results.Keys)} " +
-                "(esperado: sempre Elizamon, score maior - sem mais sorteio)");
+            ResetScratch();
+            var dorumon = SpawnNatural(gigimonId);
+            GrowLeg(dorumon, requiredLevel: 2, requiredAge: 0, stat: TrainingType.SpecialAttack, floor: 13, requiredBattles: 8);
+            Check(dorumon.BaseData.Name == "Dorumon", $"E3 (Gigimon -> EA até 13 + 8 batalhas): resultado {dorumon.BaseData.Name} (esperado Dorumon)");
         }
 
         // ------------------------------------------------------------------ caso f) novas formas padrão (InTraining->Rookie / Rookie->Champion)
@@ -728,6 +734,7 @@ namespace ProjetoDC.Revisao
             CaseI5_Angewomon();
             CaseI6_Knightmon();
             CaseI7_GrowlmonMetalGreymon();
+            CaseI8_Fase6BabyInTraining();
         }
 
         private void CaseI1_Gaogamon()
@@ -842,7 +849,7 @@ namespace ProjetoDC.Revisao
             // granularidade fina de batalha (GrowLegPrecise) pra isso - ver Caso I7 pro teste
             // dedicado dos dois lados (sem EA -> WarGrowlmon / com EA -> MetalGreymon).
             GrowLeg(duke1, requiredLevel: 20, requiredAge: 5,
-                new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61) });
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 258), (TrainingType.Attack, 163), (TrainingType.Speed, 51) });
 
             Check(duke1.BaseData.Name == "WarGrowlmon", $"I3-Guilmon-WarGrowlmon: chegou em WarGrowlmon vindo de Growlmon (HP+PA+Vel, sem EA) - {duke1.BaseData.Name}");
 
@@ -867,7 +874,7 @@ namespace ProjetoDC.Revisao
             ResetScratch();
             var gallant = ViaGuilmon();
             GrowLeg(gallant, requiredLevel: 20, requiredAge: 5,
-                new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61) });
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 258), (TrainingType.Attack, 163), (TrainingType.Speed, 51) });
             GrowLeg(gallant, requiredLevel: 28, requiredAge: 50);
 
             Check(gallant.BaseData.Name == "Gallantmon",
@@ -1006,7 +1013,7 @@ namespace ProjetoDC.Revisao
             Check(natural.BaseData.Name == "Growlmon", $"I7-0: chegou em Growlmon vindo de Guilmon (só PA) - {natural.BaseData.Name}");
 
             GrowLeg(natural, requiredLevel: 20, requiredAge: 5,
-                new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61) });
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 258), (TrainingType.Attack, 163), (TrainingType.Speed, 51) });
 
             Check(natural.BaseData.Name == "WarGrowlmon",
                 $"I7a (Guilmon -> Growlmon -> sem treinar EA, até o Lv 20): resultado {natural.BaseData.Name} (esperado WarGrowlmon - forma natural da linhagem)");
@@ -1014,13 +1021,12 @@ namespace ProjetoDC.Revisao
             ResetScratch();
             var metal = ViaGuilmon();
 
-            // "Só EA" é o treino ADICIONAL em cima da mesma base de HP/PA/Vel que qualquer
-            // Growlmon precisa pra chegar a esse ponto da árvore (mesma base do I7a) - sem isso
-            // nem WarGrowlmon nem MetalGreymon têm HP/PA/Vel suficiente (o nível sozinho não
-            // cobre, GROWTH por nível é pequeno) - é exatamente o cenário do relatório original
-            // (HP675/PA395/PD163 no Lv 20 por essa rota).
+            // "Só EA" é o treino ADICIONAL em cima da mesma base de HP/PA/PD que qualquer
+            // Growlmon precisa pra chegar a esse ponto da árvore - sem isso nem WarGrowlmon nem
+            // MetalGreymon têm HP/PA/PD suficiente (o nível sozinho não cobre, GROWTH por nível é
+            // pequeno). Piso de MetalGreymon (Fase 6, com a cascata da Fase 5): HP258/PA177/PD77/EA60.
             GrowLeg(metal, requiredLevel: 20, requiredAge: 5,
-                new (TrainingType, int)[] { (TrainingType.HealthPoints, 375), (TrainingType.Attack, 163), (TrainingType.Speed, 61), (TrainingType.SpecialAttack, 60) });
+                new (TrainingType, int)[] { (TrainingType.HealthPoints, 258), (TrainingType.Attack, 177), (TrainingType.Defense, 77), (TrainingType.SpecialAttack, 60) });
 
             Check(metal.BaseData.Name == "MetalGreymon",
                 $"I7b (Guilmon -> Growlmon -> mesma base + EA até 60, Lv 20): resultado {metal.BaseData.Name} (esperado MetalGreymon)");
@@ -1039,6 +1045,100 @@ namespace ProjetoDC.Revisao
 
             Check(viaGreymon.BaseData.Name == "MetalGreymon",
                 $"I7c (Agumon -> Greymon -> MetalGreymon, rota já existente): resultado {viaGreymon.BaseData.Name} (esperado MetalGreymon - continua funcionando)");
+        }
+
+        /// <summary>Fase 6: Baby e InTraining por EA/ED. Antes desta fase, os requisitos de
+        /// Baby->InTraining e InTraining->Rookie eram só HP/PA/PD/Vel - stats que sobem sozinhos
+        /// com o nível - então a checagem (que só roda depois de batalha ou virada de dia, nunca
+        /// durante o treino em si) sempre encontrava as DUAS irmãs já válidas, e a de Score maior
+        /// vencia (checagem H nova do verificar.py). EA/ED têm GROWTH=0 (só sobem treinando de
+        /// verdade), então agora cada irmã assina por EA, por ED, ou pelas duas, e o pai mantém
+        /// uma forma padrão que sai sem treinar nada (presa pela Idade). Cada grupo abaixo é um
+        /// pai com 2 ou mais saídas, testando cada uma pela cadeia real (Lv 1 direto - Baby/
+        /// InTraining são o próprio estágio testado, sem precisar vir de mais atrás).</summary>
+        private void CaseI8_Fase6BabyInTraining()
+        {
+            GD.Print("\n--- Caso I8: Fase 6 - Baby/InTraining por EA/ED (Tsunomon, Nyaromon, Koromon, Yuramon) ---");
+
+            const int tsunomonId = 30;
+            const int nyaromonId = 69;
+            const int koromonId = 29;
+            const int yuramonId = 27;
+
+            // Tsunomon (InTraining) -> Gabumon (EA) / Kotemon (ED) / Elizamon (padrão, Idade 5)
+            ResetScratch();
+            var gabumon = SpawnNatural(tsunomonId);
+            GrowLeg(gabumon, requiredLevel: 2, requiredAge: 0, stat: TrainingType.SpecialAttack, floor: 25);
+            Check(gabumon.BaseData.Name == "Gabumon", $"I8a (Tsunomon -> só EA até 25): resultado {gabumon.BaseData.Name} (esperado Gabumon)");
+
+            ResetScratch();
+            var kotemon = SpawnNatural(tsunomonId);
+            GrowLeg(kotemon, requiredLevel: 2, requiredAge: 0, stat: TrainingType.SpecialDefense, floor: 15);
+            Check(kotemon.BaseData.Name == "Kotemon", $"I8b (Tsunomon -> só ED até 15): resultado {kotemon.BaseData.Name} (esperado Kotemon)");
+
+            ResetScratch();
+            var elizamon = SpawnNatural(tsunomonId);
+            GrowLeg(elizamon, requiredLevel: 2, requiredAge: 5);
+            Check(elizamon.BaseData.Name == "Elizamon", $"I8c (Tsunomon -> sem treino, até a Idade 5): resultado {elizamon.BaseData.Name} (esperado Elizamon - forma padrão)");
+
+            // Nyaromon (Baby) -> Tokomon (EA) / Salamon (padrão, Idade 2)
+            ResetScratch();
+            var tokomon = SpawnNatural(nyaromonId);
+            GrowLeg(tokomon, requiredLevel: 2, requiredAge: 0, stat: TrainingType.SpecialAttack, floor: 15);
+            Check(tokomon.BaseData.Name == "Tokomon", $"I8d (Nyaromon -> só EA até 15): resultado {tokomon.BaseData.Name} (esperado Tokomon)");
+
+            ResetScratch();
+            var salamon = SpawnNatural(nyaromonId);
+            GrowLeg(salamon, requiredLevel: 2, requiredAge: 2);
+            Check(salamon.BaseData.Name == "Salamon", $"I8e (Nyaromon -> sem treino, até a Idade 2): resultado {salamon.BaseData.Name} (esperado Salamon - forma padrão)");
+
+            // Koromon (InTraining) -> Agumon (EA) / Veemon (ED) / Agumon (Savers) (padrão, Idade 5)
+            ResetScratch();
+            var agumon = SpawnNatural(koromonId);
+            GrowLeg(agumon, requiredLevel: 2, requiredAge: 0, stat: TrainingType.SpecialAttack, floor: 17);
+            Check(agumon.BaseData.Name == "Agumon", $"I8f (Koromon -> só EA até 17): resultado {agumon.BaseData.Name} (esperado Agumon)");
+
+            ResetScratch();
+            var veemon = SpawnNatural(koromonId);
+            GrowLeg(veemon, requiredLevel: 2, requiredAge: 0, stat: TrainingType.SpecialDefense, floor: 12);
+            Check(veemon.BaseData.Name == "Veemon", $"I8g (Koromon -> só ED até 12): resultado {veemon.BaseData.Name} (esperado Veemon)");
+
+            ResetScratch();
+            var agumonSavers = SpawnNatural(koromonId);
+            GrowLeg(agumonSavers, requiredLevel: 2, requiredAge: 5);
+            Check(agumonSavers.BaseData.Name == "Agumon (Savers)", $"I8h (Koromon -> sem treino, até a Idade 5): resultado {agumonSavers.BaseData.Name} (esperado Agumon (Savers) - forma padrão)");
+
+            // Yuramon (Baby) -> Minomon (EA) / Yokomon (ED) / Budmon (EA+ED) / Tanemon (padrão, Idade 2)
+            ResetScratch();
+            var minomon = SpawnNatural(yuramonId);
+            GrowLeg(minomon, requiredLevel: 2, requiredAge: 0, stat: TrainingType.SpecialAttack, floor: 19);
+            Check(minomon.BaseData.Name == "Minomon", $"I8i (Yuramon -> só EA até 19): resultado {minomon.BaseData.Name} (esperado Minomon)");
+
+            ResetScratch();
+            var yokomon = SpawnNatural(yuramonId);
+            GrowLeg(yokomon, requiredLevel: 2, requiredAge: 0, stat: TrainingType.SpecialDefense, floor: 8);
+            Check(yokomon.BaseData.Name == "Yokomon", $"I8j (Yuramon -> só ED até 8): resultado {yokomon.BaseData.Name} (esperado Yokomon)");
+
+            // Budmon exige EA15+ED8+8 batalhas - mas Yokomon (ED8 só, sem exigir batalha) já sai
+            // válido assim que ED chega a 8, então treinar ED ANTES de bater as 8 batalhas deixa
+            // Yokomon dar o bote no primeiro checkpoint (batalha 1), antes de Budmon completar a
+            // contagem. A ordem certa é bater as 8 batalhas PRIMEIRO (com ED ainda intocado, sem
+            // risco de Yokomon disparar cedo), treinar EA/ED depois, e só então rodar 1 checkpoint
+            // final - com tudo pronto ao mesmo tempo, o Score maior (Budmon 67 > Yokomon 57) decide.
+            ResetScratch();
+            var budmon = SpawnNatural(yuramonId);
+            for (int i = 0; i < 8 && budmon.BattlesFought < 8 && budmon.BaseData.Id == yuramonId; i++)
+                BattleCheckpointWithLevelUp(budmon);
+            TrainUntilStat(budmon, TrainingType.SpecialAttack, s => s.SpecialDamage, 15);
+            TrainUntilStat(budmon, TrainingType.SpecialDefense, s => s.SpecialDefense, 8);
+            if (budmon.BaseData.Id == yuramonId)
+                BattleCheckpointWithLevelUp(budmon);
+            Check(budmon.BaseData.Name == "Budmon", $"I8k (Yuramon -> 8 batalhas primeiro, depois EA até 15 + ED até 8): resultado {budmon.BaseData.Name} (esperado Budmon)");
+
+            ResetScratch();
+            var tanemon = SpawnNatural(yuramonId);
+            GrowLeg(tanemon, requiredLevel: 2, requiredAge: 2);
+            Check(tanemon.BaseData.Name == "Tanemon", $"I8l (Yuramon -> sem treino, até a Idade 2): resultado {tanemon.BaseData.Name} (esperado Tanemon - forma padrão)");
         }
     }
 }

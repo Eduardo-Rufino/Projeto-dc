@@ -7,7 +7,7 @@
     "statMultiplier": 1.6,
     "requiredStats": {
       "healthPoints": 256,
-      "physicalDamage": 103,
+      "physicalDamage": 102,
       "physicalDefense": 0,
       "specialDamage": 0,
       "specialDefense": 0,

@@ -11,7 +11,7 @@
       "physicalDefense": 0,
       "specialDamage": 82,
       "specialDefense": 0,
-      "speed": 39
+      "speed": 27
     },
     "minHappiness": 55
   },
@@ -43,7 +43,7 @@
       "physicalDefense": 0,
       "specialDamage": 22,
       "specialDefense": 0,
-      "speed": 39
+      "speed": 27
     }
   }
 ]
