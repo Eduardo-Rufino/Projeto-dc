@@ -899,6 +899,32 @@ namespace ProjetoDC.Scripts.Managers
         /// <summary>Vitória que deu a medalha da temporada pela primeira vez: campeonato e pontos.</summary>
         public event Action<TournamentData, int> MedalWon;
 
+        /// <summary>Vitória no Grande Evento que conta pra temporada: o ano (temporada) vencido.</summary>
+        public event Action<int> GrandEventWon;
+
+        private List<TournamentData> AllTournaments() => DatabaseManager.Instance.GetAllTournaments().ToList();
+
+        /// <summary>Prévia pra tela de resultado: o ano que a vitória no Grande Evento em andamento vai
+        /// gravar ("Campeão do Ano N"), ou 0 se não é o Grande Evento ou a luta não conta (DEBUG_IGNORE_CALENDAR).</summary>
+        public int PreviewGrandEventChampionYear() =>
+            ActiveTournament != null && ActiveTournament.IsGrandEvent && _activeTournamentCountsForSeason
+                ? _activeTournamentEdition
+                : 0;
+
+        /// <summary>Situação de medalhas pra um campeonato que exige medalhas (card/tela): quantas tem, quantas
+        /// exige e se ainda dá pra chegar ao mínimo nesta temporada.</summary>
+        public (int Earned, int Required, bool Reachable) GetMedalRequirement(TournamentData tournament)
+        {
+            if (!CalendarSystem.IsLoaded || tournament.MedalsRequired <= 0)
+                return (0, tournament.MedalsRequired, true);
+
+            var all = AllTournaments();
+            int dayIndex = CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay);
+            int earned = CalendarSystem.MedalsThisSeason(CalendarSystem.Data, all, dayIndex, Save.Center.LastWonEdition);
+            int potential = CalendarSystem.MedalsPotential(CalendarSystem.Data, all, dayIndex, Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition);
+            return (earned, tournament.MedalsRequired, potential >= tournament.MedalsRequired);
+        }
+
         private bool CountsForSeason(TournamentData tournament, List<DigimonInstance> team)
         {
             if (!CalendarSystem.IsLoaded)
@@ -906,7 +932,7 @@ namespace ProjetoDC.Scripts.Managers
 
             var real = CalendarSystem.GetAvailability(
                 CalendarSystem.Data, tournament, CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay),
-                Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition);
+                Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition, AllTournaments());
 
             return real.CanStart && TournamentRules.ValidateTeam(tournament, team).IsValid;
         }
@@ -973,7 +999,8 @@ namespace ProjetoDC.Scripts.Managers
 
             return announcements
                 .Select(a => CalendarSystem.FormatAnnouncement(a,
-                    Math.Max(0, a.Tournament.Opponents.Count - CountEligibleDigimons(a.Tournament))))
+                    Math.Max(0, a.Tournament.Opponents.Count - CountEligibleDigimons(a.Tournament)),
+                    GetSeasonMedals().Earned))
                 .ToList();
         }
 
@@ -1003,7 +1030,7 @@ namespace ProjetoDC.Scripts.Managers
 
             int dayIndex = CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay);
             var availability = CalendarSystem.GetAvailability(
-                CalendarSystem.Data, tournament, dayIndex, Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition);
+                CalendarSystem.Data, tournament, dayIndex, Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition, AllTournaments());
 
             return IgnoreCalendar
                 ? availability with { Status = TournamentAvailabilityStatus.Available, Days = -1 }
@@ -1457,6 +1484,13 @@ namespace ProjetoDC.Scripts.Managers
                     CalendarSystem.HasSeasonMedal(CalendarSystem.Data, ActiveTournament, dayIndex, Save.Center.LastWonEdition))
                 {
                     MedalWon?.Invoke(ActiveTournament, ActiveTournament.MedalValue);
+                }
+
+                // Grande Evento: "Campeão do Ano N" (a edição de um Fixed é o ano em que abriu).
+                if (ActiveTournament.IsGrandEvent && !Save.Center.GrandEventWinYears.Contains(_activeTournamentEdition))
+                {
+                    Save.Center.GrandEventWinYears.Add(_activeTournamentEdition);
+                    GrandEventWon?.Invoke(_activeTournamentEdition);
                 }
             }
 

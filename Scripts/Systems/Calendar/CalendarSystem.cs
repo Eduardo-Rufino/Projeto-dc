@@ -241,15 +241,17 @@ namespace ProjetoDC.Scripts.Systems.Calendar
 
         /// <summary>
         /// Se o campeonato pode ser iniciado no dia <paramref name="dayIndex"/>: precisa estar aberto
-        /// (IsOpen), destravado (IsUnlocked) e não vencido na edição atual (LastWonEdition). Perder não
-        /// entra aqui - só vencer registra a edição.
+        /// (IsOpen), destravado (IsUnlocked), ter as medalhas da temporada exigidas (MedalsRequired - só é
+        /// checado quando <paramref name="allTournaments"/> é passado) e não ter sido vencido na edição atual
+        /// (LastWonEdition). Perder não entra aqui - só vencer registra a edição.
         /// </summary>
         public static TournamentAvailability GetAvailability(
             CalendarData cal,
             TournamentData tournament,
             int dayIndex,
             IEnumerable<int> clearedTournamentIds,
-            IReadOnlyDictionary<int, int> lastWonEdition)
+            IReadOnlyDictionary<int, int> lastWonEdition,
+            IReadOnlyCollection<TournamentData> allTournaments = null)
         {
             int edition = EditionId(cal, tournament, dayIndex);
 
@@ -258,6 +260,20 @@ namespace ProjetoDC.Scripts.Systems.Calendar
 
             if (!IsOpen(cal, tournament, dayIndex))
                 return new TournamentAvailability(TournamentAvailabilityStatus.Closed, DaysUntilOpen(cal, tournament, dayIndex), edition);
+
+            if (tournament.MedalsRequired > 0 && allTournaments != null)
+            {
+                int earned = MedalsThisSeason(cal, allTournaments, dayIndex, lastWonEdition);
+
+                if (earned < tournament.MedalsRequired)
+                {
+                    var status = MedalsPotential(cal, allTournaments, dayIndex, clearedTournamentIds, lastWonEdition) >= tournament.MedalsRequired
+                        ? TournamentAvailabilityStatus.NeedsMedals
+                        : TournamentAvailabilityStatus.MedalsUnreachable;
+
+                    return new TournamentAvailability(status, earned, edition);
+                }
+            }
 
             if (lastWonEdition != null && lastWonEdition.TryGetValue(tournament.Id, out int wonEdition) && wonEdition == edition)
                 return new TournamentAvailability(TournamentAvailabilityStatus.WonThisEdition, 0, edition);
@@ -354,6 +370,18 @@ namespace ProjetoDC.Scripts.Systems.Calendar
 
         /// <summary>Texto do aviso; <paramref name="missingEligible"/> &gt; 0 acrescenta quantos Digimon
         /// elegíveis faltam no Center pra montar o time.</summary>
+        /// <summary>Texto do aviso; <paramref name="missingEligible"/> &gt; 0 acrescenta quantos Digimon
+        /// elegíveis faltam; num campeonato que exige medalhas, <paramref name="medalsEarned"/> &gt;= 0
+        /// acrescenta "Medalhas: X/N".</summary>
+        public static string FormatAnnouncement(TournamentAnnouncement a, int missingEligible, int medalsEarned)
+        {
+            string text = FormatAnnouncement(a, missingEligible);
+
+            return a.Tournament.MedalsRequired > 0 && medalsEarned >= 0
+                ? $"{text} • Medalhas: {medalsEarned}/{a.Tournament.MedalsRequired}"
+                : text;
+        }
+
         public static string FormatAnnouncement(TournamentAnnouncement a, int missingEligible)
         {
             string text = a.Kind switch
@@ -435,6 +463,55 @@ namespace ProjetoDC.Scripts.Systems.Calendar
 
             int until = DaysUntilOpen(cal, tournament, dayIndex);
             return until >= 0 && Year(cal, ClampIndex(dayIndex) + until) == Year(cal, dayIndex);
+        }
+
+        /// <summary>
+        /// O máximo de medalhas que ainda dá pra ter nesta temporada: as já conquistadas + as que ainda abrem
+        /// no ano, contando também as travadas cuja trava ainda pode cair a tempo (o campeonato que destrava
+        /// já foi vencido algum dia, ou ainda abre neste ano antes da próxima abertura do travado). É o que
+        /// decide "Inalcançável nesta temporada" - MedalsAvailable, por definição, só conta as destravadas.
+        /// </summary>
+        public static int MedalsPotential(
+            CalendarData cal, IReadOnlyCollection<TournamentData> tournaments, int dayIndex,
+            IEnumerable<int> clearedTournamentIds, IReadOnlyDictionary<int, int> lastWonEdition)
+        {
+            var cleared = clearedTournamentIds.ToList();
+            int year = Year(cal, dayIndex);
+            int index = ClampIndex(dayIndex);
+            int potential = MedalsThisSeason(cal, tournaments, dayIndex, lastWonEdition);
+
+            // próximo dia (índice) em que abre ainda nesta temporada, ou -1
+            int NextOpenThisSeason(TournamentData t)
+            {
+                int until = DaysUntilOpen(cal, t, index);
+                return until >= 0 && Year(cal, index + until) == year ? index + until : -1;
+            }
+
+            // dá pra estar destravado até o dia <by>? (trava em cadeia, sem ciclos no dado)
+            bool CanUnlockBy(TournamentData t, int by, int depth)
+            {
+                if (IsUnlocked(t, cleared))
+                    return true;
+
+                var blocker = tournaments.FirstOrDefault(o => o.Id == t.UnlockAfterTournamentId);
+                if (blocker == null || depth > tournaments.Count)
+                    return false;
+
+                int blockerOpens = NextOpenThisSeason(blocker);
+                return blockerOpens >= 0 && blockerOpens < by && CanUnlockBy(blocker, blockerOpens, depth + 1);
+            }
+
+            foreach (var t in tournaments)
+            {
+                if (t.MedalValue <= 0 || HasSeasonMedal(cal, t, dayIndex, lastWonEdition))
+                    continue;
+
+                int opens = NextOpenThisSeason(t);
+                if (opens >= 0 && CanUnlockBy(t, opens + Math.Max(0, DaysOpenRemaining(cal, t, opens) - 1) + 1, 0))
+                    potential += t.MedalValue;
+            }
+
+            return potential;
         }
 
         /// <summary>Soma de MedalValue ainda alcançável nesta temporada (ver IsMedalReachable).</summary>

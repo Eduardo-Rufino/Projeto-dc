@@ -121,6 +121,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 ("winrate", TournamentWinRate),
                 ("notices", TournamentNotices),
                 ("medals", SeasonMedals),
+                ("grandevent", GrandEvent),
             };
 
             // A bateria testa a regra de elegibilidade de campeonatos de verdade (DEBUG_IGNORE_CALENDAR fora).
@@ -1512,6 +1513,28 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
         private int _tournamentRefusedClosed, _tournamentAcceptedOpen;
 
+        // Registra vitórias (LastWonEdition + vencidos) nas edições da temporada do dia <dayIndex> até somar
+        // pelo menos <medals> medalhas, dos campeonatos de maior valor pro menor. Estado de teste.
+        private void GiveSeasonMedals(int medals, int dayIndex)
+        {
+            var cal = CalendarSystem.Data;
+            int year = CalendarSystem.Year(cal, dayIndex);
+            int sum = 0;
+
+            foreach (var t in Db.GetAllTournaments().Where(t => t.MedalValue > 0).OrderByDescending(t => t.MedalValue).ThenBy(t => t.Id))
+            {
+                if (sum >= medals)
+                    break;
+
+                // primeira abertura do campeonato dentro do ano
+                int open = Enumerable.Range((year - 1) * cal.DaysPerYear, cal.DaysPerYear).First(i => CalendarSystem.IsOpen(cal, t, i));
+                Gm.Save.Center.LastWonEdition[t.Id] = CalendarSystem.EditionId(cal, t, open);
+                if (!Gm.Save.Center.ClearedTournamentIds.Contains(t.Id))
+                    Gm.Save.Center.ClearedTournamentIds.Add(t.Id);
+                sum += t.MedalValue;
+            }
+        }
+
         // Põe o relógio do estado descartável no índice de dia (0 = dia 1 do Ano 1) - CurrentDay começa em 1.
         private void SetDayIndex(int dayIndex) => Gm.Save.World.CurrentDay = dayIndex + 1;
 
@@ -1735,6 +1758,15 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
                 SetDayIndex(FirstDayIndex(t, open: true));
 
+                // Grande Evento: prepara as medalhas da temporada pela regra (vitórias registradas nas edições do
+                // ano), sem IgnoreCalendar - com menos que o mínimo é recusado, com o mínimo é aceito.
+                if (t.MedalsRequired > 0)
+                {
+                    Gm.StartTournamentBattle(t, team);
+                    Check(!Gm.IsBattleActive, $"{n}: iniciou sem medalhas");
+                    GiveSeasonMedals(t.MedalsRequired, FirstDayIndex(t, open: true));
+                }
+
                 // regra de inscrição: o mesmo time com 1 Digimon fora da regra é recusado
                 if (TournamentRules.HasRules(t))
                 {
@@ -1781,8 +1813,9 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
             if (string.IsNullOrEmpty(onlyT))
             {
-                Info($"campeonatos: recusados fechados {_tournamentRefusedClosed}/12, aceitos abertos e destravados {_tournamentAcceptedOpen}/12");
-                Info($"regras: com regra {_rulesTournaments} - time válido aceito {_rulesValidAccepted}/{_rulesTournaments}, time com 1 inválido recusado {_rulesInvalidRefused}/{_rulesTournaments}; sem regra aceitos {_noRulesAccepted}/{12 - _rulesTournaments}");
+                int tCount = db.GetAllTournaments().Count();
+                Info($"campeonatos: recusados fechados {_tournamentRefusedClosed}/{tCount}, aceitos abertos e destravados {_tournamentAcceptedOpen}/{tCount}");
+                Info($"regras: com regra {_rulesTournaments} - time válido aceito {_rulesValidAccepted}/{_rulesTournaments}, time com 1 inválido recusado {_rulesInvalidRefused}/{_rulesTournaments}; sem regra aceitos {_noRulesAccepted}/{tCount - _rulesTournaments}");
             }
 
             if (!string.IsNullOrEmpty(onlyT))
@@ -2346,13 +2379,13 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
             // os 12 campeonatos reais
             var tournaments = Db.GetAllTournaments().ToList();
-            Check(tournaments.Count == 12, $"agenda: {tournaments.Count} campeonatos carregados, esperado 12");
+            Check(tournaments.Count == 13, $"agenda: {tournaments.Count} campeonatos carregados, esperado 13");
             Info("tipos: " + string.Join(", ", Enum.GetValues<TournamentScheduleType>().Select(t => $"{t}={tournaments.Count(x => x.ScheduleType == t)}")));
 
             foreach (var t in tournaments)
             {
                 Check(t.ScheduleType != TournamentScheduleType.Always, $"agenda: campeonato {t.Id} {t.Name} sem ScheduleType");
-                Check(t.AnnounceDaysBefore == 5, $"agenda: campeonato {t.Id} {t.Name} com AnnounceDaysBefore {t.AnnounceDaysBefore}");
+                Check(t.AnnounceDaysBefore == (t.IsGrandEvent ? 9 : 5), $"agenda: campeonato {t.Id} {t.Name} com AnnounceDaysBefore {t.AnnounceDaysBefore}");
                 Check(t.UnlockAfterTournamentId == 0 || tournaments.Any(o => o.Id == t.UnlockAfterTournamentId),
                     $"agenda: campeonato {t.Id} trava num campeonato inexistente ({t.UnlockAfterTournamentId})");
 
@@ -2452,6 +2485,176 @@ namespace ProjetoDC.Scripts.Systems.Audit
             }
         }
 
+        // Grande Evento (campeonato com MedalsRequired): exigência de medalhas, só no dia 60, vitória grava o ano,
+        // derrota não, virada de ano, "Inalcançável", IgnoreCalendar, combinações de medalhas e o save real.
+        private async Task GrandEvent()
+        {
+            var cal = CalendarSystem.Data;
+            var db = Db;
+            var tournaments = db.GetAllTournaments().ToList();
+            var ge = tournaments.Single(t => t.IsGrandEvent);
+            var strongPool = AllSpecies().Where(sp => sp.Stage == DigimonStage.Mega)
+                .OrderByDescending(sp => Math.Max(sp.BaseStats.PhysicalDamage, sp.BaseStats.SpecialDamage) + sp.BaseStats.Speed).Take(6).ToList();
+            var results = new List<string>();
+            void Case(string name, bool ok, string detail)
+            {
+                Check(ok, $"grande evento: caso '{name}' falhou ({detail})");
+                results.Add($"{(ok ? "OK" : "FALHOU")} - {name}: {detail}");
+            }
+
+            // time de teste bem acima dos oponentes nível 65 (estado de teste, dentro da regra: sem restrição)
+            List<DigimonInstance> BoostedTeam()
+            {
+                var team = StrongTeam(ge, strongPool);
+                foreach (var d in team)
+                {
+                    d.CurrentStats.HealthPoints *= 20; d.CurrentStats.PhysicalDamage *= 20; d.CurrentStats.SpecialDamage *= 20;
+                    d.CurrentStats.PhysicalDefense *= 20; d.CurrentStats.SpecialDefense *= 20;
+                    d.MaxHealthPoints = d.CurrentStats.HealthPoints; d.RestoreHealth();
+                }
+                return team;
+            }
+
+            int day60y1 = 59, day60y2 = 119;
+            Case("dado", ge.Id == 13 && ge.ScheduleType == TournamentScheduleType.Fixed && ge.StartDayOfYear == 60 && ge.DurationDays == 1 &&
+                ge.Opponents.Count == 3 && ge.MedalsRequired == 12 && ge.MedalValue == 0 && ge.AnnounceDaysBefore == 9 &&
+                ge.Opponents.All(o => o.Level == 65) && ge.CapacityReward == 25 && ge.BitsReward == 80000,
+                $"{ge.Name}: {ge.ScheduleType} dia {ge.StartDayOfYear} x{ge.DurationDays}, {ge.Opponents.Count}x{ge.Opponents.Count}, oponentes {string.Join("/", ge.Opponents.Select(o => $"{db.GetDigimon(o.DigimonId)?.Name} nv{o.Level}"))}");
+            var t12 = tournaments.Single(t => t.Id == 12);
+            var overlap = Enumerable.Range(0, 60).Where(i => CalendarSystem.IsOpen(cal, t12, i) && CalendarSystem.IsOpen(cal, ge, i)).ToList();
+            Case("12 e 13 sem sobreposição", overlap.Count == 0 && t12.StartDayOfYear == 58 && t12.DurationDays == 2, $"dias em comum: {overlap.Count}");
+
+            // 11 recusa / 12 aceita (dia 60 do ano 1)
+            ResetScratch(bits: 0, capacity: 1000);
+            SetDayIndex(day60y1);
+            GiveSeasonMedals(11, day60y1);
+            int m11 = Gm.GetSeasonMedals().Earned;
+            var st11 = Gm.GetTournamentAvailability(ge).Status;
+            Gm.StartTournamentBattle(ge, BoostedTeam());
+            bool started11 = Gm.IsBattleActive;
+            if (started11) await DriveArenaToEnd(300);
+            Case("11 medalhas recusa", m11 == 11 && !started11, $"medalhas {m11}, status {st11}, inscrição {(started11 ? "ACEITA" : "recusada")}");
+
+            ResetScratch(bits: 0, capacity: 1000);
+            SetDayIndex(day60y1);
+            GiveSeasonMedals(12, day60y1);
+            int m12 = Gm.GetSeasonMedals().Earned;
+            Case("12 medalhas aceita", m12 >= 12 && Gm.GetTournamentAvailability(ge).CanStart, $"medalhas {m12}, status {Gm.GetTournamentAvailability(ge).Status}");
+
+            // fora do dia 60 (com medalhas)
+            SetDayIndex(day60y1 - 1);
+            var st59 = Gm.GetTournamentAvailability(ge);
+            Gm.StartTournamentBattle(ge, BoostedTeam());
+            bool started59 = Gm.IsBattleActive;
+            if (started59) await DriveArenaToEnd(300);
+            Case("recusa fora do dia 60", !started59 && st59.Status == TournamentAvailabilityStatus.Closed, $"dia 59: {st59.Status}, abre em {st59.Days}");
+
+            // derrota não grava (desiste), vitória grava o ano e bloqueia a edição
+            SetDayIndex(day60y1);
+            await LoseTournament(ge, strongPool, "Grande Evento, derrota");
+            Case("derrota não grava", Gm.Save.Center.GrandEventWinYears.Count == 0 && !Gm.Save.Center.LastWonEdition.ContainsKey(ge.Id) && Gm.GetTournamentAvailability(ge).CanStart,
+                $"anos {Gm.Save.Center.GrandEventWinYears.Count}, pode tentar de novo {Gm.GetTournamentAvailability(ge).CanStart}");
+
+            int champEvents = 0, championPreview = 0;
+            void OnChamp(int y) => champEvents++;
+            Gm.GrandEventWon += OnChamp;
+            try
+            {
+                Gm.StartTournamentBattle(ge, BoostedTeam());
+                BattleResult? res = null;
+                if (Gm.IsBattleActive)
+                {
+                    championPreview = Gm.PreviewGrandEventChampionYear();
+                    res = await DriveArenaToEnd(300);
+                }
+                var after = Gm.GetTournamentAvailability(ge);
+                Case("vitória grava o ano e bloqueia a edição", res == BattleResult.PlayerWon && Gm.Save.Center.GrandEventWinYears.SequenceEqual(new[] { 1 }) &&
+                    champEvents == 1 && championPreview == 1 && after.Status == TournamentAvailabilityStatus.WonThisEdition,
+                    $"resultado {res}, anos [{string.Join(",", Gm.Save.Center.GrandEventWinYears)}], aviso {champEvents}, prévia 'Campeão do Ano {championPreview}', depois {after.Status}");
+
+                // virada de ano: medalhas zeram e a edição reabre
+                SetDayIndex(day60y2);
+                var y2 = Gm.GetTournamentAvailability(ge);
+                int m2 = Gm.GetSeasonMedals().Earned;
+                GiveSeasonMedals(12, day60y2);
+                var y2ok = Gm.GetTournamentAvailability(ge);
+                Case("virada de ano zera e reabre", m2 == 0 && y2.Status == TournamentAvailabilityStatus.MedalsUnreachable && y2ok.CanStart,
+                    $"ano 2 dia 60: medalhas {m2} -> {y2.Status}; com 12 medalhas do ano 2 -> {y2ok.Status}");
+            }
+            finally
+            {
+                Gm.GrandEventWon -= OnChamp;
+            }
+
+            // "Inalcançável": dia 56 com 3 medalhas (Desafio/Trevas/Tamers) só dá pra chegar a 9 (8 e 12)
+            var none = new List<int>();
+            var won3 = new Dictionary<int, int> { [3] = 1, [4] = 1, [5] = 1 };
+            int pot56 = CalendarSystem.MedalsPotential(cal, tournaments, 55, new List<int> { 3, 4, 5 }, won3);
+            var av56 = CalendarSystem.GetAvailability(cal, ge, 55, new List<int> { 3, 4, 5 }, won3, tournaments);
+            // dia 51 com 8 (4,5,6,7,9): ainda chega a 14 (8 e 12, que o 8 destrava a tempo)
+            var won8 = new Dictionary<int, int> { [4] = 1, [5] = 1, [6] = 1, [7] = 1, [9] = 1 };
+            int pot51 = CalendarSystem.MedalsPotential(cal, tournaments, 50, new List<int> { 4, 5, 6, 7, 9 }, won8);
+            Case("Inalcançável", pot56 == 9 && pot51 == 14, $"dia 56 com 3: potencial {pot56} (inalcançável); dia 51 com 8: potencial {pot51} (alcançável); status do 13 fechado no dia 56: {av56.Status}");
+            int pot0 = CalendarSystem.MedalsPotential(cal, tournaments, 0, none, new Dictionary<int, int>());
+            Info($"potencial no dia 1 de um jogo novo (nada vencido): {pot0} (o 11 abre no dia 45, antes da Copa Mega que o destrava no dia 55)");
+
+            // IgnoreCalendar: ignora MedalsRequired, mas não grava ano nem edição
+            ResetScratch(bits: 0, capacity: 1000);
+            SetDayIndex(day60y1);
+            Gm.IgnoreCalendar = true;
+            if (Gm.IgnoreCalendar)
+            {
+                Gm.StartTournamentBattle(ge, BoostedTeam());
+                bool dbgStarted = Gm.IsBattleActive;
+                int dbgPreview = dbgStarted ? Gm.PreviewGrandEventChampionYear() : -1;
+                if (dbgStarted) await DriveArenaToEnd(300);
+                Gm.IgnoreCalendar = false;
+                Case("IgnoreCalendar", dbgStarted && dbgPreview == 0 && Gm.Save.Center.GrandEventWinYears.Count == 0 && !Gm.Save.Center.LastWonEdition.ContainsKey(ge.Id),
+                    $"inscrição sem medalhas {(dbgStarted ? "aceita" : "RECUSADA")}, prévia {dbgPreview}, anos {Gm.Save.Center.GrandEventWinYears.Count}");
+            }
+            Gm.IgnoreCalendar = false;
+
+            // avisos com "Medalhas: X/12" e máximo por dia com o 13
+            ResetScratch(bits: 0, capacity: 1000);
+            SetDayIndex(50); // dia 51 = 9 dias antes do dia 60
+            GiveSeasonMedals(5, 50);
+            var msg = Gm.GetTournamentAnnouncementMessages().FirstOrDefault(m => m.StartsWith(ge.Name));
+            Case("aviso 9 dias antes", msg != null && msg.Contains("abre em 9 dias") && msg.EndsWith($"Medalhas: {Gm.GetSeasonMedals().Earned}/12"), $"\"{msg}\"");
+            int maxDay = 0;
+            for (int d = 1; d < 120; d++)
+                maxDay = Math.Max(maxDay, CalendarSystem.GetAnnouncements(cal, tournaments, d, new List<int> { 3, 8 }, new Dictionary<int, int>()).Count);
+            // Com tudo destravado o dia 45 já tinha 3 avisos antes do Grande Evento (abertura da Copa das Lendas,
+            // "abre em 5 dias" do Reis do Mar e último dia do Trio Guardião 02) - decisão do dev: só relatar por ora.
+            if (maxDay > 2)
+                Warn($"grande evento: com tudo destravado há {maxDay} avisos num dia (dia 45: Copa das Lendas/Reis do Mar/Trio Guardião 02, anterior ao Grande Evento)");
+            results.Add($"INFO - máximo de avisos por dia com tudo destravado: {maxDay}");
+
+            // combinações de campeonatos que chegam a 12 (sem calendário/trava) e quantos dá pra pular
+            var medalTs = tournaments.Where(t => t.MedalValue > 0).ToList();
+            int combos = 0, maxSkip = 0;
+            for (int mask = 0; mask < (1 << medalTs.Count); mask++)
+            {
+                int sum = 0, won = 0;
+                for (int i = 0; i < medalTs.Count; i++)
+                    if ((mask & (1 << i)) != 0) { sum += medalTs[i].MedalValue; won++; }
+                if (sum >= 12) { combos++; maxSkip = Math.Max(maxSkip, medalTs.Count - won); }
+            }
+            Info($"combinações que chegam a 12: {combos} de {1 << medalTs.Count} subconjuntos dos {medalTs.Count} campeonatos com medalha; dá pra pular no máximo {maxSkip}");
+
+            foreach (var r in results)
+                Info(r);
+
+            // save real (somente leitura)
+            string path = ProjectSettings.GlobalizePath("user://save.json");
+            if (System.IO.File.Exists(path))
+            {
+                var real = JsonSerializer.Deserialize<SaveData>(System.IO.File.ReadAllText(path));
+                int elig = real.Center.Digimons.Count(d => TournamentRules.IsEligible(ge, d.BaseData));
+                Check(real.Center.GrandEventWinYears != null && real.Center.GrandEventWinYears.Count == 0, "grande evento: save real não entrou com GrandEventWinYears vazio");
+                Info($"save real: dia {real.World.CurrentDay}, GrandEventWinYears [{string.Join(",", real.Center.GrandEventWinYears)}], elegíveis pro {ge.Name}: {elig} de {real.Center.Digimons.Count}");
+            }
+        }
+
         // Medalhas da temporada (CalendarSystem.MedalsThisSeason/MedalsAvailable + GameManager.MedalWon): a
         // tabela de MedalValue, os casos da fase 6 com vitórias de verdade e o save real (somente leitura).
         private async Task SeasonMedals()
@@ -2463,7 +2666,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 .OrderByDescending(s => Math.Max(s.BaseStats.PhysicalDamage, s.BaseStats.SpecialDamage) + s.BaseStats.Speed).Take(6).ToList();
 
             // ---- tabela
-            var expected = new Dictionary<int, int> { [1] = 0, [2] = 0, [3] = 1, [4] = 1, [5] = 1, [6] = 2, [7] = 2, [8] = 3, [9] = 2, [10] = 2, [11] = 3, [12] = 3 };
+            var expected = new Dictionary<int, int> { [1] = 0, [2] = 0, [3] = 1, [4] = 1, [5] = 1, [6] = 2, [7] = 2, [8] = 3, [9] = 2, [10] = 2, [11] = 3, [12] = 3, [13] = 0 };
             int explicitCount = 0;
             using (var dir = DirAccess.Open("res://Data/Tournaments/"))
                 foreach (var file in dir.GetFiles().Where(f => f.EndsWith(".json")))
@@ -2474,8 +2677,8 @@ namespace ProjetoDC.Scripts.Systems.Audit
             foreach (var t in tournaments)
                 Check(expected.TryGetValue(t.Id, out int mv) && t.MedalValue == mv, $"medalhas: {t.Id} {t.Name} MedalValue {t.MedalValue}");
             int total = CalendarSystem.MedalsTotal(tournaments);
-            Check(explicitCount == 12 && total == 20, $"medalhas: {explicitCount}/12 com MedalValue explícito, soma {total} (esperado 20)");
-            Info($"tabela: {explicitCount}/12 definidos, soma {total}: " + string.Join(", ", tournaments.Select(t => $"{t.Id}={t.MedalValue}")));
+            Check(explicitCount == tournaments.Count && total == 20, $"medalhas: {explicitCount}/{tournaments.Count} com MedalValue explícito, soma {total} (esperado 20)");
+            Info($"tabela: {explicitCount}/{tournaments.Count} definidos, soma {total}: " + string.Join(", ", tournaments.Select(t => $"{t.Id}={t.MedalValue}")));
 
             var results = new List<string>();
             void Case(string name, bool ok, string detail)
@@ -2604,7 +2807,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
             // ---- GetUpcoming
             var up0 = CalendarSystem.GetUpcoming(cal, tournaments, 0, none, noWins);
             Check(up0.All(u => u.Tournament.UnlockAfterTournamentId == 0), "avisos: GetUpcoming listou campeonato travado");
-            Check(up0.Select(u => u.Tournament.Id).OrderBy(i => i).SequenceEqual(Enumerable.Range(1, 9)), $"avisos: GetUpcoming no dia 1 = [{string.Join(",", up0.Select(u => u.Tournament.Id))}], esperado 1-9");
+            Check(up0.Select(u => u.Tournament.Id).OrderBy(i => i).SequenceEqual(Enumerable.Range(1, 9).Append(13)), $"avisos: GetUpcoming no dia 1 = [{string.Join(",", up0.Select(u => u.Tournament.Id))}], esperado 1-9 e 13");
             Check(up0.Zip(up0.Skip(1)).All(p => p.First.DaysUntilOpen <= p.Second.DaysUntilOpen), "avisos: GetUpcoming fora de ordem");
             Check(up0.First().IsOpen, "avisos: GetUpcoming não começa pelos abertos");
             var novatoWon = new Dictionary<int, int> { [1] = 0 };
@@ -2798,7 +3001,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
             {
                 [1] = "Só Rookie", [2] = "Só Rookie", [3] = "Só Champion", [4] = "Só Vírus", [5] = "Sem restrição",
                 [6] = "Só Ultimate", [7] = "Sem restrição", [8] = "Só Mega", [9] = "Só Vacina", [10] = "Só Ultimate",
-                [11] = "Sem restrição", [12] = "Só Mega",
+                [11] = "Sem restrição", [12] = "Só Mega", [13] = "Sem restrição",
             };
             foreach (var t in tournaments)
                 Check(expected.TryGetValue(t.Id, out var e) && TournamentRules.Describe(t) == e, $"regras: {t.Id} {t.Name} = {TournamentRules.Describe(t)}, esperado {(expected.TryGetValue(t.Id, out var e2) ? e2 : "?")}");

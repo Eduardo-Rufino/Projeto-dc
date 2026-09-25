@@ -480,6 +480,7 @@ namespace ProjetoDC.Scripts.UI
             GameManager.Instance.PlayerDigimonChanged += OnPlayerDigimonChanged;
             GameManager.Instance.CookingFinished += OnCookingFinished;
             GameManager.Instance.MedalWon += OnMedalWon;
+            GameManager.Instance.GrandEventWon += OnGrandEventWon;
 
             if (GameManager.Instance.PlayerDigimon != null)
                 InspectDigimon(GameManager.Instance.PlayerDigimon);
@@ -543,6 +544,7 @@ namespace ProjetoDC.Scripts.UI
                 GameManager.Instance.PlayerDigimonChanged -= OnPlayerDigimonChanged;
                 GameManager.Instance.CookingFinished -= OnCookingFinished;
                 GameManager.Instance.MedalWon -= OnMedalWon;
+                GameManager.Instance.GrandEventWon -= OnGrandEventWon;
             }
 
             if (_inspectedDigimon != null)
@@ -684,6 +686,11 @@ namespace ProjetoDC.Scripts.UI
         {
             ShowTournamentNotice($"Medalha conquistada: {tournament.Name} (+{points})");
             RefreshDateTime();
+        }
+
+        private void OnGrandEventWon(int year)
+        {
+            ShowTournamentNotice($"Campeão do Ano {year}!");
         }
 
         /// <summary>Enfileira um aviso de campeonato - um de cada vez, com fade, some sozinho.</summary>

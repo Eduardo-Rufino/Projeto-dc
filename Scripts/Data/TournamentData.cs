@@ -71,5 +71,11 @@ namespace ProjetoDC.Scripts.Data
         /// <summary>Pontos de medalha da temporada (o ano do calendário) ao vencer este campeonato - uma
         /// medalha por campeonato por temporada (ver CalendarSystem.MedalsThisSeason). 0 = não dá medalha.</summary>
         public int MedalValue { get; set; }
+
+        /// <summary>Medalhas da temporada necessárias pra se inscrever (0 = nenhuma). Campeonato com
+        /// exigência de medalhas é o Grande Evento: vencer grava o ano em CenterState.GrandEventWinYears.</summary>
+        public int MedalsRequired { get; set; }
+
+        public bool IsGrandEvent => MedalsRequired > 0;
     }
 }

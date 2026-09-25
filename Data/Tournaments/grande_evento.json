@@ -1,0 +1,21 @@
+{
+  "Id": 13,
+  "Name": "Grande Evento",
+  "Description": "O clímax da temporada, só no último dia do ano - Examon, Jesmon e Sakuyamon. Exige 12 medalhas conquistadas na temporada.",
+  "RecommendedLevel": 60,
+  "Opponents": [
+    { "DigimonId": 174, "Level": 65 },
+    { "DigimonId": 166, "Level": 65 },
+    { "DigimonId": 175, "Level": 65 }
+  ],
+  "CapacityReward": 25,
+  "BitsReward": 80000,
+  "ScheduleType": "Fixed",
+  "StartDayOfYear": 60,
+  "DurationDays": 1,
+  "AnnounceDaysBefore": 9,
+  "AllowedStages": [],
+  "AllowedAttributes": [],
+  "MedalValue": 0,
+  "MedalsRequired": 12
+}

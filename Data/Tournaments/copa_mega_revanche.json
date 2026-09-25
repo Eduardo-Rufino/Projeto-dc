@@ -11,7 +11,7 @@
   "BitsReward": 50000,
   "ScheduleType": "Fixed",
   "StartDayOfYear": 58,
-  "DurationDays": 3,
+  "DurationDays": 2,
   "UnlockAfterTournamentId": 8,
   "AnnounceDaysBefore": 5,
   "AllowedStages": ["Mega"],

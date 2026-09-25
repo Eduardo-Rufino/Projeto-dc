@@ -66,6 +66,18 @@ namespace ProjetoDC.Scripts.UI
             _levelLabel.Text = $"Nível recomendado: {tournament.RecommendedLevel}";
             _rulesLabel.Text = TournamentRules.Describe(tournament);
 
+            // Grande Evento: a exigência de medalhas aparece sempre, mesmo com o campeonato fechado.
+            if (tournament.MedalsRequired > 0)
+            {
+                var medals = GameManager.Instance.GetMedalRequirement(tournament);
+                bool reasonShownBelow = availability.Status is TournamentAvailabilityStatus.NeedsMedals or TournamentAvailabilityStatus.MedalsUnreachable;
+                _rulesLabel.Text += medals.Earned >= medals.Required || reasonShownBelow
+                    ? $" • Medalhas: {medals.Earned}/{medals.Required}"
+                    : medals.Reachable
+                        ? $" • Requer {medals.Required} medalhas (você tem {medals.Earned})"
+                        : $" • Inalcançável nesta temporada ({medals.Earned}/{medals.Required} medalhas)";
+            }
+
             var opponentNames = tournament.Opponents.Select(o =>
             {
                 var data = DatabaseManager.Instance.GetDigimon(o.DigimonId);
@@ -93,6 +105,12 @@ namespace ProjetoDC.Scripts.UI
 
                 case TournamentAvailabilityStatus.WonThisEdition:
                     return "Concluído nesta edição";
+
+                case TournamentAvailabilityStatus.NeedsMedals:
+                    return $"Requer {tournament.MedalsRequired} medalhas (você tem {availability.Days})";
+
+                case TournamentAvailabilityStatus.MedalsUnreachable:
+                    return "Inalcançável nesta temporada";
 
                 default:
                     return availability.Days > 0 ? $"Aberto por mais {Days(availability.Days)}" : "";

@@ -137,6 +137,10 @@ namespace ProjetoDC.Scripts.Models.World
         /// entra vazio.</summary>
         public Dictionary<int, int> LastWonEdition { get; set; } = new();
 
+        /// <summary>Anos (temporadas) em que o Grande Evento (TournamentData.IsGrandEvent) foi vencido -
+        /// "Campeão do Ano N". Save antigo entra vazio.</summary>
+        public List<int> GrandEventWinYears { get; set; } = new();
+
         /// <summary>ItemPickupData.UniqueId (dentro de um ExplorationMapData) já coletados -
         /// esses pickups não voltam a aparecer na área (ver ExplorationArea).</summary>
         public List<int> CollectedItemPickupIds { get; set; } = new();

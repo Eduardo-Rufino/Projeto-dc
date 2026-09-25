@@ -1,7 +1,7 @@
 namespace ProjetoDC.Enums
 {
     /// <summary>Se um campeonato pode ser iniciado agora (ver CalendarSystem.GetAvailability). Quando
-    /// mais de um motivo vale, a ordem de prioridade é Locked, Closed, WonThisEdition.</summary>
+    /// mais de um motivo vale, a ordem de prioridade é Locked, Closed, NeedsMedals/MedalsUnreachable, WonThisEdition.</summary>
     public enum TournamentAvailabilityStatus
     {
         Available,
@@ -14,5 +14,11 @@ namespace ProjetoDC.Enums
 
         /// <summary>Já vencido na edição que está aberta agora - reabre na próxima edição.</summary>
         WonThisEdition,
+
+        /// <summary>Faltam medalhas da temporada (TournamentData.MedalsRequired). Days = medalhas que tem.</summary>
+        NeedsMedals,
+
+        /// <summary>Faltam medalhas e não dá mais pra chegar ao mínimo nesta temporada. Days = medalhas que tem.</summary>
+        MedalsUnreachable,
     }
 }

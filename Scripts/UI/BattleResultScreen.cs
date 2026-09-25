@@ -57,6 +57,10 @@ namespace ProjetoDC.Scripts.UI
                     int medal = GameManager.Instance?.PreviewActiveTournamentMedal() ?? 0;
                     if (medal > 0)
                         _rewardLabel.Text += $"\nMedalha conquistada: {GameManager.Instance.ActiveTournament.Name} (+{medal})";
+
+                    int championYear = GameManager.Instance?.PreviewGrandEventChampionYear() ?? 0;
+                    if (championYear > 0)
+                        _rewardLabel.Text += $"\nCampeão do Ano {championYear}!";
                     break;
 
                 case BattleResult.EnemyWon:
