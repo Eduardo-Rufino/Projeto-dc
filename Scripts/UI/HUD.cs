@@ -2,6 +2,7 @@ using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.Systems.Calendar;
 
 namespace ProjetoDC.Scripts.UI
 {
@@ -479,7 +480,11 @@ namespace ProjetoDC.Scripts.UI
             var world = GameManager.Instance.Save.World;
 
             _dateLabel.Text = $"Dia {world.CurrentDay}";
-            _calendarLabel.Text = "Calendário";
+            // RefreshDateTime roda a cada MinutePassed, que o ClockSystem dispara logo depois do
+            // DayPassed na virada do dia - então o calendário acompanha a troca de dia sem gancho extra.
+            _calendarLabel.Text = CalendarSystem.IsLoaded
+                ? CalendarSystem.Format(CalendarSystem.GetDateFromCurrentDay(world.CurrentDay))
+                : "Calendário";
             _clockLabel.Text =
                 $"{world.CurrentHour:00}:{world.CurrentMinute:00}";
 

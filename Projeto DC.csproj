@@ -143,6 +143,7 @@
     <Content Include="Data\Tournaments\trio_guardiao_02.json" />
     <Content Include="Data\Tournaments\copa_lendaria.json" />
     <Content Include="Data\Tournaments\copa_mega_revanche.json" />
+    <Content Include="Data\Calendar\calendar.json" />
     <Content Include="Data\Digimon\rizegreymon.json" />
     <Content Include="Data\Digimon\shinegreymon.json" />
     <Content Include="Data\Digimon\yaamon.json" />

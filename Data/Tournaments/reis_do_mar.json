@@ -6,5 +6,9 @@
   "Opponents": [
     { "DigimonId": 68, "Level": 30 }
   ],
-  "BitsReward": 20000
+  "BitsReward": 20000,
+  "ScheduleType": "Fixed",
+  "StartDayOfYear": 50,
+  "DurationDays": 3,
+  "AnnounceDaysBefore": 5
 }

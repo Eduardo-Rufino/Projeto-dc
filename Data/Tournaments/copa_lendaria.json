@@ -8,5 +8,10 @@
     { "DigimonId": 55, "Level": 48 },
     { "DigimonId": 73, "Level": 48 }
   ],
-  "CapacityReward": 20
+  "CapacityReward": 20,
+  "ScheduleType": "Fixed",
+  "StartDayOfYear": 45,
+  "DurationDays": 5,
+  "UnlockAfterTournamentId": 8,
+  "AnnounceDaysBefore": 5
 }

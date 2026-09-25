@@ -8,5 +8,9 @@
     { "DigimonId": 20, "Level": 19 },
     { "DigimonId": 19, "Level": 19 }
   ],
-  "BitsReward": 8000
+  "BitsReward": 8000,
+  "ScheduleType": "Window",
+  "StartDayOfYear": 20,
+  "EndDayOfYear": 35,
+  "AnnounceDaysBefore": 5
 }

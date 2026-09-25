@@ -6,6 +6,7 @@ using ProjetoDC.Scripts.Managers;
 using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.Save;
 using ProjetoDC.Scripts.Systems.Battle;
+using ProjetoDC.Scripts.Systems.Calendar;
 using ProjetoDC.Scripts.Systems.Clock;
 using ProjetoDC.Scripts.Systems.Center;
 using ProjetoDC.Scripts.Systems.Eggs;
@@ -114,6 +115,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 ("misc", Misc),
                 ("suddendeath", SuddenDeath),
                 ("lifespan", Lifespan),
+                ("calendar", Calendar),
             };
 
             // Desliga qualquer gravação de save durante a bateria (o save real só é LIDO).
@@ -1956,6 +1958,216 @@ namespace ProjetoDC.Scripts.Systems.Audit
             }
 
             return (null, "não convergiu");
+        }
+
+        // Calendário de estações (CalendarSystem): funções puras sobre o índice de dia (0 = primeiro
+        // dia do Ano 1) e a conversão a partir do CurrentDay de saves reais/antigos.
+        private Task Calendar()
+        {
+            var cal = CalendarSystem.Data;
+            Check(cal != null, "calendário: Data/Calendar/calendar.json não carregou");
+            if (cal == null)
+                return Task.CompletedTask;
+
+            Check(cal.DaysPerSeason == 15 && cal.SeasonCount == 4 && cal.DaysPerYear == 60,
+                $"calendário: config inesperada ({cal.DaysPerSeason} dias x {cal.SeasonCount} estações)");
+
+            // índice -> (ano, estação, dia da estação, dia do ano)
+            var expected = new (int Index, int Year, int Season, int DayOfSeason, int DayOfYear)[]
+            {
+                (0, 1, 1, 1, 1),
+                (14, 1, 1, 15, 15),
+                (15, 1, 2, 1, 16),
+                (59, 1, 4, 15, 60),
+                (60, 2, 1, 1, 1),
+                (61, 2, 1, 2, 2),
+                (119, 2, 4, 15, 60),
+                (120, 3, 1, 1, 1),
+                (10000, 167, 3, 11, 41),
+            };
+
+            foreach (var e in expected)
+            {
+                var d = CalendarSystem.GetDate(cal, e.Index);
+                Check(d.Year == e.Year && d.Season == e.Season && d.DayOfSeason == e.DayOfSeason && d.DayOfYear == e.DayOfYear,
+                    $"calendário: índice {e.Index} deu Ano {d.Year} Estação {d.Season} Dia {d.DayOfSeason} (DiaDoAno {d.DayOfYear}), esperado Ano {e.Year} Estação {e.Season} Dia {e.DayOfSeason} (DiaDoAno {e.DayOfYear})");
+                Info($"índice {e.Index} -> {CalendarSystem.Format(d)} (DiaDoAno {d.DayOfYear})");
+            }
+
+            // varredura: faixas sempre válidas e o dia sempre avança 1 (sem pular nem repetir)
+            int outOfRange = 0, badStep = 0;
+            var prev = CalendarSystem.GetDate(cal, 0);
+            for (int i = 0; i < 10000; i++)
+            {
+                var d = CalendarSystem.GetDate(cal, i);
+                if (d.DayOfYear < 1 || d.DayOfYear > 60 || d.DayOfSeason < 1 || d.DayOfSeason > 15 || d.Season < 1 || d.Season > 4)
+                    outOfRange++;
+                if (i > 0 && (d.Year - 1) * 60 + d.DayOfYear != (prev.Year - 1) * 60 + prev.DayOfYear + 1)
+                    badStep++;
+                if (CalendarSystem.DaysUntil(cal, i, d.DayOfYear) != 0 || CalendarSystem.GetDate(cal, i + CalendarSystem.DaysUntil(cal, i, 1)).DayOfYear != 1)
+                    badStep++;
+                prev = d;
+            }
+            Check(outOfRange == 0, $"calendário: {outOfRange} dia(s) fora da faixa em 10.000");
+            Check(badStep == 0, $"calendário: {badStep} passo(s)/DaysUntil incoerente(s) em 10.000");
+
+            // DaysUntil atravessando a virada de ano
+            Check(CalendarSystem.DaysUntil(cal, 59, 1) == 1, "calendário: DaysUntil(59 -> dia 1) != 1");
+            Check(CalendarSystem.DaysUntil(cal, 0, 60) == 59, "calendário: DaysUntil(0 -> dia 60) != 59");
+            Check(CalendarSystem.DaysUntil(cal, 30, 10) == 39, "calendário: DaysUntil(30 -> dia 10) != 39");
+            Check(CalendarSystem.DaysUntil(cal, 70, 11) == 0, "calendário: DaysUntil(70 -> dia 11) != 0");
+
+            // CurrentDay (começa em 1) -> índice
+            Check(CalendarSystem.Format(CalendarSystem.GetDateFromCurrentDay(1)) == "Ano 1 • Primavera • Dia 1", "calendário: jogo novo (CurrentDay 1) não é Ano 1 • Primavera • Dia 1");
+            Check(CalendarSystem.Format(CalendarSystem.GetDateFromCurrentDay(61)) == "Ano 2 • Primavera • Dia 1", "calendário: CurrentDay 61 não é Ano 2 • Primavera • Dia 1");
+
+            CalendarTournamentSchedule(cal);
+
+            // saves reais/antigos: só lê o CurrentDay e mostra o label que a HUD exibiria
+            string dir = ProjectSettings.GlobalizePath("user://");
+            foreach (var path in System.IO.Directory.GetFiles(dir, "save*").OrderBy(p => p))
+            {
+                try
+                {
+                    var s = JsonSerializer.Deserialize<SaveData>(System.IO.File.ReadAllText(path));
+                    if (s?.World == null)
+                        continue;
+                    string label = CalendarSystem.Format(CalendarSystem.GetDateFromCurrentDay(s.World.CurrentDay));
+                    Info($"{System.IO.Path.GetFileName(path)}: CurrentDay {s.World.CurrentDay} -> \"{label}\"");
+                }
+                catch (Exception ex)
+                {
+                    Info($"{System.IO.Path.GetFileName(path)}: não desserializa ({ex.GetType().Name}), ignorado");
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // Agenda dos campeonatos (CalendarSystem.IsOpen/DaysUntilOpen/IsUnlocked): casos sintéticos + os 12
+        // campeonatos reais. Imprime a agenda de um ano ([AUDIT-AGENDA]) pra gerar calendario/analise/agenda.md.
+        private void CalendarTournamentSchedule(CalendarData cal)
+        {
+            int year = cal.DaysPerYear;
+            int Idx(int yearNumber, int dayOfYear) => (yearNumber - 1) * year + dayOfYear - 1;
+
+            TournamentData T(TournamentScheduleType type, int start = 0, int end = 0, int interval = 0, int offset = 0, int duration = 0) =>
+                new() { Id = -1, Name = "teste", ScheduleType = type, StartDayOfYear = start, EndDayOfYear = end, IntervalDays = interval, OffsetDays = offset, DurationDays = duration };
+
+            void Open(TournamentData t, int index, bool expected, string what) =>
+                Check(CalendarSystem.IsOpen(cal, t, index) == expected, $"agenda: {what} (índice {index}) deveria estar {(expected ? "aberto" : "fechado")}");
+
+            void Until(TournamentData t, int index, int expected, string what)
+            {
+                int got = CalendarSystem.DaysUntilOpen(cal, t, index);
+                Check(got == expected, $"agenda: DaysUntilOpen {what} (índice {index}) = {got}, esperado {expected}");
+            }
+
+            // Always
+            var always = T(TournamentScheduleType.Always);
+            Open(always, 0, true, "Always");
+            Open(always, 9999, true, "Always");
+            Until(always, 123, 0, "Always");
+
+            // janela simples 10..25: início e fim
+            var window = T(TournamentScheduleType.Window, start: 10, end: 25);
+            Open(window, Idx(1, 9), false, "janela 10-25, dia 9");
+            Open(window, Idx(1, 10), true, "janela 10-25, dia 10");
+            Open(window, Idx(1, 25), true, "janela 10-25, dia 25");
+            Open(window, Idx(1, 26), false, "janela 10-25, dia 26");
+            Open(window, Idx(3, 10), true, "janela 10-25, ano 3 dia 10");
+            Until(window, Idx(1, 1), 9, "janela 10-25 a partir do dia 1");
+            Until(window, Idx(1, 26), 44, "janela 10-25 a partir do dia 26 (abre no dia 10 do ano seguinte)");
+
+            // janela atravessando a virada do ano: 58..2
+            var wrap = T(TournamentScheduleType.Window, start: 58, end: 2);
+            Open(wrap, Idx(1, 57), false, "janela 58-2, dia 57");
+            Open(wrap, Idx(1, 58), true, "janela 58-2, dia 58");
+            Open(wrap, Idx(1, 60), true, "janela 58-2, dia 60");
+            Open(wrap, Idx(2, 1), true, "janela 58-2, ano 2 dia 1");
+            Open(wrap, Idx(2, 2), true, "janela 58-2, ano 2 dia 2");
+            Open(wrap, Idx(2, 3), false, "janela 58-2, ano 2 dia 3");
+            Open(wrap, Idx(1, 1), true, "janela 58-2, ano 1 dia 1");
+            Until(wrap, Idx(1, 57), 1, "janela 58-2 a partir do dia 57");
+            Until(wrap, Idx(2, 3), 55, "janela 58-2 a partir do dia 3");
+
+            // fixo atravessando a virada do ano: dia 59 por 5 dias = 59, 60, 1, 2, 3
+            var fixedWrap = T(TournamentScheduleType.Fixed, start: 59, duration: 5);
+            Open(fixedWrap, Idx(1, 58), false, "fixo 59x5, dia 58");
+            Open(fixedWrap, Idx(1, 59), true, "fixo 59x5, dia 59");
+            Open(fixedWrap, Idx(2, 3), true, "fixo 59x5, ano 2 dia 3");
+            Open(fixedWrap, Idx(2, 4), false, "fixo 59x5, ano 2 dia 4");
+
+            // fixo em 2 anos seguidos: dia 40 por 3 dias
+            var fixed40 = T(TournamentScheduleType.Fixed, start: 40, duration: 3);
+            foreach (int y in new[] { 1, 2 })
+            {
+                Open(fixed40, Idx(y, 39), false, $"fixo 40x3, ano {y} dia 39");
+                Open(fixed40, Idx(y, 40), true, $"fixo 40x3, ano {y} dia 40");
+                Open(fixed40, Idx(y, 42), true, $"fixo 40x3, ano {y} dia 42");
+                Open(fixed40, Idx(y, 43), false, $"fixo 40x3, ano {y} dia 43");
+            }
+            Until(fixed40, Idx(1, 43), 57, "fixo 40x3 a partir do dia 43 (abre no dia 40 do ano 2)");
+            Until(fixed40, Idx(2, 1), 39, "fixo 40x3 a partir do ano 2 dia 1");
+
+            // recorrente em vários anos: a cada 7 dias corridos (não divide 60), deslocado 3, aberto 2
+            var recurring = T(TournamentScheduleType.Recurring, interval: 7, offset: 3, duration: 2);
+            Open(recurring, 2, false, "recorrente 7/3/2 antes do deslocamento");
+            Open(recurring, 3, true, "recorrente 7/3/2, índice 3");
+            Open(recurring, 4, true, "recorrente 7/3/2, índice 4");
+            Open(recurring, 5, false, "recorrente 7/3/2, índice 5");
+            Open(recurring, 10, true, "recorrente 7/3/2, índice 10");
+            Open(recurring, 3 + 7 * 100, true, "recorrente 7/3/2, ano 12 (índice 703)");
+            Open(recurring, 3 + 7 * 100 + 2, false, "recorrente 7/3/2, índice 705");
+            Until(recurring, 0, 3, "recorrente 7/3/2 a partir do índice 0");
+            Until(recurring, 5, 5, "recorrente 7/3/2 a partir do índice 5");
+            Until(recurring, 3 + 7 * 1000 + 2, 5, "recorrente 7/3/2 no ano 117");
+            int openYear1 = Enumerable.Range(Idx(1, 1), year).Count(i => CalendarSystem.IsOpen(cal, recurring, i));
+            int openYear2 = Enumerable.Range(Idx(2, 1), year).Count(i => CalendarSystem.IsOpen(cal, recurring, i));
+            Info($"recorrente 7/3/2: {openYear1} dias abertos no ano 1, {openYear2} no ano 2 (as datas andam porque 7 não divide {year})");
+
+            // trava
+            var locked = new TournamentData { UnlockAfterTournamentId = 8 };
+            Check(!CalendarSystem.IsUnlocked(locked, new[] { 1, 2, 3 }), "agenda: trava após o 8 liberou sem o 8 vencido");
+            Check(CalendarSystem.IsUnlocked(locked, new[] { 8 }), "agenda: trava após o 8 não liberou com o 8 vencido");
+            Check(CalendarSystem.IsUnlocked(always, Array.Empty<int>()), "agenda: campeonato sem trava ficou travado");
+
+            // os 12 campeonatos reais
+            var tournaments = Db.GetAllTournaments().ToList();
+            Check(tournaments.Count == 12, $"agenda: {tournaments.Count} campeonatos carregados, esperado 12");
+            Info("tipos: " + string.Join(", ", Enum.GetValues<TournamentScheduleType>().Select(t => $"{t}={tournaments.Count(x => x.ScheduleType == t)}")));
+
+            foreach (var t in tournaments)
+            {
+                Check(t.ScheduleType != TournamentScheduleType.Always, $"agenda: campeonato {t.Id} {t.Name} sem ScheduleType");
+                Check(t.AnnounceDaysBefore == 5, $"agenda: campeonato {t.Id} {t.Name} com AnnounceDaysBefore {t.AnnounceDaysBefore}");
+                Check(t.UnlockAfterTournamentId == 0 || tournaments.Any(o => o.Id == t.UnlockAfterTournamentId),
+                    $"agenda: campeonato {t.Id} trava num campeonato inexistente ({t.UnlockAfterTournamentId})");
+
+                // datas do ano 1 se repetem nos anos seguintes (os intervalos da tabela dividem o ano)
+                bool repeats = Enumerable.Range(0, year * 5).All(i => CalendarSystem.IsOpen(cal, t, i) == CalendarSystem.IsOpen(cal, t, i % year));
+                Check(repeats, $"agenda: campeonato {t.Id} {t.Name} muda de data de um ano pro outro");
+
+                int openDays = Enumerable.Range(0, year).Count(i => CalendarSystem.IsOpen(cal, t, i));
+                Check(openDays > 0, $"agenda: campeonato {t.Id} {t.Name} nunca abre");
+                Check(openDays < year || t.ScheduleType == TournamentScheduleType.Always, $"agenda: campeonato {t.Id} {t.Name} aberto o ano inteiro");
+                GD.Print($"[AUDIT-AGENDA-TOTAL] {t.Id}|{t.Name}|{t.ScheduleType}|{t.UnlockAfterTournamentId}|{openDays}");
+            }
+
+            int daysWithAny = 0, longestGap = 0, gap = 0;
+            // dobra o ano pra medir o intervalo sem campeonato que atravessa a virada
+            for (int i = 0; i < year * 2; i++)
+            {
+                var open = tournaments.Where(t => CalendarSystem.IsOpen(cal, t, i)).Select(t => t.Id).ToList();
+                if (i < year)
+                {
+                    if (open.Count > 0) daysWithAny++;
+                    GD.Print($"[AUDIT-AGENDA] {i + 1}|{string.Join(",", open)}");
+                }
+                gap = open.Count == 0 ? gap + 1 : 0;
+                longestGap = Math.Max(longestGap, Math.Min(gap, year));
+            }
+            Info($"dias do ano com pelo menos 1 campeonato aberto: {daysWithAny}/{year}; maior sequência sem nenhum: {longestGap}");
         }
 
         private Task Lifespan()

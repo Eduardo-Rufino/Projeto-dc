@@ -8,5 +8,11 @@
     { "DigimonId": 72, "Level": 22 },
     { "DigimonId": 67, "Level": 22 }
   ],
-  "CapacityReward": 9
+  "CapacityReward": 9,
+  "ScheduleType": "Recurring",
+  "IntervalDays": 20,
+  "OffsetDays": 0,
+  "DurationDays": 5,
+  "UnlockAfterTournamentId": 3,
+  "AnnounceDaysBefore": 5
 }

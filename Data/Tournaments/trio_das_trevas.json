@@ -8,5 +8,9 @@
     { "DigimonId": 46, "Level": 17 },
     { "DigimonId": 47, "Level": 17 }
   ],
-  "CapacityReward": 8
+  "CapacityReward": 8,
+  "ScheduleType": "Fixed",
+  "StartDayOfYear": 40,
+  "DurationDays": 3,
+  "AnnounceDaysBefore": 5
 }

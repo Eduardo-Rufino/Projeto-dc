@@ -6,5 +6,10 @@
   "Opponents": [
     { "DigimonId": 1, "Level": 6 }
   ],
-  "CapacityReward": 2
+  "CapacityReward": 2,
+  "ScheduleType": "Recurring",
+  "IntervalDays": 6,
+  "OffsetDays": 0,
+  "DurationDays": 3,
+  "AnnounceDaysBefore": 5
 }

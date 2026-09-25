@@ -8,5 +8,10 @@
     { "DigimonId": 12, "Level": 8 },
     { "DigimonId": 8, "Level": 8 }
   ],
-  "CapacityReward": 4
+  "CapacityReward": 4,
+  "ScheduleType": "Recurring",
+  "IntervalDays": 10,
+  "OffsetDays": 0,
+  "DurationDays": 4,
+  "AnnounceDaysBefore": 5
 }

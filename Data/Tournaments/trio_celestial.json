@@ -8,5 +8,9 @@
     { "DigimonId": 73, "Level": 35 },
     { "DigimonId": 62, "Level": 35 }
   ],
-  "BitsReward": 30000
+  "BitsReward": 30000,
+  "ScheduleType": "Fixed",
+  "StartDayOfYear": 15,
+  "DurationDays": 3,
+  "AnnounceDaysBefore": 5
 }

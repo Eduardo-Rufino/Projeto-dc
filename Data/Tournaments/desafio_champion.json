@@ -8,5 +8,9 @@
     { "DigimonId": 14, "Level": 15 },
     { "DigimonId": 15, "Level": 15 }
   ],
-  "CapacityReward": 6
+  "CapacityReward": 6,
+  "ScheduleType": "Window",
+  "StartDayOfYear": 10,
+  "EndDayOfYear": 25,
+  "AnnounceDaysBefore": 5
 }

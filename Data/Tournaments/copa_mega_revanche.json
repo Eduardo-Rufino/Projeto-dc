@@ -8,5 +8,10 @@
     { "DigimonId": 74, "Level": 58 },
     { "DigimonId": 75, "Level": 58 }
   ],
-  "BitsReward": 50000
+  "BitsReward": 50000,
+  "ScheduleType": "Fixed",
+  "StartDayOfYear": 60,
+  "DurationDays": 3,
+  "UnlockAfterTournamentId": 8,
+  "AnnounceDaysBefore": 5
 }
