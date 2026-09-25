@@ -68,7 +68,7 @@ namespace ProjetoDC.Scripts.UI
 
                 bool cleared = Game.Save.Center.ClearedTournamentIds.Contains(tournament.Id);
 
-                card.SetTournament(tournament, cleared);
+                card.SetTournament(tournament, cleared, Game.GetTournamentAvailability(tournament));
                 card.Challenged += OnCardChallenged;
 
                 _cards.Add(card);

@@ -1,6 +1,8 @@
 using Godot;
+using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Data;
 using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.Systems.Calendar;
 using System;
 using System.Linq;
 
@@ -16,6 +18,7 @@ namespace ProjetoDC.Scripts.UI
         private Label _opponentsLabel;
         private Label _rewardLabel;
         private Button _challengeButton;
+        private Label _availabilityLabel;
 
         private TournamentData _tournament;
 
@@ -31,11 +34,24 @@ namespace ProjetoDC.Scripts.UI
             _challengeButton = GetNode<Button>("Pad/VBoxContainer/FooterRow/ChallengeButton");
 
             _challengeButton.Pressed += () => Challenged?.Invoke(_tournament);
+
+            // Situação no calendário ("Abre em N dias" etc.), logo abaixo do nível recomendado.
+            _availabilityLabel = new Label();
+            _availabilityLabel.AddThemeFontSizeOverride("font_size", 11);
+            var levelLabel = GetNode<Label>("Pad/VBoxContainer/LevelLabel");
+            levelLabel.AddSibling(_availabilityLabel);
         }
 
-        public void SetTournament(TournamentData tournament, bool cleared)
+        public void SetTournament(TournamentData tournament, bool cleared, TournamentAvailability availability)
         {
             _tournament = tournament;
+
+            _challengeButton.Disabled = !availability.CanStart;
+            _availabilityLabel.Text = DescribeAvailability(tournament, availability);
+            _availabilityLabel.Visible = _availabilityLabel.Text != "";
+            _availabilityLabel.AddThemeColorOverride("font_color", availability.CanStart
+                ? new Color(0.55f, 0.9f, 0.6f)
+                : new Color(1f, 0.6f, 0.4f));
 
             _nameLabel.Text = cleared ? $"{tournament.Name} ✓" : tournament.Name;
             _formatLabel.Text = tournament.Opponents.Count == 1 ? "1x1" : "3x3";
@@ -54,6 +70,27 @@ namespace ProjetoDC.Scripts.UI
                 ? "Recompensa já resgatada"
                 : $"Recompensa: {DescribeReward(tournament)}";
         }
+
+        private static string DescribeAvailability(TournamentData tournament, TournamentAvailability availability)
+        {
+            switch (availability.Status)
+            {
+                case TournamentAvailabilityStatus.Locked:
+                    var blocker = DatabaseManager.Instance.GetTournament(tournament.UnlockAfterTournamentId);
+                    return $"Bloqueado: vença {blocker?.Name ?? "?"}";
+
+                case TournamentAvailabilityStatus.Closed:
+                    return availability.Days < 0 ? "Fechado" : $"Abre em {Days(availability.Days)}";
+
+                case TournamentAvailabilityStatus.WonThisEdition:
+                    return "Concluído nesta edição";
+
+                default:
+                    return availability.Days > 0 ? $"Aberto por mais {Days(availability.Days)}" : "";
+            }
+        }
+
+        private static string Days(int n) => n == 1 ? "1 dia" : $"{n} dias";
 
         private static string DescribeReward(TournamentData tournament)
         {

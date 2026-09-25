@@ -118,6 +118,9 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 ("calendar", Calendar),
             };
 
+            // A bateria testa a regra de elegibilidade de campeonatos de verdade (DEBUG_IGNORE_CALENDAR fora).
+            Gm.IgnoreCalendar = false;
+
             // Desliga qualquer gravação de save durante a bateria (o save real só é LIDO).
             typeof(GameManager).GetField("_hasActiveGame", NonPublic)?.SetValue(Gm, false);
 
@@ -1499,6 +1502,133 @@ namespace ProjetoDC.Scripts.Systems.Audit
             GD.Print($"[AUDIT-IMPASSE] estado da arena ao estourar o tempo:{sb}");
         }
 
+        private int _tournamentRefusedClosed, _tournamentAcceptedOpen;
+
+        // Põe o relógio do estado descartável no índice de dia (0 = dia 1 do Ano 1) - CurrentDay começa em 1.
+        private void SetDayIndex(int dayIndex) => Gm.Save.World.CurrentDay = dayIndex + 1;
+
+        // Primeiro índice de dia (a partir do 0) em que o campeonato está aberto/fechado no calendário.
+        private static int FirstDayIndex(TournamentData t, bool open)
+        {
+            for (int i = 0; i < 1000; i++)
+                if (CalendarSystem.IsOpen(t, i) == open)
+                    return i;
+            return -1;
+        }
+
+        private List<DigimonInstance> StrongTeam(TournamentData t, List<DigimonData> strongPool)
+        {
+            var team = new List<DigimonInstance>();
+            for (int i = 0; i < t.Opponents.Count; i++)
+                team.Add(MakeDigimon(strongPool[i % strongPool.Count], 100, addToCenter: true));
+            return team;
+        }
+
+        private async Task<BattleResult?> WinTournament(TournamentData t, List<DigimonData> strongPool, string what)
+        {
+            Gm.StartTournamentBattle(t, StrongTeam(t, strongPool));
+            Check(Gm.IsBattleActive, $"elegibilidade: {what}: não iniciou");
+            if (!Gm.IsBattleActive)
+                return null;
+
+            var result = await DriveArenaToEnd(300);
+            Check(result == BattleResult.PlayerWon, $"elegibilidade: {what}: esperado vencer, deu {result}");
+            return result;
+        }
+
+        private async Task<BattleResult?> LoseTournament(TournamentData t, List<DigimonData> strongPool, string what)
+        {
+            Gm.StartTournamentBattle(t, StrongTeam(t, strongPool));
+            Check(Gm.IsBattleActive, $"elegibilidade: {what}: não iniciou");
+            await Frames(30);
+            var arena = GetTree().Root.GetChildren().OfType<BattleArena>().FirstOrDefault();
+            if (arena == null)
+                return null;
+
+            BattleResult? res = null;
+            arena.BattleFinished += r => res = r;
+            typeof(BattleArena).GetMethod("OnSurrenderConfirmed", NonPublic)?.Invoke(arena, null);
+
+            double waited = 0;
+            while (!(bool)ResultShown.GetValue(arena) && waited < 30) { await Frames(1); waited += GetProcessDeltaTime(); }
+            if ((bool)ResultShown.GetValue(arena))
+            {
+                OkPressed.Invoke(arena, null);
+                await Frames(3);
+            }
+
+            Check(res == BattleResult.EnemyWon, $"elegibilidade: {what}: desistir deu {res}, esperado derrota");
+            Check(!Gm.IsBattleActive, $"elegibilidade: {what}: batalha continua ativa");
+            return res;
+        }
+
+        // Regra de início de campeonato (aberto + destravado + não vencido nesta edição) com batalhas de
+        // verdade: vencer bloqueia a edição, perder não, edição nova reabre, trava e virada de ano.
+        private async Task TournamentEligibility(List<DigimonData> strongPool)
+        {
+            var db = Db;
+            var t1 = db.GetTournament(1);
+            ResetScratch(bits: 0, capacity: 1000);
+            var c = Gm.Save.Center;
+
+            // Copa Novato: a cada 6 dias, aberta 3 -> edição 0 = índices 0-2, edição 1 = 6-8, edição 2 = 12-14
+            SetDayIndex(0);
+            await WinTournament(t1, strongPool, "Copa Novato, 1ª vitória (edição 0)");
+            Check(c.LastWonEdition.TryGetValue(1, out int e0) && e0 == 0, "elegibilidade: vitória não registrou a edição 0");
+            Check(c.ClearedTournamentIds.Contains(1), "elegibilidade: vitória não registrou TournamentsWon");
+
+            SetDayIndex(1);
+            var again = Gm.GetTournamentAvailability(t1);
+            Check(again.Status == TournamentAvailabilityStatus.WonThisEdition, $"elegibilidade: 2ª na mesma edição = {again.Status}, esperado WonThisEdition");
+            Gm.StartTournamentBattle(t1, StrongTeam(t1, strongPool));
+            Check(!Gm.IsBattleActive, "elegibilidade: Copa Novato vencida 2x na mesma edição (a 2ª deveria ser recusada)");
+            Info($"Copa Novato: 2ª tentativa na mesma edição {(Gm.IsBattleActive ? "ACEITA" : "recusada")} ({again.Status})");
+
+            SetDayIndex(6);
+            var next = await WinTournament(t1, strongPool, "Copa Novato na edição seguinte");
+            Info($"Copa Novato: na edição seguinte (dia {Gm.Save.World.CurrentDay}) {(next.HasValue ? "aceita" : "RECUSADA")}");
+            Check(c.LastWonEdition.TryGetValue(1, out int e1) && e1 == 1, "elegibilidade: 2ª vitória não registrou a edição 1");
+
+            // perder não bloqueia
+            SetDayIndex(12);
+            await LoseTournament(t1, strongPool, "Copa Novato, derrota na edição 2");
+            Check(c.LastWonEdition[1] == 1, "elegibilidade: derrota mexeu em LastWonEdition");
+            Check(Gm.GetTournamentAvailability(t1).CanStart, "elegibilidade: derrota bloqueou a edição");
+            await WinTournament(t1, strongPool, "Copa Novato, nova tentativa depois da derrota");
+            Check(c.LastWonEdition[1] == 2, "elegibilidade: vitória depois da derrota não registrou a edição 2");
+
+            // trava: Trio Guardião 02 só depois do Desafio Champion
+            ResetScratch(bits: 0, capacity: 1000);
+            c = Gm.Save.Center;
+            var t3 = db.GetTournament(3);
+            var t10 = db.GetTournament(10);
+            SetDayIndex(20); // aberto: 3 (dias 10-25) e 10 (índices 20-24)
+            var locked = Gm.GetTournamentAvailability(t10);
+            Check(locked.Status == TournamentAvailabilityStatus.Locked, $"elegibilidade: Trio Guardião 02 sem o 3 = {locked.Status}, esperado Locked");
+            Gm.StartTournamentBattle(t10, StrongTeam(t10, strongPool));
+            Check(!Gm.IsBattleActive, "elegibilidade: Trio Guardião 02 iniciou travado");
+            await WinTournament(t3, strongPool, "Desafio Champion (destrava o 10)");
+            await WinTournament(t10, strongPool, "Trio Guardião 02 depois de vencer o 3");
+
+            // virada de ano: agenda de teste (cópia da Copa Novato) aberta nos dias 59, 60 e 1
+            ResetScratch(bits: 0, capacity: 1000);
+            c = Gm.Save.Center;
+            var wrap = new TournamentData
+            {
+                Id = 901, Name = "Teste virada", Opponents = t1.Opponents,
+                ScheduleType = TournamentScheduleType.Fixed, StartDayOfYear = 59, DurationDays = 3,
+            };
+            SetDayIndex(59); // ano 1, dia 60
+            await WinTournament(wrap, strongPool, "virada: vitória no dia 60 do ano 1");
+            SetDayIndex(60); // ano 2, dia 1 - mesma edição
+            Check(Gm.GetTournamentAvailability(wrap).Status == TournamentAvailabilityStatus.WonThisEdition, "elegibilidade: virada - dia 1 do ano 2 reabriu a edição que começou no ano 1");
+            SetDayIndex(61); // ano 2, dia 2 - fechado
+            Check(Gm.GetTournamentAvailability(wrap).Status == TournamentAvailabilityStatus.Closed, "elegibilidade: virada - dia 2 deveria estar fechado");
+            SetDayIndex(118); // ano 2, dia 59 - edição nova
+            await WinTournament(wrap, strongPool, "virada: edição do ano 2");
+            Check(c.LastWonEdition.TryGetValue(901, out int ew) && ew == 2, "elegibilidade: virada - edição do ano 2 não registrada");
+        }
+
         private async Task BattleFlows()
         {
             var db = Db;
@@ -1560,8 +1690,29 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
                 int cap = c.CapacityLimit;
                 string n = $"campeonato {t.Id} {t.Name}";
+
+                // Prepara o dia e a trava pela regra (sem IgnoreCalendar): recusado travado (se tiver
+                // trava), recusado num dia fechado e aceito aberto e destravado.
+                if (t.UnlockAfterTournamentId > 0)
+                {
+                    SetDayIndex(FirstDayIndex(t, open: true));
+                    Gm.StartTournamentBattle(t, team);
+                    Check(!Gm.IsBattleActive && Gm.GetTournamentAvailability(t).Status == TournamentAvailabilityStatus.Locked,
+                        $"{n}: não foi recusado como travado (sem vencer o {t.UnlockAfterTournamentId})");
+                    for (var req = t; req != null && req.UnlockAfterTournamentId > 0; req = db.GetTournament(req.UnlockAfterTournamentId))
+                        c.ClearedTournamentIds.Add(req.UnlockAfterTournamentId);
+                }
+
+                SetDayIndex(FirstDayIndex(t, open: false));
                 Gm.StartTournamentBattle(t, team);
-                Check(Gm.IsBattleActive, $"{n}: não iniciou");
+                bool refusedClosed = !Gm.IsBattleActive && Gm.GetTournamentAvailability(t).Status == TournamentAvailabilityStatus.Closed;
+                Check(refusedClosed, $"{n}: não foi recusado como fechado (dia {Gm.Save.World.CurrentDay})");
+                if (refusedClosed) _tournamentRefusedClosed++;
+
+                SetDayIndex(FirstDayIndex(t, open: true));
+                Gm.StartTournamentBattle(t, team);
+                Check(Gm.IsBattleActive, $"{n}: não iniciou aberto e destravado (dia {Gm.Save.World.CurrentDay})");
+                if (Gm.IsBattleActive) _tournamentAcceptedOpen++;
 
                 var result = await DriveArenaToEnd(300);
                 bool stalledT = _lastTimedOut;
@@ -1586,8 +1737,13 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 }
             }
 
+            if (string.IsNullOrEmpty(onlyT))
+                Info($"campeonatos: recusados fechados {_tournamentRefusedClosed}/12, aceitos abertos e destravados {_tournamentAcceptedOpen}/12");
+
             if (!string.IsNullOrEmpty(onlyT))
                 return;
+
+            await TournamentEligibility(strongPool);
 
             // ---- encontros selvagens: uma espécie de cada mapa
             foreach (var map in db.GetAllExplorationMaps().OrderBy(m => m.Id))
@@ -2034,6 +2190,17 @@ namespace ProjetoDC.Scripts.Systems.Audit
                         continue;
                     string label = CalendarSystem.Format(CalendarSystem.GetDateFromCurrentDay(s.World.CurrentDay));
                     Info($"{System.IO.Path.GetFileName(path)}: CurrentDay {s.World.CurrentDay} -> \"{label}\"");
+
+                    // campos novos entram vazios; destravado só o que a lista de vencidos justifica
+                    Check(s.Center.LastWonEdition != null && s.Center.LastWonEdition.Count == 0,
+                        $"{System.IO.Path.GetFileName(path)}: LastWonEdition não veio vazio de um save antigo");
+                    var dayIndex = CalendarSystem.DayIndexFromCurrentDay(s.World.CurrentDay);
+                    var states = Db.GetAllTournaments().Select(t =>
+                        $"{t.Id}:{CalendarSystem.GetAvailability(cal, t, dayIndex, s.Center.ClearedTournamentIds, s.Center.LastWonEdition).Status}");
+                    foreach (var t in Db.GetAllTournaments().Where(t => t.UnlockAfterTournamentId > 0))
+                        Check(CalendarSystem.IsUnlocked(t, s.Center.ClearedTournamentIds) == s.Center.ClearedTournamentIds.Contains(t.UnlockAfterTournamentId),
+                            $"{System.IO.Path.GetFileName(path)}: campeonato {t.Id} destravado sem vencer o {t.UnlockAfterTournamentId}");
+                    Info($"  vencidos [{string.Join(",", s.Center.ClearedTournamentIds)}] -> {string.Join(" ", states)}");
                 }
                 catch (Exception ex)
                 {
@@ -2168,6 +2335,76 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 longestGap = Math.Max(longestGap, Math.Min(gap, year));
             }
             Info($"dias do ano com pelo menos 1 campeonato aberto: {daysWithAny}/{year}; maior sequência sem nenhum: {longestGap}");
+
+            // ---- edição (EditionId)
+            void Edition(TournamentData t, int index, int expected, string what)
+            {
+                int got = CalendarSystem.EditionId(cal, t, index);
+                Check(got == expected, $"edição: {what} (índice {index}) = {got}, esperado {expected}");
+            }
+
+            var every6 = T(TournamentScheduleType.Recurring, interval: 6, duration: 3);
+            Edition(every6, 0, 0, "recorrente 6/3 início");
+            Edition(every6, 5, 0, "recorrente 6/3 fim do ciclo 0");
+            Edition(every6, 6, 1, "recorrente 6/3 ciclo 1");
+            Edition(every6, 60, 10, "recorrente 6/3 ano 2 dia 1");
+            Edition(recurring, 2, -1, "recorrente com deslocamento, antes da 1ª abertura");
+            Edition(recurring, 3, 0, "recorrente com deslocamento, 1ª abertura");
+            Edition(recurring, 10, 1, "recorrente com deslocamento, 2ª abertura");
+            Edition(fixed40, Idx(1, 40), 1, "fixo 40 ano 1");
+            Edition(fixed40, Idx(2, 42), 2, "fixo 40 ano 2");
+            Edition(fixed40, Idx(2, 10), 1, "fixo 40 ano 2 antes de abrir (edição anterior)");
+            Edition(window, Idx(3, 25), 3, "janela 10-25 ano 3");
+            Edition(wrap, Idx(1, 58), 1, "janela 58-2 ano 1 dia 58");
+            Edition(wrap, Idx(2, 2), 1, "janela 58-2 ano 2 dia 2 (mesma edição da virada)");
+            Edition(wrap, Idx(2, 58), 2, "janela 58-2 ano 2 dia 58");
+            Edition(fixedWrap, Idx(2, 3), 1, "fixo 59x5 ano 2 dia 3 (mesma edição)");
+
+            // ---- dias restantes e disponibilidade (prioridade Locked > Closed > WonThisEdition)
+            Check(CalendarSystem.DaysOpenRemaining(cal, fixed40, Idx(1, 40)) == 3, "disponibilidade: fixo 40x3 no dia 40 deveria ter 3 dias restantes");
+            Check(CalendarSystem.DaysOpenRemaining(cal, fixed40, Idx(1, 42)) == 1, "disponibilidade: fixo 40x3 no dia 42 deveria ter 1 dia restante");
+            Check(CalendarSystem.DaysOpenRemaining(cal, wrap, Idx(1, 60)) == 3, "disponibilidade: janela 58-2 no dia 60 deveria ter 3 dias restantes (60, 1, 2)");
+            Check(CalendarSystem.DaysOpenRemaining(cal, always, 5) == -1, "disponibilidade: Always não fecha");
+
+            var lockedFixed = T(TournamentScheduleType.Fixed, start: 40, duration: 3);
+            lockedFixed.Id = 77;
+            lockedFixed.UnlockAfterTournamentId = 8;
+            var none = Array.Empty<int>();
+            var won = new Dictionary<int, int> { [77] = 1 };
+            TournamentAvailabilityStatus Status(int index, IEnumerable<int> cleared, Dictionary<int, int> w) =>
+                CalendarSystem.GetAvailability(cal, lockedFixed, index, cleared, w).Status;
+            Check(Status(Idx(1, 1), none, won) == TournamentAvailabilityStatus.Locked, "disponibilidade: travado e fechado deveria dar Locked");
+            Check(Status(Idx(1, 1), new[] { 8 }, won) == TournamentAvailabilityStatus.Closed, "disponibilidade: destravado e fechado deveria dar Closed");
+            Check(Status(Idx(1, 40), new[] { 8 }, won) == TournamentAvailabilityStatus.WonThisEdition, "disponibilidade: vencido na edição 1 deveria dar WonThisEdition");
+            Check(Status(Idx(2, 40), new[] { 8 }, won) == TournamentAvailabilityStatus.Available, "disponibilidade: edição 2 deveria reabrir");
+            Check(Status(Idx(1, 40), new[] { 8 }, new Dictionary<int, int>()) == TournamentAvailabilityStatus.Available, "disponibilidade: aberto e destravado deveria dar Available");
+            var closedAv = CalendarSystem.GetAvailability(cal, lockedFixed, Idx(1, 35), new[] { 8 }, null);
+            Check(closedAv.Days == 5, $"disponibilidade: fechado no dia 35 deveria abrir em 5 dias, deu {closedAv.Days}");
+
+            // ---- save: LastWonEdition faz ida-e-volta e save antigo entra vazio
+            var sd = new SaveData();
+            sd.Center.LastWonEdition[1] = 3;
+            var back = JsonSerializer.Deserialize<SaveData>(JsonSerializer.Serialize(sd));
+            Check(back.Center.LastWonEdition.TryGetValue(1, out int bw) && bw == 3, "save: LastWonEdition não sobrevive à ida-e-volta");
+
+            // ---- disponível no início do jogo (nada vencido): com os dados reais e com a hipótese de só 1, 2, 3 e 5
+            var startIds = tournaments.Where(t => CalendarSystem.IsUnlocked(t, none)).Select(t => t.Id).ToList();
+            foreach (var (label, ids) in new[] { ("dados reais", startIds), ("só 1, 2, 3 e 5", new List<int> { 1, 2, 3, 5 }) })
+            {
+                var pool = tournaments.Where(t => ids.Contains(t.Id)).ToList();
+                int any = 0, gapStart = 0, bestStart = 0;
+                for (int i = 0; i < year * 2; i++)
+                {
+                    bool open = pool.Any(t => CalendarSystem.IsOpen(cal, t, i));
+                    if (i < year && open) any++;
+                    gapStart = open ? 0 : gapStart + 1;
+                    bestStart = Math.Max(bestStart, Math.Min(gapStart, year));
+                }
+                Info($"início do jogo ({label}: {string.Join(",", ids)}): {any}/{year} dias com algum disponível; maior sequência sem nenhum: {bestStart}");
+                if (label == "dados reais")
+                    for (int i = 0; i < year; i++)
+                        GD.Print($"[AUDIT-AGENDA-INICIO] {i + 1}|{string.Join(",", pool.Where(t => CalendarSystem.IsOpen(cal, t, i)).Select(t => t.Id))}");
+            }
         }
 
         private Task Lifespan()

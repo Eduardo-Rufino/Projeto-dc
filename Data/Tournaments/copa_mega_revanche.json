@@ -10,7 +10,7 @@
   ],
   "BitsReward": 50000,
   "ScheduleType": "Fixed",
-  "StartDayOfYear": 60,
+  "StartDayOfYear": 58,
   "DurationDays": 3,
   "UnlockAfterTournamentId": 8,
   "AnnounceDaysBefore": 5

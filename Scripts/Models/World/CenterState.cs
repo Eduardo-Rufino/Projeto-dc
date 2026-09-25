@@ -132,6 +132,11 @@ namespace ProjetoDC.Scripts.Models.World
         /// GameManager.ApplyTournamentCapacityRewardIfNeeded).</summary>
         public List<int> ClearedTournamentIds { get; set; } = new();
 
+        /// <summary>Id do campeonato -> edição (CalendarSystem.EditionId) em que foi vencido pela última
+        /// vez. Vencer bloqueia o campeonato até a próxima edição; perder não registra nada. Save antigo
+        /// entra vazio.</summary>
+        public Dictionary<int, int> LastWonEdition { get; set; } = new();
+
         /// <summary>ItemPickupData.UniqueId (dentro de um ExplorationMapData) já coletados -
         /// esses pickups não voltam a aparecer na área (ver ExplorationArea).</summary>
         public List<int> CollectedItemPickupIds { get; set; } = new();

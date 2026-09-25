@@ -11,6 +11,14 @@ namespace ProjetoDC.Scripts.Systems.Calendar
     /// <summary>Uma data do calendário. Season, DayOfSeason e DayOfYear começam em 1.</summary>
     public readonly record struct CalendarDate(int Year, int Season, string SeasonName, int DayOfSeason, int DayOfYear);
 
+    /// <summary>Resultado de CalendarSystem.GetAvailability. Days: Closed = dias até abrir (-1 = nunca);
+    /// Available = dias que ainda fica aberto contando hoje (-1 = não fecha); nos outros, 0. Edition =
+    /// edição do dia consultado (ver EditionId).</summary>
+    public readonly record struct TournamentAvailability(TournamentAvailabilityStatus Status, int Days, int Edition)
+    {
+        public bool CanStart => Status == TournamentAvailabilityStatus.Available;
+    }
+
     /// <summary>
     /// Calendário de estações derivado de WorldState.CurrentDay - só leitura do tempo, não guarda
     /// nada no save. As constantes (dias por estação, nomes das estações) vêm de
@@ -176,6 +184,75 @@ namespace ProjetoDC.Scripts.Systems.Calendar
         /// <summary>Se a trava do campeonato (UnlockAfterTournamentId) já foi cumprida - sem trava é sempre true.</summary>
         public static bool IsUnlocked(TournamentData tournament, IEnumerable<int> clearedTournamentIds) =>
             tournament.UnlockAfterTournamentId <= 0 || clearedTournamentIds.Contains(tournament.UnlockAfterTournamentId);
+
+        /// <summary>
+        /// Identifica a edição do campeonato no dia <paramref name="dayIndex"/> - vencer bloqueia só a
+        /// edição em que venceu (CenterState.LastWonEdition). Recurring: número do ciclo desde OffsetDays
+        /// (-1 antes da primeira abertura). Window/Fixed: o ano em que a abertura mais recente COMEÇOU, pra
+        /// uma agenda que atravessa a virada do ano (ex.: 58 a 2) continuar sendo uma edição só.
+        /// Always/Unlockable: o ano (vencer bloqueia até o ano seguinte).
+        /// </summary>
+        public static int EditionId(CalendarData cal, TournamentData tournament, int dayIndex)
+        {
+            int index = ClampIndex(dayIndex);
+            int year = Year(cal, index);
+
+            switch (tournament.ScheduleType)
+            {
+                case TournamentScheduleType.Recurring:
+                    int sinceOffset = index - tournament.OffsetDays;
+                    return sinceOffset < 0 || tournament.IntervalDays <= 0 ? -1 : sinceOffset / tournament.IntervalDays;
+
+                case TournamentScheduleType.Window:
+                case TournamentScheduleType.Fixed:
+                    return DayOfYear(cal, index) >= tournament.StartDayOfYear ? year : year - 1;
+
+                default:
+                    return year;
+            }
+        }
+
+        /// <summary>Quantos dias (contando hoje) o campeonato ainda fica aberto: 0 se está fechado, -1 se
+        /// não fecha (Always/Unlockable).</summary>
+        public static int DaysOpenRemaining(CalendarData cal, TournamentData tournament, int dayIndex)
+        {
+            if (tournament.ScheduleType is TournamentScheduleType.Always or TournamentScheduleType.Unlockable)
+                return -1;
+
+            int index = ClampIndex(dayIndex);
+            int days = 0;
+
+            while (days < cal.DaysPerYear && IsOpen(cal, tournament, index + days))
+                days++;
+
+            return days;
+        }
+
+        /// <summary>
+        /// Se o campeonato pode ser iniciado no dia <paramref name="dayIndex"/>: precisa estar aberto
+        /// (IsOpen), destravado (IsUnlocked) e não vencido na edição atual (LastWonEdition). Perder não
+        /// entra aqui - só vencer registra a edição.
+        /// </summary>
+        public static TournamentAvailability GetAvailability(
+            CalendarData cal,
+            TournamentData tournament,
+            int dayIndex,
+            IEnumerable<int> clearedTournamentIds,
+            IReadOnlyDictionary<int, int> lastWonEdition)
+        {
+            int edition = EditionId(cal, tournament, dayIndex);
+
+            if (!IsUnlocked(tournament, clearedTournamentIds))
+                return new TournamentAvailability(TournamentAvailabilityStatus.Locked, 0, edition);
+
+            if (!IsOpen(cal, tournament, dayIndex))
+                return new TournamentAvailability(TournamentAvailabilityStatus.Closed, DaysUntilOpen(cal, tournament, dayIndex), edition);
+
+            if (lastWonEdition != null && lastWonEdition.TryGetValue(tournament.Id, out int wonEdition) && wonEdition == edition)
+                return new TournamentAvailability(TournamentAvailabilityStatus.WonThisEdition, 0, edition);
+
+            return new TournamentAvailability(TournamentAvailabilityStatus.Available, DaysOpenRemaining(cal, tournament, dayIndex), edition);
+        }
 
         public static bool IsOpen(TournamentData tournament, int dayIndex) => IsOpen(Data, tournament, dayIndex);
 

@@ -6,6 +6,7 @@ using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Models.World;
 using ProjetoDC.Scripts.Save;
 using ProjetoDC.Scripts.Systems.Battle;
+using ProjetoDC.Scripts.Systems.Calendar;
 using ProjetoDC.Scripts.Systems.Center;
 using ProjetoDC.Scripts.Systems.Clock;
 using ProjetoDC.Scripts.Systems.Eggs;
@@ -139,6 +140,8 @@ namespace ProjetoDC.Scripts.Managers
         public override void _Ready()
         {
             Instance = this;
+
+            IgnoreCalendar = OS.GetEnvironment("DEBUG_IGNORE_CALENDAR") == "1";
 
             SaveSystem = new SaveSystem();
 
@@ -872,6 +875,41 @@ namespace ProjetoDC.Scripts.Managers
         }
 
         /// <summary>
+        /// Debug: libera todos os campeonatos, ignorando data, trava e edição (ver
+        /// GetTournamentAvailability). Só funciona em build de debug; liga com DEBUG_IGNORE_CALENDAR=1.
+        /// </summary>
+        public bool IgnoreCalendar
+        {
+            get => _ignoreCalendar;
+            set => _ignoreCalendar = value && OS.IsDebugBuild();
+        }
+
+        private bool _ignoreCalendar;
+
+        // Edição (CalendarSystem.EditionId) do campeonato em andamento, fixada ao iniciar - a vitória
+        // registra essa, mesmo que o dia vire durante a luta.
+        private int _activeTournamentEdition;
+
+        /// <summary>
+        /// Se o campeonato pode ser iniciado hoje (aberto, destravado e não vencido nesta edição) e,
+        /// se não, por quê - usado pela lista de campeonatos e por StartTournamentBattle.
+        /// </summary>
+        public TournamentAvailability GetTournamentAvailability(TournamentData tournament)
+        {
+            // Sem Data/Calendar/calendar.json (erro já no log) não há agenda: volta ao comportamento de antes.
+            if (!CalendarSystem.IsLoaded)
+                return new TournamentAvailability(TournamentAvailabilityStatus.Available, -1, 0);
+
+            int dayIndex = CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay);
+            var availability = CalendarSystem.GetAvailability(
+                CalendarSystem.Data, tournament, dayIndex, Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition);
+
+            return IgnoreCalendar
+                ? availability with { Status = TournamentAvailabilityStatus.Available, Days = -1 }
+                : availability;
+        }
+
+        /// <summary>
         /// Inicia a batalha de um campeonato (ver TournamentData): diferente da batalha
         /// livre, o time inimigo é fixo - não calibrado pelo poder do time do jogador -, e o
         /// tamanho do time do jogador precisa bater exatamente com o número de oponentes
@@ -888,6 +926,14 @@ namespace ProjetoDC.Scripts.Managers
             if (tournament == null)
                 return;
 
+            var availability = GetTournamentAvailability(tournament);
+
+            if (!availability.CanStart)
+            {
+                GD.PrintErr($"StartTournamentBattle: '{tournament.Name}' indisponível ({availability.Status}).");
+                return;
+            }
+
             if (playerTeam == null || playerTeam.Count != tournament.Opponents.Count)
             {
                 GD.PrintErr($"StartTournamentBattle exige {tournament.Opponents.Count} Digimon(s) pra '{tournament.Name}'.");
@@ -903,6 +949,7 @@ namespace ProjetoDC.Scripts.Managers
             }
 
             ActiveTournament = tournament;
+            _activeTournamentEdition = availability.Edition;
             BattleFromExploration = false;
 
             LaunchBattle(playerTeam, enemyTeam);
@@ -1282,6 +1329,9 @@ namespace ProjetoDC.Scripts.Managers
         {
             if (ActiveTournament == null)
                 return;
+
+            // Toda vitória fecha a edição atual (ver GetTournamentAvailability), não só a primeira.
+            Save.Center.LastWonEdition[ActiveTournament.Id] = _activeTournamentEdition;
 
             if (Save.Center.ClearedTournamentIds.Contains(ActiveTournament.Id))
                 return;
