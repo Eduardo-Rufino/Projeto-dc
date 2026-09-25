@@ -119,6 +119,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 ("calendar", Calendar),
                 ("rules", TournamentRulesSection),
                 ("winrate", TournamentWinRate),
+                ("notices", TournamentNotices),
             };
 
             // A bateria testa a regra de elegibilidade de campeonatos de verdade (DEBUG_IGNORE_CALENDAR fora).
@@ -2445,6 +2446,135 @@ namespace ProjetoDC.Scripts.Systems.Audit
                     for (int i = 0; i < year; i++)
                         GD.Print($"[AUDIT-AGENDA-INICIO] {i + 1}|{string.Join(",", pool.Where(t => CalendarSystem.IsOpen(cal, t, i)).Select(t => t.Id))}");
             }
+        }
+
+        // Aviso antecipado dos campeonatos (CalendarSystem.GetUpcoming/GetAnnouncements + GameManager): funções
+        // puras, 120 dias simulados (sem vitórias e com a 8 vencida) e o texto com "(faltam N ...)".
+        private Task TournamentNotices()
+        {
+            var cal = CalendarSystem.Data;
+            var tournaments = Db.GetAllTournaments().ToList();
+            var none = new List<int>();
+            var noWins = new Dictionary<int, int>();
+
+            // ---- GetUpcoming
+            var up0 = CalendarSystem.GetUpcoming(cal, tournaments, 0, none, noWins);
+            Check(up0.All(u => u.Tournament.UnlockAfterTournamentId == 0), "avisos: GetUpcoming listou campeonato travado");
+            Check(up0.Select(u => u.Tournament.Id).OrderBy(i => i).SequenceEqual(Enumerable.Range(1, 9)), $"avisos: GetUpcoming no dia 1 = [{string.Join(",", up0.Select(u => u.Tournament.Id))}], esperado 1-9");
+            Check(up0.Zip(up0.Skip(1)).All(p => p.First.DaysUntilOpen <= p.Second.DaysUntilOpen), "avisos: GetUpcoming fora de ordem");
+            Check(up0.First().IsOpen, "avisos: GetUpcoming não começa pelos abertos");
+            var novatoWon = new Dictionary<int, int> { [1] = 0 };
+            Check(CalendarSystem.GetUpcoming(cal, tournaments, 1, none, novatoWon).All(u => u.Tournament.Id != 1), "avisos: Copa Novato vencida na edição 0 apareceu na mesma edição");
+            var novatoNext = CalendarSystem.GetUpcoming(cal, tournaments, 3, none, novatoWon).FirstOrDefault(u => u.Tournament.Id == 1);
+            Check(novatoNext.Tournament != null && novatoNext.DaysUntilOpen == 3 && novatoNext.DaysRemaining == 3, "avisos: Copa Novato deveria voltar na edição 1 (abre em 3, aberta 3)");
+            Info($"GetUpcoming dia 1: {string.Join(" | ", up0.Select(u => $"{u.Tournament.Id}:{(u.IsOpen ? "aberto " + u.DaysRemaining + "d" : "em " + u.DaysUntilOpen + "d")}"))}");
+            Info($"HUD dia 1: \"{CalendarSystem.FormatNext(up0)}\"; dia 26: \"{CalendarSystem.FormatNext(CalendarSystem.GetUpcoming(cal, tournaments.Where(t => t.Id is 4 or 6).ToList(), 25, none, noWins))}\" (só 4 e 6)");
+
+            // ---- 120 dias: sem vitórias / com a 8 vencida (edição do ano 1)
+            foreach (var (label, cleared, won) in new[]
+            {
+                ("sem vitórias", new List<int>(), new Dictionary<int, int>()),
+                ("com a 8 vencida", new List<int> { 8 }, new Dictionary<int, int> { [8] = 1 }),
+            })
+            {
+                // (id, edição, tipo) -> quantos avisos
+                var tally = new Dictionary<(int, int, TournamentAnnouncementKind), int>();
+                int maxPerDay = 0, maxDay = 0;
+                var perYear = new int[3];
+
+                for (int d = 1; d < 120; d++)
+                {
+                    var list = CalendarSystem.GetAnnouncements(cal, tournaments, d, cleared, won);
+                    if (list.Count > maxPerDay) { maxPerDay = list.Count; maxDay = d + 1; }
+                    perYear[CalendarSystem.Year(cal, d)] += list.Count;
+
+                    foreach (var a in list)
+                    {
+                        var t = a.Tournament;
+                        int openDay = a.Kind == TournamentAnnouncementKind.OpensSoon ? d + a.Days : d;
+                        int edition = CalendarSystem.EditionId(cal, t, openDay);
+                        var key = (t.Id, edition, a.Kind);
+                        tally[key] = tally.GetValueOrDefault(key) + 1;
+
+                        Check(CalendarSystem.IsUnlocked(t, cleared), $"avisos ({label}): {t.Name} travado recebeu aviso no índice {d}");
+                        Check(!(won.TryGetValue(t.Id, out int we) && we == edition), $"avisos ({label}): {t.Name} já vencido na edição {edition} recebeu aviso");
+                        Check(!(t.ScheduleType == TournamentScheduleType.Recurring && t.IntervalDays < CalendarSystem.MinAnnouncedRecurringInterval), $"avisos ({label}): {t.Name} é recorrente curto e avisou");
+                    }
+                }
+
+                // esperado: por abertura dentro da janela, 1 "está aberto" e (se couber) 1 "abre em N"
+                var rows = new List<string>();
+                foreach (var t in tournaments)
+                {
+                    bool announces = CalendarSystem.IsUnlocked(t, cleared) &&
+                        !(t.ScheduleType == TournamentScheduleType.Recurring && t.IntervalDays < CalendarSystem.MinAnnouncedRecurringInterval);
+                    var cells = new List<string>();
+
+                    for (int o = 1; o < 120; o++)
+                    {
+                        if (!CalendarSystem.IsOpen(cal, t, o) || CalendarSystem.IsOpen(cal, t, o - 1))
+                            continue;
+
+                        int edition = CalendarSystem.EditionId(cal, t, o);
+                        bool skipWon = won.TryGetValue(t.Id, out int we2) && we2 == edition;
+                        int opened = tally.GetValueOrDefault((t.Id, edition, TournamentAnnouncementKind.OpenedToday));
+                        int soon = tally.GetValueOrDefault((t.Id, edition, TournamentAnnouncementKind.OpensSoon));
+                        int closes = tally.GetValueOrDefault((t.Id, edition, TournamentAnnouncementKind.ClosesTomorrow));
+                        bool soonFits = o - t.AnnounceDaysBefore >= 1;
+
+                        if (announces && !skipWon)
+                        {
+                            Check(opened == 1, $"avisos ({label}): {t.Name} edição {edition} (abre no índice {o}) teve {opened} avisos de abertura, esperado 1");
+                            Check(soon == (soonFits ? 1 : 0), $"avisos ({label}): {t.Name} edição {edition} teve {soon} 'abre em N dias', esperado {(soonFits ? 1 : 0)}");
+                        }
+                        else
+                        {
+                            Check(opened + soon + closes == 0, $"avisos ({label}): {t.Name} edição {edition} não deveria avisar e avisou");
+                        }
+
+                        cells.Add(announces && !skipWon ? $"dia {o + 1}: abre-em {soon}, aberto {opened}, fecha {closes}" : $"dia {o + 1}: -");
+                    }
+
+                    string why = !CalendarSystem.IsUnlocked(t, cleared) ? " [travado]" :
+                        t.ScheduleType == TournamentScheduleType.Recurring && t.IntervalDays < CalendarSystem.MinAnnouncedRecurringInterval ? " [recorrente curto, sem aviso]" : "";
+                    GD.Print($"[AUDIT-AVISOS] {label}|{t.Id}|{t.Name}{why}|{string.Join("; ", cells)}");
+                }
+
+                Check(maxPerDay <= 2, $"avisos ({label}): {maxPerDay} avisos no dia {maxDay}");
+                Info($"{label}: avisos por ano: ano 1 = {perYear[1]}, ano 2 = {perYear[2]}; máximo num dia = {maxPerDay} (dia {maxDay})");
+            }
+
+            // ---- texto, "(faltam N)" e IgnoreCalendar pelo GameManager (estado descartável)
+            var t9 = tournaments.First(t => t.Id == 9);
+            Check(CalendarSystem.FormatAnnouncement(new TournamentAnnouncement(t9, TournamentAnnouncementKind.OpensSoon, 5), 0) == "Trio Celestial abre em 5 dias", "avisos: texto 'abre em'");
+            Check(CalendarSystem.FormatAnnouncement(new TournamentAnnouncement(t9, TournamentAnnouncementKind.OpenedToday, 3), 2) == "Trio Celestial está aberto por 3 dias (faltam 2 Digimon elegíveis)", "avisos: texto 'aberto por' com faltam");
+            Check(CalendarSystem.FormatAnnouncement(new TournamentAnnouncement(t9, TournamentAnnouncementKind.ClosesTomorrow, 1), 0) == "Último dia: Trio Celestial fecha à meia-noite", "avisos: texto do último dia");
+            Check(CalendarSystem.FormatAnnouncement(new TournamentAnnouncement(t9, TournamentAnnouncementKind.OpensSoon, 5), 1) == "Trio Celestial abre em 5 dias (falta 1 Digimon elegível)", "avisos: singular 'falta 1 Digimon elegível'");
+
+            ResetScratch();
+            Gm.Save.World.CurrentDay = 15; // índice 14: Trio Celestial abre, Trio Tamers a 5 dias
+            var vaccine = AllSpecies().First(sp => sp.Attribute == DigimonAttribute.Vacine);
+            Gm.CenterService.AddDigimon(MakeDigimon(vaccine));
+            var msgs = Gm.GetTournamentAnnouncementMessages();
+            Info($"GameManager no dia 15 com 1 Vacina no Center: {string.Join(" | ", msgs)}");
+            Check(msgs.Contains("Trio Celestial está aberto por 3 dias (faltam 2 Digimon elegíveis)"), "avisos: GameManager não gerou o aviso do Trio Celestial com 'faltam 2'");
+            Check(msgs.Any(m => m.StartsWith("Trio Tamers abre em 5 dias")), "avisos: GameManager não gerou 'Trio Tamers abre em 5 dias'");
+            Gm.IgnoreCalendar = true;
+            if (Gm.IgnoreCalendar)
+                Check(Gm.GetTournamentAnnouncementMessages().Count == 0 && Gm.GetUpcomingTournaments().Count == 0, "avisos: IgnoreCalendar ainda gera avisos/próximos");
+            Gm.IgnoreCalendar = false;
+
+            // ---- save: nada novo no SaveData (o aviso não guarda estado)
+            string path = ProjectSettings.GlobalizePath("user://save.json");
+            if (System.IO.File.Exists(path))
+            {
+                var real = JsonSerializer.Deserialize<SaveData>(System.IO.File.ReadAllText(path));
+                Info($"save real: dia {real.World.CurrentDay} lido; avisos que ele geraria hoje: " +
+                    string.Join(" | ", CalendarSystem.GetAnnouncements(cal, tournaments, CalendarSystem.DayIndexFromCurrentDay(real.World.CurrentDay), real.Center.ClearedTournamentIds, real.Center.LastWonEdition)
+                        .Select(a => CalendarSystem.FormatAnnouncement(a, 0))) + " (nenhum = vazio)");
+            }
+
+            return Task.CompletedTask;
         }
 
         // Só medição (não entra no audit normal - liga com DEBUG_AUDIT_WINRATE=1): taxa de vitória de times de

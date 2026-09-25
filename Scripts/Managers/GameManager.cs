@@ -892,6 +892,44 @@ namespace ProjetoDC.Scripts.Managers
         // registra essa, mesmo que o dia vire durante a luta.
         private int _activeTournamentEdition;
 
+        /// <summary>Próximos campeonatos (CalendarSystem.GetUpcoming) pro dia atual e o estado do save - vazio
+        /// com IgnoreCalendar (tudo liberado, nada a anunciar) ou sem calendário carregado.</summary>
+        public List<UpcomingTournament> GetUpcomingTournaments()
+        {
+            if (IgnoreCalendar || !CalendarSystem.IsLoaded)
+                return new List<UpcomingTournament>();
+
+            return CalendarSystem.GetUpcoming(
+                CalendarSystem.Data, DatabaseManager.Instance.GetAllTournaments(),
+                CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay),
+                Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition);
+        }
+
+        /// <summary>
+        /// Textos dos avisos antecipados de hoje (CalendarSystem.GetAnnouncements), com "(faltam N Digimon
+        /// elegíveis)" quando o Center não monta o time. A HUD mostra na virada do dia; nada disso fica
+        /// no save. Vazio com IgnoreCalendar.
+        /// </summary>
+        public List<string> GetTournamentAnnouncementMessages()
+        {
+            if (IgnoreCalendar || !CalendarSystem.IsLoaded)
+                return new List<string>();
+
+            var announcements = CalendarSystem.GetAnnouncements(
+                CalendarSystem.Data, DatabaseManager.Instance.GetAllTournaments(),
+                CalendarSystem.DayIndexFromCurrentDay(Save.World.CurrentDay),
+                Save.Center.ClearedTournamentIds, Save.Center.LastWonEdition);
+
+            return announcements
+                .Select(a => CalendarSystem.FormatAnnouncement(a,
+                    Math.Max(0, a.Tournament.Opponents.Count - CountEligibleDigimons(a.Tournament))))
+                .ToList();
+        }
+
+        /// <summary>Quantos Digimon do Center cumprem a regra de inscrição do campeonato.</summary>
+        public int CountEligibleDigimons(TournamentData tournament) =>
+            CenterService.GetAllDigimons().Count(d => GetTournamentIneligibilityReason(tournament, d) == null);
+
         /// <summary>Regras de inscrição do campeonato (TournamentRules) aplicadas ao time - com
         /// IgnoreCalendar ligado, todo time é válido. Usado por StartTournamentBattle e pela
         /// TeamSelectionScreen.</summary>

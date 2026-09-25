@@ -19,6 +19,17 @@ namespace ProjetoDC.Scripts.Systems.Calendar
         public bool CanStart => Status == TournamentAvailabilityStatus.Available;
     }
 
+    /// <summary>Um campeonato destravado e ainda não vencido na edição, com DaysUntilOpen (0 = aberto
+    /// hoje) e DaysRemaining (dias abertos contando o dia da abertura/hoje; -1 = não fecha).</summary>
+    public readonly record struct UpcomingTournament(TournamentData Tournament, int DaysUntilOpen, int DaysRemaining)
+    {
+        public bool IsOpen => DaysUntilOpen == 0;
+    }
+
+    /// <summary>Aviso antecipado de um campeonato no dia (ver CalendarSystem.GetAnnouncements). Days:
+    /// OpensSoon = dias até abrir; OpenedToday = dias que fica aberto; ClosesTomorrow = 1.</summary>
+    public readonly record struct TournamentAnnouncement(TournamentData Tournament, TournamentAnnouncementKind Kind, int Days);
+
     /// <summary>
     /// Calendário de estações derivado de WorldState.CurrentDay - só leitura do tempo, não guarda
     /// nada no save. As constantes (dias por estação, nomes das estações) vêm de
@@ -253,6 +264,131 @@ namespace ProjetoDC.Scripts.Systems.Calendar
 
             return new TournamentAvailability(TournamentAvailabilityStatus.Available, DaysOpenRemaining(cal, tournament, dayIndex), edition);
         }
+
+        /// <summary>Recurring com intervalo menor que isso não gera aviso antecipado (abriria a cada poucos
+        /// dias, virando spam) - a lista de campeonatos e a HUD continuam mostrando.</summary>
+        public const int MinAnnouncedRecurringInterval = 15;
+
+        /// <summary>
+        /// Campeonatos destravados e não vencidos na edição (a atual, se aberto; a da próxima abertura, se
+        /// fechado), ordenados por dias até abrir, depois dias restantes, depois Id. Os que nunca abrem
+        /// ficam de fora.
+        /// </summary>
+        public static List<UpcomingTournament> GetUpcoming(
+            CalendarData cal,
+            IEnumerable<TournamentData> tournaments,
+            int dayIndex,
+            IEnumerable<int> clearedTournamentIds,
+            IReadOnlyDictionary<int, int> lastWonEdition)
+        {
+            var cleared = clearedTournamentIds.ToList();
+            var result = new List<UpcomingTournament>();
+
+            foreach (var t in tournaments)
+            {
+                if (!IsUnlocked(t, cleared))
+                    continue;
+
+                int until = DaysUntilOpen(cal, t, dayIndex);
+
+                if (until < 0)
+                    continue;
+
+                int openDay = ClampIndex(dayIndex) + until;
+
+                if (lastWonEdition != null && lastWonEdition.TryGetValue(t.Id, out int won) && won == EditionId(cal, t, openDay))
+                    continue;
+
+                result.Add(new UpcomingTournament(t, until, DaysOpenRemaining(cal, t, openDay)));
+            }
+
+            return result
+                .OrderBy(u => u.DaysUntilOpen)
+                .ThenBy(u => u.DaysRemaining < 0 ? int.MaxValue : u.DaysRemaining)
+                .ThenBy(u => u.Tournament.Id)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Avisos do dia <paramref name="dayIndex"/> (a HUD chama na virada do dia): "abre em N dias" quando
+        /// faltam exatamente AnnounceDaysBefore, "está aberto por N dias" no primeiro dia aberto e "Último
+        /// dia: X fecha à meia-noite" no último. Só pra quem está em GetUpcoming (destravado e não vencido na edição); sem
+        /// data (Always/Unlockable) e Recurring com intervalo &lt; MinAnnouncedRecurringInterval não avisam.
+        /// </summary>
+        public static List<TournamentAnnouncement> GetAnnouncements(
+            CalendarData cal,
+            IEnumerable<TournamentData> tournaments,
+            int dayIndex,
+            IEnumerable<int> clearedTournamentIds,
+            IReadOnlyDictionary<int, int> lastWonEdition)
+        {
+            var result = new List<TournamentAnnouncement>();
+
+            foreach (var u in GetUpcoming(cal, tournaments, dayIndex, clearedTournamentIds, lastWonEdition))
+            {
+                var t = u.Tournament;
+
+                if (t.ScheduleType is TournamentScheduleType.Always or TournamentScheduleType.Unlockable)
+                    continue;
+
+                if (t.ScheduleType == TournamentScheduleType.Recurring && t.IntervalDays < MinAnnouncedRecurringInterval)
+                    continue;
+
+                if (!u.IsOpen)
+                {
+                    if (t.AnnounceDaysBefore > 0 && u.DaysUntilOpen == t.AnnounceDaysBefore)
+                        result.Add(new TournamentAnnouncement(t, TournamentAnnouncementKind.OpensSoon, u.DaysUntilOpen));
+
+                    continue;
+                }
+
+                if (dayIndex <= 0 || !IsOpen(cal, t, dayIndex - 1))
+                    result.Add(new TournamentAnnouncement(t, TournamentAnnouncementKind.OpenedToday, u.DaysRemaining));
+
+                if (u.DaysRemaining == 1)
+                    result.Add(new TournamentAnnouncement(t, TournamentAnnouncementKind.ClosesTomorrow, 1));
+            }
+
+            return result;
+        }
+
+        /// <summary>Texto do aviso; <paramref name="missingEligible"/> &gt; 0 acrescenta quantos Digimon
+        /// elegíveis faltam no Center pra montar o time.</summary>
+        public static string FormatAnnouncement(TournamentAnnouncement a, int missingEligible)
+        {
+            string text = a.Kind switch
+            {
+                TournamentAnnouncementKind.OpensSoon => $"{a.Tournament.Name} abre em {DaysText(a.Days)}",
+                TournamentAnnouncementKind.OpenedToday => $"{a.Tournament.Name} está aberto por {DaysText(a.Days)}",
+                _ => $"Último dia: {a.Tournament.Name} fecha à meia-noite",
+            };
+
+            return missingEligible switch
+            {
+                <= 0 => text,
+                1 => $"{text} (falta 1 Digimon elegível)",
+                _ => $"{text} (faltam {missingEligible} Digimon elegíveis)",
+            };
+        }
+
+        /// <summary>Linha curta da HUD: o primeiro de GetUpcoming ("Aberto: X (3d)" ou "Próx.: X em 3d"),
+        /// ou vazio se não há nenhum.</summary>
+        public static string FormatNext(IReadOnlyList<UpcomingTournament> upcoming)
+        {
+            if (upcoming.Count == 0)
+                return "";
+
+            var u = upcoming[0];
+
+            if (!u.IsOpen)
+                return $"Próx.: {u.Tournament.Name} em {u.DaysUntilOpen}d";
+
+            return u.DaysRemaining > 0
+                ? $"Aberto: {u.Tournament.Name} ({u.DaysRemaining}d)"
+                : $"Aberto: {u.Tournament.Name}";
+        }
+
+        private static string DaysText(int n) => n == 1 ? "1 dia" : $"{n} dias";
 
         public static bool IsOpen(TournamentData tournament, int dayIndex) => IsOpen(Data, tournament, dayIndex);
 

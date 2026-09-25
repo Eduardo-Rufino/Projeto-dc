@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
@@ -84,6 +85,19 @@ namespace ProjetoDC.Scripts.UI
 
         private Panel _warningToast;
         private Label _warningLabel;
+
+        // Aviso antecipado de campeonato (ver OnDayPassedTournamentNotices): toast próprio, com fila e
+        // fade, abaixo da barra de controles - não reaproveita o WarningToast pra não brigar com os avisos
+        // de recusa (que continuam sobrescrevendo, como antes). Não pausa nada.
+        private const double NoticeSeconds = 4.0;
+        private const double NoticeFadeSeconds = 0.35;
+        private PanelContainer _noticeToast;
+        private Label _noticeLabel;
+        private readonly Queue<string> _pendingNotices = new();
+        private bool _showingNotice;
+
+        // "Próx.: Trio das Trevas em 3d" - linha pequena abaixo do calendário.
+        private Label _nextTournamentLabel;
 
         public override void _Ready()
         {
@@ -265,6 +279,8 @@ namespace ProjetoDC.Scripts.UI
 
             _warningToast = GetNode<Panel>("WarningToast");
             _warningLabel = GetNode<Label>("WarningToast/Label");
+
+            BuildTournamentNoticeUI();
 
             _feedButton = GetNode<Button>(
                 "ControlBar/FeedButton"
@@ -454,6 +470,7 @@ namespace ProjetoDC.Scripts.UI
             }
 
             GameManager.Instance.ClockSystem.MinutePassed += RefreshDateTime;
+            GameManager.Instance.ClockSystem.DayPassed += OnDayPassedTournamentNotices;
 
             // Sem isso, o painel de status (nome/nível/HP/etc.) só era atualizado quando o
             // jogador clicava no próprio Digimon no mundo (ver DigimonWorld -> Center.
@@ -485,6 +502,7 @@ namespace ProjetoDC.Scripts.UI
             _calendarLabel.Text = CalendarSystem.IsLoaded
                 ? CalendarSystem.Format(CalendarSystem.GetDateFromCurrentDay(world.CurrentDay))
                 : "Calendário";
+            _nextTournamentLabel.Text = CalendarSystem.FormatNext(GameManager.Instance.GetUpcomingTournaments());
             _clockLabel.Text =
                 $"{world.CurrentHour:00}:{world.CurrentMinute:00}";
 
@@ -515,6 +533,7 @@ namespace ProjetoDC.Scripts.UI
             if (GameManager.Instance?.ClockSystem != null)
             {
                 GameManager.Instance.ClockSystem.MinutePassed -= RefreshDateTime;
+                GameManager.Instance.ClockSystem.DayPassed -= OnDayPassedTournamentNotices;
             }
 
             if (GameManager.Instance != null)
@@ -610,6 +629,86 @@ namespace ProjetoDC.Scripts.UI
                 if (IsInstanceValid(_warningToast))
                     _warningToast.Visible = false;
             };
+        }
+
+        private void BuildTournamentNoticeUI()
+        {
+            _nextTournamentLabel = new Label
+            {
+                ClipText = true,
+                MouseFilter = MouseFilterEnum.Ignore,
+            };
+            _nextTournamentLabel.AddThemeFontSizeOverride("font_size", 11);
+            _nextTournamentLabel.AddThemeColorOverride("font_color", new Color(1f, 0.86f, 0.31f));
+            _calendarLabel.AddSibling(_nextTournamentLabel);
+
+            _noticeToast = new PanelContainer
+            {
+                Visible = false,
+                MouseFilter = MouseFilterEnum.Ignore,
+                ProcessMode = ProcessModeEnum.Always,
+            };
+            _noticeToast.AddThemeStyleboxOverride("panel", _warningToast.GetThemeStylebox("panel"));
+            _noticeToast.SetAnchorsPreset(LayoutPreset.CenterTop);
+            _noticeToast.OffsetLeft = -260;
+            _noticeToast.OffsetRight = 260;
+            _noticeToast.OffsetTop = 178;
+            _noticeToast.GrowHorizontal = GrowDirection.Both;
+
+            _noticeLabel = new Label
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                AutowrapMode = TextServer.AutowrapMode.WordSmart,
+                MouseFilter = MouseFilterEnum.Ignore,
+                CustomMinimumSize = new Vector2(0, 36),
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            _noticeLabel.AddThemeFontSizeOverride("font_size", 13);
+            _noticeLabel.AddThemeColorOverride("font_color", new Color(1f, 0.86f, 0.31f));
+            _noticeToast.AddChild(_noticeLabel);
+
+            AddChild(_noticeToast);
+        }
+
+        // Roda depois do GameManager.OnDayPassed (assinou antes), sem mexer no que ele faz: só lê o dia novo.
+        private void OnDayPassedTournamentNotices()
+        {
+            foreach (var message in GameManager.Instance.GetTournamentAnnouncementMessages())
+                ShowTournamentNotice(message);
+        }
+
+        /// <summary>Enfileira um aviso de campeonato - um de cada vez, com fade, some sozinho.</summary>
+        public void ShowTournamentNotice(string message)
+        {
+            GD.Print($"[Aviso de campeonato] {message}");
+            _pendingNotices.Enqueue(message);
+
+            if (!_showingNotice)
+                ShowNextTournamentNotice();
+        }
+
+        private void ShowNextTournamentNotice()
+        {
+            if (_pendingNotices.Count == 0 || !IsInstanceValid(_noticeToast))
+            {
+                _showingNotice = false;
+                return;
+            }
+
+            _showingNotice = true;
+            _noticeLabel.Text = _pendingNotices.Dequeue();
+            _noticeToast.Modulate = new Color(1f, 1f, 1f, 0f);
+            _noticeToast.Visible = true;
+
+            var tween = _noticeToast.CreateTween();
+            tween.TweenProperty(_noticeToast, "modulate:a", 1f, NoticeFadeSeconds);
+            tween.TweenInterval(NoticeSeconds);
+            tween.TweenProperty(_noticeToast, "modulate:a", 0f, NoticeFadeSeconds);
+            tween.TweenCallback(Callable.From(() =>
+            {
+                _noticeToast.Visible = false;
+                ShowNextTournamentNotice();
+            }));
         }
 
         private void OnSelectedDigimonNameLabelGuiInput(InputEvent @event)
