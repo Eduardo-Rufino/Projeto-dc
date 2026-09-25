@@ -112,9 +112,6 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 ("exploration", ExplorationRuntime),
                 ("flows", BattleFlows),
                 ("battles", RandomBattles),
-                // antes de "scenes": ela destrói o CenterScreen legado, que deixa TeamBattleFinished assinado
-                // (ObjectDisposedException em qualquer batalha depois dela)
-                ("medals", SeasonMedals),
                 ("scenes", ScenesLoad),
                 ("misc", Misc),
                 ("suddendeath", SuddenDeath),
@@ -123,6 +120,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 ("rules", TournamentRulesSection),
                 ("winrate", TournamentWinRate),
                 ("notices", TournamentNotices),
+                ("medals", SeasonMedals),
             };
 
             // A bateria testa a regra de elegibilidade de campeonatos de verdade (DEBUG_IGNORE_CALENDAR fora).
@@ -3056,7 +3054,9 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 var packed = GD.Load<PackedScene>(path);
                 Check(packed != null, $"{path}: não carrega como PackedScene");
 
-                if (packed == null || path.Contains("Main.tscn") || path.EndsWith("Center.tscn") || path.EndsWith("MainMenu.tscn") || path.EndsWith("BattleArena.tscn") || path.EndsWith("ExplorationArea.tscn"))
+                // CenterScreen.tscn: tela legada, inalcançável no jogo real (só via Main.tscn) - assina eventos do
+                // GameManager/ClockSystem sem cancelar, então destruí-la aqui quebra toda batalha seguinte.
+                if (packed == null || path.Contains("Main.tscn") || path.EndsWith("Center.tscn") || path.EndsWith("MainMenu.tscn") || path.EndsWith("BattleArena.tscn") || path.EndsWith("ExplorationArea.tscn") || path.EndsWith("CenterScreen.tscn"))
                     continue;
 
                 try
