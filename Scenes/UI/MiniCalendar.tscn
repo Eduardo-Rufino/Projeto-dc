@@ -1,0 +1,31 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/MiniCalendar.cs" id="1_minicalendar"]
+
+[node name="MiniCalendar" type="VBoxContainer"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+script = ExtResource("1_minicalendar")
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+text = "Primavera • Ano 1"
+
+[node name="DayGrid" type="GridContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+columns = 5
+
+[node name="InfoLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.86, 0.31, 1)
+theme_override_constants/line_spacing = -2
+theme_override_font_sizes/font_size = 10
+autowrap_mode = 3
+max_lines_visible = 2
+text = "Medalhas: 0/20"

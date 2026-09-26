@@ -29,6 +29,7 @@
 [ext_resource type="Script" path="res://Scripts/UI/CenterSky.cs" id="5_centersky"]
 [ext_resource type="Script" path="res://Scripts/UI/CenterHexBackdrop.cs" id="6_hexbackdrop"]
 [ext_resource type="Script" path="res://Scripts/UI/HexWindowBackground.cs" id="hexbg_script"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/MiniCalendar.tscn" id="7_minicalendar"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scj13"]
 bg_color = Color(0.1254902, 0.14509805, 0.16862746, 1)
@@ -112,12 +113,12 @@ anchor_right = 1.0
 offset_bottom = 100.0
 grow_horizontal = 2
 
-[node name="CenterMap" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=1722000983]
+[node name="MinimapSlot" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=1722000983]
 anchors_preset = 0
 offset_right = 180.0
 offset_bottom = 100.0
 
-[node name="Panel" type="Panel" parent="CanvasLayer/HUD/TopBar/CenterMap" unique_id=359065717]
+[node name="Panel" type="Panel" parent="CanvasLayer/HUD/TopBar/MinimapSlot" unique_id=359065717]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -126,7 +127,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_scj13")
 
-[node name="HexBackground" type="ColorRect" parent="CanvasLayer/HUD/TopBar/CenterMap/Panel"]
+[node name="HexBackground" type="ColorRect" parent="CanvasLayer/HUD/TopBar/MinimapSlot/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -137,7 +138,7 @@ mouse_filter = 2
 script = ExtResource("hexbg_script")
 CornerRadius = 0.0
 
-[node name="MiniMap" type="Control" parent="CanvasLayer/HUD/TopBar/CenterMap/Panel" unique_id=1858172320]
+[node name="MiniMap" type="Control" parent="CanvasLayer/HUD/TopBar/MinimapSlot/Panel" unique_id=1858172320]
 script = ExtResource("4_minimap")
 layout_mode = 1
 anchors_preset = 15
@@ -173,49 +174,61 @@ mouse_filter = 2
 script = ExtResource("hexbg_script")
 CornerRadius = 0.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel"]
+[node name="Margin" type="MarginContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 14
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer" unique_id=1741051013]
+[node name="TimeRow" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/Margin"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="DateLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer/VBoxContainer" unique_id=1778898101]
+[node name="ClockColumn" type="VBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/Margin/TimeRow"]
 layout_mode = 2
-text = "Dia 1"
+theme_override_constants/separation = 1
+alignment = 1
 
-[node name="CalendarLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer/VBoxContainer" unique_id=1647158106]
+[node name="AnalogClock" type="Control" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/Margin/TimeRow/ClockColumn"]
 layout_mode = 2
-text = "Calendario"
+size_flags_horizontal = 4
+script = ExtResource("4_analogclock")
+Radius = 22.0
 
-[node name="ClockLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer/VBoxContainer" unique_id=1697077575]
+[node name="ClockLabel" type="Label" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/Margin/TimeRow/ClockColumn" unique_id=1697077575]
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
 text = "06:00"
 
-[node name="AnalogClock" type="Control" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer"]
+[node name="TimeButtons" type="HBoxContainer" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/Margin/TimeRow/ClockColumn"]
 layout_mode = 2
-size_flags_vertical = 4
-script = ExtResource("4_analogclock")
+theme_override_constants/separation = 4
+alignment = 1
 
-[node name="SkipSleepButton" type="Button" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer"]
+[node name="SpeedButton" type="Button" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/Margin/TimeRow/ClockColumn/TimeButtons"]
 layout_mode = 2
-size_flags_vertical = 4
-tooltip_text = "Pula pro momento em que os Digimons acordam"
-text = "💤 Pular sono"
-
-[node name="SpeedButton" type="Button" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/HBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
 toggle_mode = true
+theme_override_font_sizes/font_size = 11
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_button_active")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_active")
 tooltip_text = "Acelera a passagem do tempo (relógio, fome, incubação) em 2x"
 text = "⏩ x2"
+
+[node name="SkipSleepButton" type="Button" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/Margin/TimeRow/ClockColumn/TimeButtons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+tooltip_text = "Pula pro momento em que os Digimons acordam"
+text = "💤 Pular sono"
+
+[node name="MiniCalendar" parent="CanvasLayer/HUD/TopBar/DateTime/Panel/Margin/TimeRow" instance=ExtResource("7_minicalendar")]
+layout_mode = 2
 
 [node name="CenterStatus" type="Control" parent="CanvasLayer/HUD/TopBar" unique_id=1457227790]
 anchors_preset = 0

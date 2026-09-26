@@ -9,8 +9,10 @@ namespace ProjetoDC.Scripts.UI
 {
     public partial class HUD : Control
     {
-        private Label _dateLabel;
-        private Label _calendarLabel;
+        // Bloco de tempo do TopBar: relógio (analógico + hora + botões x2/Pular sono) e o minicalendário, que é
+        // o único lugar onde a data aparece (estação, ano e o dia na grade).
+        private const string TimeBlockPath = "TopBar/DateTime/Panel/Margin/TimeRow";
+        private MiniCalendar _miniCalendar;
         private Label _clockLabel;
         private Button _skipSleepButton;
         private Button _speedButton;
@@ -96,9 +98,6 @@ namespace ProjetoDC.Scripts.UI
         private readonly Queue<string> _pendingNotices = new();
         private bool _showingNotice;
 
-        // "Próx.: Trio das Trevas em 3d" - linha pequena abaixo do calendário.
-        private Label _nextTournamentLabel;
-
         public override void _Ready()
         {
             // Precisa continuar rodando com a árvore pausada - é a própria HUD quem decide
@@ -106,36 +105,22 @@ namespace ProjetoDC.Scripts.UI
             // junto, senão nunca detectaria a tela secundária fechando pra despausar de volta.
             ProcessMode = ProcessModeEnum.Always;
 
-            _dateLabel = GetNode<Label>(
-                "TopBar/DateTime/Panel/HBoxContainer/VBoxContainer/DateLabel"
-            );
+            _miniCalendar = GetNode<MiniCalendar>($"{TimeBlockPath}/MiniCalendar");
 
-            _calendarLabel = GetNode<Label>(
-                "TopBar/DateTime/Panel/HBoxContainer/VBoxContainer/CalendarLabel"
-            );
+            _clockLabel = GetNode<Label>($"{TimeBlockPath}/ClockColumn/ClockLabel");
 
-            _clockLabel = GetNode<Label>(
-                "TopBar/DateTime/Panel/HBoxContainer/VBoxContainer/ClockLabel"
-            );
-
-            _skipSleepButton = GetNode<Button>(
-                "TopBar/DateTime/Panel/HBoxContainer/SkipSleepButton"
-            );
+            _skipSleepButton = GetNode<Button>($"{TimeBlockPath}/ClockColumn/TimeButtons/SkipSleepButton");
 
             _skipSleepButton.Pressed += OnSkipSleepButtonPressed;
 
-            _speedButton = GetNode<Button>(
-                "TopBar/DateTime/Panel/HBoxContainer/SpeedButton"
-            );
+            _speedButton = GetNode<Button>($"{TimeBlockPath}/ClockColumn/TimeButtons/SpeedButton");
 
             _speedButton.Pressed += OnSpeedButtonPressed;
 
-            _analogClock = GetNode<AnalogClock>(
-                "TopBar/DateTime/Panel/HBoxContainer/AnalogClock"
-            );
+            _analogClock = GetNode<AnalogClock>($"{TimeBlockPath}/ClockColumn/AnalogClock");
 
             _miniMap = GetNode<MiniMap>(
-                "TopBar/CenterMap/Panel/MiniMap"
+                "TopBar/MinimapSlot/Panel/MiniMap"
             );
 
             _bitsLabel = GetNode<Label>(
@@ -498,14 +483,12 @@ namespace ProjetoDC.Scripts.UI
         {
             var world = GameManager.Instance.Save.World;
 
-            var medals = GameManager.Instance.GetSeasonMedals();
-            _dateLabel.Text = $"Dia {world.CurrentDay} • Medalhas: {medals.Earned}/{medals.Total}";
             // RefreshDateTime roda a cada MinutePassed, que o ClockSystem dispara logo depois do
-            // DayPassed na virada do dia - então o calendário acompanha a troca de dia sem gancho extra.
-            _calendarLabel.Text = CalendarSystem.IsLoaded
-                ? CalendarSystem.Format(CalendarSystem.GetDateFromCurrentDay(world.CurrentDay))
-                : "Calendário";
-            _nextTournamentLabel.Text = CalendarSystem.FormatNext(GameManager.Instance.GetUpcomingTournaments());
+            // DayPassed na virada do dia - então o minicalendário acompanha a troca de dia sem gancho extra.
+            var medals = GameManager.Instance.GetSeasonMedals();
+            string next = CalendarSystem.FormatNext(GameManager.Instance.GetUpcomingTournaments());
+            _miniCalendar.Refresh(world.CurrentDay,
+                $"Medalhas: {medals.Earned}/{medals.Total}" + (next != "" ? $" • {next}" : ""));
             _clockLabel.Text =
                 $"{world.CurrentHour:00}:{world.CurrentMinute:00}";
 
@@ -638,15 +621,6 @@ namespace ProjetoDC.Scripts.UI
 
         private void BuildTournamentNoticeUI()
         {
-            _nextTournamentLabel = new Label
-            {
-                ClipText = true,
-                MouseFilter = MouseFilterEnum.Ignore,
-            };
-            _nextTournamentLabel.AddThemeFontSizeOverride("font_size", 11);
-            _nextTournamentLabel.AddThemeColorOverride("font_color", new Color(1f, 0.86f, 0.31f));
-            _calendarLabel.AddSibling(_nextTournamentLabel);
-
             _noticeToast = new PanelContainer
             {
                 Visible = false,
