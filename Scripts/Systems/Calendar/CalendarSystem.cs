@@ -467,9 +467,10 @@ namespace ProjetoDC.Scripts.Systems.Calendar
 
         /// <summary>
         /// O máximo de medalhas que ainda dá pra ter nesta temporada: as já conquistadas + as que ainda abrem
-        /// no ano, contando também as travadas cuja trava ainda pode cair a tempo (o campeonato que destrava
-        /// já foi vencido algum dia, ou ainda abre neste ano antes da próxima abertura do travado). É o que
-        /// decide "Inalcançável nesta temporada" - MedalsAvailable, por definição, só conta as destravadas.
+        /// no ano, contando também as travadas cuja trava ainda pode cair a tempo. Olha TODAS as aberturas que
+        /// restam na temporada (não só a próxima): um Recurring cuja próxima abertura vem antes da trava cair
+        /// ainda conta se um ciclo seguinte vier depois. É o que decide "Inalcançável nesta temporada" -
+        /// MedalsAvailable, por definição, só conta as destravadas.
         /// </summary>
         public static int MedalsPotential(
             CalendarData cal, IReadOnlyCollection<TournamentData> tournaments, int dayIndex,
@@ -478,16 +479,35 @@ namespace ProjetoDC.Scripts.Systems.Calendar
             var cleared = clearedTournamentIds.ToList();
             int year = Year(cal, dayIndex);
             int index = ClampIndex(dayIndex);
+            int seasonEnd = year * cal.DaysPerYear - 1;
             int potential = MedalsThisSeason(cal, tournaments, dayIndex, lastWonEdition);
 
-            // próximo dia (índice) em que abre ainda nesta temporada, ou -1
-            int NextOpenThisSeason(TournamentData t)
+            // Aberturas (primeiro e último dia, índices) que ainda restam nesta temporada e dão medalha nela: a
+            // que está aberta agora conta a partir de hoje, se a edição dela começou nesta temporada.
+            List<(int First, int Last)> OpeningsThisSeason(TournamentData t)
             {
-                int until = DaysUntilOpen(cal, t, index);
-                return until >= 0 && Year(cal, index + until) == year ? index + until : -1;
+                var openings = new List<(int, int)>();
+
+                for (int d = index; d <= seasonEnd; d++)
+                {
+                    if (!IsOpen(cal, t, d) || (d > index && IsOpen(cal, t, d - 1)))
+                        continue;
+
+                    if (EditionSeason(cal, t, EditionId(cal, t, d)) != year)
+                        continue;
+
+                    int last = d;
+                    while (last + 1 <= seasonEnd && IsOpen(cal, t, last + 1))
+                        last++;
+
+                    openings.Add((d, last));
+                }
+
+                return openings;
             }
 
-            // dá pra estar destravado até o dia <by>? (trava em cadeia, sem ciclos no dado)
+            // dá pra estar destravado até o dia <by> (inclusive)? A trava cai vencendo o campeonato que destrava
+            // numa abertura dele que comece até <by>. Trava em cadeia; depth evita laço se o dado tiver ciclo.
             bool CanUnlockBy(TournamentData t, int by, int depth)
             {
                 if (IsUnlocked(t, cleared))
@@ -497,8 +517,8 @@ namespace ProjetoDC.Scripts.Systems.Calendar
                 if (blocker == null || depth > tournaments.Count)
                     return false;
 
-                int blockerOpens = NextOpenThisSeason(blocker);
-                return blockerOpens >= 0 && blockerOpens < by && CanUnlockBy(blocker, blockerOpens, depth + 1);
+                // vencer o que destrava num dia entre o.First e min(o.Last, by) - ele destravado até esse dia
+                return OpeningsThisSeason(blocker).Any(o => o.First <= by && CanUnlockBy(blocker, Math.Min(o.Last, by), depth + 1));
             }
 
             foreach (var t in tournaments)
@@ -506,8 +526,7 @@ namespace ProjetoDC.Scripts.Systems.Calendar
                 if (t.MedalValue <= 0 || HasSeasonMedal(cal, t, dayIndex, lastWonEdition))
                     continue;
 
-                int opens = NextOpenThisSeason(t);
-                if (opens >= 0 && CanUnlockBy(t, opens + Math.Max(0, DaysOpenRemaining(cal, t, opens) - 1) + 1, 0))
+                if (OpeningsThisSeason(t).Any(o => CanUnlockBy(t, o.Last, 0)))
                     potential += t.MedalValue;
             }
 

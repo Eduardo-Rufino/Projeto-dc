@@ -2595,8 +2595,30 @@ namespace ProjetoDC.Scripts.Systems.Audit
             var won8 = new Dictionary<int, int> { [4] = 1, [5] = 1, [6] = 1, [7] = 1, [9] = 1 };
             int pot51 = CalendarSystem.MedalsPotential(cal, tournaments, 50, new List<int> { 4, 5, 6, 7, 9 }, won8);
             Case("Inalcançável", pot56 == 9 && pot51 == 14, $"dia 56 com 3: potencial {pot56} (inalcançável); dia 51 com 8: potencial {pot51} (alcançável); status do 13 fechado no dia 56: {av56.Status}");
-            int pot0 = CalendarSystem.MedalsPotential(cal, tournaments, 0, none, new Dictionary<int, int>());
-            Info($"potencial no dia 1 de um jogo novo (nada vencido): {pot0} (o 11 abre no dia 45, antes da Copa Mega que o destrava no dia 55)");
+            // MedalsPotential olha todas as aberturas da temporada (fase 7d): no dia 1 o Trio Guardião 02 está no
+            // ciclo dos dias 1-5, antes do Desafio Champion (dia 10) que o destrava, mas os ciclos dos dias 21 e 41
+            // vêm depois - conta. Só a Copa das Lendas (dia 45, destravada pela Copa Mega do dia 55) fica de fora.
+            var noWins = new Dictionary<int, int>();
+            int pot0 = CalendarSystem.MedalsPotential(cal, tournaments, 0, none, noWins);
+            Case("potencial no dia 1 = 17", pot0 == 17, $"{pot0} (sem a Copa das Lendas)");
+
+            var series = Enumerable.Range(0, 60).Select(i => CalendarSystem.MedalsPotential(cal, tournaments, i, none, noWins)).ToList();
+            var rises = Enumerable.Range(1, 59).Where(i => series[i] > series[i - 1]).Select(i => i + 1).ToList();
+            Case("potencial nunca sobe no ano 1 sem vitórias", rises.Count == 0,
+                $"dias 1/10/30/45/55/60 = {series[0]}/{series[9]}/{series[29]}/{series[44]}/{series[54]}/{series[59]}" +
+                (rises.Count > 0 ? $"; subiu nos dias {string.Join(",", rises)}" : ""));
+            Info("série do potencial (ano 1, sem vitórias): " + string.Join(" ", series.Select((v, i) => $"{i + 1}:{v}")));
+
+            int pot38 = CalendarSystem.MedalsPotential(cal, tournaments, 0, new List<int> { 3, 8 }, noWins);
+            Case("potencial com o 3 e o 8 vencidos = 20", pot38 == 20, $"{pot38}");
+
+            // "Inalcançável" continua ausente enquanto dá (dia 3 de jogo novo: 17 >= 12, o 13 fica só Closed) e
+            // aparece quando não dá mais (dia 60 sem vitórias)
+            var early = CalendarSystem.GetAvailability(cal, ge, 2, none, noWins, tournaments);
+            var late = CalendarSystem.GetAvailability(cal, ge, 59, none, noWins, tournaments);
+            int pot3 = CalendarSystem.MedalsPotential(cal, tournaments, 2, none, noWins);
+            Case("Inalcançável só quando não dá mais", pot3 >= 12 && early.Status == TournamentAvailabilityStatus.Closed && late.Status == TournamentAvailabilityStatus.MedalsUnreachable,
+                $"dia 3: potencial {pot3}, status {early.Status}; dia 60 sem vitórias: {late.Status}");
 
             // IgnoreCalendar: ignora MedalsRequired, mas não grava ano nem edição
             ResetScratch(bits: 0, capacity: 1000);
