@@ -25,7 +25,8 @@ namespace ProjetoDC.Scripts.UI
         // Mais recente primeiro - é a que abre selecionada por padrão.
         private static readonly (string Title, string Body)[] Versions =
         {
-            ("🆕 Versão 0.10", Version10Body),
+            ("🆕 Versão 0.11", Version11Body),
+            ("📦 Versão 0.10", Version10Body),
             ("📦 Versão 0.9", Version09Body),
             ("📦 Versão 0.8", Version08Body),
             ("📦 Versão 0.7", Version07Body),
@@ -120,6 +121,9 @@ namespace ProjetoDC.Scripts.UI
             BackPressed?.Invoke();
         }
 
+        private const string Version11Body =
+            "Em desenvolvimento.";
+
         private const string Version10Body =
             "[b]Calendário e temporadas[/b]\n" +
             "O jogo agora tem um calendário: o ano (a temporada) tem 60 dias, divididos em 4 estações de 15 dias - Primavera, Verão, Outono e Inverno. O ano vira no dia 61 do relógio, e tudo que é \"da temporada\" (medalhas, Grande Evento) recomeça do zero.\n" +
@@ -145,7 +149,20 @@ namespace ProjetoDC.Scripts.UI
             "O canto esquerdo da barra superior foi reorganizado: o relógio (analógico e digital) fica com os botões ⏩ x2 e 💤 Pular sono logo embaixo, e ao lado um minicalendário mostra a estação e o ano, os 15 dias da estação com o dia de hoje destacado, as medalhas da temporada e o próximo campeonato. A data deixou de aparecer duas vezes.\n" +
             "\n" +
             "[b]Tutoriais automáticos[/b]\n" +
-            "Num jogo novo, o básico aparece logo de cara (primeiros passos, necessidades do Digimon, relógio e ovos), e cada tela ou função mostra o tutorial dela na primeira vez que é usada (Loja, Inventário, Campeonatos, Exploração, Jogress, Guia de Evolução...). Cada tutorial aparece uma vez só, e todos continuam no botão 📖 pra consultar. Saves de antes começam com isso desligado - dá pra ligar em ⚙ Configurações.";
+            "Num jogo novo, o básico aparece logo de cara (primeiros passos, necessidades do Digimon, relógio e ovos), e cada tela ou função mostra o tutorial dela na primeira vez que é usada (Loja, Inventário, Campeonatos, Exploração, Jogress, Guia de Evolução...). Cada tutorial aparece uma vez só, e todos continuam no botão 📖 pra consultar. Saves de antes começam com isso desligado - dá pra ligar em ⚙ Configurações.\n" +
+            "\n" +
+            "[b]Ovos arrastáveis[/b]\n" +
+            "Os ovos agora podem ser arrastados pelo Center, igual aos Digimons. A área onde ele fica não muda nada nele - é só pra organizar. Soltar fora do Center devolve o ovo pra onde estava.\n" +
+            "\n" +
+            "[b]Menu de comida fica aberto[/b]\n" +
+            "Ao alimentar, o menu de comidas continua aberto depois de soltar a comida no Center, pra colocar a próxima sem reabrir. Ele fecha clicando de novo no botão 🍖 ou em qualquer outro lugar.\n" +
+            "\n" +
+            "[b]Revisão dos requisitos de evolução[/b]\n" +
+            "Os requisitos das ligações de evolução foram revistos (308 das 337 mudaram, nenhuma foi criada ou removida) pra resolver dois problemas: uma forma \"irmã\" mais forte aparecendo no lugar da que você estava mirando, e formas padrão que às vezes não dava pra alcançar. Nove espécies que não tinham nenhum caminho possível agora têm: Gabumon, Salamon, DemiVeemon, Dracomon, Dorimon, Bukamon, Hackmon, Minomon e Agumon (Savers). Nos estágios Baby e In-Training, cada forma agora tem uma assinatura em Ataque Especial e/ou Defesa Especial - treinar esses stats decide pra qual delas o Digimon vai. Growlmon vira WarGrowlmon por padrão e MetalGreymon treinando Ataque Especial. Confira os requisitos no Guia de Evolução (✨).\n" +
+            "\n" +
+            "[b]Correções[/b]\n" +
+            "- 21 Digimons (entre eles Veemon, DemiVeemon, ExVeemon, Paildramon, Myotismon, Lilamon, Piedmon, Sakuyamon e Ophanimon) usavam o quadro de dormir como animação de ataque e treino. Os quadros foram reordenados.\n" +
+            "- O texto da Enciclopédia no tutorial indicava o botão errado (📖 em vez de 📘).";
 
         private const string Version09Body =
             "[b]Mais tempo pra evoluir (todos os estágios)[/b]\n" +
