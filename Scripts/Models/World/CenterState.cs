@@ -141,6 +141,15 @@ namespace ProjetoDC.Scripts.Models.World
         /// "Campeão do Ano N". Save antigo entra vazio.</summary>
         public List<int> GrandEventWinYears { get; set; } = new();
 
+        /// <summary>Ids dos tópicos de tutorial (TutorialScreen) já mostrados automaticamente - ver
+        /// TutorialPopup/Center.Tutorials.cs.</summary>
+        public List<string> SeenTutorialIds { get; set; } = new();
+
+        /// <summary>Tutoriais automáticos (boas-vindas no jogo novo + o tópico de cada tela na primeira
+        /// vez que ela abre). Só o Novo Jogo liga (GameManager.StartNewGame): save antigo entra false,
+        /// já que quem já jogava não precisa ver tudo de novo - dá pra ligar em ⚙ Configurações.</summary>
+        public bool AutoTutorialsEnabled { get; set; }
+
         /// <summary>ItemPickupData.UniqueId (dentro de um ExplorationMapData) já coletados -
         /// esses pickups não voltam a aparecer na área (ver ExplorationArea).</summary>
         public List<int> CollectedItemPickupIds { get; set; } = new();

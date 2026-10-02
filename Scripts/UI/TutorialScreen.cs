@@ -20,26 +20,30 @@ namespace ProjetoDC.Scripts.UI
 
         public event Action BackPressed;
 
-        private static readonly (string Title, string Body)[] Topics =
+        // O Id é o que vai no save (CenterState.SeenTutorialIds) e o que o Center usa pra disparar o
+        // tópico automaticamente (ver Center.Tutorials.cs) - não renomear um Id existente.
+        private static readonly (string Id, string Title, string Body)[] Topics =
         {
-            ("⚔️ Vantagens de Tipo", VantagensDeTipoBody),
-            ("🏝️ Áreas do Center", AreasDoCenterBody),
-            ("🏗️ Editor de Bases", EditorDeBasesBody),
-            ("🥊 Batalha", BatalhaBody),
-            ("✨ Passivas", PassivasBody),
-            ("🏆 Campeonatos x Batalha Livre", CampeonatosBody),
-            ("🌎 Exploração", ExploracaoBody),
-            ("🤝 NPCs Recrutados", NpcsRecrutadosBody),
-            ("✨ Evolução", EvolucaoBody),
-            ("🧬 Jogress", JogressBody),
-            ("💀 Morte", MorteBody),
-            ("🥚 Ovos", OvosBody),
-            ("❤️ Necessidades do Digimon", NecessidadesBody),
-            ("🎒 Inventário", InventarioBody),
-            ("📖 Enciclopédia", EnciclopediaBody),
-            ("🕐 Relógio e Sono", RelogioBody),
-            ("💾 Menu Principal e Save", MenuESaveBody),
-            ("✏️ Renomear Digimon", RenomearBody),
+            ("primeiros_passos", "👋 Primeiros Passos", PrimeirosPassosBody),
+            ("vantagens_tipo", "⚔️ Vantagens de Tipo", VantagensDeTipoBody),
+            ("areas_center", "🏝️ Áreas do Center", AreasDoCenterBody),
+            ("editor_bases", "🏗️ Editor de Bases", EditorDeBasesBody),
+            ("batalha", "🥊 Batalha", BatalhaBody),
+            ("passivas", "✨ Passivas", PassivasBody),
+            ("campeonatos", "🏆 Campeonatos x Batalha Livre", CampeonatosBody),
+            ("calendario", "📅 Calendário", CalendarioBody),
+            ("exploracao", "🌎 Exploração", ExploracaoBody),
+            ("npcs_recrutados", "🤝 NPCs Recrutados", NpcsRecrutadosBody),
+            ("evolucao", "✨ Evolução", EvolucaoBody),
+            ("jogress", "🧬 Jogress", JogressBody),
+            ("morte", "💀 Morte", MorteBody),
+            ("ovos", "🥚 Ovos", OvosBody),
+            ("necessidades", "❤️ Necessidades do Digimon", NecessidadesBody),
+            ("inventario", "🎒 Inventário", InventarioBody),
+            ("enciclopedia", "📘 Enciclopédia", EnciclopediaBody),
+            ("relogio", "🕐 Relógio e Sono", RelogioBody),
+            ("menu_save", "💾 Menu Principal e Save", MenuESaveBody),
+            ("renomear", "✏️ Renomear Digimon", RenomearBody),
         };
 
         public override void _Ready()
@@ -67,7 +71,7 @@ namespace ProjetoDC.Scripts.UI
 
         private void BuildTopicButtons()
         {
-            foreach (var (title, body) in Topics)
+            foreach (var (_, title, body) in Topics)
             {
                 var button = new Button
                 {
@@ -121,11 +125,46 @@ namespace ProjetoDC.Scripts.UI
             _contentLabel.Text = Topics[0].Body;
         }
 
+        /// <summary>Título e texto de um tópico pelo Id (ver Topics) - usado pelos tutoriais
+        /// automáticos (TutorialPopup). False se o Id não existe.</summary>
+        public static bool TryGetTopic(string id, out string title, out string body)
+        {
+            foreach (var topic in Topics)
+            {
+                if (topic.Id == id)
+                {
+                    title = topic.Title;
+                    body = topic.Body;
+                    return true;
+                }
+            }
+
+            title = null;
+            body = null;
+            return false;
+        }
+
         private void OnBackPressed()
         {
             Visible = false;
             BackPressed?.Invoke();
         }
+
+        private const string PrimeirosPassosBody =
+            "Bem-vindo ao Center! Aqui você cria Digimons, cuida deles e os leva a campeonatos. O Center é a sua " +
+            "progressão de verdade: os Digimons vivem um tempo limitado, mas cada vitória deixa o Center maior e mais forte.\n\n" +
+            "[b]Começo[/b]: você recebe um ovo, que choca sozinho depois de um tempo. O Center já vem com uma área " +
+            "Neutra, um Hospital e uma área de Treino, além de um pouco de Bits, Carne e Remédio.\n\n" +
+            "[b]Cuidar[/b]: clique num Digimon pra selecionar e ver o estado dele na barra superior. Na barra de " +
+            "baixo, segure 🍖 e arraste a Carne até o Center pra alimentar, faça o mesmo com 💊 pra curar doença, e " +
+            "use 🧹 pra limpar o cocô.\n\n" +
+            "[b]Crescer[/b]: arraste o Digimon pra área de Treino pra ele ganhar experiência e stats; batalhas (🏆) " +
+            "também dão experiência e Bits. Ao atingir os requisitos, ele evolui sozinho - e precisa evoluir antes do " +
+            "limite de idade do estágio, senão morre de velhice.\n\n" +
+            "[b]Expandir[/b]: compre áreas e ovos na Loja (🏪) com os Bits das batalhas. Vencer campeonatos aumenta a " +
+            "Capacidade do Center, que limita quantos Digimons você pode ter.\n\n" +
+            "Na primeira vez que você abrir uma tela ou usar uma função nova, aparece o tutorial dela. Todos os " +
+            "tutoriais ficam no botão 📖 da barra de controle pra consultar quando quiser.";
 
         private const string VantagensDeTipoBody =
             "[b]Atributo[/b] (triângulo de vantagem, como pedra-papel-tesoura):\n" +
@@ -214,7 +253,29 @@ namespace ProjetoDC.Scripts.UI
             "continuar sendo um desafio mesmo pra um time já bem treinado. Campeonatos não dão experiência (nem na vitória, " +
             "nem a de consolação numa derrota) - só Bits e as recompensas de progressão abaixo. Vencer um campeonato dá uma " +
             "recompensa única de aumento permanente na Capacidade do Center (a forma principal de progressão do jogo por " +
-            "enquanto), recebida apenas na primeira vez que aquele campeonato é vencido.";
+            "enquanto), recebida apenas na primeira vez que aquele campeonato é vencido.\n\n" +
+            "[b]Quando dá pra entrar[/b]: cada campeonato só abre em certas datas do calendário (veja o tópico Calendário). " +
+            "O card mostra a situação: \"Aberto por mais N dias\", \"Abre em N dias\", \"Concluído nesta edição\" (você já " +
+            "venceu esta abertura - volta na próxima) ou \"Bloqueado: vença ...\" (alguns só abrem depois de vencer outro). " +
+            "Perder não gasta nada: dá pra tentar de novo enquanto estiver aberto.\n\n" +
+            "[b]Regras de inscrição[/b]: muitos campeonatos só aceitam certos estágios ou atributos (\"Só Rookie\", \"Só Vírus\"...), " +
+            "escrito no card. \"Só Mega\" também aceita Mega+. Na montagem do time, quem não cumpre a regra aparece bloqueado " +
+            "com o motivo - por isso vale ter Digimon variados no Center.";
+
+        private const string CalendarioBody =
+            "[b]Calendário[/b]: o ano do jogo (a temporada) tem 60 dias, em 4 estações de 15 dias - Primavera, Verão, Outono " +
+            "e Inverno. O minicalendário na barra superior mostra a estação, o ano e os dias da estação, com o dia de hoje destacado.\n\n" +
+            "[b]Agenda dos campeonatos[/b]: alguns campeonatos voltam de tempos em tempos (a Copa Novato e o Torneio Rookie " +
+            "abrem com frequência), outros abrem numa janela de dias ou num dia fixo do ano. Cada abertura é uma edição - " +
+            "vencer fecha o campeonato até a próxima. Na virada do dia aparece um aviso quando um campeonato vai abrir, quando " +
+            "abre e quando está no último dia, e diz se faltam Digimon elegíveis no Center pra montar o time. A barra " +
+            "superior também mostra o próximo campeonato (\"Aberto: ...\" ou \"Próx.: ... em Nd\").\n\n" +
+            "[b]Medalhas[/b]: vencer um campeonato dá uma medalha da temporada, de 1 a 3 pontos (20 no total por ano; a Copa " +
+            "Novato e o Torneio Rookie não dão). Cada campeonato conta uma vez por temporada, e as medalhas zeram na virada " +
+            "do ano. Veja as suas no botão 🏅 Medalhas, no menu do troféu.\n\n" +
+            "[b]Grande Evento[/b]: no último dia do ano (dia 60) abre o Grande Evento, um 3x3 sem restrição que exige 12 " +
+            "medalhas da temporada. Vencer dá Capacidade, Bits e o título de Campeão do Ano. Se já não der pra juntar 12 " +
+            "medalhas no ano, ele aparece como \"Inalcançável nesta temporada\" - aí o jeito é tentar na próxima.";
 
         private const string ExploracaoBody =
             "Clique no botão de globo 🌎 na barra de controle pra ver as áreas de exploração " +
@@ -312,7 +373,8 @@ namespace ProjetoDC.Scripts.UI
             "Ovos ocupam Capacidade do Center do mesmo jeito que o Baby que vai nascer deles, então não dá pra acumular " +
             "ovos infinitamente sem espaço. Receba o ovo inicial no começo do jogo ou compre mais na Loja - só Digimon " +
             "de estágio Baby nascem de ovo. Depois de um tempo de incubação, o ovo choca sozinho e o Baby aparece no " +
-            "Center.\n\n" +
+            "Center. Dá pra arrastar o ovo pra qualquer área do Center, como um Digimon - a área não muda nada nele, " +
+            "é só pra organizar.\n\n" +
             "[b]Tipo do ovo[/b]: ao comprar, escolha entre \"Aleatório\" (qualquer tipo, preço normal) ou um EggType " +
             "específico (Dragão, Fera, Água, Floresta, Fogo, Trevas ou Luz - custa 3x mais). Escolher um tipo garante " +
             "esse EggType, mas o Baby exato dentro dele continua sendo sorteado caso haja mais de um. O sprite do ovo " +
@@ -335,7 +397,7 @@ namespace ProjetoDC.Scripts.UI
             "itens futuros) com ícone e quantidade atual. Passe o mouse sobre um item pra ver o nome completo e a descrição.";
 
         private const string EnciclopediaBody =
-            "O botão 📖 na barra de controle mostra todas as espécies de Digimon do jogo, " +
+            "O botão 📘 na barra de controle mostra todas as espécies de Digimon do jogo, " +
             "agrupadas por estágio evolutivo. Espécies que você já teve no Center pelo menos " +
             "uma vez (chocando, comprando ou evoluindo pra elas) aparecem com sprite, nome e " +
             "função normalmente; as que você nunca teve mostram só uma silhueta com \"???\". " +
@@ -350,10 +412,12 @@ namespace ProjetoDC.Scripts.UI
             "que conta é ter descoberto, não ter agora.";
 
         private const string RelogioBody =
-            "O relógio na barra superior mostra a hora atual (incluindo um relógio analógico) e o dia/calendário do jogo, " +
-            "num ciclo de 24 horas. Enquanto todos os Digimons estão dormindo (não há nada pra fazer nesse período ainda, " +
-            "já que não existem Digimons diurnos/noturnos no jogo por enquanto), aparece um botão pra pular direto até " +
-            "alguém acordar, sem quebrar a passagem de dias nem nenhum sistema que dependa do relógio.";
+            "O relógio na barra superior mostra a hora atual (analógica e digital), num ciclo de 24 horas; a data fica no " +
+            "minicalendário ao lado (veja o tópico Calendário). Embaixo do relógio ficam dois botões:\n" +
+            "- [b]⏩ x2[/b]: acelera a passagem do tempo (relógio, fome, incubação) em 2x. Clique de novo pra voltar ao normal.\n" +
+            "- [b]💤 Pular sono[/b]: enquanto todos os Digimons estão dormindo (entre 22h e 6h - não há nada pra fazer nesse " +
+            "período ainda, já que não existem Digimons diurnos/noturnos no jogo por enquanto), pula direto até eles " +
+            "acordarem, sem quebrar a passagem de dias nem nenhum sistema que dependa do relógio.";
 
         private const string MenuESaveBody =
             "[b]Menu Principal[/b]: ao abrir o jogo você escolhe entre Novo Jogo, Carregar Jogo e Opções.\n" +

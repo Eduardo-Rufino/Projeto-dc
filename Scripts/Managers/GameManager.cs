@@ -138,6 +138,9 @@ namespace ProjetoDC.Scripts.Managers
         /// "Carregar Jogo" no menu principal (ver MainMenuScreen).</summary>
         public bool CanContinueGame => _loadedExistingSave;
 
+        /// <summary>True quando existe um jogo de verdade em andamento (save carregado ou Novo Jogo).</summary>
+        public bool HasActiveGame => _hasActiveGame;
+
         public override void _Ready()
         {
             Instance = this;
@@ -246,6 +249,7 @@ namespace ProjetoDC.Scripts.Managers
             SaveSystem.DeleteSave();
 
             Save = new SaveData();
+            Save.Center.AutoTutorialsEnabled = true;
             CenterService = new CenterService(Save.Center);
 
             if (ClockSystem != null)

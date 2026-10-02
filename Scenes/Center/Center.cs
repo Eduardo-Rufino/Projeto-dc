@@ -258,6 +258,8 @@ public partial class Center : Node2D
 
         _canvasLayer = GetNode<CanvasLayer>("CanvasLayer");
 
+        SetupAutoTutorials();
+
         if (_digimonScene == null)
         {
             GD.PrintErr("Não foi possível carregar DigimonWorld.tscn");
@@ -1573,7 +1575,8 @@ public partial class Center : Node2D
             || (_explorationPickScreen?.Visible ?? false)
             || (_encyclopediaScreen?.Visible ?? false)
             || (_digimonDetailScreen?.Visible ?? false)
-            || (_digimonDeathScreen?.Visible ?? false);
+            || (_digimonDeathScreen?.Visible ?? false)
+            || (_tutorialPopup?.IsOpen ?? false);
     }
 
     public void InspectDigimon(DigimonInstance digimon)

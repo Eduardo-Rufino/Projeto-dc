@@ -69,6 +69,10 @@ public partial class DigimonWorld : Node2D
     // cursor, não só na mais "de cima").
     private static DigimonWorld _draggingInstance;
 
+    /// <summary>Algum Digimon está sendo arrastado agora - o EggWorld usa pra não pegar um ovo
+    /// no mesmo clique (e vice-versa, ver EggWorld.IsAnyDragging).</summary>
+    public static bool IsAnyDragging => _draggingInstance != null;
+
     private bool _isDragging;
     private Vector2 _dragOffset;
     private Vector2 _positionBeforeDrag;
@@ -790,7 +794,7 @@ public partial class DigimonWorld : Node2D
 
         // Já tem outro Digimon sendo arrastado (mesmo clique pegando duas ClickArea
         // sobrepostas) - ignora, só o primeiro a pedir continua.
-        if (_draggingInstance != null)
+        if (_draggingInstance != null || ProjetoDC.Scripts.World.EggWorld.IsAnyDragging)
             return;
 
         if (_digimon.Activity == DigimonActivity.Sleeping)

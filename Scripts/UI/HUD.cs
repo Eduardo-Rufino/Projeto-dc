@@ -934,12 +934,36 @@ namespace ProjetoDC.Scripts.UI
             _center.StartStaminaSnackPlacement();
         }
 
-        /// <summary>Confirmação compartilhada pelas duas opções (ver Center.PlaceFood) - o
-        /// Food.Type já guardado no objeto sendo colocado decide qual estoque desconta. Só
-        /// fecha a mini janela aqui, depois de soltar o botão (ver comentário acima).</summary>
+        /// <summary>Confirmação compartilhada pelas opções (ver Center.PlaceFood) - o
+        /// Food.Type já guardado no objeto sendo colocado decide qual estoque desconta. A mini
+        /// janela continua aberta pra colocar a próxima comida sem reabrir; ela só fecha
+        /// clicando de novo no botão de comida ou fora dela (ver _Input).</summary>
         private void OnFoodOptionButtonUp()
         {
             _center.PlaceFood();
+
+            _cookedMeatOptionButton.Disabled = GameManager.Instance.Save.Center.CookedMeat <= 0;
+        }
+
+        /// <summary>Fecha a mini janela de comida num clique fora dela. O próprio botão de comida
+        /// fica de fora: ele já alterna a janela sozinho (OnFeedButtonPressed), e fechar aqui
+        /// antes faria ele reabrir no mesmo clique. Só olha o press (não o soltar), então
+        /// arrastar uma comida e soltar no Center não fecha nada.</summary>
+        public override void _Input(InputEvent @event)
+        {
+            if (!_foodPickerPopup.Visible)
+                return;
+
+            if (@event is not InputEventMouseButton { Pressed: true } mouseButton)
+                return;
+
+            if (mouseButton.ButtonIndex != MouseButton.Left && mouseButton.ButtonIndex != MouseButton.Right)
+                return;
+
+            Vector2 position = mouseButton.Position;
+
+            if (_foodPickerPopup.GetGlobalRect().HasPoint(position) || _feedButton.GetGlobalRect().HasPoint(position))
+                return;
 
             _foodPickerPopup.Visible = false;
         }

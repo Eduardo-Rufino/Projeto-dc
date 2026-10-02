@@ -121,7 +121,31 @@ namespace ProjetoDC.Scripts.UI
         }
 
         private const string Version10Body =
-            "Em desenvolvimento.";
+            "[b]Calendário e temporadas[/b]\n" +
+            "O jogo agora tem um calendário: o ano (a temporada) tem 60 dias, divididos em 4 estações de 15 dias - Primavera, Verão, Outono e Inverno. O ano vira no dia 61 do relógio, e tudo que é \"da temporada\" (medalhas, Grande Evento) recomeça do zero.\n" +
+            "\n" +
+            "[b]Campeonatos com data[/b]\n" +
+            "Os campeonatos deixaram de estar sempre disponíveis: cada um abre em datas próprias do calendário. Alguns voltam de tempos em tempos (a Copa Novato abre 3 dias a cada 6, o Torneio Rookie 4 a cada 10, o Trio Guardião 02 5 a cada 20), outros abrem numa janela (Desafio Champion dos dias 10 a 25, Trio Tamers de 20 a 35) e os demais em dias fixos do ano (ex.: Copa Ultimate no dia 30, Copa Mega no dia 55). Cada abertura é uma \"edição\": vencer fecha o campeonato até a próxima edição, perder não gasta nada - dá pra tentar de novo enquanto estiver aberto. A recompensa de Capacidade/Bits continua sendo só na primeira vitória de todas.\n" +
+            "\n" +
+            "Alguns campeonatos têm trava: o Trio Guardião 02 só abre depois de vencer o Desafio Champion, e a Copa das Lendas e a Copa Mega: Revanche depois de vencer a Copa Mega. A lista de campeonatos mostra o motivo de cada um estar indisponível (\"Abre em N dias\", \"Aberto por mais N dias\", \"Concluído nesta edição\", \"Bloqueado: vença ...\").\n" +
+            "\n" +
+            "[b]Regras de inscrição[/b]\n" +
+            "Vários campeonatos agora limitam quem pode entrar, por estágio ou atributo: Só Rookie (Copa Novato, Torneio Rookie), Só Champion (Desafio Champion), Só Ultimate (Copa Ultimate, Trio Guardião 02), Só Mega (Copa Mega, Revanche - Mega+ como Omegamon e Examon também vale), Só Vírus (Trio das Trevas) e Só Vacina (Trio Celestial). A regra aparece no card do campeonato, e na montagem do time os Digimon que não cumprem ficam bloqueados com o motivo escrito.\n" +
+            "\n" +
+            "[b]Avisos de campeonato[/b]\n" +
+            "Na virada do dia aparece um aviso quando um campeonato vai abrir (5 dias antes; o Grande Evento avisa 9 dias antes), no dia em que abre e no último dia (\"Último dia: ... fecha à meia-noite\"). Se o Center não tiver Digimon elegíveis suficientes, o aviso diz quantos faltam. A Copa Novato e o Torneio Rookie, que abrem com muita frequência, não avisam.\n" +
+            "\n" +
+            "[b]Medalhas da temporada[/b]\n" +
+            "Vencer um campeonato dá uma medalha na temporada, de 1 a 3 pontos conforme a dificuldade (20 no total; a Copa Novato e o Torneio Rookie não dão). Cada campeonato dá a medalha uma vez por temporada, e elas zeram na virada do ano. A tela 🏅 Medalhas, no menu do troféu, mostra quais você já conquistou, quais ainda dá pra conquistar e quais estão bloqueadas ou encerradas.\n" +
+            "\n" +
+            "[b]Grande Evento[/b]\n" +
+            "O clímax da temporada: um campeonato 3x3 sem restrição que abre só no último dia do ano (dia 60) e exige 12 medalhas da temporada pra se inscrever, contra Examon, Jesmon e Sakuyamon no nível 65. A vitória dá +25 de Capacidade, 80.000 Bits e o título de \"Campeão do Ano\". Se não der mais pra chegar a 12 medalhas no ano, ele aparece como \"Inalcançável nesta temporada\".\n" +
+            "\n" +
+            "[b]Barra superior: relógio e minicalendário[/b]\n" +
+            "O canto esquerdo da barra superior foi reorganizado: o relógio (analógico e digital) fica com os botões ⏩ x2 e 💤 Pular sono logo embaixo, e ao lado um minicalendário mostra a estação e o ano, os 15 dias da estação com o dia de hoje destacado, as medalhas da temporada e o próximo campeonato. A data deixou de aparecer duas vezes.\n" +
+            "\n" +
+            "[b]Tutoriais automáticos[/b]\n" +
+            "Num jogo novo, o básico aparece logo de cara (primeiros passos, necessidades do Digimon, relógio e ovos), e cada tela ou função mostra o tutorial dela na primeira vez que é usada (Loja, Inventário, Campeonatos, Exploração, Jogress, Guia de Evolução...). Cada tutorial aparece uma vez só, e todos continuam no botão 📖 pra consultar. Saves de antes começam com isso desligado - dá pra ligar em ⚙ Configurações.";
 
         private const string Version09Body =
             "[b]Mais tempo pra evoluir (todos os estágios)[/b]\n" +
