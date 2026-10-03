@@ -27,6 +27,11 @@ namespace ProjetoDC.Scripts.Systems.Passives
         /// <summary>Limiar de "alvo abaixo de 50%" do Astamon.</summary>
         public const float StunLowHpThreshold = 0.5f;
 
+        /// <summary>Teto do ganho do perfurar defesa do Devimon: o golpe nunca passa de dano base +
+        /// (dano base x isto). Mesmo valor e mesma fórmula do Rompe-Guarda (DamageCalculator.
+        /// RompeGuardaMaxGainRatio, privada lá) - mudar um sem o outro desalinha as duas passivas.</summary>
+        public const float DefensePierceMaxGainRatio = 0.40f;
+
         private static readonly Random _random = new();
 
         /// <summary>Sorteio de 0 a 1. Só os testes trocam (pra forçar ou impedir as chances).</summary>
@@ -80,7 +85,8 @@ namespace ProjetoDC.Scripts.Systems.Passives
             return true;
         }
 
-        /// <summary>Logo depois do dano base (ataque - defesa): Devimon ignora parte da defesa a cada N ataques.</summary>
+        /// <summary>Logo depois do dano base (ataque - defesa): Devimon ignora parte da defesa a cada N ataques,
+        /// com o mesmo teto de ganho do Rompe-Guarda (ver DefensePierceMaxGainRatio).</summary>
         public static int ModifyBaseDamage(int damage, BattleCombatant attacker, BattleCombatant defender)
         {
             var pierce = attacker.Inherited.All(InheritedEffectType.PeriodicDefensePierce).FirstOrDefault();
@@ -99,9 +105,11 @@ namespace ProjetoDC.Scripts.Systems.Passives
             bool isPhysical = attacker.Digimon.BaseData.AttackType == AttackType.Physical;
             int attack = attacker.GetEffectiveStat(isPhysical ? StatType.PhysicalDamage : StatType.SpecialDamage);
             int defense = defender.GetEffectiveStat(isPhysical ? StatType.PhysicalDefense : StatType.SpecialDefense);
+            int baseDamage = Math.Max(1, attack - defense);
             int pierced = Math.Max(1, attack - (int)(defense * (1f - pierce.Value2)));
+            int maxGain = (int)(baseDamage * DefensePierceMaxGainRatio);
 
-            return Math.Max(damage, pierced);
+            return Math.Max(damage, Math.Min(pierced, baseDamage + maxGain));
         }
 
         /// <summary>Antes do sorteio de crítico: esse ataque é crítico garantido? (Lamiamon depois de
