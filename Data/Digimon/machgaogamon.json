@@ -21,5 +21,6 @@
     "RompeGuarda",
     "GolpePesado",
     "Teimosia"
-  ]
+  ],
+  "InheritedPassive": { "Type": "OpeningHitBonus", "Value": 0.06, "Value2": 0 }
 }

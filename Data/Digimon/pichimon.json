@@ -21,5 +21,6 @@
     "FuriaCrescente",
     "Investida",
     "GolpePesado"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpecialDefensePercent", "Value": 0.03, "Value2": 0 }
 }

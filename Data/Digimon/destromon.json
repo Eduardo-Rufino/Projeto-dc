@@ -21,5 +21,6 @@
     "PesLeves",
     "Predicao",
     "Fixacao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "RangedStacksGuaranteedCrit", "Value": 3, "Value2": 0 }
 }

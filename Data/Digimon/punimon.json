@@ -21,5 +21,6 @@
     "RompeGuarda",
     "GolpePesado",
     "Teimosia"
-  ]
+  ],
+  "InheritedPassive": { "Type": "MaxHpPercent", "Value": 0.03, "Value2": 0 }
 }

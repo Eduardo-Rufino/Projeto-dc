@@ -21,5 +21,6 @@
     "Fixacao",
     "PosturaFirme",
     "ProjetilPerfurante"
-  ]
+  ],
+  "InheritedPassive": { "Type": "StunChance", "Value": 0.1, "Value2": 0.2 }
 }

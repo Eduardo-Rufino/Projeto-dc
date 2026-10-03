@@ -24,5 +24,6 @@
     "Investida",
     "SedeDeBatalha",
     "RompeGuarda"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalDamageDealtPercent", "Value": 0.05, "Value2": 0 }
 }

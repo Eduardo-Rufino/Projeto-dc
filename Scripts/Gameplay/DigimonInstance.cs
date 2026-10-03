@@ -94,6 +94,14 @@ namespace ProjetoDC.Scripts.Gameplay
         /// o jogador desbloquear alguma.</summary>
         public List<int> BlockedEvolutionTargetIds { get; set; } = new();
 
+        /// <summary>DigimonData.Id das espécies pelas quais esse indivíduo já passou, em ordem
+        /// (a mais antiga primeiro) - só as formas de ORIGEM, nunca a atual (essa é BaseData.Id).
+        /// Nasce vazio (EggSystem.HatchEgg); cada Evolve acrescenta a forma que ficou pra trás
+        /// (troca de modo, como Belphemon Sleep -> Rage, conta igual). Jogress junta os históricos
+        /// dos dois pais (ver JogressSystem.TryToFuse). Save antigo carrega vazio - não é
+        /// reconstruído pela teia, que é ambígua. Base das passivas herdadas (passivas/analise/).</summary>
+        public List<int> EvolutionHistory { get; set; } = new();
+
         /// <summary>Total de batalhas (3x3, livres ou de campeonato) em que esse Digimon
         /// participou como membro do time, vitória ou derrota - ver GameManager.
         /// ApplyTeamBattleReward, que chama RecordBattleResult pra cada membro ao fim de
@@ -449,6 +457,10 @@ namespace ProjetoDC.Scripts.Gameplay
         public void Evolve(DigimonData newForm, float multiplier)
         {
             var oldForm = BaseData;
+
+            // Grava a forma de origem antes de trocar (ver EvolutionHistory).
+            if (oldForm != null)
+                EvolutionHistory.Add(oldForm.Id);
 
             BaseData = newForm;
             CapacityCost = GetCapacityCostForStage(newForm.Stage);

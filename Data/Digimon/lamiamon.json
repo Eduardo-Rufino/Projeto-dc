@@ -21,5 +21,6 @@
     "GolpeSorrateiro",
     "PassoFantasma",
     "Infiltrador"
-  ]
+  ],
+  "InheritedPassive": { "Type": "DodgeThenGuaranteedCrit", "Value": 0.06, "Value2": 0 }
 }

@@ -20,5 +20,6 @@
         "RompeGuarda",
         "GolpePesado",
         "Investida"
-    ]
+    ],
+  "InheritedPassive": { "Type": "CritHealMaxHp", "Value": 0.04, "Value2": 0 }
 }

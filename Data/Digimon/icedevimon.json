@@ -21,5 +21,6 @@
     "PrecisaoLetal",
     "Execucao",
     "PassoFantasma"
-  ]
+  ],
+  "InheritedPassive": { "Type": "FirstHitTakenReduction", "Value": 0.2, "Value2": 0 }
 }

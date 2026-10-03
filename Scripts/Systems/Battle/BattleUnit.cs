@@ -1,5 +1,6 @@
 using Godot;
 using ProjetoDC.Enums;
+using ProjetoDC.Scripts.Systems.Passives;
 using ProjetoDC.Scripts.UI;
 using System;
 using System.Linq;
@@ -359,6 +360,14 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             if (_isActing)
                 return;
+
+            // Atordoado por passiva herdada (Astamon, ver InheritedPassiveSystem): fica parado sem
+            // contar o cooldown até passar.
+            if (_combatant.Inherited.IsStunned)
+            {
+                _sprite.SetWalking(false);
+                return;
+            }
 
             _attackCooldownRemaining -= delta;
             _retargetTimer -= delta;
@@ -1189,6 +1198,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
             if (targetUnit == null)
                 return;
 
+            // Passivas herdadas: "já agiu nesta luta" (Dimetromon de quem atacar este) e a duração de
+            // uma ação, que é o "turno" do Greymon numa luta em tempo real.
+            _combatant.Inherited.HasActed = true;
+            _combatant.Inherited.ActionIntervalSeconds = ComputeEffectiveCooldown();
+
             // _supportFallbackAttack (ver SelectTarget) sinaliza que não sobrou nenhuma ação
             // de suporte útil pro alvo escolhido - cai direto pro ataque normal (fora deste
             // if) em vez de curar/buffar/debuffar de novo à toa.
@@ -1243,6 +1257,13 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             int damage = _arena.Match.ResolveAttack(_combatant, _target);
 
+            // Passiva herdada (Lamiamon): o alvo esquivou - nada de dano nem efeitos de acerto.
+            if (_combatant.Inherited.LastAttackDodged)
+            {
+                targetUnit.ShowFloatingText("Esquivou!", BuffColor);
+                return;
+            }
+
             // Mesmo cálculo que DamageCalculator já aplicou de verdade no dano acima -
             // só pra mostrar pro jogador que aquele golpe teve vantagem/desvantagem de
             // tipo, sem precisar que ResolveAttack devolva mais que o número final.
@@ -1255,16 +1276,21 @@ namespace ProjetoDC.Scripts.Systems.Battle
                 ? $"-{damage}"
                 : $"-{damage} x{typeMultiplier:0.#}";
 
-            targetUnit.ShowFloatingText(damageText, DamageColor);
+            targetUnit.ShowFloatingText(_combatant.Inherited.LastAttackNegated ? "Bloqueou!" : damageText, DamageColor);
 
             if (_target.IsDead)
             {
                 targetUnit.Die();
+
+                // Passiva herdada (LadyDevimon): só o golpe principal conta como abate.
+                InheritedPassiveSystem.OnKill(_combatant);
             }
             else
             {
                 _ = targetUnit.PlayHitReaction();
             }
+
+            ApplyInheritedAfterHit(targetUnit, damage);
 
             // Golpe Pesado (Warrior, ver PASSIVAS_SPEC.md) - DamageCalculator.
             // ApplyAttackerPassives já aplicou o bônus de dano nesse golpe e zerou o
@@ -1281,6 +1307,40 @@ namespace ProjetoDC.Scripts.Systems.Battle
             {
                 ApplyProjetilPerfurante(damage, targetUnit);
             }
+        }
+
+        /// <summary>
+        /// Passivas herdadas que dependem do time ou de posição (fora do alcance do DamageCalculator):
+        /// aviso de atordoamento (Astamon), golpe extra à distância (Garurumon) e cura do aliado mais
+        /// ferido (Myotismon). Ver InheritedPassiveSystem.
+        /// </summary>
+        private void ApplyInheritedAfterHit(BattleUnit targetUnit, int damage)
+        {
+            if (_combatant.Inherited.Passives.Count == 0)
+                return;
+
+            if (_combatant.Inherited.LastAttackStunned && !_target.IsDead)
+                targetUnit.ShowFloatingText("Atordoado!", DebuffColor);
+
+            int extra = _target.IsDead ? 0 : InheritedPassiveSystem.RollExtraStrike(_combatant, damage);
+
+            if (extra > 0)
+            {
+                _target.Digimon.TakeDamage(extra);
+                targetUnit.ShowFloatingText($"-{extra}", DamageColor);
+
+                if (_target.IsDead)
+                    targetUnit.Die();
+            }
+
+            var team = _arena.Match.PlayerTeam.Members.Contains(_combatant)
+                ? _arena.Match.PlayerTeam
+                : _arena.Match.EnemyTeam;
+
+            var (ally, healed) = InheritedPassiveSystem.HealLowestAlly(_combatant, team.Members, damage + extra, _arena.Match.ElapsedSeconds);
+
+            if (ally != null && healed > 0)
+                _arena.GetUnitFor(ally)?.ShowFloatingText($"+{healed}", HealColor);
         }
 
         // "Área pequena" não tem um número na spec - 70 escolhido entre o alcance de melee

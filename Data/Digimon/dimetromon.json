@@ -24,5 +24,6 @@
     "FioDaLamina",
     "GolpeSorrateiro",
     "Infiltrador"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpeedAndBonusVsActedTarget", "Value": 0.05, "Value2": 0.08 }
 }

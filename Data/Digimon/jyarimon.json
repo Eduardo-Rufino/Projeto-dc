@@ -21,5 +21,6 @@
     "PrecisaoLetal",
     "FioDaLamina",
     "PassoFantasma"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpeedPercent", "Value": 0.03, "Value2": 0 }
 }

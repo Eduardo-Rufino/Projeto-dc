@@ -182,6 +182,7 @@ namespace ProjetoDC.Scripts.Systems.Eggs
             }
 
 
+            // Nasce com EvolutionHistory vazio: a forma Baby ainda não veio de nenhuma outra.
             var digimon = new DigimonInstance(digimonData);
 
             // Sorteia a passiva de nascimento (ver PASSIVAS_SPEC.md seção 1) - digimonData

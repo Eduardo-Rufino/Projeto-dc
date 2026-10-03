@@ -21,5 +21,6 @@
     "FuriaCrescente",
     "Investida",
     "GolpePesado"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalDamageWithOpeningBonus", "Value": 0.08, "Value2": 0.16 }
 }

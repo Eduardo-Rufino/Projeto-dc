@@ -20,5 +20,6 @@
     "Execucao",
     "PrecisaoLetal",
     "GolpeSorrateiro"
-  ]
+  ],
+  "InheritedPassive": { "Type": "AntiTank", "Value": 0.08, "Value2": 0.5 }
 }

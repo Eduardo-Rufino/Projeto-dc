@@ -25,5 +25,6 @@
     "AlvoMarcado",
     "ProjetilPerfurante",
     "Predicao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalAttackPercent", "Value": 0.05, "Value2": 0 }
 }

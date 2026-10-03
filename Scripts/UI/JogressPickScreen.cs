@@ -23,6 +23,11 @@ namespace ProjetoDC.Scripts.UI
         private Button _confirmButton;
         private Button _backButton;
 
+        // Linha principal da fusão (passivas herdadas): índice em _selected do pai cuja linha vem
+        // primeiro no histórico do fundido. Botão criado em código, só aparece com uma receita válida.
+        private Button _principalButton;
+        private int _principalIndex;
+
         private PackedScene _cardScene;
 
         private readonly List<DigimonSelectCard> _cards = new();
@@ -47,6 +52,20 @@ namespace ProjetoDC.Scripts.UI
 
             _confirmButton.Pressed += OnConfirmPressed;
             _backButton.Pressed += OnBackPressed;
+
+            _principalButton = new Button
+            {
+                Visible = false,
+                CustomMinimumSize = new Vector2(220, 0),
+                TooltipText = "Linha principal: a linha evolutiva desse Digimon vem primeiro no histórico do fundido, " +
+                              "e a do outro entra em seguida. Clique pra trocar.",
+            };
+            _principalButton.AddThemeStyleboxOverride("normal", _backButton.GetThemeStylebox("normal"));
+            _principalButton.Pressed += OnPrincipalPressed;
+
+            var buttons = _confirmButton.GetParent();
+            buttons.AddChild(_principalButton);
+            buttons.MoveChild(_principalButton, _confirmButton.GetIndex());
         }
 
         public void Open()
@@ -63,6 +82,7 @@ namespace ProjetoDC.Scripts.UI
 
             _cards.Clear();
             _selected.Clear();
+            _principalIndex = 0;
 
             foreach (var digimon in Game.CenterService.GetAllDigimons())
             {
@@ -96,11 +116,14 @@ namespace ProjetoDC.Scripts.UI
                 _selected.Remove(card.Digimon);
             }
 
+            _principalIndex = 0;
             UpdatePreview();
         }
 
         private void UpdatePreview()
         {
+            _principalButton.Visible = false;
+
             if (_selected.Count != RequiredSelection)
             {
                 _previewLabel.Text = "Selecione 2 Digimons pra tentar uma fusão Jogress.";
@@ -134,6 +157,9 @@ namespace ProjetoDC.Scripts.UI
                 : $"{resultForm.Name} exige mais capacidade do que o Center tem livre.";
 
             _confirmButton.Disabled = !hasCapacity;
+
+            _principalButton.Visible = true;
+            _principalButton.Text = $"Linha principal: {_selected[_principalIndex].DisplayName}";
         }
 
         private void OnConfirmPressed()
@@ -141,7 +167,10 @@ namespace ProjetoDC.Scripts.UI
             if (_selected.Count != RequiredSelection)
                 return;
 
-            var attempt = Game.TryToFuse(_selected[0], _selected[1]);
+            var principal = _selected[_principalIndex];
+            var secondary = _selected[1 - _principalIndex];
+
+            var attempt = Game.TryToFuse(principal, secondary);
 
             if (attempt.Outcome == JogressOutcome.Fused)
             {
@@ -152,6 +181,12 @@ namespace ProjetoDC.Scripts.UI
             // BlockedByCapacity/NotEligible aqui significaria que o estado mudou desde a
             // prévia - não deveria acontecer (a árvore fica pausada com essa tela aberta),
             // mas nada muda de qualquer forma: os dois selecionados continuam no Center.
+            UpdatePreview();
+        }
+
+        private void OnPrincipalPressed()
+        {
+            _principalIndex = 1 - _principalIndex;
             UpdatePreview();
         }
 

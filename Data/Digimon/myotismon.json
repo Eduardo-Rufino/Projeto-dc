@@ -20,5 +20,6 @@
     "GolpeSorrateiro",
     "PassoFantasma",
     "Infiltrador"
-  ]
+  ],
+  "InheritedPassive": { "Type": "HealLowestAllyOnAttack", "Value": 0.1, "Value2": 0 }
 }

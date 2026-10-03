@@ -79,5 +79,10 @@ namespace ProjetoDC.Scripts.Data
         /// no BaseData clonado de uma DigimonInstance (ver DigimonInstance.CloneBaseData, que
         /// não copia esse campo pelo mesmo motivo).</summary>
         public List<PassiveType> Passives { get; set; } = new();
+
+        /// <summary>Passiva herdada que essa espécie deixa pra quem passar por ela (ver
+        /// InheritedPassiveSystem). Null na maioria das espécies. Igual a Passives, ler sempre da espécie
+        /// "de ficha" (DatabaseManager.GetDigimon) - CloneBaseData não copia este campo.</summary>
+        public InheritedPassiveData InheritedPassive { get; set; }
     }
 }

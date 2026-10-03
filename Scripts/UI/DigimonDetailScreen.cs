@@ -2,6 +2,7 @@ using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Gameplay;
 using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.Systems.Passives;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +29,12 @@ namespace ProjetoDC.Scripts.UI
         private Label _capacityLabel;
         private Label _passiveNameLabel;
         private Label _passiveDescriptionLabel;
+
+        // Passivas herdadas (InheritedPassiveSystem): título + lista com rolagem, criados em código
+        // dentro do PassiveBox, logo abaixo da passiva própria.
+        private Label _inheritedTitleLabel;
+        private ScrollContainer _inheritedScroll;
+        private VBoxContainer _inheritedList;
         private GridContainer _autoTrainingGrid;
         private Button _backButton;
 
@@ -89,6 +96,9 @@ namespace ProjetoDC.Scripts.UI
                 "Window/MarginContainer/VBoxContainer/PassiveBox/PassiveDescriptionLabel"
             );
 
+            CompactDetailsGrid();
+            BuildInheritedSection(GetNode<VBoxContainer>("Window/MarginContainer/VBoxContainer/PassiveBox"));
+
             _autoTrainingGrid = GetNode<GridContainer>(
                 "Window/MarginContainer/VBoxContainer/AutoTrainingBox/AutoTrainingGrid"
             );
@@ -127,6 +137,7 @@ namespace ProjetoDC.Scripts.UI
             _capacityLabel.Text = $"Capacidade: {digimon.CapacityCost}";
 
             RefreshPassiveInfo(digimon);
+            RefreshInheritedPassives(digimon);
             BuildAutoTrainingToggles(digimon);
 
             Visible = true;
@@ -182,6 +193,87 @@ namespace ProjetoDC.Scripts.UI
 
             _passiveNameLabel.Text = $"✨ {passive.Name}";
             _passiveDescriptionLabel.Text = passive.Description;
+        }
+
+        /// <summary>Abre espaço pra lista de passivas herdadas sem diminuir fonte: os dados curtos vão pra
+        /// duas colunas (Tipo de Ataque, que é longo, continua na linha inteira) e a janela fica mais larga
+        /// (540, menos quebra de linha) e um pouco mais alta (690, numa tela de 720).</summary>
+        private void CompactDetailsGrid()
+        {
+            var details = GetNode<VBoxContainer>("Window/MarginContainer/VBoxContainer/DetailsGrid");
+
+            var grid = new GridContainer { Columns = 2 };
+            grid.AddThemeConstantOverride("h_separation", 16);
+            grid.AddThemeConstantOverride("v_separation", 6);
+            details.AddChild(grid);
+            details.MoveChild(grid, 0);
+
+            foreach (var label in new[] { _roleLabel, _attributeLabel, _elementLabel, _eggTypeLabel, _ageLabel, _capacityLabel })
+            {
+                label.Reparent(grid);
+                label.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+            }
+
+            var window = GetNode<Control>("Window");
+            window.OffsetLeft = -270;
+            window.OffsetRight = 270;
+            window.OffsetTop = -345;
+            window.OffsetBottom = 345;
+        }
+
+        /// <summary>O PassiveBox já expande pra ocupar o espaço livre da janela; a lista rola dentro dele
+        /// (até 6 linhas numa linha evolutiva completa) em vez de diminuir a fonte.</summary>
+        private void BuildInheritedSection(VBoxContainer passiveBox)
+        {
+            _inheritedTitleLabel = new Label();
+            _inheritedTitleLabel.AddThemeFontSizeOverride("font_size", 15);
+            _inheritedTitleLabel.AddThemeColorOverride("font_color", new Color(0.55f, 0.85f, 1f));
+            passiveBox.AddChild(_inheritedTitleLabel);
+
+            _inheritedScroll = new ScrollContainer
+            {
+                SizeFlagsVertical = SizeFlags.ExpandFill,
+                CustomMinimumSize = new Vector2(0, 56),
+                HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled,
+            };
+            passiveBox.AddChild(_inheritedScroll);
+
+            _inheritedList = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+            _inheritedList.AddThemeConstantOverride("separation", 2);
+            _inheritedScroll.AddChild(_inheritedList);
+        }
+
+        private void RefreshInheritedPassives(DigimonInstance digimon)
+        {
+            foreach (var child in _inheritedList.GetChildren())
+                child.QueueFree();
+
+            var passives = InheritedPassiveSystem.GetActiveInheritedPassives(digimon);
+
+            _inheritedTitleLabel.Text = $"🧬 Passivas herdadas ({passives.Count})";
+            Callable.From(() => _inheritedScroll.ScrollVertical = 0).CallDeferred();
+
+            if (passives.Count == 0)
+            {
+                _inheritedList.AddChild(MakeInheritedLine("Nenhuma ainda - cada forma que ficar pra trás pode deixar uma."));
+                return;
+            }
+
+            foreach (var (species, passive) in passives)
+                _inheritedList.AddChild(MakeInheritedLine($"{species.Name}: {InheritedPassiveSystem.Describe(passive)}"));
+        }
+
+        private static Label MakeInheritedLine(string text)
+        {
+            var label = new Label
+            {
+                Text = text,
+                AutowrapMode = TextServer.AutowrapMode.WordSmart,
+                SizeFlagsHorizontal = SizeFlags.ExpandFill,
+            };
+            label.AddThemeFontSizeOverride("font_size", 12);
+            label.AddThemeColorOverride("font_color", new Color(0.7f, 0.75f, 0.8f));
+            return label;
         }
 
         private void OnBackPressed()

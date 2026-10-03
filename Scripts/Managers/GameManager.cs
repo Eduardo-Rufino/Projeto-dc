@@ -761,6 +761,8 @@ namespace ProjetoDC.Scripts.Managers
         /// ou se a combinação não corresponder a nenhuma receita, nada muta - os dois
         /// continuam no Center exatamente como estavam.
         /// </summary>
+        /// <remarks><paramref name="a"/> é o pai da linha principal: a linha dele vem primeiro no
+        /// EvolutionHistory do fundido (ver JogressSystem.TryToFuse).</remarks>
         public JogressAttemptResult TryToFuse(DigimonInstance a, DigimonInstance b)
         {
             if (a == null || b == null || a == b)

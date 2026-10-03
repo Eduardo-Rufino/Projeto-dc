@@ -1,5 +1,6 @@
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Gameplay;
+using ProjetoDC.Scripts.Systems.Passives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,11 @@ namespace ProjetoDC.Scripts.Systems.Battle
         public BattleCombatant(DigimonInstance digimon)
         {
             Digimon = digimon;
+            Inherited = InheritedPassiveSystem.CreateBattleState(digimon);
         }
+
+        /// <summary>Passivas herdadas e o estado delas nesta luta (ver InheritedPassiveSystem).</summary>
+        public InheritedBattleState Inherited { get; }
 
         public bool IsDead => Digimon.IsDead();
 
@@ -167,6 +172,8 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             if (Digimon.PassiveId == PassiveType.Folego)
                 ApplyContinuousRegen(FolegoRegenPercentPerSecond, delta, elapsedSeconds);
+
+            Inherited.Tick(delta);
         }
 
         /// <summary>
@@ -217,6 +224,8 @@ namespace ProjetoDC.Scripts.Systems.Battle
             float totalPercentage = Effects
                 .Where(e => e.Stat == stat)
                 .Sum(e => e.Percentage);
+
+            totalPercentage += Inherited.GetStatPercent(stat);
 
             int effective = (int)Math.Round(baseValue * (1f + totalPercentage));
 

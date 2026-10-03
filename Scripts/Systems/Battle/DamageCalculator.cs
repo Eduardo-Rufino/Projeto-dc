@@ -1,6 +1,7 @@
 using Godot;
 using ProjetoDC.Enums;
 using ProjetoDC.Scripts.Managers;
+using ProjetoDC.Scripts.Systems.Passives;
 using System;
 using System.Collections.Generic;
 
@@ -118,14 +119,22 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
         public static int ResolveAttack(BattleCombatant attacker, BattleCombatant defender, double elapsedSeconds)
         {
+            // Passivas herdadas (InheritedPassiveSystem): ganchos próprios, ao lado das passivas
+            // próprias - esquiva antes de tudo (golpe esquivado não causa dano nem conta nada).
+            if (InheritedPassiveSystem.TryDodge(attacker, defender))
+                return 0;
+
             int damage = CalculateBaseDamage(attacker, defender);
+            damage = InheritedPassiveSystem.ModifyBaseDamage(damage, attacker, defender);
 
             damage = ApplyTypeAdvantage(damage, attacker, defender);
             damage = ApplyDamageVariance(damage);
-            damage = ApplyCritical(damage, attacker);
+            damage = ApplyCritical(damage, attacker, InheritedPassiveSystem.ConsumeGuaranteedCrit(attacker), out bool wasCrit);
             damage = ApplyAttackerPassives(damage, attacker, defender);
             damage = ApplySetBonuses(damage, attacker);
+            damage = InheritedPassiveSystem.ModifyOutgoingDamage(damage, attacker, defender);
             damage = ApplyDefenderPassives(damage, attacker, defender);
+            damage = InheritedPassiveSystem.ModifyIncomingDamage(damage, attacker, defender);
 
             ApplySedeDeBatalha(attacker, damage, elapsedSeconds);
 
@@ -136,6 +145,8 @@ namespace ProjetoDC.Scripts.Systems.Battle
             int hpDamage = ConsumeShield(damage, defender);
 
             defender.Digimon.TakeDamage(hpDamage);
+
+            InheritedPassiveSystem.AfterAttack(attacker, defender, damage, wasCrit, elapsedSeconds);
 
             return damage;
         }
@@ -361,8 +372,12 @@ namespace ProjetoDC.Scripts.Systems.Battle
             return Math.Max(1, damage);
         }
 
-        private static int ApplyCritical(int damage, BattleCombatant attacker)
+        /// <summary><paramref name="guaranteed"/> (passiva herdada) força o crítico sem mudar o sorteio;
+        /// <paramref name="wasCrit"/> conta pras passivas herdadas que reagem a crítico.</summary>
+        private static int ApplyCritical(int damage, BattleCombatant attacker, bool guaranteed, out bool wasCrit)
         {
+            wasCrit = false;
+
             int critChance = attacker.Digimon.PassiveId == PassiveType.PrecisaoLetal
                 ? PrecisaoLetalCritChancePercent
                 : BaseCritChancePercent;
@@ -371,8 +386,10 @@ namespace ProjetoDC.Scripts.Systems.Battle
 
             int roll = _random.Next(1, 101);
 
-            if (roll <= critChance)
+            if (guaranteed || roll <= critChance)
             {
+                wasCrit = true;
+
                 float multiplier = attacker.Digimon.PassiveId == PassiveType.FioDaLamina
                     ? FioDaLaminaCritMultiplier
                     : BaseCritMultiplier;

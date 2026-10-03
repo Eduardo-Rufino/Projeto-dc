@@ -122,6 +122,8 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 ("notices", TournamentNotices),
                 ("medals", SeasonMedals),
                 ("grandevent", GrandEvent),
+                ("history", EvolutionHistorySection),
+                ("inherited", InheritedPassivesSection),
             };
 
             // A bateria testa a regra de elegibilidade de campeonatos de verdade (DEBUG_IGNORE_CALENDAR fora).
@@ -1215,6 +1217,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 d.Nickname = "Apelido " + s.Id;
                 d.BecomeSick();
                 d.BlockedEvolutionTargetIds.Add(1);
+                d.EvolutionHistory.AddRange(new[] { 1, s.Id, 2 });
                 d.BattlesFought = 7; d.BattlesWon = 3;
             }
 
@@ -1264,6 +1267,7 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 Cmp("BaseData.Id", a.BaseData?.Id, b.BaseData?.Id);
                 Cmp("Stats.HP", a.CurrentStats?.HealthPoints, b.CurrentStats?.HealthPoints);
                 Cmp("Blocked", string.Join(",", a.BlockedEvolutionTargetIds), string.Join(",", b.BlockedEvolutionTargetIds));
+                Cmp("EvolutionHistory", string.Join(",", a.EvolutionHistory), string.Join(",", b.EvolutionHistory));
                 Cmp("BattlesFought", a.BattlesFought, b.BattlesFought);
                 Cmp("Hunger", a.Hunger, b.Hunger);
                 Cmp("Stamina", a.Stamina, b.Stamina);
@@ -2196,6 +2200,539 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
         // Calendário de estações (CalendarSystem): funções puras sobre o índice de dia (0 = primeiro
         // dia do Ano 1) e a conversão a partir do CurrentDay de saves reais/antigos.
+        // ------------------------------------------------------------------ histórico de evolução (passivas herdadas, fase 1)
+
+        private static string Ids(IEnumerable<int> ids) => "[" + string.Join(",", ids) + "]";
+
+        /// <summary>Uma evolução pelo caminho real (GameManager.TryToEvolve -> EvolutionSystem -> Evolve).
+        /// Devolve o id da forma de origem, ou -1 se não evoluiu.</summary>
+        private int EvolveOnceForReal(DigimonInstance d)
+        {
+            var evo = Db.GetEvolutionsFrom(d.BaseData.Id)?.FirstOrDefault();
+
+            if (evo == null)
+                return -1;
+
+            SatisfyEdge(d, evo);
+            int from = d.BaseData.Id;
+
+            return Gm.TryToEvolve(d) ? from : -1;
+        }
+
+        private Task EvolutionHistorySection()
+        {
+            // 1) nascer: o ovo choca pelo relógio de verdade (EggSystem) e o Baby nasce sem histórico
+            ResetScratch(capacity: 500);
+            Gm.EggSystem.CreateInitialEgg(Gm.CenterService);
+            DigimonInstance born = null;
+            Action<EggData, DigimonInstance> onHatch = (_, digi) => born = digi;
+            Gm.EggSystem.EggHatched += onHatch;
+            for (int h = 0; h < 12 && born == null; h++)
+                Gm.ClockSystem.Update(60.0);
+            Gm.EggSystem.EggHatched -= onHatch;
+
+            Check(born != null, "nascer: o ovo inicial não chocou");
+            if (born != null)
+            {
+                Info($"nascer ({born.BaseData.Name}): esperado [] obtido {Ids(born.EvolutionHistory)}");
+                Check(born.EvolutionHistory.Count == 0, $"nascer: histórico deveria vir vazio, veio {Ids(born.EvolutionHistory)}");
+            }
+
+            // 2) evoluir 1x: histórico = [forma antiga]
+            ResetScratch(capacity: 500);
+            var baby = AllSpecies().Where(s => s.Stage == DigimonStage.Baby).OrderBy(s => s.Id).First();
+            var one = MakeDigimon(baby, addToCenter: true);
+            int from1 = EvolveOnceForReal(one);
+            Info($"evoluir 1x ({baby.Name} -> {one.BaseData.Name}): esperado [{baby.Id}] obtido {Ids(one.EvolutionHistory)}");
+            Check(from1 == baby.Id, $"evoluir 1x: {baby.Name} não evoluiu pelo TryToEvolve");
+            Check(one.EvolutionHistory.SequenceEqual(new[] { baby.Id }), $"evoluir 1x: esperado [{baby.Id}], veio {Ids(one.EvolutionHistory)}");
+
+            // 3) evoluir 3x seguidas: as 3 formas de origem, na ordem
+            ResetScratch(capacity: 500);
+            var three = MakeDigimon(baby, addToCenter: true);
+            var expected = new List<int>();
+            var names = new List<string> { three.BaseData.Name };
+            for (int i = 0; i < 3; i++)
+            {
+                int from = EvolveOnceForReal(three);
+                Check(from > 0, $"evoluir 3x: a evolução {i + 1} não aconteceu (parou em {three.BaseData.Name})");
+                if (from <= 0)
+                    break;
+                expected.Add(from);
+                names.Add(three.BaseData.Name);
+            }
+            Info($"evoluir 3x ({string.Join(" -> ", names)}): esperado {Ids(expected)} obtido {Ids(three.EvolutionHistory)}");
+            Check(expected.Count == 3 && three.EvolutionHistory.SequenceEqual(expected), $"evoluir 3x: esperado {Ids(expected)}, veio {Ids(three.EvolutionHistory)}");
+            Check(!three.EvolutionHistory.Contains(three.BaseData.Id), "evoluir 3x: a forma atual não pode estar no histórico");
+
+            // 4) Jogress: histórico(a) + [a] + histórico(b) + [b]
+            var recipe = Db.GetAllJogressRecipes().First();
+            ResetScratch(capacity: 100_000);
+            var pa = MakeDigimon(FindSpecies(recipe.DigimonAId), 60, addToCenter: true);
+            var pb = MakeDigimon(FindSpecies(recipe.DigimonBId), 60, addToCenter: true);
+            pa.EvolutionHistory.AddRange(new[] { 11, 12, 13 });
+            pb.EvolutionHistory.AddRange(new[] { 21, 22 });
+            var expectedJ = pa.EvolutionHistory.Append(pa.BaseData.Id).Concat(pb.EvolutionHistory).Append(pb.BaseData.Id).ToList();
+            var fuse = Gm.TryToFuse(pa, pb);
+            Check(fuse.Outcome == JogressOutcome.Fused, $"Jogress: não fundiu ({fuse.Outcome})");
+            if (fuse.Outcome == JogressOutcome.Fused)
+            {
+                var got = fuse.FusedDigimon.EvolutionHistory;
+                Info($"Jogress ({pa.BaseData.Name}+{pb.BaseData.Name} -> {fuse.FusedDigimon.BaseData.Name}): esperado {Ids(expectedJ)} obtido {Ids(got)}");
+                Check(got.SequenceEqual(expectedJ), $"Jogress: esperado {Ids(expectedJ)}, veio {Ids(got)}");
+            }
+
+            // 5) save antigo (o save.json real, só LIDO): carrega com histórico vazio e evolui gravando certo
+            string path = ProjectSettings.GlobalizePath("user://save.json");
+            if (!System.IO.File.Exists(path))
+            {
+                Warn("save antigo: user://save.json não existe - caso pulado");
+                return Task.CompletedTask;
+            }
+
+            string json = System.IO.File.ReadAllText(path);
+            var old = JsonSerializer.Deserialize<SaveData>(json);
+            Check(old?.Center?.Digimons != null, "save antigo: não desserializou");
+            if (old?.Center?.Digimons == null)
+                return Task.CompletedTask;
+
+            bool hadField = json.Contains("\"EvolutionHistory\"");
+            Info($"save antigo: {old.Center.Digimons.Count} Digimons, campo EvolutionHistory no arquivo: {(hadField ? "sim" : "não")}");
+            if (!hadField)
+                Check(old.Center.Digimons.All(d => d.EvolutionHistory != null && d.EvolutionHistory.Count == 0), "save antigo: histórico deveria carregar vazio");
+
+            ResetScratch(capacity: 100_000);
+            var candidate = old.Center.Digimons.FirstOrDefault(d => d.BaseData != null && Db.GetEvolutionsFrom(d.BaseData.Id)?.Count > 0);
+            Check(candidate != null, "save antigo: nenhum Digimon com evolução disponível pra testar");
+            if (candidate != null)
+            {
+                var before = candidate.EvolutionHistory.ToList();
+                Gm.CenterService.AddDigimon(candidate);
+                int fromOld = EvolveOnceForReal(candidate);
+                var expectedOld = before.Append(fromOld).ToList();
+                Info($"save antigo ({Db.GetDigimon(fromOld)?.Name} -> {candidate.BaseData.Name}): esperado {Ids(expectedOld)} obtido {Ids(candidate.EvolutionHistory)}");
+                Check(fromOld > 0 && candidate.EvolutionHistory.SequenceEqual(expectedOld), $"save antigo: esperado {Ids(expectedOld)}, veio {Ids(candidate.EvolutionHistory)}");
+
+                // ida e volta do campo novo pelo mesmo serializador do jogo
+                var back = JsonSerializer.Deserialize<DigimonInstance>(JsonSerializer.Serialize(candidate));
+                Check(back.EvolutionHistory.SequenceEqual(candidate.EvolutionHistory), "save antigo: EvolutionHistory não sobrevive a salvar/carregar");
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ------------------------------------------------------------------ passivas herdadas (fase 1b)
+
+        private readonly List<string> _inheritedTable = new();
+
+        /// <summary>Combatente da espécie <paramref name="speciesId"/> com o histórico dado e stats altos
+        /// e redondos (1000), pra que as % não sumam no arredondamento.</summary>
+        private static BattleCombatant HCombatant(int speciesId, params int[] history)
+        {
+            var d = new DigimonInstance(FindSpecies(speciesId));
+            d.EvolutionHistory.AddRange(history);
+            d.CurrentStats.PhysicalDamage = d.CurrentStats.PhysicalDefense = 1000;
+            d.CurrentStats.SpecialDamage = d.CurrentStats.SpecialDefense = 1000;
+            d.CurrentStats.Speed = 1000;
+            d.MaxHealthPoints = d.CurrentHealthPoints = d.CurrentStats.HealthPoints = 1000;
+            return new BattleCombatant(d);
+        }
+
+        private static void SetRole(BattleCombatant c, RoleType role) => c.Digimon.BaseData.Role = role;
+
+        private static void SetAttackType(BattleCombatant c, AttackType type) => c.Digimon.BaseData.AttackType = type;
+
+        private static void SetHp(BattleCombatant c, float pct) => c.Digimon.CurrentHealthPoints = (int)(c.Digimon.MaxHealthPoints * pct);
+
+        /// <summary>Registra um teste de passiva: dispara na condição e não dispara fora dela.</summary>
+        private void Herdada(int speciesId, bool fires, string firesDetail, bool notFires, string notFiresDetail)
+        {
+            var sp = FindSpecies(speciesId);
+            string effect = sp?.InheritedPassive != null ? InheritedPassiveSystem.Describe(sp.InheritedPassive) : "(sem dado!)";
+            Check(sp?.InheritedPassive != null, $"{sp?.Name} ({speciesId}): espécie sem InheritedPassive no JSON");
+            Check(fires, $"{sp?.Name}: não disparou na condição certa - {firesDetail}");
+            Check(notFires, $"{sp?.Name}: disparou fora da condição - {notFiresDetail}");
+            _inheritedTable.Add($"{sp?.Name} ({speciesId}) | {effect} | dispara: {(fires ? "ok" : "FALHOU")} ({firesDetail}) | fora: {(notFires ? "ok" : "FALHOU")} ({notFiresDetail})");
+        }
+
+        private async Task InheritedPassivesSection()
+        {
+            _inheritedTable.Clear();
+            var realRoll = InheritedPassiveSystem.Roll;
+
+            try
+            {
+                const int Base = 1000;
+
+                // ---- stat %: só vale vinda do HISTÓRICO, nunca da forma atual
+                void StatTest(int speciesId, StatType stat, float pct)
+                {
+                    var with = HCombatant(1, speciesId);
+                    var current = HCombatant(speciesId);
+                    int expected = (int)Math.Round(Base * (1f + pct));
+                    Herdada(speciesId,
+                        with.GetEffectiveStat(stat) == expected, $"{stat} {with.GetEffectiveStat(stat)} (esperado {expected})",
+                        current.GetEffectiveStat(stat) == Base, $"sendo a forma atual, sem histórico: {current.GetEffectiveStat(stat)}");
+                }
+
+                StatTest(83, StatType.Speed, 0.03f);            // Jyarimon
+                StatTest(63, StatType.SpecialDefense, 0.03f);   // Pichimon
+                StatTest(183, StatType.PhysicalDamage, 0.03f);  // Chibomon
+                StatTest(30, StatType.PhysicalDefense, 0.04f);  // Tsunomon
+                StatTest(64, StatType.Speed, 0.04f);            // Bukamon
+                StatTest(2, StatType.PhysicalDamage, 0.05f);    // Gabumon
+
+                // ---- HP máx: dano recebido / (1 + %)
+                void HpTest(int speciesId, float pct)
+                {
+                    var atk = HCombatant(1);
+                    var with = HCombatant(13, speciesId);
+                    var without = HCombatant(13);
+                    int got = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, with);
+                    int expected = (int)Math.Round(Base / (1f + pct));
+                    int plain = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, without);
+                    Herdada(speciesId, got == expected, $"dano {Base}->{got} (esperado {expected})", plain == Base, $"sem a espécie no histórico: {plain}");
+                }
+
+                HpTest(25, 0.03f); // Botamon
+                HpTest(26, 0.03f); // Punimon
+                HpTest(29, 0.04f); // Koromon
+
+                // ---- Agumon: +5% dano físico
+                {
+                    var phys = HCombatant(13, 1); SetAttackType(phys, AttackType.Physical);
+                    var spec = HCombatant(13, 1); SetAttackType(spec, AttackType.Special);
+                    var def = HCombatant(2);
+                    int a = InheritedPassiveSystem.ModifyOutgoingDamage(Base, phys, def);
+                    int b = InheritedPassiveSystem.ModifyOutgoingDamage(Base, spec, def);
+                    Herdada(1, a == 1050, $"físico {a}", b == Base, $"ataque especial {b}");
+                }
+
+                // ---- Greymon: crítico encurta debuffs em 1 ação
+                {
+                    var g = HCombatant(39, 13);
+                    var def = HCombatant(2);
+                    g.Inherited.ActionIntervalSeconds = 1.5;
+                    g.AddEffect(StatType.Speed, -0.2f, 5.0);
+                    g.AddEffect(StatType.PhysicalDamage, 0.2f, 5.0);
+                    InheritedPassiveSystem.AfterAttack(g, def, 100, false, 0);
+                    double afterNormal = g.Effects.First(e => e.Percentage < 0).RemainingSeconds;
+                    InheritedPassiveSystem.AfterAttack(g, def, 100, true, 0);
+                    double afterCrit = g.Effects.First(e => e.Percentage < 0).RemainingSeconds;
+                    double buff = g.Effects.First(e => e.Percentage > 0).RemainingSeconds;
+                    Herdada(13, Math.Abs(afterCrit - 3.5) < 0.001 && Math.Abs(buff - 5.0) < 0.001, $"debuff 5.0s -> {afterCrit:0.##}s, buff intacto {buff:0.##}s",
+                        Math.Abs(afterNormal - 5.0) < 0.001, $"golpe normal: debuff {afterNormal:0.##}s");
+                }
+
+                // ---- Devimon: 3 ataques normais, o 4º ignora 20% da defesa
+                {
+                    var dv = HCombatant(180, 45); SetAttackType(dv, AttackType.Physical);
+                    var def = HCombatant(2); def.Digimon.CurrentStats.PhysicalDefense = 500;
+                    var seq = Enumerable.Range(0, 5).Select(_ => InheritedPassiveSystem.ModifyBaseDamage(500, dv, def)).ToList();
+                    Herdada(45, seq[3] == 600 && seq[4] == 500, $"golpes {string.Join(",", seq)} (4º = 1000-400)",
+                        seq[0] == 500 && seq[1] == 500 && seq[2] == 500, "os 3 primeiros sem bônus");
+                }
+
+                // ---- Dimetromon: +5% Velocidade; +8% em quem já agiu
+                {
+                    var dm = HCombatant(86, 85);
+                    var acted = HCombatant(2); acted.Inherited.HasActed = true;
+                    var fresh = HCombatant(2);
+                    int a = InheritedPassiveSystem.ModifyOutgoingDamage(Base, dm, acted);
+                    int b = InheritedPassiveSystem.ModifyOutgoingDamage(Base, dm, fresh);
+                    int spd = dm.GetEffectiveStat(StatType.Speed);
+                    Herdada(85, a == 1080 && spd == 1050, $"alvo que agiu {a}, Velocidade {spd}", b == Base, $"alvo que não agiu {b}");
+                }
+
+                // ---- Garurumon: ataque à distância, 15% de golpe extra (30% do dano)
+                {
+                    var gr = HCombatant(40, 14); SetRole(gr, RoleType.Ranged);
+                    var melee = HCombatant(40, 14); SetRole(melee, RoleType.Warrior);
+                    InheritedPassiveSystem.Roll = () => 0.10;
+                    int hit = InheritedPassiveSystem.RollExtraStrike(gr, Base);
+                    int meleeHit = InheritedPassiveSystem.RollExtraStrike(melee, Base);
+                    InheritedPassiveSystem.Roll = () => 0.20;
+                    int miss = InheritedPassiveSystem.RollExtraStrike(gr, Base);
+                    InheritedPassiveSystem.Roll = realRoll;
+                    Herdada(14, hit == 300, $"sorteio 0.10 à distância: extra {hit}", miss == 0 && meleeHit == 0, $"sorteio 0.20: {miss}; corpo a corpo: {meleeHit}");
+                }
+
+                // ---- IceDevimon: 1º golpe recebido -20%
+                {
+                    var atk = HCombatant(1);
+                    var ice = HCombatant(127, 46);
+                    int first = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, ice);
+                    int second = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, ice);
+                    Herdada(46, first == 800, $"1º golpe {first}", second == Base, $"2º golpe {second}");
+                }
+
+                // ---- MetalGreymon: abaixo de 50% de HP, +15% dano físico até o fim (1x)
+                {
+                    var mg = HCombatant(52, 39); SetAttackType(mg, AttackType.Physical);
+                    var def = HCombatant(2);
+                    int healthy = InheritedPassiveSystem.ModifyOutgoingDamage(Base, mg, def);
+                    SetHp(mg, 0.40f);
+                    int low = InheritedPassiveSystem.ModifyOutgoingDamage(Base, mg, def);
+                    SetHp(mg, 1.0f);
+                    int healedBack = InheritedPassiveSystem.ModifyOutgoingDamage(Base, mg, def);
+                    Herdada(39, low == 1150 && healedBack == 1150, $"com 40% HP {low}; curado de volta {healedBack} (fica até o fim)",
+                        healthy == Base, $"com 100% HP {healthy}");
+                }
+
+                // ---- RizeGreymon: crítico cura 4% do HP máx
+                {
+                    var rg = HCombatant(52, 167); var def = HCombatant(2);
+                    SetHp(rg, 0.5f);
+                    InheritedPassiveSystem.AfterAttack(rg, def, 100, false, 0);
+                    int afterNormal = rg.Digimon.CurrentHealthPoints;
+                    InheritedPassiveSystem.AfterAttack(rg, def, 100, true, 0);
+                    int afterCrit = rg.Digimon.CurrentHealthPoints;
+                    Herdada(167, afterCrit == 540, $"500 -> {afterCrit}", afterNormal == 500, $"golpe normal {afterNormal}");
+                }
+
+                // ---- LadyDevimon: abate dá +10% Velocidade até o fim
+                {
+                    var ld = HCombatant(95, 180);
+                    int before = ld.GetEffectiveStat(StatType.Speed);
+                    InheritedPassiveSystem.OnKill(ld);
+                    int after = ld.GetEffectiveStat(StatType.Speed);
+                    Herdada(180, after == 1100, $"Velocidade depois do abate {after}", before == Base, $"antes de abater {before}");
+                }
+
+                // ---- Lamiamon: 6% esquiva, depois crítico garantido
+                {
+                    var atk = HCombatant(1);
+                    var lm = HCombatant(87, 86);
+                    InheritedPassiveSystem.Roll = () => 0.99;
+                    bool missDodge = InheritedPassiveSystem.TryDodge(atk, lm);
+                    bool noCritYet = InheritedPassiveSystem.ConsumeGuaranteedCrit(lm);
+                    InheritedPassiveSystem.Roll = () => 0.01;
+                    bool dodged = InheritedPassiveSystem.TryDodge(atk, lm);
+                    InheritedPassiveSystem.Roll = realRoll;
+                    bool crit = InheritedPassiveSystem.ConsumeGuaranteedCrit(lm);
+                    bool critAgain = InheritedPassiveSystem.ConsumeGuaranteedCrit(lm);
+                    Herdada(86, dodged && crit && !critAgain, $"sorteio 0.01: esquivou {dodged}, próximo crítico {crit}, o seguinte {critAgain}",
+                        !missDodge && !noCritYet, $"sorteio 0.99: esquivou {missDodge}, crítico {noCritYet}");
+                }
+
+                // ---- Lucemon Falldown Mode: crítico drena 6% do dano
+                {
+                    var lc = HCombatant(121, 125); var def = HCombatant(2);
+                    SetHp(lc, 0.5f);
+                    InheritedPassiveSystem.AfterAttack(lc, def, 1000, false, 0);
+                    int afterNormal = lc.Digimon.CurrentHealthPoints;
+                    InheritedPassiveSystem.AfterAttack(lc, def, 1000, true, 0);
+                    int afterCrit = lc.Digimon.CurrentHealthPoints;
+                    Herdada(125, afterCrit == 560, $"crítico de 1000: 500 -> {afterCrit}", afterNormal == 500, $"golpe normal {afterNormal}");
+                }
+
+                // ---- Myotismon: cada ataque cura o aliado com menor % de HP em 10% do dano
+                {
+                    var my = HCombatant(106, 182);
+                    var low = HCombatant(2); SetHp(low, 0.5f);
+                    var mid = HCombatant(2); SetHp(mid, 0.8f);
+                    var (ally, healed) = InheritedPassiveSystem.HealLowestAlly(my, new[] { my, low, mid }, 1000, 0);
+                    var full1 = HCombatant(2); var full2 = HCombatant(2);
+                    var (none, zero) = InheritedPassiveSystem.HealLowestAlly(my, new[] { my, full1, full2 }, 1000, 0);
+                    Herdada(182, ally == low && healed == 100 && low.Digimon.CurrentHealthPoints == 600, $"curou o de 50% em {healed}",
+                        none == null && zero == 0, "aliados com HP cheio: ninguém curado");
+                }
+
+                // ---- SkullSatamon: +8% em Tanks; metade do dano vindo de Tanks
+                {
+                    var sk = HCombatant(194, 181);
+                    var tank = HCombatant(2); SetRole(tank, RoleType.Tank);
+                    var warrior = HCombatant(2); SetRole(warrior, RoleType.Warrior);
+                    int vsTank = InheritedPassiveSystem.ModifyOutgoingDamage(Base, sk, tank);
+                    int fromTank = InheritedPassiveSystem.ModifyIncomingDamage(Base, tank, sk);
+                    int vsWarrior = InheritedPassiveSystem.ModifyOutgoingDamage(Base, sk, warrior);
+                    int fromWarrior = InheritedPassiveSystem.ModifyIncomingDamage(Base, warrior, sk);
+                    Herdada(181, vsTank == 1080 && fromTank == 500, $"contra Tank {vsTank}, recebido de Tank {fromTank}",
+                        vsWarrior == Base && fromWarrior == Base, $"contra/de Warrior {vsWarrior}/{fromWarrior}");
+                }
+
+                // ---- Triceramon: 20% de chance de ignorar todo o dano
+                {
+                    var atk = HCombatant(1);
+                    var tr = HCombatant(120, 111);
+                    InheritedPassiveSystem.Roll = () => 0.10;
+                    int blocked = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, tr);
+                    bool flagged = atk.Inherited.LastAttackNegated;
+                    InheritedPassiveSystem.Roll = () => 0.50;
+                    int taken = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, tr);
+                    InheritedPassiveSystem.Roll = realRoll;
+                    Herdada(111, blocked == 0 && flagged, $"sorteio 0.10: dano {blocked}", taken == Base, $"sorteio 0.50: dano {taken}");
+                }
+
+                // ---- WereGarurumon: +8% dano físico (16% no 1º golpe)
+                {
+                    var wg = HCombatant(53, 40); SetAttackType(wg, AttackType.Physical);
+                    var def = HCombatant(2);
+                    int first = InheritedPassiveSystem.ModifyOutgoingDamage(Base, wg, def);
+                    wg.Inherited.AttacksDealt = 1;
+                    int later = InheritedPassiveSystem.ModifyOutgoingDamage(Base, wg, def);
+                    var spec = HCombatant(53, 40); SetAttackType(spec, AttackType.Special);
+                    int special = InheritedPassiveSystem.ModifyOutgoingDamage(Base, spec, def);
+                    Herdada(40, first == 1160 && later == 1080, $"1º golpe {first}, depois {later}", special == Base, $"ataque especial {special}");
+                }
+
+                // ---- MachGaogamon: +6% no 1º golpe
+                {
+                    var mc = HCombatant(176, 48); var def = HCombatant(2);
+                    int first = InheritedPassiveSystem.ModifyOutgoingDamage(Base, mc, def);
+                    mc.Inherited.AttacksDealt = 1;
+                    int later = InheritedPassiveSystem.ModifyOutgoingDamage(Base, mc, def);
+                    Herdada(48, first == 1060, $"1º golpe {first}", later == Base, $"2º golpe {later}");
+                }
+
+                // ---- Destromon: 3ª estaca (à distância) = crítico garantido
+                {
+                    var ds = HCombatant(119, 118); SetRole(ds, RoleType.Ranged);
+                    var seq = Enumerable.Range(0, 4).Select(_ => InheritedPassiveSystem.ConsumeGuaranteedCrit(ds)).ToList();
+                    var melee = HCombatant(119, 118); SetRole(melee, RoleType.Warrior);
+                    var meleeSeq = Enumerable.Range(0, 4).Select(_ => InheritedPassiveSystem.ConsumeGuaranteedCrit(melee)).ToList();
+                    Herdada(118, !seq[0] && !seq[1] && seq[2] && !seq[3], $"à distância: {string.Join(",", seq)}",
+                        meleeSeq.All(x => !x), $"corpo a corpo: {string.Join(",", meleeSeq)}");
+                }
+
+                // ---- Astamon: 10% de atordoar (20% se o alvo estiver abaixo de 50%)
+                {
+                    var am = HCombatant(119, 127);
+                    var healthy = HCombatant(2);
+                    var wounded = HCombatant(2); SetHp(wounded, 0.40f);
+                    InheritedPassiveSystem.Roll = () => 0.15;
+                    InheritedPassiveSystem.AfterAttack(am, healthy, 10, false, 0);
+                    InheritedPassiveSystem.AfterAttack(am, wounded, 10, false, 0);
+                    InheritedPassiveSystem.Roll = realRoll;
+                    bool woundedStunned = wounded.Inherited.IsStunned;
+                    wounded.Tick(InheritedPassiveSystem.StunDurationSeconds + 0.01, 0);
+                    Herdada(127, woundedStunned && !wounded.Inherited.IsStunned, $"sorteio 0.15 em alvo a 40%: atordoou {woundedStunned}, e passa depois de {InheritedPassiveSystem.StunDurationSeconds}s",
+                        !healthy.Inherited.IsStunned, "sorteio 0.15 em alvo com HP cheio (chance 10%): não atordoou");
+                }
+
+                // ---- Belphemon Sleep Mode: +15% PD e ED, -10% Velocidade
+                {
+                    var bp = HCombatant(123, 128);
+                    var current = HCombatant(128);
+                    int pd = bp.GetEffectiveStat(StatType.PhysicalDefense), ed = bp.GetEffectiveStat(StatType.SpecialDefense), spd = bp.GetEffectiveStat(StatType.Speed);
+                    Herdada(128, pd == 1150 && ed == 1150 && spd == 900, $"PD {pd}, ED {ed}, Velocidade {spd}",
+                        current.GetEffectiveStat(StatType.PhysicalDefense) == Base, "sendo a forma atual: PD 1000");
+                }
+
+                // ---- sem histórico / histórico sem passiva
+                {
+                    var newborn = HCombatant(25);
+                    var megas = HCombatant(171, 52, 53, 105);
+                    Check(newborn.Inherited.Passives.Count == 0, "recém-nascido não deveria ter passiva herdada");
+                    Check(megas.Inherited.Passives.Count == 0, "histórico só com Megas sem InheritedPassive deveria resolver vazio");
+
+                    var atk = HCombatant(13);
+                    int resolved = 0;
+                    for (int i = 0; i < 50; i++)
+                    {
+                        newborn.Digimon.RestoreHealth(); megas.Digimon.RestoreHealth();
+                        resolved += DamageCalculator.ResolveAttack(atk, newborn) > 0 ? 1 : 0;
+                        resolved += DamageCalculator.ResolveAttack(megas, atk) > 0 ? 1 : 0;
+                        atk.Digimon.RestoreHealth();
+                    }
+                    Check(resolved == 100, $"ResolveAttack sem passivas herdadas: {resolved}/100 golpes causaram dano");
+                    Check(newborn.GetEffectiveStat(StatType.Speed) == Base && megas.GetEffectiveStat(StatType.Speed) == Base, "stats sem passiva herdada ficaram iguais");
+                    Info($"sem histórico: {newborn.Inherited.Passives.Count} passivas; histórico [52,53,105] (Megas): {megas.Inherited.Passives.Count} passivas; 100 golpes resolvidos sem erro");
+
+                    var dup = new DigimonInstance(FindSpecies(171));
+                    dup.EvolutionHistory.AddRange(new[] { 25, 29, 1, 25, 29 });
+                    Check(InheritedPassiveSystem.GetActiveInheritedPassives(dup).Count == 3, "espécie repetida no histórico deveria contar 1x");
+                }
+
+                // ---- Jogress: Omegamon com cada linha como principal
+                {
+                    int[] agumonLine = { 25, 29, 1, 13, 39 };
+                    int[] gabumonLine = { 30, 2, 14, 40 };
+
+                    List<int> Fuse(bool agumonPrincipal)
+                    {
+                        ResetScratch(capacity: 100_000);
+                        var war = MakeDigimon(FindSpecies(52), 60, addToCenter: true);
+                        var metal = MakeDigimon(FindSpecies(53), 60, addToCenter: true);
+                        war.EvolutionHistory.AddRange(agumonLine);
+                        metal.EvolutionHistory.AddRange(gabumonLine);
+                        var res = agumonPrincipal ? Gm.TryToFuse(war, metal) : Gm.TryToFuse(metal, war);
+                        Check(res.Outcome == JogressOutcome.Fused, $"Jogress Omegamon ({(agumonPrincipal ? "Agumon" : "Gabumon")} principal) não fundiu");
+                        return res.FusedDigimon?.EvolutionHistory ?? new List<int>();
+                    }
+
+                    var agP = Fuse(true);
+                    var gaP = Fuse(false);
+                    var expA = agumonLine.Append(52).Concat(gabumonLine).Append(53).ToList();
+                    var expG = gabumonLine.Append(53).Concat(agumonLine).Append(52).ToList();
+                    Info($"Jogress Omegamon, linha Agumon principal: esperado {Ids(expA)} obtido {Ids(agP)}");
+                    Info($"Jogress Omegamon, linha Gabumon principal: esperado {Ids(expG)} obtido {Ids(gaP)}");
+                    Check(agP.SequenceEqual(expA), "Jogress Agumon principal: histórico errado");
+                    Check(gaP.SequenceEqual(expG), "Jogress Gabumon principal: histórico errado");
+                    Check(!agP.SequenceEqual(gaP), "Jogress: a linha principal não mudou o histórico");
+
+                    var omegamon = new DigimonInstance(FindSpecies(171));
+                    omegamon.EvolutionHistory.AddRange(agP);
+                    Info($"Omegamon (Agumon principal) herda {InheritedPassiveSystem.GetActiveInheritedPassives(omegamon).Count} passivas: " +
+                         string.Join(", ", InheritedPassiveSystem.GetActiveInheritedPassives(omegamon).Select(p => p.Species.Name)));
+                }
+
+                // ---- batalha real com as linhas do piloto (ganchos do BattleUnit: atordoar, golpe extra, cura, abate)
+                InheritedPassiveSystem.Roll = realRoll;
+                int stalemates = 0;
+                for (int b = 1; b <= 6; b++)
+                {
+                    ResetScratch(capacity: 1000);
+                    DigimonInstance Pilot(int species, params int[] history)
+                    {
+                        var d = MakeDigimon(FindSpecies(species), 40);
+                        d.EvolutionHistory.AddRange(history);
+                        return d;
+                    }
+
+                    var team = new List<DigimonInstance>
+                    {
+                        Pilot(119, 63, 30, 2, 46, 127),   // Ragnamon (Astamon, IceDevimon...)
+                        Pilot(106, 25, 29, 1, 45, 182),   // Beelzebumon (Myotismon, Devimon...)
+                        Pilot(88, 83, 29, 1, 85, 86),     // Leviamon (Lamiamon, Dimetromon...)
+                    };
+                    var enemies = new List<DigimonInstance>
+                    {
+                        Pilot(52, 25, 29, 1, 13, 39),     // WarGreymon (MetalGreymon, Greymon...)
+                        Pilot(162, 26, 30, 2, 14, 40),    // Gankoomon (WereGarurumon, Garurumon...)
+                        Pilot(113, 64, 2, 46, 118),       // Boltmon (Destromon...)
+                    };
+
+                    var arena = GD.Load<PackedScene>("res://Scenes/Battle/BattleArena.tscn").Instantiate<BattleArena>();
+                    GetTree().Root.AddChild(arena);
+                    arena.Init(team, enemies);
+
+                    double sim = 0;
+                    while (!arena.IsBattleOver && sim < 240)
+                    {
+                        await Frames(1);
+                        sim += GetProcessDeltaTime();
+                    }
+
+                    if (!arena.IsBattleOver)
+                        stalemates++;
+
+                    Check(arena.IsBattleOver, $"batalha com passivas herdadas {b}: não terminou em 240s");
+                    AssertInvariants(team, $"batalha herdadas {b}");
+                    arena.QueueFree();
+                    await Frames(2);
+                }
+                Info($"6 batalhas reais com 6 Digimons carregando passivas herdadas, {stalemates} impasses");
+            }
+            finally
+            {
+                InheritedPassiveSystem.Roll = realRoll;
+            }
+
+            foreach (var line in _inheritedTable)
+                GD.Print("[AUDIT-HERDADA] " + line);
+        }
+
         private Task Calendar()
         {
             var cal = CalendarSystem.Data;

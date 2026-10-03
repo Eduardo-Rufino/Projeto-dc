@@ -64,6 +64,15 @@ namespace ProjetoDC.Scripts.Systems.Jogress
 
             BlendStatsFromParents(fused, a, b, resultForm.BaseStats, recipe.StatMultiplier);
 
+            // Histórico do fundido (passivas herdadas): a linha completa do pai PRINCIPAL (a) - o histórico
+            // dele + a espécie dele - seguida do histórico do pai secundário (b) + a espécie de b. Quem é o
+            // principal é escolha do jogador na tela de Jogress (JogressPickScreen); a ordem é o que muda,
+            // já que o resto do Jogress continua simétrico.
+            fused.EvolutionHistory.AddRange(a.EvolutionHistory);
+            fused.EvolutionHistory.Add(a.BaseData.Id);
+            fused.EvolutionHistory.AddRange(b.EvolutionHistory);
+            fused.EvolutionHistory.Add(b.BaseData.Id);
+
             return JogressAttemptResult.Fused(resultForm, requiredCapacity, fused);
         }
 
