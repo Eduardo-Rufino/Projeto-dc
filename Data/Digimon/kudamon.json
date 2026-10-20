@@ -21,5 +21,6 @@
     "PesLeves",
     "ProjetilPerfurante",
     "AlvoMarcado"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpecialDefensePercent", "Value": 0.04, "Value2": 0 }
 }

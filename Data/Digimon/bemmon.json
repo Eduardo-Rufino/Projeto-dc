@@ -21,5 +21,6 @@
     "PesLeves",
     "Predicao",
     "Fixacao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "MaxHpPercent", "Value": 0.045, "Value2": 0 }
 }

@@ -22,5 +22,6 @@
     "Vigilia",
     "MaosFirmes",
     "AuraVital"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpecialDefensePercent", "Value": 0.055, "Value2": 0 }
 }

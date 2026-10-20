@@ -28,5 +28,6 @@
       "Quantity": 1,
       "ChancePercent": 50
     }
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalDefensePercent", "Value": 0.06, "Value2": 0 }
 }

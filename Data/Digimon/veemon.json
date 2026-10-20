@@ -21,5 +21,6 @@
     "Investida",
     "SedeDeBatalha",
     "RompeGuarda"
-  ]
+  ],
+  "InheritedPassive": { "Type": "MaxHpPercent", "Value": 0.05, "Value2": 0 }
 }

@@ -21,5 +21,6 @@
     "GritoDeGuerra",
     "ProvocacaoInsistente",
     "Couraca"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalDefensePercent", "Value": 0.05, "Value2": 0 }
 }

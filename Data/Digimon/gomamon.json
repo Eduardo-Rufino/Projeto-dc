@@ -24,5 +24,6 @@
     "Couraca",
     "Folego",
     "ProvocacaoInsistente"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalDefensePercent", "Value": 0.055, "Value2": 0 }
 }

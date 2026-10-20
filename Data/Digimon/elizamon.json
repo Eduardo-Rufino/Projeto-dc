@@ -24,5 +24,6 @@
     "PrecisaoLetal",
     "FioDaLamina",
     "PassoFantasma"
-  ]
+  ],
+  "InheritedPassive": { "Type": "MaxHpPercent", "Value": 0.04, "Value2": 0 }
 }

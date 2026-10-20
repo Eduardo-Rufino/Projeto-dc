@@ -2393,6 +2393,18 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 StatTest(27, StatType.SpecialDefense, 0.035f);  // Yuramon
                 StatTest(186, StatType.SpecialDefense, 0.035f); // Dorimon
 
+                // fase 3 (Rookie restantes): amostra do lote, cobrindo os 6 stats
+                StatTest(8, StatType.SpecialDamage, 0.05f);     // Terriermon
+                StatTest(124, StatType.SpecialDamage, 0.06f);   // Lucemon
+                StatTest(5, StatType.PhysicalDamage, 0.055f);   // Gaomon
+                StatTest(132, StatType.PhysicalDamage, 0.04f);  // Dracomon
+                StatTest(3, StatType.PhysicalDefense, 0.05f);   // Tentomon
+                StatTest(145, StatType.PhysicalDefense, 0.045f); // Kotemon
+                StatTest(12, StatType.SpecialDefense, 0.055f);  // Lalamon
+                StatTest(169, StatType.SpecialDefense, 0.05f);  // Candlemon
+                StatTest(9, StatType.Speed, 0.06f);             // Renamon
+                StatTest(59, StatType.Speed, 0.04f);            // Biyomon
+
                 // EA herdado não vaza pro PA
                 var ea = HCombatant(1, 57);
                 Check(ea.GetEffectiveStat(StatType.PhysicalDamage) == Base, $"EA herdado mexeu no PA: {ea.GetEffectiveStat(StatType.PhysicalDamage)}");
@@ -2414,6 +2426,8 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 HpTest(29, 0.04f); // Koromon
                 HpTest(69, 0.035f); // Nyaromon (fase 2)
                 HpTest(184, 0.05f); // DemiVeemon (fase 2)
+                HpTest(7, 0.055f); // Guilmon (fase 3)
+                HpTest(163, 0.035f); // Hackmon (fase 3)
 
                 // ---- Agumon: +5% dano físico
                 {
