@@ -21,5 +21,6 @@
     "Couraca",
     "Espinhos",
     "UltimaTrincheira"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalDefensePercent", "Value": 0.035, "Value2": 0 }
 }

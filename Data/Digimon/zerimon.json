@@ -20,5 +20,6 @@
     "AlvoMarcado",
     "PosturaFirme",
     "Predicao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "MaxHpPercent", "Value": 0.025, "Value2": 0 }
 }

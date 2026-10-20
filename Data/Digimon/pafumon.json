@@ -22,5 +22,6 @@
     "Ressonancia",
     "InstintoDeFuga",
     "AuraVital"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpecialDefensePercent", "Value": 0.025, "Value2": 0 }
 }

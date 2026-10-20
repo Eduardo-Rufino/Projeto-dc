@@ -21,5 +21,6 @@
     "Fixacao",
     "PosturaFirme",
     "ProjetilPerfurante"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalAttackPercent", "Value": 0.04, "Value2": 0 }
 }

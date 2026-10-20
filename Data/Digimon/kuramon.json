@@ -21,5 +21,6 @@
     "PesLeves",
     "Predicao",
     "Fixacao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpecialAttackPercent", "Value": 0.03, "Value2": 0 }
 }

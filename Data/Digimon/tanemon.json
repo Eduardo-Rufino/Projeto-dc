@@ -21,5 +21,6 @@
     "AlvoMarcado",
     "PosturaFirme",
     "Predicao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpecialAttackPercent", "Value": 0.045, "Value2": 0 }
 }

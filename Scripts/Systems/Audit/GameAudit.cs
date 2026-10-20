@@ -2382,20 +2382,20 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 StatTest(64, StatType.Speed, 0.04f);            // Bukamon
                 StatTest(2, StatType.PhysicalDamage, 0.05f);    // Gabumon
 
-                // EA: nenhuma espécie usa ainda, então empresta o Dodomon (sem herdada) só durante o teste
-                var eaSpecies = FindSpecies(185);
-                var eaOriginal = eaSpecies.InheritedPassive;
-                try
-                {
-                    eaSpecies.InheritedPassive = new InheritedPassiveData { Type = InheritedEffectType.SpecialAttackPercent, Value = 0.03f };
-                    StatTest(185, StatType.SpecialDamage, 0.03f);
-                    var ea = HCombatant(1, 185);
-                    Check(ea.GetEffectiveStat(StatType.PhysicalDamage) == Base, $"EA herdado mexeu no PA: {ea.GetEffectiveStat(StatType.PhysicalDamage)}");
-                }
-                finally
-                {
-                    eaSpecies.InheritedPassive = eaOriginal;
-                }
+                // fase 2 (Baby/In-Training restantes): amostra do lote, cobrindo os 6 stats
+                StatTest(57, StatType.SpecialDamage, 0.035f);   // Poyomon
+                StatTest(115, StatType.SpecialDamage, 0.04f);   // Tsumemon
+                StatTest(28, StatType.Speed, 0.035f);           // Keemon
+                StatTest(107, StatType.PhysicalDamage, 0.035f); // Sunamon
+                StatTest(173, StatType.PhysicalDamage, 0.05f);  // Babydmon
+                StatTest(195, StatType.PhysicalDefense, 0.03f); // Leafmon
+                StatTest(89, StatType.SpecialDefense, 0.025f);  // Pafumon
+                StatTest(27, StatType.SpecialDefense, 0.035f);  // Yuramon
+                StatTest(186, StatType.SpecialDefense, 0.035f); // Dorimon
+
+                // EA herdado não vaza pro PA
+                var ea = HCombatant(1, 57);
+                Check(ea.GetEffectiveStat(StatType.PhysicalDamage) == Base, $"EA herdado mexeu no PA: {ea.GetEffectiveStat(StatType.PhysicalDamage)}");
 
                 // ---- HP máx: dano recebido / (1 + %)
                 void HpTest(int speciesId, float pct)
@@ -2412,6 +2412,8 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 HpTest(25, 0.03f); // Botamon
                 HpTest(26, 0.03f); // Punimon
                 HpTest(29, 0.04f); // Koromon
+                HpTest(69, 0.035f); // Nyaromon (fase 2)
+                HpTest(184, 0.05f); // DemiVeemon (fase 2)
 
                 // ---- Agumon: +5% dano físico
                 {

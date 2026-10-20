@@ -20,5 +20,6 @@
     "AlvoMarcado",
     "PosturaFirme",
     "Predicao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpeedPercent", "Value": 0.02, "Value2": 0 }
 }
