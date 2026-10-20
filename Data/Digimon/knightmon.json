@@ -22,5 +22,5 @@
     "Folego",
     "ProvocacaoInsistente"
   ],
-  "InheritedPassive": { "Type": "PeriodicDefensePierce", "Value": 3, "Value2": 0.2 }
+  "InheritedPassive": { "Type": "FirstHitTakenReduction", "Value": 0.3, "Value2": 0 }
 }

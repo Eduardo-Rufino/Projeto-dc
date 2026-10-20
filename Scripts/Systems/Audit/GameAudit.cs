@@ -2687,12 +2687,30 @@ namespace ProjetoDC.Scripts.Systems.Audit
                         seq.Take(4).All(x => x == 500), "os 4 primeiros sem bônus");
                 }
 
-                // DexDorugreymon: a cada 3, ignora 28% (1000 - 500x0.72 = 640, dentro do teto de +40%)
+                // fase 4b: DexDorugreymon saiu do perfurar defesa (colidia com o DexDorugamon) - crítico drena 8% do dano
                 {
-                    var dx = HCombatant(95, 157); SetAttackType(dx, AttackType.Physical);
-                    var def = HCombatant(2); def.Digimon.CurrentStats.PhysicalDefense = 500;
-                    var seq = Enumerable.Range(0, 4).Select(_ => InheritedPassiveSystem.ModifyBaseDamage(500, dx, def)).ToList();
-                    Herdada(157, seq[3] == 640, $"golpes {string.Join(",", seq)}", seq.Take(3).All(x => x == 500), "os 3 primeiros sem bônus");
+                    var dx = HCombatant(95, 157); var def = HCombatant(2);
+                    SetHp(dx, 0.5f);
+                    InheritedPassiveSystem.AfterAttack(dx, def, 1000, false, 0);
+                    int afterNormal = dx.Digimon.CurrentHealthPoints;
+                    InheritedPassiveSystem.AfterAttack(dx, def, 1000, true, 0);
+                    int afterCrit = dx.Digimon.CurrentHealthPoints;
+                    Herdada(157, afterCrit == 580, $"crítico de 1000: 500 -> {afterCrit}", afterNormal == 500, $"golpe normal {afterNormal}");
+                }
+
+                // fase 4b: Knightmon saiu do perfurar defesa (colidia com o Gladimon) - 1º golpe recebido -30%
+                {
+                    var atk = HCombatant(1);
+                    var kn = HCombatant(95, 147);
+                    int first = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, kn);
+                    int second = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, kn);
+                    Herdada(147, first == 700, $"1º golpe {first}", second == Base, $"2º golpe {second}");
+
+                    // as duas linhas corrigidas: o perfurar defesa da Champion volta a ser o único da cadeia
+                    var glad = HCombatant(95, 146, 147);
+                    var dex = HCombatant(95, 156, 157);
+                    Check(glad.Inherited.All(InheritedEffectType.PeriodicDefensePierce).Count() == 1, "Gladimon > Knightmon: perfurar defesa repetido na cadeia");
+                    Check(dex.Inherited.All(InheritedEffectType.PeriodicDefensePierce).Count() == 1, "DexDorugamon > DexDorugreymon: perfurar defesa repetido na cadeia");
                 }
 
                 // Growlmon: abaixo de 50% de HP, +12% dano físico

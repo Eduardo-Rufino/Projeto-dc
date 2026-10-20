@@ -19,6 +19,29 @@ Só dado: o campo `InheritedPassive` foi preenchido nos JSONs de 56 espécies. N
    - Se o certo for 0.06, é só trocar o `Value2` no JSON dele e o valor esperado no teste.
 3. **Devidramon (47):** saiu do `KillSpeedBonus` 0.08 e ficou com `CritShortensDebuffs` 1, igual ao Greymon. Agora o Stingmon é o único `KillSpeedBonus` de Champion.
 
+## Fase 4b: colisão de perfurar defesa corrigida
+
+O `PeriodicDefensePierce` só usa a primeira espécie daquele tipo no histórico (`FirstOrDefault`). Em duas linhas, a segunda espécie com perfurar defesa ficava sem efeito pra quem evoluía além dela. Troquei a passiva da Ultimate de cada par:
+
+| Id | Espécie | Antes | Depois | Por quê |
+|---|---|---|---|---|
+| 147 | Knightmon | Perfurar defesa: a cada 3 ataques, ignora 20% | 1º golpe recebido -30% (`FirstHitTakenReduction`) | Tema cavaleiro/armadura. Nenhuma cadeia do Knightmon tem esse efeito. Valor acima dos Champion (IceDevimon 20%, Angemon 25%). |
+| 157 | DexDorugreymon | Perfurar defesa: a cada 3 ataques, ignora 28% | Crítico drena 8% do dano (`CritLifesteal`) | Tema "devora dados". Nenhuma cadeia dele tem esse efeito. Valor acima dos outros (4% a 7%). |
+
+Os dois valores novos não repetem Type+valores de nenhuma outra espécie do jogo.
+
+**Cadeias conferidas.** Em todos os caminhos de evolução até as Megas, nenhuma das duas linhas tem mais o mesmo efeito duas vezes:
+- **Knightmon:** 50 caminhos. Ele vem de Gladimon, BaoHackmon ou Kabuterimon, e vai pra Crusadermon ou Craniummon.
+- **DexDorugreymon:** 20 caminhos. Ele vem de DexDorugamon ou Dorugamon, e vai pra Dorugoramon ou DexDorugoramon.
+
+Exemplos:
+- Botamon > Wanyamon > Kotemon > Gladimon [perfurar defesa] > Knightmon [1º golpe -30%] > Crusadermon
+- Dodomon > Gigimon > Dorumon > DexDorugamon [perfurar defesa] > DexDorugreymon [crítico drena 8%] > Dorugoramon
+
+**No jogo todo.** Varri todas as cadeias, Jogress incluídos, atrás dos três efeitos que só usam a primeira ocorrência (`PeriodicDefensePierce`, `StunChance` e `RangedStacksGuaranteedCrit`). Não sobrou nenhuma colisão.
+
+**O que continua repetindo (e não é colisão).** Muitas cadeias têm o mesmo stat percentual duas vezes. Por exemplo, Tsunomon (PD 4%) e Kotemon (PD 4,5%), ou Dorumon (Velocidade 4,5%) e Dorugamon (Velocidade 6%). Esses efeitos **somam** (`Sum`), então nenhum fica sem efeito. O mesmo vale pros outros efeitos de soma, como o abate do Stingmon com o do Paildramon.
+
 ## Champion
 
 | Id | Espécie | Role | Ataque | Efeito | Valores no JSON | Bate com a proposta? | Teste |
@@ -75,10 +98,10 @@ Só dado: o campo `InheritedPassive` foi preenchido nos JSONs de 56 espécies. N
 | 134 | Groundramon | Tank | Físico | Chance de anular o golpe (`NegateDamageChance`) | 20% | sim |  |
 | 137 | Wingdramon | Ranged | Físico | Bônus no 1º golpe (`OpeningHitBonus`) | 11% | sim |  |
 | 141 | AeroVeedramon | Ranged | Físico | Golpe extra à distância (`RangedExtraStrike`) | 16% de chance, 30% do dano | sim |  |
-| 147 | Knightmon | Tank | Físico | Perfurar defesa a cada N (`PeriodicDefensePierce`) | a cada 3 ataques, ignora 20% | sim |  |
+| 147 | Knightmon | Tank | Físico | 1º golpe recebido reduzido (`FirstHitTakenReduction`) | 30% | trocado na Fase 4b | sim |
 | 151 | Dorugreymon | Warrior | Físico | Stat puro: PA (`PhysicalAttackPercent`) | 10% | sim |  |
 | 154 | Grademon | Tank | Físico | Chance de anular o golpe (`NegateDamageChance`) | 24% | sim |  |
-| 157 | DexDorugreymon | Assassin | Físico | Perfurar defesa a cada N (`PeriodicDefensePierce`) | a cada 3 ataques, ignora 28% | sim | sim |
+| 157 | DexDorugreymon | Assassin | Físico | Crítico drena vida (`CritLifesteal`) | 8% | trocado na Fase 4b | sim |
 | 165 | SaviorHackmon | Assassin | Físico | Esquiva e crítico garantido (`DodgeThenGuaranteedCrit`) | 8% | sim |  |
 | 170 | Mistymon | Assassin | Físico | Abate: +Velocidade (`KillSpeedBonus`) | 14% | sim |  |
 | 179 | Lilamon | Support | Especial | Ataque cura o aliado mais ferido (`HealLowestAllyOnAttack`) | 11% | sim |  |
@@ -89,30 +112,26 @@ Só dado: o campo `InheritedPassive` foi preenchido nos JSONs de 56 espécies. N
 
 | Efeito | Espécies |
 |---|---|
-| Perfurar defesa a cada N (`PeriodicDefensePierce`) | 7 |
 | Golpe extra à distância (`RangedExtraStrike`) | 6 |
 | Chance de anular o golpe (`NegateDamageChance`) | 5 |
+| Perfurar defesa a cada N (`PeriodicDefensePierce`) | 5 |
 | Bônus no 1º golpe (`OpeningHitBonus`) | 5 |
 | HP baixo: +dano físico (`LowHpPhysicalDamageBonus`) | 4 |
 | Esquiva e crítico garantido (`DodgeThenGuaranteedCrit`) | 4 |
 | Velocidade + dano em quem já agiu (`SpeedAndBonusVsActedTarget`) | 4 |
 | Stat puro: PA (`PhysicalAttackPercent`) | 4 |
+| Crítico drena vida (`CritLifesteal`) | 4 |
 | Abate: +Velocidade (`KillSpeedBonus`) | 4 |
-| Crítico drena vida (`CritLifesteal`) | 3 |
 | Ataque cura o aliado mais ferido (`HealLowestAllyOnAttack`) | 3 |
+| 1º golpe recebido reduzido (`FirstHitTakenReduction`) | 2 |
 | Stat puro: PD (`PhysicalDefensePercent`) | 2 |
 | Chance de atordoar (`StunChance`) | 2 |
-| 1º golpe recebido reduzido (`FirstHitTakenReduction`) | 1 |
 | Crítico encurta debuffs (`CritShortensDebuffs`) | 1 |
 | Stat puro: Velocidade (`SpeedPercent`) | 1 |
 
 ## Observações (comportamento do código que já existia, não mudou)
 
-- **`PeriodicDefensePierce` e `StunChance` não somam:** o código usa só a primeira espécie daquele tipo no histórico (`FirstOrDefault`). Duas linhas do jogo passam por duas espécies com perfurar defesa:
-  - **Gladimon (4 / 18%) → Knightmon (3 / 20%):** quem evoluir além do Knightmon herda os dois, mas só vale o do Gladimon.
-  - **DexDorugamon (3 / 22%) → DexDorugreymon (3 / 28%):** quem evoluir além do DexDorugreymon herda os dois, mas só vale o do DexDorugamon, que é o mais fraco.
-  - Nenhuma linha passa por duas espécies com `StunChance`. Contei pelas evoluções em `Data/Evolutions` e pelos Jogress.
-- **O teto de +40% do perfurar defesa (Fase 1d) vale pra todos.** Com defesa alta, o ganho dos valores maiores (DexDorugreymon 28%, MagnaAngemon 25%, JewelBeemon 24%) é cortado pelo teto.
+- **O teto de +40% do perfurar defesa (Fase 1d) vale pra todos.** Com defesa alta, o ganho dos valores maiores (MagnaAngemon 25%, JewelBeemon 24%) é cortado pelo teto.
 - **Os demais efeitos somam** (`Sum`), inclusive o `KillSpeedBonus`. Um Digimon que vem do Jogress ExVeemon + Stingmon → Paildramon:
   - Velocidade por abate: 9% + 10% = 19%.
   - PA: os 7% do ExVeemon.
@@ -122,12 +141,12 @@ Só dado: o campo `InheritedPassive` foi preenchido nos JSONs de 56 espécies. N
 
 Cada teste confirma que o efeito dispara com a espécie no histórico e não dispara fora da condição. A forma atual é uma Mega sem herdada (id 95), pra só a espécie testada contar.
 
-Amostra de 19 espécies:
+Amostra de 20 espécies (19 da Fase 4 + o Knightmon da Fase 4b):
 
 **Os 13 gatilhos:**
 - `NegateDamageChance`: Kabuterimon.
-- `FirstHitTakenReduction`: Angemon.
-- `PeriodicDefensePierce`: Togemon (a cada 4) e DexDorugreymon (a cada 3, 28%).
+- `FirstHitTakenReduction`: Angemon e Knightmon (Fase 4b).
+- `PeriodicDefensePierce`: Togemon (a cada 4).
 - `LowHpPhysicalDamageBonus`: Growlmon.
 - `RangedExtraStrike`: Rapidmon.
 - `OpeningHitBonus`: Garudamon.
@@ -135,7 +154,7 @@ Amostra de 19 espécies:
 - `SpeedAndBonusVsActedTarget`: Sunflowmon e Chaperomon, checando também que a ED não muda.
 - `CritShortensDebuffs`: Devidramon.
 - `KillSpeedBonus`: Stingmon.
-- `CritLifesteal`: Lillymon.
+- `CritLifesteal`: Lillymon e DexDorugreymon (Fase 4b).
 - `HealLowestAllyOnAttack`: Angewomon.
 - `StunChance`: Chirinmon.
 
@@ -143,9 +162,14 @@ Amostra de 19 espécies:
 
 **Paildramon isolado:** o abate dá +10% de Velocidade, e sozinho ele não mexe no PA. À parte, o histórico ExVeemon + Stingmon + Paildramon dá Velocidade 1190 depois de um abate e PA 1070.
 
-### Resultado
+Também checa que nas duas linhas corrigidas (Gladimon + Knightmon e DexDorugamon + DexDorugreymon) só resta um perfurar defesa.
+
+### Resultado (depois da Fase 4b)
 
 - **Build:** 0 erros. Os 9 avisos de compilação são os de antes.
-- **GameAudit completo:** 48146 checagens, 0 falhas, 7 avisos. São os 7 avisos antigos: 6 campeonatos fortes demais em `flows` e 3 avisos num dia em `grandevent`.
-- **Seção `inherited`:** 0 falhas e 70 linhas de passiva ok. São as 51 que já existiam mais as 19 deste lote, e o Paildramon com o histórico do Jogress também passou.
-- **Save real:** o SHA-256 de `save.json` e de `save.json.bak` é o mesmo antes e depois da rodada.
+- **GameAudit completo:** 49111 checagens, 0 falhas, 7 avisos. São os 7 avisos antigos: 6 campeonatos fortes demais em `flows` e 3 avisos num dia em `grandevent`.
+- **Seção `inherited`:** 0 falhas e 71 linhas de passiva ok.
+  - O teste antigo do DexDorugreymon virou o de roubo de vida.
+  - Entrou o do Knightmon.
+  - A checagem de um único perfurar defesa nas duas linhas corrigidas passou.
+- **Save real:** o SHA-256 de `save.json` e de `save.json.bak` é o mesmo do backup feito antes da Fase 4.

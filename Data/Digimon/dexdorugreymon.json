@@ -22,5 +22,5 @@
     "PrecisaoLetal",
     "GolpeSorrateiro"
   ],
-  "InheritedPassive": { "Type": "PeriodicDefensePierce", "Value": 3, "Value2": 0.28 }
+  "InheritedPassive": { "Type": "CritLifesteal", "Value": 0.08, "Value2": 0 }
 }
