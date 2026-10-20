@@ -21,5 +21,6 @@
     "RompeGuarda",
     "GolpePesado",
     "Teimosia"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpeedAndBonusVsActedTarget", "Value": 0.04, "Value2": 0.06 }
 }

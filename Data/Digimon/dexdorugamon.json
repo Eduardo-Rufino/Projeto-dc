@@ -21,5 +21,6 @@
     "PrecisaoLetal",
     "Execucao",
     "PassoFantasma"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PeriodicDefensePierce", "Value": 3, "Value2": 0.22 }
 }

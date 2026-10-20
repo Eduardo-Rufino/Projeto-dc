@@ -21,5 +21,6 @@
     "GritoDeGuerra",
     "ProvocacaoInsistente",
     "Couraca"
-  ]
+  ],
+  "InheritedPassive": { "Type": "NegateDamageChance", "Value": 0.18, "Value2": 0 }
 }

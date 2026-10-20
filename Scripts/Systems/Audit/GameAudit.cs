@@ -2650,6 +2650,188 @@ namespace ProjetoDC.Scripts.Systems.Audit
                         current.GetEffectiveStat(StatType.PhysicalDefense) == Base, "sendo a forma atual: PD 1000");
                 }
 
+                // ================= fase 4 (Champion/Ultimate restantes): os 13 gatilhos + stats puros
+                // Forma atual = uma Mega sem herdada (95), pra só a espécie testada contar.
+
+                StatTest(44, StatType.PhysicalDamage, 0.06f);   // Geogreymon
+                StatTest(67, StatType.PhysicalDefense, 0.12f);  // Zudomon
+                StatTest(150, StatType.Speed, 0.06f);           // Dorugamon
+
+                // Kabuterimon: 15% de ignorar todo o dano
+                {
+                    var atk = HCombatant(1);
+                    var kb = HCombatant(95, 15);
+                    InheritedPassiveSystem.Roll = () => 0.14;
+                    int blocked = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, kb);
+                    InheritedPassiveSystem.Roll = () => 0.16;
+                    int taken = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, kb);
+                    InheritedPassiveSystem.Roll = realRoll;
+                    Herdada(15, blocked == 0, $"sorteio 0.14: dano {blocked}", taken == Base, $"sorteio 0.16: dano {taken}");
+                }
+
+                // Angemon: 1º golpe recebido -25%
+                {
+                    var atk = HCombatant(1);
+                    var an = HCombatant(95, 16);
+                    int first = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, an);
+                    int second = InheritedPassiveSystem.ModifyIncomingDamage(Base, atk, an);
+                    Herdada(16, first == 750, $"1º golpe {first}", second == Base, $"2º golpe {second}");
+                }
+
+                // Togemon: 4 ataques normais, o 5º ignora 15% da defesa (1000 - 500x0.85 = 575)
+                {
+                    var tg = HCombatant(95, 17); SetAttackType(tg, AttackType.Physical);
+                    var def = HCombatant(2); def.Digimon.CurrentStats.PhysicalDefense = 500;
+                    var seq = Enumerable.Range(0, 6).Select(_ => InheritedPassiveSystem.ModifyBaseDamage(500, tg, def)).ToList();
+                    Herdada(17, seq[4] == 575 && seq[5] == 500, $"golpes {string.Join(",", seq)}",
+                        seq.Take(4).All(x => x == 500), "os 4 primeiros sem bônus");
+                }
+
+                // DexDorugreymon: a cada 3, ignora 28% (1000 - 500x0.72 = 640, dentro do teto de +40%)
+                {
+                    var dx = HCombatant(95, 157); SetAttackType(dx, AttackType.Physical);
+                    var def = HCombatant(2); def.Digimon.CurrentStats.PhysicalDefense = 500;
+                    var seq = Enumerable.Range(0, 4).Select(_ => InheritedPassiveSystem.ModifyBaseDamage(500, dx, def)).ToList();
+                    Herdada(157, seq[3] == 640, $"golpes {string.Join(",", seq)}", seq.Take(3).All(x => x == 500), "os 3 primeiros sem bônus");
+                }
+
+                // Growlmon: abaixo de 50% de HP, +12% dano físico
+                {
+                    var gw = HCombatant(95, 18); SetAttackType(gw, AttackType.Physical);
+                    var def = HCombatant(2);
+                    int healthy = InheritedPassiveSystem.ModifyOutgoingDamage(Base, gw, def);
+                    SetHp(gw, 0.40f);
+                    int low = InheritedPassiveSystem.ModifyOutgoingDamage(Base, gw, def);
+                    Herdada(18, low == 1120, $"com 40% HP {low}", healthy == Base, $"com 100% HP {healthy}");
+                }
+
+                // Rapidmon: à distância, 18% de golpe extra (30% do dano)
+                {
+                    var rp = HCombatant(95, 42); SetRole(rp, RoleType.Ranged);
+                    var melee = HCombatant(95, 42); SetRole(melee, RoleType.Warrior);
+                    InheritedPassiveSystem.Roll = () => 0.17;
+                    int hit = InheritedPassiveSystem.RollExtraStrike(rp, Base);
+                    int meleeHit = InheritedPassiveSystem.RollExtraStrike(melee, Base);
+                    InheritedPassiveSystem.Roll = () => 0.19;
+                    int miss = InheritedPassiveSystem.RollExtraStrike(rp, Base);
+                    InheritedPassiveSystem.Roll = realRoll;
+                    Herdada(42, hit == 300, $"sorteio 0.17 à distância: extra {hit}", miss == 0 && meleeHit == 0, $"sorteio 0.19: {miss}; corpo a corpo: {meleeHit}");
+                }
+
+                // Garudamon: +10% no 1º golpe
+                {
+                    var gd = HCombatant(95, 61); var def = HCombatant(2);
+                    int first = InheritedPassiveSystem.ModifyOutgoingDamage(Base, gd, def);
+                    gd.Inherited.AttacksDealt = 1;
+                    int later = InheritedPassiveSystem.ModifyOutgoingDamage(Base, gd, def);
+                    Herdada(61, first == 1100, $"1º golpe {first}", later == Base, $"2º golpe {later}");
+                }
+
+                // Wizardmon: 5% de esquiva, depois crítico garantido
+                {
+                    var atk = HCombatant(1);
+                    var wz = HCombatant(95, 21);
+                    InheritedPassiveSystem.Roll = () => 0.06;
+                    bool missDodge = InheritedPassiveSystem.TryDodge(atk, wz);
+                    bool noCrit = InheritedPassiveSystem.ConsumeGuaranteedCrit(wz);
+                    InheritedPassiveSystem.Roll = () => 0.04;
+                    bool dodged = InheritedPassiveSystem.TryDodge(atk, wz);
+                    InheritedPassiveSystem.Roll = realRoll;
+                    bool crit = InheritedPassiveSystem.ConsumeGuaranteedCrit(wz);
+                    Herdada(21, dodged && crit, $"sorteio 0.04: esquivou {dodged}, próximo crítico {crit}", !missDodge && !noCrit, $"sorteio 0.06: esquivou {missDodge}, crítico {noCrit}");
+                }
+
+                // Sunflowmon e Chaperomon: +Velocidade (não ED) e bônus contra quem já agiu
+                void ActedTest(int speciesId, int expectedDamage, int expectedSpeed)
+                {
+                    var c = HCombatant(95, speciesId);
+                    var acted = HCombatant(2); acted.Inherited.HasActed = true;
+                    var fresh = HCombatant(2);
+                    int a = InheritedPassiveSystem.ModifyOutgoingDamage(Base, c, acted);
+                    int b = InheritedPassiveSystem.ModifyOutgoingDamage(Base, c, fresh);
+                    int spd = c.GetEffectiveStat(StatType.Speed), ed = c.GetEffectiveStat(StatType.SpecialDefense);
+                    Herdada(speciesId, a == expectedDamage && spd == expectedSpeed && ed == Base, $"alvo que agiu {a}, Velocidade {spd}, ED {ed}", b == Base, $"alvo que não agiu {b}");
+                }
+
+                ActedTest(24, 1090, 1040); // Sunflowmon
+                ActedTest(93, 1120, 1060); // Chaperomon
+
+                // Devidramon: crítico encurta debuffs em 1 ação (mesmo valor do Greymon)
+                {
+                    var dd = HCombatant(95, 47);
+                    var def = HCombatant(2);
+                    dd.Inherited.ActionIntervalSeconds = 1.5;
+                    dd.AddEffect(StatType.Speed, -0.2f, 5.0);
+                    dd.AddEffect(StatType.PhysicalDamage, 0.2f, 5.0);
+                    InheritedPassiveSystem.AfterAttack(dd, def, 100, false, 0);
+                    double afterNormal = dd.Effects.First(e => e.Percentage < 0).RemainingSeconds;
+                    InheritedPassiveSystem.AfterAttack(dd, def, 100, true, 0);
+                    double afterCrit = dd.Effects.First(e => e.Percentage < 0).RemainingSeconds;
+                    double buff = dd.Effects.First(e => e.Percentage > 0).RemainingSeconds;
+                    Herdada(47, Math.Abs(afterCrit - 3.5) < 0.001 && Math.Abs(buff - 5.0) < 0.001, $"debuff 5.0s -> {afterCrit:0.##}s, buff intacto {buff:0.##}s",
+                        Math.Abs(afterNormal - 5.0) < 0.001, $"golpe normal: debuff {afterNormal:0.##}s");
+                }
+
+                // Stingmon e Paildramon: abate dá +Velocidade até o fim
+                void KillTest(int speciesId, int expectedSpeed)
+                {
+                    var c = HCombatant(95, speciesId);
+                    int before = c.GetEffectiveStat(StatType.Speed);
+                    InheritedPassiveSystem.OnKill(c);
+                    int after = c.GetEffectiveStat(StatType.Speed);
+                    Herdada(speciesId, after == expectedSpeed, $"Velocidade depois do abate {after}", before == Base, $"antes de abater {before}");
+                }
+
+                KillTest(198, 1090); // Stingmon
+                KillTest(192, 1100); // Paildramon (isolado: só o abate, sem PA)
+                {
+                    var pd = HCombatant(95, 192);
+                    Check(pd.GetEffectiveStat(StatType.PhysicalDamage) == Base, $"Paildramon sozinho não deveria mexer no PA: {pd.GetEffectiveStat(StatType.PhysicalDamage)}");
+
+                    // descendente do Jogress (ExVeemon + Stingmon -> Paildramon): os abates somam, o PA vem do ExVeemon
+                    var heir = HCombatant(95, 191, 198, 192);
+                    InheritedPassiveSystem.OnKill(heir);
+                    int spd = heir.GetEffectiveStat(StatType.Speed), pa = heir.GetEffectiveStat(StatType.PhysicalDamage);
+                    Check(spd == 1190 && pa == 1070, $"histórico ExVeemon+Stingmon+Paildramon: Velocidade {spd} (esperado 1190), PA {pa} (esperado 1070)");
+                    Info($"Paildramon: sozinho, abate -> Velocidade 1100; com ExVeemon+Stingmon no histórico -> Velocidade {spd}, PA {pa}");
+                }
+
+                // Lillymon: crítico drena 7% do dano
+                {
+                    var ll = HCombatant(95, 50); var def = HCombatant(2);
+                    SetHp(ll, 0.5f);
+                    InheritedPassiveSystem.AfterAttack(ll, def, 1000, false, 0);
+                    int afterNormal = ll.Digimon.CurrentHealthPoints;
+                    InheritedPassiveSystem.AfterAttack(ll, def, 1000, true, 0);
+                    int afterCrit = ll.Digimon.CurrentHealthPoints;
+                    Herdada(50, afterCrit == 570, $"crítico de 1000: 500 -> {afterCrit}", afterNormal == 500, $"golpe normal {afterNormal}");
+                }
+
+                // Angewomon: cada ataque cura o aliado com menor % de HP em 9% do dano
+                {
+                    var aw = HCombatant(95, 72);
+                    var low = HCombatant(2); SetHp(low, 0.5f);
+                    var mid = HCombatant(2); SetHp(mid, 0.8f);
+                    var (ally, healed) = InheritedPassiveSystem.HealLowestAlly(aw, new[] { aw, low, mid }, 1000, 0);
+                    var full1 = HCombatant(2); var full2 = HCombatant(2);
+                    var (none, zero) = InheritedPassiveSystem.HealLowestAlly(aw, new[] { aw, full1, full2 }, 1000, 0);
+                    Herdada(72, ally == low && healed == 90 && low.Digimon.CurrentHealthPoints == 590, $"curou o de 50% em {healed}",
+                        none == null && zero == 0, "aliados com HP cheio: ninguém curado");
+                }
+
+                // Chirinmon: 12% de atordoar (22% se o alvo estiver abaixo de 50%)
+                {
+                    var ch = HCombatant(95, 131);
+                    var healthy = HCombatant(2);
+                    var wounded = HCombatant(2); SetHp(wounded, 0.40f);
+                    InheritedPassiveSystem.Roll = () => 0.15;
+                    InheritedPassiveSystem.AfterAttack(ch, healthy, 10, false, 0);
+                    InheritedPassiveSystem.AfterAttack(ch, wounded, 10, false, 0);
+                    InheritedPassiveSystem.Roll = realRoll;
+                    Herdada(131, wounded.Inherited.IsStunned, "sorteio 0.15 em alvo a 40% (chance 22%): atordoou",
+                        !healthy.Inherited.IsStunned, "sorteio 0.15 em alvo com HP cheio (chance 12%): não atordoou");
+                }
+
                 // ---- sem histórico / histórico sem passiva
                 {
                     var newborn = HCombatant(25);

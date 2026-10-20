@@ -21,5 +21,6 @@
     "PesLeves",
     "ProjetilPerfurante",
     "AlvoMarcado"
-  ]
+  ],
+  "InheritedPassive": { "Type": "RangedExtraStrike", "Value": 0.18, "Value2": 0.3 }
 }

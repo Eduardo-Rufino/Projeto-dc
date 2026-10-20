@@ -24,5 +24,6 @@
     "AlvoMarcado",
     "ProjetilPerfurante",
     "Predicao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "OpeningHitBonus", "Value": 0.08, "Value2": 0 }
 }

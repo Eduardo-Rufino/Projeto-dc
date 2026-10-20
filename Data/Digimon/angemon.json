@@ -21,5 +21,6 @@
     "PosturaFirme",
     "Predicao",
     "Fixacao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "FirstHitTakenReduction", "Value": 0.25, "Value2": 0 }
 }

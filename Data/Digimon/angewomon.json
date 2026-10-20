@@ -21,5 +21,6 @@
     "PesLeves",
     "ProjetilPerfurante",
     "AlvoMarcado"
-  ]
+  ],
+  "InheritedPassive": { "Type": "HealLowestAllyOnAttack", "Value": 0.09, "Value2": 0 }
 }

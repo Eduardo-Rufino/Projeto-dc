@@ -21,5 +21,6 @@
     "Couraca",
     "Folego",
     "ProvocacaoInsistente"
-  ]
+  ],
+  "InheritedPassive": { "Type": "NegateDamageChance", "Value": 0.2, "Value2": 0 }
 }

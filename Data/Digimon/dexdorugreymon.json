@@ -21,5 +21,6 @@
     "Execucao",
     "PrecisaoLetal",
     "GolpeSorrateiro"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PeriodicDefensePierce", "Value": 3, "Value2": 0.28 }
 }

@@ -24,5 +24,6 @@
     "RompeGuarda",
     "GolpePesado",
     "Teimosia"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalAttackPercent", "Value": 0.06, "Value2": 0 }
 }

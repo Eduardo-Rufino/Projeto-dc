@@ -21,5 +21,6 @@
     "MaosFirmes",
     "InstintoDeFuga",
     "AuraVital"
-  ]
+  ],
+  "InheritedPassive": { "Type": "HealLowestAllyOnAttack", "Value": 0.11, "Value2": 0 }
 }

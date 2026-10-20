@@ -24,5 +24,6 @@
     "RompeGuarda",
     "GolpePesado",
     "Teimosia"
-  ]
+  ],
+  "InheritedPassive": { "Type": "StunChance", "Value": 0.08, "Value2": 0.16 }
 }

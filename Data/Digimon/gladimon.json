@@ -21,5 +21,6 @@
     "RompeGuarda",
     "GolpePesado",
     "Teimosia"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PeriodicDefensePierce", "Value": 4, "Value2": 0.18 }
 }

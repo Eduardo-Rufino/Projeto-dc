@@ -20,5 +20,6 @@
                      "PassoFantasma",
                      "PrecisaoLetal",
                      "FioDaLamina"
-                 ]
+                 ],
+  "InheritedPassive": { "Type": "KillSpeedBonus", "Value": 0.14, "Value2": 0 }
 }

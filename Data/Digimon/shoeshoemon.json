@@ -25,5 +25,6 @@
     "DuplaVoz",
     "InstintoDeFuga",
     "Ressonancia"
-  ]
+  ],
+  "InheritedPassive": { "Type": "HealLowestAllyOnAttack", "Value": 0.06, "Value2": 0 }
 }

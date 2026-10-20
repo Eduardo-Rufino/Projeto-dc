@@ -24,5 +24,6 @@
     "PrecisaoLetal",
     "FioDaLamina",
     "PassoFantasma"
-  ]
+  ],
+  "InheritedPassive": { "Type": "OpeningHitBonus", "Value": 0.09, "Value2": 0 }
 }

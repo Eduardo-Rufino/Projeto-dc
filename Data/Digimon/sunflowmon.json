@@ -21,5 +21,6 @@
   "Passives": [
     "MarcaDupla",
     "AuraVital"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpeedAndBonusVsActedTarget", "Value": 0.04, "Value2": 0.09 }
 }

@@ -24,5 +24,6 @@
     "GritoDeGuerra",
     "Espinhos",
     "UltimaTrincheira"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalDefensePercent", "Value": 0.06, "Value2": 0 }
 }

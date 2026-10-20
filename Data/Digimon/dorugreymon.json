@@ -21,5 +21,6 @@
     "SedeDeBatalha",
     "FuriaCrescente",
     "Teimosia"
-  ]
+  ],
+  "InheritedPassive": { "Type": "PhysicalAttackPercent", "Value": 0.1, "Value2": 0 }
 }

@@ -21,5 +21,6 @@
     "Investida",
     "GolpePesado",
     "RompeGuarda"
-  ]
+  ],
+  "InheritedPassive": { "Type": "LowHpPhysicalDamageBonus", "Value": 0.5, "Value2": 0.16 }
 }

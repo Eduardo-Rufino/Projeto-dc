@@ -22,5 +22,6 @@
     "Ressonancia",
     "DuplaVoz",
     "AuraVital"
-  ]
+  ],
+  "InheritedPassive": { "Type": "SpeedAndBonusVsActedTarget", "Value": 0.06, "Value2": 0.12 }
 }

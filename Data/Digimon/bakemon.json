@@ -21,5 +21,6 @@
     "FioDaLamina",
     "GolpeSorrateiro",
     "Infiltrador"
-  ]
+  ],
+  "InheritedPassive": { "Type": "DodgeThenGuaranteedCrit", "Value": 0.04, "Value2": 0 }
 }

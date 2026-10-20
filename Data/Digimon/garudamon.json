@@ -21,5 +21,6 @@
     "Fixacao",
     "PosturaFirme",
     "ProjetilPerfurante"
-  ]
+  ],
+  "InheritedPassive": { "Type": "OpeningHitBonus", "Value": 0.1, "Value2": 0 }
 }

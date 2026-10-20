@@ -21,5 +21,6 @@
     "GolpeSorrateiro",
     "PassoFantasma",
     "Infiltrador"
-  ]
+  ],
+  "InheritedPassive": { "Type": "KillSpeedBonus", "Value": 0.12, "Value2": 0 }
 }

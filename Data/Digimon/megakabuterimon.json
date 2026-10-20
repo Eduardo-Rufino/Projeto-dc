@@ -21,5 +21,6 @@
     "GritoDeGuerra",
     "Espinhos",
     "UltimaTrincheira"
-  ]
+  ],
+  "InheritedPassive": { "Type": "NegateDamageChance", "Value": 0.22, "Value2": 0 }
 }

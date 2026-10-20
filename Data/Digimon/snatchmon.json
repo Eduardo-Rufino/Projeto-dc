@@ -21,5 +21,6 @@
     "PesLeves",
     "Predicao",
     "Fixacao"
-  ]
+  ],
+  "InheritedPassive": { "Type": "CritLifesteal", "Value": 0.04, "Value2": 0 }
 }

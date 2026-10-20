@@ -21,5 +21,6 @@
     "PesLeves",
     "ProjetilPerfurante",
     "AlvoMarcado"
-  ]
+  ],
+  "InheritedPassive": { "Type": "OpeningHitBonus", "Value": 0.11, "Value2": 0 }
 }
