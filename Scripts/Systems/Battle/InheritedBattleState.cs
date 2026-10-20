@@ -92,6 +92,7 @@ namespace ProjetoDC.Scripts.Systems.Battle
                     case InheritedEffectType.SpeedPercent when stat == StatType.Speed:
                     case InheritedEffectType.SpeedAndBonusVsActedTarget when stat == StatType.Speed:
                     case InheritedEffectType.PhysicalAttackPercent when stat == StatType.PhysicalDamage:
+                    case InheritedEffectType.SpecialAttackPercent when stat == StatType.SpecialDamage:
                     case InheritedEffectType.PhysicalDefensePercent when stat == StatType.PhysicalDefense:
                     case InheritedEffectType.SpecialDefensePercent when stat == StatType.SpecialDefense:
                         total += p.Value;

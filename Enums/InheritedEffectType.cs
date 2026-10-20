@@ -79,5 +79,8 @@ namespace ProjetoDC.Enums
 
         /// <summary>+Value de PD e ED, Value2 (negativo) de Velocidade.</summary>
         DefensesUpSpeedDown,
+
+        /// <summary>+Value de EA (Ataque Especial).</summary>
+        SpecialAttackPercent,
     }
 }

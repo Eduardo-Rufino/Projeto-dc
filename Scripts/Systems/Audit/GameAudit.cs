@@ -2382,6 +2382,21 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 StatTest(64, StatType.Speed, 0.04f);            // Bukamon
                 StatTest(2, StatType.PhysicalDamage, 0.05f);    // Gabumon
 
+                // EA: nenhuma espécie usa ainda, então empresta o Dodomon (sem herdada) só durante o teste
+                var eaSpecies = FindSpecies(185);
+                var eaOriginal = eaSpecies.InheritedPassive;
+                try
+                {
+                    eaSpecies.InheritedPassive = new InheritedPassiveData { Type = InheritedEffectType.SpecialAttackPercent, Value = 0.03f };
+                    StatTest(185, StatType.SpecialDamage, 0.03f);
+                    var ea = HCombatant(1, 185);
+                    Check(ea.GetEffectiveStat(StatType.PhysicalDamage) == Base, $"EA herdado mexeu no PA: {ea.GetEffectiveStat(StatType.PhysicalDamage)}");
+                }
+                finally
+                {
+                    eaSpecies.InheritedPassive = eaOriginal;
+                }
+
                 // ---- HP máx: dano recebido / (1 + %)
                 void HpTest(int speciesId, float pct)
                 {

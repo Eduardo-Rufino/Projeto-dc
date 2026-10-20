@@ -333,6 +333,7 @@ namespace ProjetoDC.Scripts.Systems.Passives
                 InheritedEffectType.MaxHpPercent => $"+{Pct(p.Value)} HP máx",
                 InheritedEffectType.SpeedPercent => $"+{Pct(p.Value)} Velocidade",
                 InheritedEffectType.PhysicalAttackPercent => $"+{Pct(p.Value)} PA",
+                InheritedEffectType.SpecialAttackPercent => $"+{Pct(p.Value)} EA",
                 InheritedEffectType.PhysicalDefensePercent => $"+{Pct(p.Value)} PD",
                 InheritedEffectType.SpecialDefensePercent => $"+{Pct(p.Value)} ED",
                 InheritedEffectType.PhysicalDamageDealtPercent => $"+{Pct(p.Value)} dano físico",
