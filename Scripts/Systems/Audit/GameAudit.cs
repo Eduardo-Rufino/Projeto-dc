@@ -2723,17 +2723,18 @@ namespace ProjetoDC.Scripts.Systems.Audit
                     Herdada(18, low == 1120, $"com 40% HP {low}", healthy == Base, $"com 100% HP {healthy}");
                 }
 
-                // Rapidmon: à distância, 18% de golpe extra (30% do dano)
+                // Grand Galemon: à distância, 15% de golpe extra (30% do dano) - o golpe extra que ficou na fase 4
+                // (fase 4d: o Rapidmon, que cobria esse gatilho aqui, saiu dele)
                 {
-                    var rp = HCombatant(95, 42); SetRole(rp, RoleType.Ranged);
-                    var melee = HCombatant(95, 42); SetRole(melee, RoleType.Warrior);
-                    InheritedPassiveSystem.Roll = () => 0.17;
-                    int hit = InheritedPassiveSystem.RollExtraStrike(rp, Base);
+                    var gg = HCombatant(95, 80); SetRole(gg, RoleType.Ranged);
+                    var melee = HCombatant(95, 80); SetRole(melee, RoleType.Warrior);
+                    InheritedPassiveSystem.Roll = () => 0.14;
+                    int hit = InheritedPassiveSystem.RollExtraStrike(gg, Base);
                     int meleeHit = InheritedPassiveSystem.RollExtraStrike(melee, Base);
-                    InheritedPassiveSystem.Roll = () => 0.19;
-                    int miss = InheritedPassiveSystem.RollExtraStrike(rp, Base);
+                    InheritedPassiveSystem.Roll = () => 0.16;
+                    int miss = InheritedPassiveSystem.RollExtraStrike(gg, Base);
                     InheritedPassiveSystem.Roll = realRoll;
-                    Herdada(42, hit == 300, $"sorteio 0.17 à distância: extra {hit}", miss == 0 && meleeHit == 0, $"sorteio 0.19: {miss}; corpo a corpo: {meleeHit}");
+                    Herdada(80, hit == 300, $"sorteio 0.14 à distância: extra {hit}", miss == 0 && meleeHit == 0, $"sorteio 0.16: {miss}; corpo a corpo: {meleeHit}");
                 }
 
                 // Garudamon: +10% no 1º golpe
@@ -2773,6 +2774,43 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
                 ActedTest(24, 1090, 1040); // Sunflowmon
                 ActedTest(93, 1120, 1060); // Chaperomon
+
+                // fase 4d: as 5 que tinham golpe extra à distância sem nenhum Mega descendente Ranged
+                ActedTest(79, 1090, 1050); // Galemon: +5% Velocidade, +9% em quem já agiu
+                ActedTest(42, 1100, 1060); // Rapidmon: +6% Velocidade, +10% em quem já agiu
+
+                // Gargomon e Coredramon (Blue): +dano físico, maior no 1º golpe; ataque especial não ganha nada
+                void OpeningPhysicalTest(int speciesId, int expectedFirst, int expectedLater)
+                {
+                    var c = HCombatant(95, speciesId); SetAttackType(c, AttackType.Physical);
+                    var def = HCombatant(2);
+                    int first = InheritedPassiveSystem.ModifyOutgoingDamage(Base, c, def);
+                    c.Inherited.AttacksDealt = 1;
+                    int later = InheritedPassiveSystem.ModifyOutgoingDamage(Base, c, def);
+                    var spec = HCombatant(95, speciesId); SetAttackType(spec, AttackType.Special);
+                    int special = InheritedPassiveSystem.ModifyOutgoingDamage(Base, spec, def);
+                    Herdada(speciesId, first == expectedFirst && later == expectedLater, $"1º golpe {first}, depois {later}", special == Base, $"ataque especial {special}");
+                }
+
+                OpeningPhysicalTest(19, 1120, 1060);  // Gargomon
+                OpeningPhysicalTest(136, 1140, 1070); // Coredramon (Blue)
+
+                // AeroVeedramon: +12% no 1º golpe
+                {
+                    var av = HCombatant(95, 141); var def = HCombatant(2);
+                    int first = InheritedPassiveSystem.ModifyOutgoingDamage(Base, av, def);
+                    av.Inherited.AttacksDealt = 1;
+                    int later = InheritedPassiveSystem.ModifyOutgoingDamage(Base, av, def);
+                    Herdada(141, first == 1120, $"1º golpe {first}", later == Base, $"2º golpe {later}");
+                }
+
+                // e nas linhas delas o golpe extra não aparece mais (no Galemon > Grand Galemon, só o do Grand Galemon)
+                foreach (var line in new[] { new[] { 19, 42 }, new[] { 136, 141 }, new[] { 79, 80 } })
+                {
+                    var c = HCombatant(95, line);
+                    int extra = c.Inherited.All(InheritedEffectType.RangedExtraStrike).Count();
+                    Check(extra == (line[1] == 80 ? 1 : 0), $"linha {string.Join(" > ", line)}: {extra} golpe(s) extra(s) à distância herdados");
+                }
 
                 // Devidramon: crítico encurta debuffs em 1 ação (mesmo valor do Greymon)
                 {

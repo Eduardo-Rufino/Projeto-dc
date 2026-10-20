@@ -22,5 +22,5 @@
     "ProjetilPerfurante",
     "AlvoMarcado"
   ],
-  "InheritedPassive": { "Type": "RangedExtraStrike", "Value": 0.12, "Value2": 0.3 }
+  "InheritedPassive": { "Type": "PhysicalDamageWithOpeningBonus", "Value": 0.06, "Value2": 0.12 }
 }

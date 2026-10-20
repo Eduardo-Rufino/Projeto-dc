@@ -22,5 +22,5 @@
     "ProjetilPerfurante",
     "AlvoMarcado"
   ],
-  "InheritedPassive": { "Type": "RangedExtraStrike", "Value": 0.18, "Value2": 0.3 }
+  "InheritedPassive": { "Type": "SpeedAndBonusVsActedTarget", "Value": 0.06, "Value2": 0.1 }
 }
