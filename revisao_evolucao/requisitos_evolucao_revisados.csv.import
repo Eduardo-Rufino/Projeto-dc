@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dayqyu0oaory"
+
+[deps]
+
+files=["res://revisao_evolucao/requisitos_evolucao_revisados.destino.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.transicao.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Lv.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Idade.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.HP.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.PA.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.PD.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.EA.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.ED.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Vel.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Batalhas.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Vitorias%.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Disc.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Disc.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Felic.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Felic.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.xMult.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.score.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.papel.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.alterada.translation"]
+
+source_file="res://revisao_evolucao/requisitos_evolucao_revisados.csv"
+dest_files=["res://revisao_evolucao/requisitos_evolucao_revisados.destino.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.transicao.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Lv.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Idade.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.HP.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.PA.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.PD.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.EA.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.ED.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Vel.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Batalhas.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Vitorias%.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Disc.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Disc.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Felic.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.Felic.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.xMult.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.score.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.papel.translation", "res://revisao_evolucao/requisitos_evolucao_revisados.alterada.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true
