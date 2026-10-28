@@ -1,0 +1,11 @@
+{
+  "Id": 33,
+  "Name": "Groundramon",
+  "Code": "groundramon",
+  "DialogueLines": [
+    "Ei, cuidado com a cabeça! Aqui embaixo é escuro de verdade - sem luz não dá pra ver nem o próprio rabo.",
+    "O vagonete desceu os trilhos sozinho e levou a minha lanterna junto. Ela deve ter caído lá no fim dos trilhos, no escuro.",
+    "Segue os trilhos e traz ela de volta? Eu te dou a lanterna reserva e abro com as brocas o desmoronamento que fecha a galeria funda."
+  ],
+  "QuestId": 32
+}

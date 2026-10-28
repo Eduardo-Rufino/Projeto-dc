@@ -17,7 +17,9 @@ namespace ProjetoDC.Scripts.Gameplay
         private const double WalkTestSegmentSeconds = 4.0;
         private const double WalkTestTurnSeconds = 0.35;
 
-        private static readonly Vector2I[] WalkTestStarts =
+        // Pontos de partida/destinos fixos da floresta; nos outros mapas isométricos (caverna) são
+        // sorteados (semente fixa) - ver WalkStarts/PathTargets.
+        private static readonly Vector2I[] ForestWalkTestStarts =
         {
             new(58, 35), new(58, 46), new(59, 46), new(7, 8), new(8, 8), new(73, 8), new(73, 9),
             new(19, 21), new(17, 21), new(65, 17), new(65, 15), new(44, 45), new(44, 43),
@@ -46,11 +48,77 @@ namespace ProjetoDC.Scripts.Gameplay
         // velocidade 4x (com 4x mais passos de física, pra não atravessar parede).
         private bool IsPathTestEnabled => OS.GetEnvironment("DEBUG_ISO_PATHTEST") == "1";
 
-        private static readonly Vector2I[] PathTestTargets =
+        private static readonly Vector2I[] ForestPathTestTargets =
         {
             new(15, 19), new(13, 22), new(64, 12), new(66, 13), new(42, 42), new(44, 41), new(43, 55),
             new(36, 4), new(24, 12), new(12, 47), new(10, 12), new(69, 11), new(62, 54), new(91, 11), new(7, 5),
         };
+
+        private static readonly Vector2I ForestPathTestStart = new(58, 35);
+
+        private Vector2I[] _walkStarts;
+        private Vector2I[] _pathTargets;
+
+        /// <summary>Floresta: a lista fixa. Outros mapas: 25 blocos andáveis encostados em parede,
+        /// abismo, água ou degrau (onde a colisão importa), sorteados com semente fixa.</summary>
+        private Vector2I[] WalkTestStarts => _walkStarts ??= _map.Id == 1 ? ForestWalkTestStarts : PickEdgeTiles(25, 777);
+
+        /// <summary>Floresta: a lista fixa. Outros mapas: os spots do mapa (onde estão NPCs, itens,
+        /// objetos e passagens) - os que caem em bloco sólido viram o vizinho livre.</summary>
+        private Vector2I[] PathTestTargets => _pathTargets ??= _map.Id == 1 ? ForestPathTestTargets : SpotTargets();
+
+        private Vector2I PathTestStart => _map.Id == 1 ? ForestPathTestStart : _isoMap.TryGetSpot(_map.ExplorerSpawnSpot, out var spawn) ? spawn.Tile : ForestPathTestStart;
+
+        private Vector2I[] PickEdgeTiles(int count, int seed)
+        {
+            var random = new Random(seed);
+            var edges = new List<Vector2I>();
+
+            for (int y = 0; y < _isoMap.Height; y++)
+            {
+                for (int x = 0; x < _isoMap.Width; x++)
+                {
+                    var t = new Vector2I(x, y);
+
+                    if (!_isoMap.IsWalkable(t))
+                        continue;
+
+                    foreach (var d in new[] { new Vector2I(1, 0), new Vector2I(-1, 0), new Vector2I(0, 1), new Vector2I(0, -1) })
+                    {
+                        if (!_isoMap.CanStep(t, t + d))
+                        {
+                            edges.Add(t);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            var picked = new List<Vector2I>();
+
+            while (picked.Count < count && edges.Count > 0)
+            {
+                int i = random.Next(edges.Count);
+                picked.Add(edges[i]);
+                edges.RemoveAt(i);
+            }
+
+            return picked.ToArray();
+        }
+
+        private Vector2I[] SpotTargets()
+        {
+            var json = System.Text.Json.JsonDocument.Parse(FileAccess.GetFileAsString(_isoMap.MapJson)).RootElement;
+            var targets = new List<Vector2I>();
+
+            foreach (var spot in json.GetProperty("spots").EnumerateArray())
+            {
+                var tile = spot.GetProperty("tile");
+                targets.Add(new Vector2I(tile[0].GetInt32(), tile[1].GetInt32()));
+            }
+
+            return targets.ToArray();
+        }
 
         private int _pathTestIndex = -1;
         private double _pathTestTime;
@@ -154,7 +222,7 @@ namespace ProjetoDC.Scripts.Gameplay
             if (_isoMap.IsWalkable(target))
                 return target;
 
-            foreach (var d in new[] { new Vector2I(1, 0), new Vector2I(0, 1), new Vector2I(-1, 0), new Vector2I(0, -1) })
+            foreach (var d in new[] { new Vector2I(1, 0), new Vector2I(0, 1), new Vector2I(-1, 0), new Vector2I(0, -1), new Vector2I(1, 1), new Vector2I(-1, -1), new Vector2I(1, -1), new Vector2I(-1, 1) })
             {
                 var near = target + d;
 
@@ -183,7 +251,7 @@ namespace ProjetoDC.Scripts.Gameplay
             if (_pathTestIndex >= 0)
             {
                 var target = PathTestTarget(_pathTestIndex);
-                bool reachableNow = _isoMap.FindPath(MapLoader.GroundToTile(MapLoader.TileToGround(new Vector2I(58, 35))), target) != null;
+                bool reachableNow = _isoMap.FindPath(PathTestStart, target) != null;
 
                 if (arrived)
                     GD.Print($"[ISO-PATHTEST] chegou em {target} em {_pathTestTime:0.0}s");
@@ -206,7 +274,7 @@ namespace ProjetoDC.Scripts.Gameplay
                 return;
             }
 
-            _explorerVisual.Position = MapLoader.TileToGround(new Vector2I(58, 35));
+            _explorerVisual.Position = MapLoader.TileToGround(PathTestStart);
             // Clica onde o bloco aparece na tela (no planalto, 18 px acima do chão), como o jogador.
             var ground = MapLoader.TileToGround(PathTestTarget(_pathTestIndex));
             _explorerVisual.MoveTo(_isoMap.ToGlobal(ground - new Vector2(0, _isoMap.VisualLift(ground))));
@@ -238,6 +306,15 @@ namespace ProjetoDC.Scripts.Gameplay
         {
             if (OS.GetEnvironment("DEBUG_ISO_CHESTTEST") == "1" && _isoMap != null)
                 RunChestTest();
+
+            if (!string.IsNullOrEmpty(OS.GetEnvironment("DEBUG_ISO_SHOT")) && _isoMap != null)
+                RunIsoShot();
+
+            if (OS.GetEnvironment("DEBUG_ISO_CAVETEST") == "1" && _isoMap != null)
+            {
+                RunCaveTest();
+                return;
+            }
 
             if (!IsFlowTestEnabled)
                 return;

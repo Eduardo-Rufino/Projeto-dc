@@ -1,0 +1,11 @@
+{
+  "Id": 35,
+  "Name": "PetiMeramon",
+  "Code": "petimeramon",
+  "DialogueLines": [
+    "Oi! O Candlemon cuida das lanternas lá do acampamento... e eu queria cuidar das daqui da galeria.",
+    "Mas a minha chaminha é pequena demais, e quatro lanternas estão apagadas. Dizem que, com todas acesas, a parede de cristal canta e se parte!",
+    "Você consegue acender? Só precisa de fogo: uma lanterna boa ou um Digimon de fogo do seu lado."
+  ],
+  "QuestId": 34
+}

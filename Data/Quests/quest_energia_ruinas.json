@@ -1,0 +1,19 @@
+{
+  "Id": 33,
+  "Name": "Energia nas Ruínas",
+  "Description": "Religue as 3 caixas de junção desligadas - no bolsão ao sul, a leste do lago e na sala dos servidores - pra o Tentomon reativar as ruínas digitais e a ponte de dados sobre o abismo. A quest termina sozinha quando a última caixa liga.",
+  "GiverNpcId": 34,
+  "ObjectiveType": "SwitchOn",
+  "ObjectiveMapId": 2,
+  "ObjectiveSwitchIds": [
+    "juncao_1",
+    "juncao_2",
+    "juncao_3"
+  ],
+  "ObjectiveCount": 3,
+  "RewardBits": 1200,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0,
+  "CompletionText": "\"Energia total! Os terminais acenderam e a ponte de dados está firme sobre o abismo. A saída da caverna fica logo depois dela!\""
+}

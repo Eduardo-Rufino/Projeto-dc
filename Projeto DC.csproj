@@ -29,6 +29,13 @@
     <Content Include="Data\NPCs\npc_terriermon.json" />
     <Content Include="Data\NPCs\npc_elizamon.json" />
     <Content Include="Data\NPCs\npc_gomamon_barqueiro.json" />
+    <Content Include="Data\Itens\lanterna_velha.json" />
+    <Content Include="Data\Quests\quest_lanterna_perdida.json" />
+    <Content Include="Data\Quests\quest_energia_ruinas.json" />
+    <Content Include="Data\Quests\quest_galeria_acesa.json" />
+    <Content Include="Data\NPCs\npc_groundramon_minerador.json" />
+    <Content Include="Data\NPCs\npc_tentomon_tecnico.json" />
+    <Content Include="Data\NPCs\npc_petimeramon_vela.json" />
     <Content Include="Data\Itens\meat.json" />
     <Content Include="Data\Itens\medicine.json" />
     <Content Include="Data\Itens\folha_floresta.json" />

@@ -6,17 +6,25 @@ using System.Text.Json;
 namespace ProjetoDC.Scripts.Gameplay
 {
     /// <summary>
-    /// Mapa isométrico de exploração montado a partir de um JSON (formato "digimon-iso-map" do
-    /// pacote modelo_floresta - ver Assets/Areas/Forest_new/modelo_floresta/GUIA_CLAUDE_CODE.md)
-    /// + o manifest do kit de sprites. Só monta o visual e responde as regras de andar (blocos,
-    /// rampas, bloqueios de quest): selvagens, NPCs, itens e o explorador continuam sendo os da
-    /// ExplorationArea, que os coloca como filhos de <see cref="Sorted"/> com Position = posição
-    /// NO CHÃO (coordenadas nativas deste nó, sem a escala 2).
+    /// Mapa isométrico de exploração montado a partir de um JSON (formato "digimon-iso-map" dos
+    /// pacotes modelo_floresta e modelo_caverna - ver os GUIA_CLAUDE_CODE.md em
+    /// Assets/Areas/Forest_new e Assets/Areas/Cave_new) + o manifest do kit de sprites. Só monta
+    /// o visual e responde as regras de andar (blocos, rampas, bloqueios de quest): selvagens,
+    /// NPCs, itens e o explorador continuam sendo os da ExplorationArea, que os coloca como
+    /// filhos de <see cref="Sorted"/> com Position = posição NO CHÃO (coordenadas nativas deste
+    /// nó, sem a escala 2).
     ///
-    /// Camadas: Ground (blocos no chão, na ordem do JSON), Shadows (sombras dos objetos no
-    /// chão) e Sorted (Y-sort: blocos altos, rampas, objetos, bloqueios e as entidades). Cada
-    /// item de Sorted fica em (pos.x, sort_y) e o sprite tem offset = -anchor + (0, pos.y - sort_y)
-    /// - desenha na altura certa, mas ordena pelo chão.
+    /// Camadas: Ground (blocos no chão, na ordem do JSON, com as sobreposições), Shadows (sombras
+    /// dos objetos no chão), Decals (objetos com "layer": "decal" - poças, cabos, ponte de dados,
+    /// sempre abaixo do digimon) e Sorted (Y-sort: blocos altos, rampas, objetos, bloqueios e as
+    /// entidades). Cada item de Sorted fica em (pos.x, sort_y) e o sprite tem offset = -anchor +
+    /// (0, pos.y - sort_y) - desenha na altura certa, mas ordena pelo chão.
+    ///
+    /// O que só a caverna usa (e a floresta simplesmente não tem no JSON): sobreposições de bloco
+    /// com âncora própria ("anchor" no manifest), objetos que trocam de sprite ao acender/ligar
+    /// ("switchable"), sprites de brilho ("glow" no manifest, desenhados sem luz por cima do
+    /// sprite) e o escuro ("vision" + "lights" no mapa: CanvasModulate, luzes fixas e a luz que
+    /// segue o digimon - ver SetVisionState).
     ///
     /// Animação: um relógio único (ver _Process) troca o quadro de todos os sprites animados
     /// de uma vez, em vez de milhares de AnimatedSprite2D rodando cada um o seu.
@@ -33,6 +41,17 @@ namespace ProjetoDC.Scripts.Gameplay
         private const float TreeFadeAlpha = 0.45f;
         private const float TreeFadeSpeed = 6f;
 
+        // Luz do digimon: pés + 8 px pra cima (mais o VisualLift no patamar/escada).
+        private const float PlayerLightRaise = 8f;
+        private const float VisionGrowSeconds = 0.6f;
+
+        // Lanternas tremulando: energia x 1 / 0,92 / 1 / 0,86, ~6 trocas por segundo (igual à prévia).
+        private const float FlickerChangesPerSecond = 6f;
+        private static readonly float[] FlickerSteps = { 1f, 0.92f, 1f, 0.86f };
+
+        // De quanto em quanto tempo as luzes fixas fora da câmera são desligadas/religadas.
+        private const double LightCullInterval = 0.2;
+
         [Export(PropertyHint.File, "*.json")] public string MapJson { get; set; } = "res://Assets/Areas/Forest_new/modelo_floresta/mapa/mapa_floresta.json";
         [Export(PropertyHint.Dir)] public string KitDir { get; set; } = "res://Assets/Areas/Forest_new/modelo_floresta/kit";
 
@@ -41,23 +60,30 @@ namespace ProjetoDC.Scripts.Gameplay
         [Export] public bool ShowSpotPlaceholders { get; set; }
 
         /// <summary>Monta parado no mesmo quadro que a ferramenta montar_previa.py do pacote usa
-        /// (blocos no quadro 0, sem animar) - só pra comparar o resultado com a prévia (ver
-        /// IsoMapRenderTest).</summary>
+        /// (blocos e objetos no quadro 0, sem animar) - só pra comparar o resultado com a prévia
+        /// (ver IsoMapRenderTest).</summary>
         [Export] public bool PreviewMode { get; set; }
+
+        /// <summary>Liga o escuro dos mapas que têm "vision" (caverna). Desligado = o mapa
+        /// aparece todo claro, como a prévia sem o escuro, e se comporta como um mapa claro
+        /// (HasDarkness false) - só pras prévias do IsoMapRenderTest.</summary>
+        [Export] public bool DarknessEnabled { get; set; } = true;
 
         /// <summary>Objetos que o mapa deixa atravessar (collides: false) mas que aqui viram
         /// sólidos: o bloco deles vira 'O' na grade 'walk', então ganham parede de colisão e o
         /// caminho por clique/vagueio desvia. Começo do nome do sprite no kit. Grama, flores,
-        /// samambaias e juncos continuam atravessáveis.</summary>
+        /// samambaias e juncos continuam atravessáveis. (Na caverna a grade 'walk' já vem com
+        /// todos os objetos sólidos marcados, então a cena dela deixa a lista vazia.)</summary>
         [Export] public string[] SolidProps { get; set; } = { "stones", "bush", "fallen_log", "signpost", "mushrooms" };
 
         /// <summary>Pasta de ajustes do kit: um arquivo aqui com o mesmo caminho relativo de um
         /// do kit é usado no lugar dele (ex.: poste/antena com a luz piscando sem a estrutura
-        /// pular - ver gerar_luzes.py nessa pasta). O pacote do kit fica intacto.</summary>
+        /// pular - ver gerar_luzes.py nessa pasta). O pacote do kit fica intacto. Vazio = sem
+        /// ajustes.</summary>
         [Export(PropertyHint.Dir)] public string KitOverrideDir { get; set; } = "res://Assets/Areas/Forest_new/ajustes";
 
-        /// <summary>Quem deixa as árvores translúcidas ao passar atrás delas - filho de
-        /// <see cref="Sorted"/>, com Position no chão.</summary>
+        /// <summary>Quem deixa as árvores translúcidas ao passar atrás delas e quem a luz do
+        /// digimon segue no escuro - filho de <see cref="Sorted"/>, com Position no chão.</summary>
         public Node2D Player { get; set; }
 
         public Node2D Sorted { get; private set; }
@@ -66,11 +92,16 @@ namespace ProjetoDC.Scripts.Gameplay
 
         private Node2D _ground;
         private Node2D _shadows;
+        private Node2D _decals;
         private Node2D _walls;
         private JsonElement _manifest;
         private string[] _walk = Array.Empty<string>();
         private string[] _elevation = Array.Empty<string>();
         private bool _built;
+
+        // Objetos começam no quadro (gx + gy) % 4 quando o mapa pede ("prop_frame_start" da
+        // caverna); na floresta começam todos no 0 (menos as árvores com vento).
+        private bool _objectFrameFromTile;
 
         private readonly Dictionary<string, Texture2D> _textures = new();
         private readonly Dictionary<Vector2I, string> _ramps = new();
@@ -90,6 +121,29 @@ namespace ProjetoDC.Scripts.Gameplay
         private readonly Dictionary<float, int> _animatedLastFrame = new();
         private double _animationTime;
 
+        // Brilho: o sprite "glow/<nome>.png" vai por cima do sprite com este material, que o
+        // CanvasModulate não escurece (testado no Godot 4.7 - ver AGENTS.md).
+        private CanvasItemMaterial _glowMaterial;
+
+        // Só os mapas escuros desenham o brilho: no claro ele só redesenharia os mesmos pixels
+        // por cima (e os translúcidos, como a ponte de dados, ficariam mais opacos).
+        private bool _glowEnabled;
+
+        // ---- escuro (só mapas com "vision")
+        private CanvasModulate _darkness;
+        private Node2D _lightsRoot;
+        private PointLight2D _playerLight;
+        private Tween _visionTween;
+        private JsonElement _vision;
+        private readonly List<FixedLight> _lights = new();
+        private double _flickerTime;
+        private double _lightCullTime;
+
+        // ---- objetos que acendem/ligam e quests do mapa (ids do JSON: "q_energia"...)
+        private readonly Dictionary<string, Switchable> _switchables = new();
+        private readonly HashSet<string> _doneMapQuests = new();
+        private readonly Dictionary<string, Node2D> _objectsById = new();
+
         public readonly struct SpotInfo
         {
             public SpotInfo(string id, string type, Vector2I tile) { Id = id; Type = type; Tile = tile; }
@@ -98,10 +152,41 @@ namespace ProjetoDC.Scripts.Gameplay
             public Vector2I Tile { get; }
         }
 
+        private sealed class FixedLight
+        {
+            public PointLight2D Light;
+            public string Rule;
+            public bool Flicker;
+            public float Energy;
+            public Rect2 Bounds;
+            public bool Active;
+        }
+
+        private sealed class Switchable
+        {
+            public string Id;
+            public Vector2I Tile;
+            public Node2D Node;
+            public Node2D Off;
+            public Node2D On;
+            public string Rule;
+            public bool IsOn;
+        }
+
         /// <summary>O objeto da mina (aparece quando o deslizamento é liberado) - a
         /// ExplorationArea põe a interação de entrar nela.</summary>
         public Node2D MineNode { get; private set; }
         public string MineBlockerId { get; private set; }
+
+        /// <summary>O mapa tem o escuro (bloco "vision" no JSON) - a caverna.</summary>
+        public bool HasDarkness { get; private set; }
+
+        /// <summary>Cor do escuro (vision.ambient_color), ou null se o mapa não é escuro.</summary>
+        public Color? AmbientColor => _darkness?.Color;
+
+        /// <summary>Estado atual da luz do digimon ("sem_bonus", "fogo", "lanterna",
+        /// "fogo_lanterna") ou null se o mapa não é escuro.</summary>
+        public string VisionState { get; private set; }
 
         public override void _Ready()
         {
@@ -120,11 +205,19 @@ namespace ProjetoDC.Scripts.Gameplay
 
             _ground = AddLayer("Ground", false);
             _shadows = AddLayer("Shadows", false);
+            _decals = AddLayer("Decals", false);
             Sorted = AddLayer("Sorted", true);
             _walls = AddLayer("Walls", false);
 
             _manifest = JsonDocument.Parse(FileAccess.GetFileAsString(KitDir + "/manifest.json")).RootElement.Clone();
             var map = JsonDocument.Parse(FileAccess.GetFileAsString(MapJson)).RootElement.Clone();
+
+            _glowEnabled = DarknessEnabled && map.TryGetProperty("vision", out _);
+
+            _objectFrameFromTile = map.TryGetProperty("animation", out var animation) &&
+                                   animation.TryGetProperty("prop_frame_start", out var propStart) &&
+                                   propStart.ValueKind == JsonValueKind.String &&
+                                   propStart.GetString().Contains("gx");
 
             var size = map.GetProperty("size_tiles");
             Width = size[0].GetInt32();
@@ -182,6 +275,7 @@ namespace ProjetoDC.Scripts.Gameplay
                 PlaceSpot(spot);
 
             BuildWalls();
+            BuildDarkness(map);
 
             foreach (var id in _blockedNodes.Keys)
                 SetBlockerCleared(id, false);
@@ -222,15 +316,24 @@ namespace ProjetoDC.Scripts.Gameplay
                 _ground.AddChild(holder);
             }
 
-            holder.AddChild(MakeVisual(entry, -center + new Vector2(0, lift), start, 5f));
+            AddVisual(holder, entry, -center + new Vector2(0, lift), start, 5f);
 
             foreach (var overlay in t.GetProperty("overlays").EnumerateArray())
             {
                 var overlayEntry = Entry(overlay.GetString());
+
+                // Caverna: a sobreposição tem âncora própria (trilhos, espuma da água), que vai
+                // no pos do bloco. Floresta: usa o centro do bloco (+ offset_y, se tiver).
+                if (overlayEntry.ValueKind == JsonValueKind.Object && overlayEntry.TryGetProperty("anchor", out var anchor))
+                {
+                    AddVisual(holder, overlayEntry, -V2(anchor) + new Vector2(0, lift), start, 5f);
+                    continue;
+                }
+
                 float dy = overlayEntry.ValueKind == JsonValueKind.Object &&
                            overlayEntry.TryGetProperty("offset_y", out var oy) ? oy.GetSingle() : 0f;
 
-                holder.AddChild(MakeVisual(overlayEntry, -center + new Vector2(0, lift + dy), start, 5f));
+                AddVisual(holder, overlayEntry, -center + new Vector2(0, lift + dy), start, 5f);
             }
         }
 
@@ -242,13 +345,30 @@ namespace ProjetoDC.Scripts.Gameplay
             var tile = V2I(o.GetProperty("tile"));
             string sprite = o.GetProperty("sprite").GetString();
             bool wind = o.TryGetProperty("frame_mode", out var fm) && fm.GetString() == "wind";
-            int start = wind ? ((tile.X + tile.Y) / 4) % 4 : 0;
+            bool decal = o.TryGetProperty("layer", out var layer) && layer.GetString() == "decal";
 
-            var node = new Node2D { Position = new Vector2(pos.X, sortY), Name = $"{sprite}_{tile.X}_{tile.Y}" };
+            int start = wind ? ((tile.X + tile.Y) / 4) % 4
+                : _objectFrameFromTile && !PreviewMode ? (tile.X + tile.Y) % 4
+                : 0;
+
+            var node = new Node2D { Name = $"{sprite}_{tile.X}_{tile.Y}" };
+            Vector2 offset;
+
+            if (decal)
+            {
+                // Decalque: plano no chão, sem Y-sort, sempre abaixo do digimon.
+                node.Position = pos;
+                offset = -anchor;
+            }
+            else
+            {
+                node.Position = new Vector2(pos.X, sortY);
+                offset = -anchor + new Vector2(0, pos.Y - sortY);
+            }
 
             if (o.TryGetProperty("shadow", out var shadowName) && shadowName.ValueKind == JsonValueKind.String)
             {
-                var offset = V2(o.GetProperty("shadow_offset"));
+                var shadowOffset = V2(o.GetProperty("shadow_offset"));
                 var shadow = MakeVisual(Entry(shadowName.GetString()), Vector2.Zero, 0, 0f);
 
                 if (shadow is Sprite2D shadowSprite)
@@ -259,20 +379,56 @@ namespace ProjetoDC.Scripts.Gameplay
                 // logo antes dele (é o que a prévia do pacote faz pra todo objeto).
                 if (pos.Y - sortY < -ElevationStepPx / 2f)
                 {
-                    shadow.Position = new Vector2(offset.X, pos.Y - sortY - 2);
+                    shadow.Position = new Vector2(shadowOffset.X, pos.Y - sortY - 2);
                     node.AddChild(shadow);
                 }
                 else
                 {
-                    shadow.Position = new Vector2(pos.X + offset.X, pos.Y - 2);
+                    shadow.Position = new Vector2(pos.X + shadowOffset.X, pos.Y - 2);
                     _shadows.AddChild(shadow);
                 }
             }
 
-            node.AddChild(MakeVisual(Entry(sprite), -anchor + new Vector2(0, pos.Y - sortY), start, wind ? 3.5f : 4f));
-            Sorted.AddChild(node);
+            float fps = wind ? 3.5f : 4f;
+            string kind = o.TryGetProperty("kind", out var k) ? k.GetString() : "";
+            string id = o.TryGetProperty("id", out var idProp) && idProp.ValueKind == JsonValueKind.String ? idProp.GetString() : null;
 
-            if (o.GetProperty("kind").GetString() == "tree")
+            if (kind == "switchable" && id != null && o.TryGetProperty("sprite_after", out var after))
+            {
+                // Objeto que acende/liga: as duas versões ficam montadas e só uma aparece (trocar
+                // o sprite apagando e criando outro deixaria um sprite liberado no relógio de animação).
+                var afterEntry = Entry(after.GetString());
+                var afterAnchor = afterEntry.ValueKind == JsonValueKind.Object && afterEntry.TryGetProperty("anchor", out var aa) ? V2(aa) : anchor;
+                var afterOffset = offset + anchor - afterAnchor;
+
+                var off = new Node2D { Name = "Off" };
+                var on = new Node2D { Name = "On", Visible = false };
+                node.AddChild(off);
+                node.AddChild(on);
+                AddVisual(off, Entry(sprite), offset, start, fps);
+                AddVisual(on, afterEntry, afterOffset, start, fps);
+
+                _switchables[id] = new Switchable
+                {
+                    Id = id,
+                    Tile = tile,
+                    Node = node,
+                    Off = off,
+                    On = on,
+                    Rule = o.TryGetProperty("switch_on", out var rule) ? rule.GetString() : "",
+                };
+            }
+            else
+            {
+                AddVisual(node, Entry(sprite), offset, start, fps);
+            }
+
+            (decal ? _decals : Sorted).AddChild(node);
+
+            if (id != null)
+                _objectsById[id] = node;
+
+            if (kind == "tree")
                 _trees.Add((node, new Vector2(pos.X, sortY)));
 
             return node;
@@ -285,7 +441,7 @@ namespace ProjetoDC.Scripts.Gameplay
 
             string sprite = o.GetProperty("sprite").GetString();
 
-            if (!Array.Exists(SolidProps, prefix => sprite.StartsWith(prefix, StringComparison.Ordinal)))
+            if (SolidProps == null || !Array.Exists(SolidProps, prefix => sprite.StartsWith(prefix, StringComparison.Ordinal)))
                 return;
 
             var t = V2I(o.GetProperty("tile"));
@@ -304,16 +460,17 @@ namespace ProjetoDC.Scripts.Gameplay
             string id = s.GetProperty("id").GetString();
             _spots[id] = new SpotInfo(id, s.GetProperty("type").GetString(), V2I(s.GetProperty("tile")));
 
-            if (!ShowSpotPlaceholders)
+            if (!ShowSpotPlaceholders || !s.TryGetProperty("placeholder_sprite", out var placeholder) ||
+                placeholder.ValueKind != JsonValueKind.String)
                 return;
 
-            var entry = Entry(s.GetProperty("placeholder_sprite").GetString());
-            var anchor = entry.TryGetProperty("anchor", out var a) ? V2(a) : Vector2.Zero;
+            var entry = Entry(placeholder.GetString());
+            var anchor = entry.ValueKind == JsonValueKind.Object && entry.TryGetProperty("anchor", out var a) ? V2(a) : Vector2.Zero;
             var pos = V2(s.GetProperty("pos"));
             float sortY = s.GetProperty("sort_y").GetSingle();
 
             var holder = new Node2D { Position = new Vector2(pos.X, sortY), Name = "spot_" + id };
-            holder.AddChild(MakeVisual(entry, -anchor + new Vector2(0, pos.Y - sortY), 0, 4f));
+            AddVisual(holder, entry, -anchor + new Vector2(0, pos.Y - sortY), 0, 4f);
             Sorted.AddChild(holder);
         }
 
@@ -351,6 +508,8 @@ namespace ProjetoDC.Scripts.Gameplay
             }));
         }
 
+        /// <summary>Sprite do kit com a âncora na origem (e o brilho por cima, se o kit tiver).
+        /// Sem brilho volta o próprio sprite; com brilho, um Node2D com os dois.</summary>
         public Node2D MakeKitSprite(string name)
         {
             var entry = Entry(name);
@@ -358,10 +517,33 @@ namespace ProjetoDC.Scripts.Gameplay
                 ? V2(a)
                 : Vector2.Zero;
 
-            return MakeVisual(entry, -anchor, 0, 4f);
+            if (!HasGlow(entry))
+                return MakeVisual(entry, -anchor, 0, 4f);
+
+            var holder = new Node2D { Name = name };
+            AddVisual(holder, entry, -anchor, 0, 4f);
+            return holder;
         }
 
-        private Node2D MakeVisual(JsonElement entry, Vector2 offset, int startFrame, float fps)
+        private bool HasGlow(JsonElement entry) =>
+            _glowEnabled && entry.ValueKind == JsonValueKind.Object && entry.TryGetProperty("glow", out var g) && g.ValueKind == JsonValueKind.String;
+
+        /// <summary>Sprite do kit + (se o kit tiver) o sprite de brilho por cima, mesmo offset e
+        /// quadro, com material sem luz: o CanvasModulate do escuro não escurece esses pixels.</summary>
+        private void AddVisual(Node parent, JsonElement entry, Vector2 offset, int startFrame, float fps)
+        {
+            parent.AddChild(MakeVisual(entry, offset, startFrame, fps));
+
+            if (!HasGlow(entry))
+                return;
+
+            var glow = MakeVisual(entry, offset, startFrame, fps, entry.GetProperty("glow").GetString());
+            glow.Name = "Glow";
+            glow.Material = _glowMaterial ??= new CanvasItemMaterial { LightMode = CanvasItemMaterial.LightModeEnum.Unshaded };
+            parent.AddChild(glow);
+        }
+
+        private Node2D MakeVisual(JsonElement entry, Vector2 offset, int startFrame, float fps, string overridePath = null)
         {
             string path;
             int frames = 1;
@@ -377,6 +559,9 @@ namespace ProjetoDC.Scripts.Gameplay
                 if (entry.TryGetProperty("frames", out var f))
                     frames = f.GetInt32();
             }
+
+            if (overridePath != null)
+                path = overridePath;
 
             var sprite = new Sprite2D
             {
@@ -581,6 +766,278 @@ namespace ProjetoDC.Scripts.Gameplay
             return null;
         }
 
+        /// <summary>Quest do mapa (id do JSON, ex.: "q_energia") concluída ou não: liga as luzes
+        /// "after:&lt;quest&gt;" e acende os objetos "quest:&lt;quest&gt;" (os terminais). Não salva
+        /// nada - o estado vem das quests concluídas no save (ver ExplorationArea).</summary>
+        public void SetMapQuestDone(string mapQuestId, bool done)
+        {
+            if (done)
+                _doneMapQuests.Add(mapQuestId);
+            else
+                _doneMapQuests.Remove(mapQuestId);
+
+            foreach (var s in _switchables.Values)
+            {
+                if (s.Rule == "quest:" + mapQuestId)
+                    SetSwitchedOn(s.Id, done);
+            }
+
+            RefreshLightRules();
+        }
+
+        public bool IsMapQuestDone(string mapQuestId) => _doneMapQuests.Contains(mapQuestId);
+
+        // ---------------------------------------------------------------- objetos que acendem/ligam
+
+        public IEnumerable<string> SwitchableIds => _switchables.Keys;
+
+        public bool HasSwitchable(string id) => _switchables.ContainsKey(id);
+
+        public bool IsSwitchedOn(string id) => _switchables.TryGetValue(id, out var s) && s.IsOn;
+
+        /// <summary>Regra do JSON ("interact:..." = o jogador liga; "quest:q_energia" = liga sozinho
+        /// quando a quest termina).</summary>
+        public string SwitchRule(string id) => _switchables.TryGetValue(id, out var s) ? s.Rule : null;
+
+        public Vector2I SwitchTile(string id) => _switchables.TryGetValue(id, out var s) ? s.Tile : default;
+
+        /// <summary>Nó do objeto (em Sorted, Position no chão) - a ExplorationArea põe o clique nele.</summary>
+        public Node2D SwitchNode(string id) => _switchables.TryGetValue(id, out var s) ? s.Node : null;
+
+        /// <summary>Troca o objeto pela versão acesa/ligada (sprite_after) e liga as luzes
+        /// "when_on:&lt;id&gt;". Não salva nada (ver GameManager.SetExplorationSwitchOn).</summary>
+        public void SetSwitchedOn(string id, bool on)
+        {
+            if (!_switchables.TryGetValue(id, out var s))
+                return;
+
+            s.IsOn = on;
+            s.Off.Visible = !on;
+            s.On.Visible = on;
+
+            RefreshLightRules();
+        }
+
+        /// <summary>Objeto do mapa pelo "id" do JSON (bocas da caverna, lanternas...).</summary>
+        public Node2D GetObjectNode(string id) => _objectsById.TryGetValue(id, out var node) ? node : null;
+
+        // ---------------------------------------------------------------- o escuro
+
+        private void BuildDarkness(JsonElement map)
+        {
+            // Sem o escuro (DarknessEnabled desligado, só nas prévias) o mapa é montado como um
+            // mapa claro: nem CanvasModulate nem luzes, que somariam brilho por cima.
+            if (!DarknessEnabled || !map.TryGetProperty("vision", out var vision))
+                return;
+
+            HasDarkness = true;
+            _vision = vision.Clone();
+
+            _lightsRoot = AddLayer("Lights", false);
+
+            var ambient = _vision.GetProperty("ambient_color");
+
+            // CanvasModulate escurece o canvas inteiro onde o mapa está (o mundo da exploração);
+            // o HUD e as janelas são CanvasLayer e ficam de fora. Com a área escondida (batalha)
+            // ele deixa de valer, então a arena não herda o escuro.
+            _darkness = new CanvasModulate
+            {
+                Name = "Escuro",
+                Color = new Color(ambient[0].GetSingle(), ambient[1].GetSingle(), ambient[2].GetSingle()),
+            };
+            AddChild(_darkness);
+
+            if (map.TryGetProperty("lights", out var lights))
+            {
+                foreach (var l in lights.EnumerateArray())
+                {
+                    var texture = Texture("luz/" + l.GetProperty("texture").GetString() + ".png");
+                    var color = l.GetProperty("color");
+                    var position = V2(l.GetProperty("pos"));
+
+                    var light = new PointLight2D
+                    {
+                        Name = l.GetProperty("id").GetString(),
+                        Texture = texture,
+                        // A textura já está no tamanho certo em px nativos do mundo; o mapa em 2x amplia junto.
+                        TextureScale = 1f,
+                        Color = new Color(color[0].GetSingle(), color[1].GetSingle(), color[2].GetSingle()),
+                        Energy = l.GetProperty("energy").GetSingle(),
+                        Position = position,
+                        ShadowEnabled = false,
+                        TextureFilter = TextureFilterEnum.Nearest,
+                        Enabled = false,
+                    };
+
+                    _lightsRoot.AddChild(light);
+
+                    var half = texture != null ? texture.GetSize() / 2f : Vector2.Zero;
+
+                    _lights.Add(new FixedLight
+                    {
+                        Light = light,
+                        Rule = l.GetProperty("enabled").GetString(),
+                        Flicker = l.TryGetProperty("flicker", out var flicker) && flicker.GetBoolean(),
+                        Energy = light.Energy,
+                        Bounds = new Rect2(position - half, half * 2f),
+                    });
+                }
+            }
+
+            _playerLight = new PointLight2D
+            {
+                Name = "LuzDoDigimon",
+                ShadowEnabled = false,
+                TextureFilter = TextureFilterEnum.Nearest,
+                Enabled = false,
+            };
+            _lightsRoot.AddChild(_playerLight);
+
+            RefreshLightRules();
+        }
+
+        /// <summary>Estado da luz do digimon pelo time (digimon de fogo) e pela lanterna.</summary>
+        public static string VisionStateFor(bool fireDigimon, bool hasLantern) =>
+            fireDigimon && hasLantern ? "fogo_lanterna" : hasLantern ? "lanterna" : fireDigimon ? "fogo" : "sem_bonus";
+
+        /// <summary>Troca o raio da luz do digimon ("sem_bonus" | "fogo" | "lanterna" |
+        /// "fogo_lanterna", ver vision.player_light.states no JSON). Com animate, o raio cresce
+        /// (ou encolhe) do tamanho antigo até o novo em ~0,6 s.</summary>
+        public void SetVisionState(string state, bool animate = true)
+        {
+            if (!HasDarkness || state == VisionState)
+                return;
+
+            if (!_vision.GetProperty("player_light").GetProperty("states").TryGetProperty(state, out var st))
+            {
+                GD.PrintErr($"MapLoader: estado de visão desconhecido: {state}");
+                return;
+            }
+
+            var texture = Texture("luz/" + st.GetProperty("texture").GetString() + ".png");
+            var color = st.GetProperty("color");
+
+            float oldWidth = _playerLight.Texture != null ? _playerLight.Texture.GetWidth() * _playerLight.TextureScale : 0f;
+
+            VisionState = state;
+            _playerLight.Texture = texture;
+            _playerLight.Color = new Color(color[0].GetSingle(), color[1].GetSingle(), color[2].GetSingle());
+            _playerLight.Energy = st.GetProperty("energy").GetSingle();
+
+            _visionTween?.Kill();
+            _visionTween = null;
+
+            if (animate && oldWidth > 0 && texture != null && IsInsideTree())
+            {
+                _playerLight.TextureScale = oldWidth / texture.GetWidth();
+                _visionTween = CreateTween();
+                _visionTween.TweenProperty(_playerLight, "texture_scale", 1f, VisionGrowSeconds);
+            }
+            else
+            {
+                _playerLight.TextureScale = 1f;
+            }
+
+            UpdatePlayerLight();
+        }
+
+        /// <summary>Raio atual da luz do digimon em blocos (0 se o mapa não é escuro).</summary>
+        public float VisionRadiusTiles =>
+            HasDarkness && VisionState != null
+                ? _vision.GetProperty("player_light").GetProperty("states").GetProperty(VisionState).GetProperty("radius_tiles").GetSingle()
+                : 0f;
+
+        /// <summary>Põe a luz do digimon num ponto do chão (testes/prints sem o explorador).</summary>
+        public Vector2? PlayerLightGroundOverride { get; set; }
+
+        private void UpdatePlayerLight()
+        {
+            if (_playerLight == null)
+                return;
+
+            Vector2? ground = PlayerLightGroundOverride;
+
+            if (ground == null && Player != null && IsInstanceValid(Player))
+                ground = Player.Position;
+
+            _playerLight.Enabled = ground != null && VisionState != null;
+
+            if (ground != null)
+                _playerLight.Position = ground.Value + new Vector2(0, -PlayerLightRaise - VisualLift(ground.Value));
+        }
+
+        private bool IsLightRuleActive(string rule)
+        {
+            if (rule == "always")
+                return true;
+
+            if (rule.StartsWith("after:", StringComparison.Ordinal))
+                return _doneMapQuests.Contains(rule.Substring("after:".Length));
+
+            if (rule.StartsWith("when_on:", StringComparison.Ordinal))
+                return IsSwitchedOn(rule.Substring("when_on:".Length));
+
+            return false;
+        }
+
+        private void RefreshLightRules()
+        {
+            foreach (var l in _lights)
+                l.Active = IsLightRuleActive(l.Rule);
+
+            CullLights();
+        }
+
+        /// <summary>Luz fixa ligada agora (regra cumprida), sem contar o corte por câmera.</summary>
+        public bool IsLightActive(string lightId)
+        {
+            foreach (var l in _lights)
+            {
+                if (l.Light.Name == lightId)
+                    return l.Active;
+            }
+
+            return false;
+        }
+
+        /// <summary>Luzes fixas e a regra de cada uma ("always", "after:q_energia",
+        /// "when_on:juncao_1") - pros testes de integridade.</summary>
+        public IEnumerable<(string Id, string Rule)> LightRules
+        {
+            get
+            {
+                foreach (var l in _lights)
+                    yield return (l.Light.Name, l.Rule);
+            }
+        }
+
+        // Só acende as luzes fixas que tocam a área visível (com folga): as 49 da caverna ligadas
+        // ao mesmo tempo pesariam à toa, já que a maioria está longe da câmera.
+        private void CullLights()
+        {
+            if (_lights.Count == 0)
+                return;
+
+            Rect2? view = null;
+
+            if (IsInsideTree() && GetViewport() is Viewport viewport)
+            {
+                var screenToWorld = viewport.GetCanvasTransform().AffineInverse();
+                var worldToLocal = GetGlobalTransform().AffineInverse();
+                var screen = viewport.GetVisibleRect();
+                var local = worldToLocal * (screenToWorld * screen);
+                view = local.Grow(64f);
+            }
+
+            foreach (var l in _lights)
+            {
+                bool on = l.Active && (view == null || view.Value.Intersects(l.Bounds));
+
+                if (l.Light.Enabled != on)
+                    l.Light.Enabled = on;
+            }
+        }
+
         // ---------------------------------------------------------------- spots
 
         public bool TryGetSpot(string id, out SpotInfo spot) => _spots.TryGetValue(id, out spot);
@@ -773,6 +1230,9 @@ namespace ProjetoDC.Scripts.Gameplay
 
         public override void _Process(double delta)
         {
+            if (HasDarkness)
+                ProcessLights(delta);
+
             if (PreviewMode)
                 return;
 
@@ -792,6 +1252,29 @@ namespace ProjetoDC.Scripts.Gameplay
             }
 
             UpdateTreeFade((float)delta);
+        }
+
+        private void ProcessLights(double delta)
+        {
+            UpdatePlayerLight();
+
+            if ((_lightCullTime -= delta) <= 0)
+            {
+                _lightCullTime = LightCullInterval;
+                CullLights();
+            }
+
+            if (PreviewMode)
+                return;
+
+            _flickerTime += delta;
+            float k = FlickerSteps[(int)(_flickerTime * FlickerChangesPerSecond) % FlickerSteps.Length];
+
+            foreach (var l in _lights)
+            {
+                if (l.Flicker && l.Light.Enabled)
+                    l.Light.Energy = l.Energy * k;
+            }
         }
 
         private void UpdateTreeFade(float delta)

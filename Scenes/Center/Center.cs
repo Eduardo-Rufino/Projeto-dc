@@ -422,6 +422,29 @@ public partial class Center : Node2D
                     ? DatabaseManager.Instance.GetExplorationMap(debugMapId)
                     : DatabaseManager.Instance.GetAllExplorationMaps().FirstOrDefault();
                 var explorer = GameManager.Instance.Save.Center.Digimons.FirstOrDefault();
+
+                // DEBUG_EXPLORER_CODE (opcional): explora com um Digimon novo dessa espécie (ex.:
+                // "agumon" pra um de fogo), posto no Center - testa o escuro da caverna sem
+                // depender do save. DEBUG_EXPLORER_LEVEL muda o nível (padrão 15).
+                string explorerCode = OS.GetEnvironment("DEBUG_EXPLORER_CODE");
+                var explorerSpecies = string.IsNullOrEmpty(explorerCode)
+                    ? null
+                    : DatabaseManager.Instance.GetAllDigimons().FirstOrDefault(d => d.Code == explorerCode);
+
+                if (explorerSpecies != null)
+                {
+                    explorer = new DigimonInstance(explorerSpecies);
+                    explorer.Level = int.TryParse(OS.GetEnvironment("DEBUG_EXPLORER_LEVEL"), out int explorerLevel) ? explorerLevel : 15;
+                    explorer.RestoreHealth();
+                    GameManager.Instance.CenterService.AddDigimon(explorer);
+                }
+
+                // DEBUG_EXPLORATION_UNLOCK=1: conclui (só em memória) a quest que libera a área - pra
+                // abrir a caverna num save novo.
+                if (explorationMap?.RequiredQuestId is int unlockQuest && OS.GetEnvironment("DEBUG_EXPLORATION_UNLOCK") == "1" &&
+                    !GameManager.Instance.Save.Center.CompletedQuestIds.Contains(unlockQuest))
+                    GameManager.Instance.Save.Center.CompletedQuestIds.Add(unlockQuest);
+
                 if (explorationMap != null && explorer != null)
                     GameManager.Instance.StartExploration(explorer, explorationMap);
                 break;

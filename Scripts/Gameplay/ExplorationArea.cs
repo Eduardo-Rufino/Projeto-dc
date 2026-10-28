@@ -95,6 +95,7 @@ namespace ProjetoDC.Scripts.Gameplay
         {
             UpdateMapFreeze();
             UpdateIsoRaft();
+            UpdateWalkIntoTransitions();
         }
 
         public void Init(DigimonInstance explorer, ExplorationMapData map, GameManager.ExplorationArrival arrival = null)
@@ -739,7 +740,8 @@ namespace ProjetoDC.Scripts.Gameplay
         {
             bool frozen = _dialogueScreen.Visible ||
                           (_transitionConfirm != null && _transitionConfirm.IsOpen) ||
-                          (_itemFoundWindow != null && _itemFoundWindow.IsOpen);
+                          (_itemFoundWindow != null && _itemFoundWindow.IsOpen) ||
+                          (_infoWindow != null && _infoWindow.IsOpen);
             var mode = frozen ? ProcessModeEnum.Disabled : ProcessModeEnum.Inherit;
 
             if (_spawnsContainer.ProcessMode != mode)
@@ -755,6 +757,11 @@ namespace ProjetoDC.Scripts.Gameplay
                 return;
 
             Visible = false;
+
+            // As CanvasLayer da área (fundo e HUD) não somem com o Visible do Node2D: sem isso o
+            // fundo da área (verde na floresta, preto na caverna escura) tampava o céu da arena
+            // e o botão 🚪 Sair ficava por baixo do Pausa da batalha.
+            SetAreaLayersVisible(false);
 
             // Não basta esconder: ProcessMode.Always (setado em GameManager.StartExploration
             // pra continuar rodando durante a própria pausa) também fazia essa área continuar
@@ -774,11 +781,22 @@ namespace ProjetoDC.Scripts.Gameplay
             ProcessMode = ProcessModeEnum.Always;
 
             Visible = true;
+            SetAreaLayersVisible(true);
 
             // A BattleArena usa sua própria Camera2D (precisa ficar "current" durante a luta) -
             // ao voltar, precisa reivindicar a câmera de volta, senão a viewport fica sem
             // nenhuma câmera ativa (a da arena já foi liberada junto com ela).
             _camera.MakeCurrent();
+
+            // O explorador pode ter evoluído na batalha (e trocado de elemento): a luz dele no
+            // escuro depende disso.
+            UpdateIsoVision();
+        }
+
+        private void SetAreaLayersVisible(bool visible)
+        {
+            GetNode<CanvasLayer>("BackgroundLayer").Visible = visible;
+            GetNode<CanvasLayer>("CanvasLayer").Visible = visible;
         }
 
         private void OnExitPressed()

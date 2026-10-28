@@ -52,6 +52,7 @@ namespace ProjetoDC.Scripts.Gameplay
             _spawnsContainer.AddChild(_isoMap);
 
             ApplyIsoBlockers();
+            ApplyIsoMapState();
 
             _isoExplorerSpawn = ResolveExplorerSpawn(arrival);
 
@@ -66,6 +67,9 @@ namespace ProjetoDC.Scripts.Gameplay
             SpawnNpcs();
             SpawnItems();
             SpawnMineInteraction();
+            SpawnSwitchInteractions();
+            SpawnWalkIntoTransitions();
+            InitIsoDarkness();
 
             GameManager.Instance.QuestTurnedIn += OnQuestTurnedIn;
         }
@@ -191,51 +195,13 @@ namespace ProjetoDC.Scripts.Gameplay
         }
 
         /// <summary>Explorador num dos 8 blocos em volta do item, no mesmo nível.</summary>
-        private bool IsIsoExplorerNextTo(ExplorationItemVisual visual)
-        {
-            var explorer = MapLoader.GroundToTile(_explorerVisual.Position);
-            var item = MapLoader.GroundToTile(visual.Position);
-            var d = explorer - item;
-
-            return Mathf.Abs(d.X) <= 1 && Mathf.Abs(d.Y) <= 1 &&
-                   _isoMap.AreOnSameLevel(_explorerVisual.Position, visual.Position);
-        }
+        private bool IsIsoExplorerNextTo(ExplorationItemVisual visual) =>
+            IsIsoExplorerNextToTile(MapLoader.GroundToTile(visual.Position));
 
         /// <summary>Leva o explorador até o bloco livre mais perto (em passos) em volta do item -
         /// o do baú é sólido. Não coleta: é preciso clicar de novo lá do lado.</summary>
-        private void WalkExplorerNextTo(ExplorationItemVisual visual)
-        {
-            var from = MapLoader.GroundToTile(_explorerVisual.Position);
-            var item = MapLoader.GroundToTile(visual.Position);
-            List<Vector2I> best = null;
-
-            for (int dx = -1; dx <= 1; dx++)
-            {
-                for (int dy = -1; dy <= 1; dy++)
-                {
-                    var tile = item + new Vector2I(dx, dy);
-
-                    if ((dx == 0 && dy == 0) || !_isoMap.IsWalkable(tile) ||
-                        !_isoMap.AreOnSameLevel(MapLoader.TileToGround(tile), visual.Position))
-                        continue;
-
-                    var path = tile == from ? new List<Vector2I>() : _isoMap.FindPath(from, tile);
-
-                    if (path != null && (best == null || path.Count < best.Count))
-                        best = path;
-                }
-            }
-
-            if (best == null || best.Count == 0)
-                return;
-
-            var points = new List<Vector2>();
-
-            foreach (var tile in best)
-                points.Add(_isoMap.ToGlobal(MapLoader.TileToGround(tile)));
-
-            _explorerVisual.FollowPath(points);
-        }
+        private void WalkExplorerNextTo(ExplorationItemVisual visual) =>
+            WalkExplorerNextToTile(MapLoader.GroundToTile(visual.Position));
 
         /// <summary>Põe o sprite de um Digimon que anda (explorador/selvagem): pé no chão,
         /// erguido no planalto/rampa e, nos mapas isométricos, ordenado por cima do chão alto em
@@ -439,6 +405,7 @@ namespace ProjetoDC.Scripts.Gameplay
             }
 
             UpdateMineInteraction();
+            OnIsoMapQuestTurnedIn(questId);
         }
 
         // ---------------------------------------------------------------- passagens

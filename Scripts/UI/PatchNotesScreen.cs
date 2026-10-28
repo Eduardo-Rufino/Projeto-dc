@@ -123,7 +123,15 @@ namespace ProjetoDC.Scripts.UI
         }
 
         private const string Version12Body =
-            "Em desenvolvimento.";
+            "Em desenvolvimento - o que já entrou:\n" +
+            "\n" +
+            "[b]Caverna Cristalina nova: o escuro[/b]\n" +
+            "A Caverna Cristalina foi refeita no estilo isométrico da Floresta Inicial, e o escuro é a mecânica principal: fora de uma luz não se vê nada - nem os selvagens, nem os baús, nem os NPCs. O Digimon que explora leva uma luz em volta dele, que fica maior se ele for do elemento fogo, maior ainda com a lanterna e máxima com as duas coisas. Lanternas, cristais, cogumelos, telas e a ponte de dados brilham no escuro.\n" +
+            "\n" +
+            "Entra-se pela mina da floresta, e dá pra voltar andando pela boca da caverna, a oeste. Três quests novas: [b]A Lanterna Perdida[/b] (o Groundramon, minerador do acampamento: siga os trilhos no escuro até o vagonete descarrilado - a recompensa é a lanterna e a passagem pra galeria funda), [b]Energia nas Ruínas[/b] (o Tentomon: religue as 3 caixas de junção espalhadas pela caverna pra acender as ruínas digitais e ligar a ponte de dados sobre o abismo) e a opcional [b]A Galeria Acesa[/b] (o PetiMeramon: acenda as 4 lanternas apagadas - precisa de fogo - pra quebrar a barreira de cristal e abrir uma gruta secreta). Candlemon, Stingmon, Sunarizamon e Phascomon continuam na caverna, com as mesmas quests. A saída norte, depois da ponte, ainda está bloqueada.\n" +
+            "\n" +
+            "[b]Correções[/b]\n" +
+            "- Nas batalhas contra selvagens da exploração, o fundo da área (verde na floresta) tampava o céu da arena e o botão 🚪 Sair aparecia por baixo do Pausa.";
 
         private const string Version11Body =
             "[b]Passivas herdadas[/b]\n" +

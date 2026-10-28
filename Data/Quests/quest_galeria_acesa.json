@@ -1,0 +1,20 @@
+{
+  "Id": 34,
+  "Name": "A Galeria Acesa",
+  "Description": "Acenda as 4 lanternas apagadas da galeria funda. Precisa de fogo: a lanterna do Groundramon ou um Digimon do elemento fogo explorando com você. Com as quatro acesas, a barreira de cristal se parte e abre uma gruta escondida. A quest termina sozinha quando a última lanterna acende.",
+  "GiverNpcId": 35,
+  "ObjectiveType": "SwitchOn",
+  "ObjectiveMapId": 2,
+  "ObjectiveSwitchIds": [
+    "lanterna_apagada_1",
+    "lanterna_apagada_2",
+    "lanterna_apagada_3",
+    "lanterna_apagada_4"
+  ],
+  "ObjectiveCount": 4,
+  "RewardBits": 900,
+  "RewardCapacity": 0,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0,
+  "CompletionText": "\"Olha só a galeria brilhando! Ouviu esse estalo? A barreira de cristal se partiu - tem uma gruta escondida logo atrás dela.\""
+}

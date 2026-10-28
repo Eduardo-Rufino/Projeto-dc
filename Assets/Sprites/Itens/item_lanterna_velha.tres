@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Areas/Cave_new/modelo_caverna/kit/prop_sheets/item_old_lantern.png" id="1_lantern"]
+
+[resource]
+atlas = ExtResource("1_lantern")
+region = Rect2(0, 0, 17, 23)

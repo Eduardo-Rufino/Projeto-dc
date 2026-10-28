@@ -1,10 +1,93 @@
 {
   "Id": 2,
   "Name": "Caverna Cristalina",
-  "Description": "Uma caverna de cristais logo além da Floresta Inicial. Escura, cheia de pedra e bem mais perigosa que a floresta - os selvagens daqui são mais fortes, então leve um Digimon preparado. Alguns moradores se escondem atrás das formações de pedra.",
+  "Description": "Uma caverna funda logo além da Floresta Inicial, escura de verdade: fora de uma luz não se vê nada - nem os selvagens, bem mais fortes que os da floresta. Na entrada fica um acampamento de mineração; mais pra dentro, trilhos que somem no escuro, um lago subterrâneo e ruínas digitais esquecidas.",
   "Theme": "cave",
   "RequiredQuestId": 29,
   "RecommendedLevel": 14,
+  "IsoMapScene": "res://Assets/Areas/Cave_new/Caverna.tscn",
+  "ExplorerSpawnSpot": "spawn",
+  "BlockerQuests": {
+    "bloqueio_desmoronamento": 32,
+    "bloqueio_abismo": 33,
+    "bloqueio_cristal": 34
+  },
+  "MapQuestIds": {
+    "q_lanterna": 32,
+    "q_energia": 33,
+    "q_lanternas": 34
+  },
+  "Switches": [
+    {
+      "Id": "lanterna_apagada_1",
+      "Name": "Lanterna",
+      "NeedsFire": true,
+      "OnText": "A lanterna acendeu e a galeria ganhou um pouco de luz.",
+      "NoFireText": "Está escuro demais... falta fogo. Volte com a lanterna do minerador ou explorando com um Digimon de fogo."
+    },
+    {
+      "Id": "lanterna_apagada_2",
+      "Name": "Lanterna",
+      "NeedsFire": true,
+      "OnText": "A lanterna acendeu e a galeria ganhou um pouco de luz.",
+      "NoFireText": "Está escuro demais... falta fogo. Volte com a lanterna do minerador ou explorando com um Digimon de fogo."
+    },
+    {
+      "Id": "lanterna_apagada_3",
+      "Name": "Lanterna",
+      "NeedsFire": true,
+      "OnText": "A lanterna acendeu e a galeria ganhou um pouco de luz.",
+      "NoFireText": "Está escuro demais... falta fogo. Volte com a lanterna do minerador ou explorando com um Digimon de fogo."
+    },
+    {
+      "Id": "lanterna_apagada_4",
+      "Name": "Lanterna",
+      "NeedsFire": true,
+      "OnText": "A lanterna acendeu e a galeria ganhou um pouco de luz.",
+      "NoFireText": "Está escuro demais... falta fogo. Volte com a lanterna do minerador ou explorando com um Digimon de fogo."
+    },
+    {
+      "Id": "juncao_1",
+      "Name": "Caixa de junção",
+      "NeedsFire": false,
+      "OnText": "Você religou a caixa de junção. Um zumbido elétrico corre pelos cabos."
+    },
+    {
+      "Id": "juncao_2",
+      "Name": "Caixa de junção",
+      "NeedsFire": false,
+      "OnText": "Você religou a caixa de junção. Um zumbido elétrico corre pelos cabos."
+    },
+    {
+      "Id": "juncao_3",
+      "Name": "Caixa de junção",
+      "NeedsFire": false,
+      "OnText": "Você religou a caixa de junção. Um zumbido elétrico corre pelos cabos."
+    }
+  ],
+  "Transitions": [
+    {
+      "Id": "saida_floresta",
+      "Spot": "saida_floresta",
+      "TargetMapId": 1,
+      "ArrivalTile": [
+        7,
+        5
+      ],
+      "ReturnTile": [
+        6,
+        62
+      ],
+      "ConfirmText": "Sair pela boca da caverna e voltar pra Floresta Inicial?"
+    },
+    {
+      "Id": "saida_proxima",
+      "Spot": "saida_proxima",
+      "TargetMapId": 0,
+      "RequiredQuestId": 33,
+      "ComingSoonText": "Depois da saída, uma trilha sobe pela encosta... mas um desabamento recente ainda fecha o caminho adiante. Em breve!"
+    }
+  ],
   "WildPool": [
     109,
     126,
@@ -17,62 +100,121 @@
   "WildLevelMax": 16,
   "WildSpawnPoints": [
     {
-      "X": 900,
-      "Y": 450
+      "Spot": "inimigo_0"
     },
     {
-      "X": 1500,
-      "Y": 650
+      "Spot": "inimigo_1"
     },
     {
-      "X": 1100,
-      "Y": 1350
+      "Spot": "inimigo_2"
     },
     {
-      "X": 2000,
-      "Y": 1650
+      "Spot": "inimigo_3"
     },
     {
-      "X": 2700,
-      "Y": 1700
+      "Spot": "inimigo_4"
     },
     {
-      "X": 2780,
-      "Y": 660
+      "Spot": "inimigo_5"
     },
     {
-      "X": 1300,
-      "Y": 1750
+      "Spot": "inimigo_6"
     },
     {
-      "X": 2480,
-      "Y": 1230
+      "Spot": "inimigo_7"
+    },
+    {
+      "Spot": "inimigo_8"
+    },
+    {
+      "Spot": "inimigo_9"
+    },
+    {
+      "Spot": "inimigo_10"
+    },
+    {
+      "Spot": "inimigo_11"
+    },
+    {
+      "Spot": "inimigo_12"
+    },
+    {
+      "Spot": "inimigo_13"
+    },
+    {
+      "Spot": "inimigo_14"
+    },
+    {
+      "Spot": "inimigo_15"
+    },
+    {
+      "Spot": "inimigo_16"
+    },
+    {
+      "Spot": "inimigo_17"
+    },
+    {
+      "Spot": "inimigo_18"
+    },
+    {
+      "Spot": "inimigo_19"
+    },
+    {
+      "Spot": "inimigo_20"
+    },
+    {
+      "Spot": "inimigo_t0"
+    },
+    {
+      "Tile": [
+        41,
+        25
+      ]
+    },
+    {
+      "Spot": "inimigo_t2"
     }
   ],
   "Npcs": [
     {
+      "NpcId": 33,
+      "Spot": "npc_minerador"
+    },
+    {
+      "NpcId": 34,
+      "Spot": "npc_tecnico"
+    },
+    {
+      "NpcId": 35,
+      "Spot": "npc_vela"
+    },
+    {
       "NpcId": 8,
-      "X": 700,
-      "Y": 1050,
-      "Hidden": false
+      "Tile": [
+        24,
+        56
+      ]
     },
     {
       "NpcId": 9,
-      "X": 2950,
-      "Y": 520,
-      "Hidden": true
+      "Tile": [
+        16,
+        17
+      ]
     },
     {
       "NpcId": 10,
-      "X": 1450,
-      "Y": 1900,
-      "Hidden": true
+      "Tile": [
+        40,
+        38
+      ]
     },
     {
       "NpcId": 11,
-      "X": 2300,
-      "Y": 1100,
-      "Hidden": true
+      "Tile": [
+        12,
+        38
+      ]
     }
   ],
   "ItemPickups": [
@@ -80,29 +222,116 @@
       "UniqueId": 101,
       "ItemId": 1,
       "Quantity": 3,
-      "X": 1000,
-      "Y": 880
+      "Spot": "bau_0",
+      "KitSprite": "chest"
     },
     {
       "UniqueId": 102,
       "ItemId": 2,
       "Quantity": 1,
-      "X": 2100,
-      "Y": 650
+      "Spot": "bau_1",
+      "KitSprite": "chest"
     },
     {
       "UniqueId": 103,
       "ItemId": 4,
       "Quantity": 1,
-      "X": 2900,
-      "Y": 1500
+      "Spot": "bau_2",
+      "KitSprite": "chest"
     },
     {
       "UniqueId": 104,
       "ItemId": 1,
       "Quantity": 3,
-      "X": 700,
-      "Y": 1700
+      "Spot": "bau_3",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 105,
+      "ItemId": 5,
+      "Quantity": 2,
+      "Spot": "bau_4",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 106,
+      "ItemId": 2,
+      "Quantity": 2,
+      "Spot": "bau_5",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 107,
+      "ItemId": 1,
+      "Quantity": 3,
+      "Spot": "bau_6",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 108,
+      "ItemId": 2,
+      "Quantity": 2,
+      "Spot": "bau_7",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 109,
+      "ItemId": 4,
+      "Quantity": 2,
+      "Spot": "bau_8",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 110,
+      "ItemId": 12,
+      "Quantity": 2,
+      "Spot": "bau_9",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 111,
+      "ItemId": 5,
+      "Quantity": 1,
+      "Spot": "bau_10",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 112,
+      "ItemId": 1,
+      "Quantity": 2,
+      "KitSprite": "chest",
+      "Tile": [
+        15,
+        66
+      ]
+    },
+    {
+      "UniqueId": 113,
+      "ItemId": 4,
+      "Quantity": 1,
+      "Spot": "bau_12",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 114,
+      "ItemId": 2,
+      "Quantity": 1,
+      "Spot": "bau_13",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 115,
+      "ItemId": 16,
+      "Quantity": 1,
+      "Spot": "bau_gruta",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 116,
+      "ItemId": 17,
+      "Quantity": 1,
+      "Spot": "item_lanterna",
+      "KitSprite": "item_old_lantern"
     }
   ]
 }

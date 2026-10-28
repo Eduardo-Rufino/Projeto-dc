@@ -955,6 +955,15 @@ namespace ProjetoDC.Scripts.Systems.Audit
 
         private void SetProgressViaGame(QuestData q, int amount)
         {
+            // SwitchOn: liga os objetos do objetivo, um por um (cada um conta uma vez só).
+            if (q.ObjectiveType == QuestObjectiveType.SwitchOn)
+            {
+                foreach (var id in q.ObjectiveSwitchIds.Where(id => !Gm.IsExplorationSwitchOn(q.ObjectiveMapId, id)).Take(amount).ToList())
+                    Gm.SetExplorationSwitchOn(q.ObjectiveMapId, id);
+
+                return;
+            }
+
             var method = q.ObjectiveType == QuestObjectiveType.DefeatWild
                 ? typeof(GameManager).GetMethod("ApplyWildEncounterQuestProgress", NonPublic)
                 : typeof(GameManager).GetMethod("ApplyCollectItemQuestProgress", NonPublic);

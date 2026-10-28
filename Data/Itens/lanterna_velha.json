@@ -1,0 +1,6 @@
+{
+  "Id": 17,
+  "Name": "Lanterna Velha",
+  "Description": "A lanterna do Groundramon, o minerador da Caverna Cristalina. Caiu do vagonete que desceu os trilhos sozinho, lá no fim do túnel.",
+  "IconPath": "res://Assets/Sprites/Itens/item_lanterna_velha.tres"
+}

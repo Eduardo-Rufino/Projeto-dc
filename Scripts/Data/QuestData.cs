@@ -1,4 +1,5 @@
 using ProjetoDC.Enums;
+using System.Collections.Generic;
 
 namespace ProjetoDC.Scripts.Data
 {
@@ -22,6 +23,17 @@ namespace ProjetoDC.Scripts.Data
         public int ObjectiveTargetId { get; set; }
 
         public int ObjectiveCount { get; set; } = 1;
+
+        /// <summary>SwitchOn: ids (do JSON do mapa isométrico ObjectiveMapId) dos objetos a
+        /// acender/ligar - as lanternas apagadas, as caixas de junção. ObjectiveCount = quantos.</summary>
+        public List<string> ObjectiveSwitchIds { get; set; } = new();
+
+        /// <summary>SwitchOn: área (Data/Maps) onde ficam os objetos de ObjectiveSwitchIds.</summary>
+        public int ObjectiveMapId { get; set; }
+
+        /// <summary>Entregar dá a lanterna: nos mapas escuros o raio de visão do Digimon
+        /// aumenta pra sempre (ver GameManager.HasLantern). Vale pela quest concluída, sem item.</summary>
+        public bool GrantsLantern { get; set; }
 
         public int RewardBits { get; set; }
         public int RewardCapacity { get; set; }

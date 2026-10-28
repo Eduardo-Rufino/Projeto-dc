@@ -1,0 +1,11 @@
+{
+  "Id": 34,
+  "Name": "Tentomon",
+  "Code": "tentomon",
+  "DialogueLines": [
+    "Bzzz... estas ruínas são de um servidor antigo! Os terminais ainda funcionam, mas a energia caiu.",
+    "Tem três caixas de junção desligadas espalhadas pelo escuro: uma no bolsão ao sul, uma a leste do lago e uma na sala dos servidores.",
+    "Religa as três e eu acendo tudo de novo - inclusive a ponte de dados sobre o abismo, que leva até a saída."
+  ],
+  "QuestId": 33
+}

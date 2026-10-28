@@ -154,6 +154,16 @@ namespace ProjetoDC.Scripts.Models.World
         /// esses pickups não voltam a aparecer na área (ver ExplorationArea).</summary>
         public List<int> CollectedItemPickupIds { get; set; } = new();
 
+        /// <summary>Objetos de mapas isométricos que o jogador já acendeu/ligou (lanternas
+        /// apagadas, caixas de junção da caverna - ver ExplorationSwitchData), como
+        /// "idDoMapa:idDoObjeto". Ficam acesos pra sempre; as quests SwitchOn contam por aqui.</summary>
+        public List<string> ExplorationSwitchesOn { get; set; } = new();
+
+        public static string ExplorationSwitchKey(int mapId, string switchId) => $"{mapId}:{switchId}";
+
+        public bool IsExplorationSwitchOn(int mapId, string switchId) =>
+            ExplorationSwitchesOn.Contains(ExplorationSwitchKey(mapId, switchId));
+
         /// <summary>QuestData.Id já entregues pelo menos uma vez - mesma ideia de
         /// ClearedTournamentIds, mas pra quests de exploração.</summary>
         public List<int> CompletedQuestIds { get; set; } = new();

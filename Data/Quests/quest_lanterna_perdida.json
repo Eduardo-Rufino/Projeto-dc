@@ -1,0 +1,15 @@
+{
+  "Id": 32,
+  "Name": "A Lanterna Perdida",
+  "Description": "O vagonete do Groundramon desceu os trilhos sozinho e a lanterna dele caiu pelo caminho. Siga os trilhos no escuro até o vagonete descarrilado, pegue a Lanterna Velha e entregue ao Groundramon - ele te dá a lanterna reserva (você passa a enxergar bem mais longe no escuro) e abre o desmoronamento da galeria funda.",
+  "GiverNpcId": 33,
+  "ObjectiveType": "DeliverItem",
+  "ObjectiveTargetId": 17,
+  "ObjectiveCount": 1,
+  "GrantsLantern": true,
+  "RewardBits": 600,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0,
+  "CompletionText": "\"Minha velha companheira! Toma, essa aqui é a reserva - com ela você enxerga bem mais longe no escuro. E segura firme: as brocas já abriram o desmoronamento, a galeria funda é toda sua.\""
+}

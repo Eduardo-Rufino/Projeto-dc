@@ -1698,6 +1698,47 @@ namespace ProjetoDC.Scripts.Managers
             return SystemResult.Ok();
         }
 
+        // ------------------------------------------------------------ mapas escuros e objetos
+
+        /// <summary>O jogador tem a lanterna (alguma quest com QuestData.GrantsLantern
+        /// concluída - a do minerador da caverna): nos mapas escuros o raio de visão do Digimon
+        /// fica maior, pra sempre. Não é item: vem das quests concluídas do save.</summary>
+        public bool HasLantern => Save.Center.CompletedQuestIds.Any(id => DatabaseManager.Instance.GetQuest(id)?.GrantsLantern == true);
+
+        /// <summary>O objeto (lanterna apagada, caixa de junção...) do mapa já foi aceso/ligado.
+        /// Um objeto contado por uma quest SwitchOn já concluída também conta como ligado.</summary>
+        public bool IsExplorationSwitchOn(int mapId, string switchId)
+        {
+            if (Save.Center.IsExplorationSwitchOn(mapId, switchId))
+                return true;
+
+            foreach (int questId in Save.Center.CompletedQuestIds)
+            {
+                var quest = DatabaseManager.Instance.GetQuest(questId);
+
+                if (quest?.ObjectiveType == QuestObjectiveType.SwitchOn && quest.ObjectiveMapId == mapId &&
+                    quest.ObjectiveSwitchIds.Contains(switchId))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>Acende/liga um objeto do mapa e guarda no save (fica ligado pra sempre).
+        /// False se já estava ligado. Não entrega quest nenhuma: quem chama (a área de
+        /// exploração) decide se uma quest SwitchOn aceita ficou pronta e a entrega.</summary>
+        public bool SetExplorationSwitchOn(int mapId, string switchId)
+        {
+            if (string.IsNullOrEmpty(switchId) || IsExplorationSwitchOn(mapId, switchId))
+                return false;
+
+            Save.Center.ExplorationSwitchesOn.Add(CenterState.ExplorationSwitchKey(mapId, switchId));
+            return true;
+        }
+
+        private int CountSwitchesOn(QuestData quest) =>
+            quest.ObjectiveSwitchIds.Count(id => IsExplorationSwitchOn(quest.ObjectiveMapId, id));
+
         public SystemResult TryAcceptQuest(int questId)
         {
             var quest = DatabaseManager.Instance.GetQuest(questId);
@@ -1726,6 +1767,10 @@ namespace ProjetoDC.Scripts.Managers
 
             if (quest?.ObjectiveType == QuestObjectiveType.DeliverItem)
                 return Math.Min(Save.Center.GetItemQuantity(quest.ObjectiveTargetId), quest.ObjectiveCount);
+
+            // SwitchOn também não: conta os objetos que já estão acesos/ligados no mapa.
+            if (quest?.ObjectiveType == QuestObjectiveType.SwitchOn)
+                return Math.Min(CountSwitchesOn(quest), quest.ObjectiveCount);
 
             return Save.Center.QuestProgress.GetValueOrDefault(questId);
         }

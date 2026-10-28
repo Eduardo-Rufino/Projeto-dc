@@ -73,8 +73,17 @@ namespace ProjetoDC.Scripts.Data
         /// <summary>Origem: um NPC do mapa - interagir com ele pergunta se quer ir, em vez do diálogo.</summary>
         public int? NpcId { get; set; }
 
-        /// <summary>Área de destino (Data/Maps).</summary>
+        /// <summary>Origem: um spot do mapa isométrico onde o jogador entra andando ("walk_into"
+        /// do JSON - as bocas da caverna). Pisar no bloco do spot pergunta se quer ir; clicar no
+        /// objeto de mesmo id do mapa leva o explorador até lá.</summary>
+        public string Spot { get; set; }
+
+        /// <summary>Área de destino (Data/Maps). 0 = destino ainda não existe: a passagem só
+        /// mostra ComingSoonText.</summary>
         public int TargetMapId { get; set; }
+
+        /// <summary>Mensagem da passagem sem destino (TargetMapId 0), ex.: "em breve".</summary>
+        public string ComingSoonText { get; set; } = "";
 
         /// <summary>Onde o jogador chega no destino, se o destino for isométrico (spot ou
         /// bloco [gx, gy]); vazio = o spawn normal do destino.</summary>
@@ -95,6 +104,30 @@ namespace ProjetoDC.Scripts.Data
         public string Name { get; set; } = "";
 
         public string ConfirmText { get; set; } = "";
+    }
+
+    /// <summary>
+    /// Objeto de um mapa isométrico que o jogador acende/liga (switchable do JSON com
+    /// "switch_on": "interact:..." - lanternas apagadas, caixas de junção). O estado fica em
+    /// CenterState.ExplorationSwitchesOn; as quests SwitchOn contam esses ids.
+    /// </summary>
+    public class ExplorationSwitchData
+    {
+        /// <summary>Id do objeto no JSON do mapa (ex.: "juncao_1").</summary>
+        public string Id { get; set; }
+
+        /// <summary>Nome mostrado nas mensagens (ex.: "Caixa de junção").</summary>
+        public string Name { get; set; } = "";
+
+        /// <summary>Só acende com a lanterna (GameManager.HasLantern) ou explorando com um
+        /// Digimon do elemento fogo.</summary>
+        public bool NeedsFire { get; set; }
+
+        /// <summary>Mensagem ao acender/ligar.</summary>
+        public string OnText { get; set; } = "";
+
+        /// <summary>Mensagem quando falta fogo (NeedsFire).</summary>
+        public string NoFireText { get; set; } = "";
     }
 
     /// <summary>
@@ -136,6 +169,14 @@ namespace ProjetoDC.Scripts.Data
         public Dictionary<string, int> BlockerQuests { get; set; } = new();
 
         public List<ExplorationTransitionData> Transitions { get; set; } = new();
+
+        /// <summary>Mapa isométrico: id das quests no JSON do mapa ("q_energia") -> Id em
+        /// Data/Quests. É o que liga as regras do mapa ("after:q_energia" das luzes,
+        /// "quest:q_energia" dos terminais) às quests do jogo.</summary>
+        public Dictionary<string, int> MapQuestIds { get; set; } = new();
+
+        /// <summary>Mapa isométrico: objetos que o jogador acende/liga (ver ExplorationSwitchData).</summary>
+        public List<ExplorationSwitchData> Switches { get; set; } = new();
 
         public List<WildSpawnPointData> WildSpawnPoints { get; set; } = new();
         public List<NpcSpawnData> Npcs { get; set; } = new();

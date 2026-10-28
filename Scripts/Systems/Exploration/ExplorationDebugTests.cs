@@ -337,6 +337,21 @@ namespace ProjetoDC.Scripts.Systems.Exploration
                         Check(map.WildPool.Any(id => Db.GetDigimon(id)?.Drops.Any(d => d.ItemId == quest.ObjectiveTargetId) == true),
                             $"quest {quest.Id} '{quest.Name}': ninguém do pool de '{map.Name}' solta o item {quest.ObjectiveTargetId}");
                     }
+                    else if (quest.ObjectiveType == QuestObjectiveType.SwitchOn)
+                    {
+                        // Objetos a acender/ligar: todos cadastrados como Switches do mapa do objetivo
+                        // (a existência deles no JSON do mapa é conferida em TestIsoMaps).
+                        var targetMap = Db.GetExplorationMap(quest.ObjectiveMapId);
+
+                        Check(targetMap != null && !string.IsNullOrEmpty(targetMap.IsoMapScene),
+                            $"quest {quest.Id} '{quest.Name}': ObjectiveMapId {quest.ObjectiveMapId} não é um mapa isométrico");
+                        Check(quest.ObjectiveSwitchIds.Count == quest.ObjectiveCount,
+                            $"quest {quest.Id} '{quest.Name}': ObjectiveCount {quest.ObjectiveCount} != {quest.ObjectiveSwitchIds.Count} objetos");
+
+                        foreach (var id in quest.ObjectiveSwitchIds)
+                            Check(targetMap != null && targetMap.Switches.Any(sw => sw.Id == id),
+                                $"quest {quest.Id} '{quest.Name}': o objeto '{id}' não está em Switches do mapa {quest.ObjectiveMapId}");
+                    }
                     else if (quest.ObjectiveType == QuestObjectiveType.DefeatWild && quest.ObjectiveTargetId != 0)
                     {
                         // Caçada por espécie: o alvo precisa aparecer no mapa onde a quest é dada.
@@ -481,8 +496,15 @@ namespace ProjetoDC.Scripts.Systems.Exploration
 
             foreach (var tr in map.Transitions)
             {
-                Check(Db.GetExplorationMap(tr.TargetMapId) != null, $"{name}: passagem '{tr.Id}': área {tr.TargetMapId} não existe");
-                Check(tr.Mine || tr.NpcId.HasValue, $"{name}: passagem '{tr.Id}' sem origem (Mine/NpcId)");
+                // Destino 0 = passagem ainda sem destino (só o aviso de "em breve").
+                Check(Db.GetExplorationMap(tr.TargetMapId) != null || (tr.TargetMapId == 0 && !string.IsNullOrEmpty(tr.ComingSoonText)),
+                    $"{name}: passagem '{tr.Id}': área {tr.TargetMapId} não existe");
+                Check(tr.Mine || tr.NpcId.HasValue || !string.IsNullOrEmpty(tr.Spot), $"{name}: passagem '{tr.Id}' sem origem (Mine/NpcId/Spot)");
+
+                // Passagem em que se entra andando: o spot dela precisa ser alcançável (e, se tem
+                // quest, só depois dela - ver abaixo).
+                if (!string.IsNullOrEmpty(tr.Spot) && Resolve(tr.Spot, null, $"passagem '{tr.Id}'") is Vector2I spotTile)
+                    points.Add(($"passagem '{tr.Id}'", spotTile, null, null));
 
                 if (tr.NpcId.HasValue)
                     Check(map.Npcs.Any(n => n.NpcId == tr.NpcId), $"{name}: passagem '{tr.Id}': NPC {tr.NpcId} não está no mapa");
@@ -490,8 +512,54 @@ namespace ProjetoDC.Scripts.Systems.Exploration
                 if (tr.Mine)
                     Check(loader.MineNode != null, $"{name}: passagem '{tr.Id}' é a mina, mas o mapa não tem mina");
 
-                if (Resolve(null, tr.ReturnTile, $"passagem '{tr.Id}' (ReturnTile)") is Vector2I t)
+                // A passagem em que se entra andando pode não ter volta (destino ainda não existe).
+                if ((tr.ReturnTile != null || string.IsNullOrEmpty(tr.Spot)) &&
+                    Resolve(null, tr.ReturnTile, $"passagem '{tr.Id}' (ReturnTile)") is Vector2I t)
                     points.Add(($"frente da passagem '{tr.Id}'", t, null, null));
+            }
+
+            // Quests do mapa (ids do JSON) e objetos que acendem/ligam.
+            foreach (var (mapQuestId, questId) in map.MapQuestIds)
+                Check(Db.GetQuest(questId) != null, $"{name}: MapQuestIds '{mapQuestId}': quest {questId} não existe");
+
+            foreach (var (lightId, rule) in loader.LightRules)
+            {
+                if (rule.StartsWith("after:"))
+                    Check(map.MapQuestIds.ContainsKey(rule.Substring(6)), $"{name}: luz '{lightId}' ({rule}) cita uma quest fora de MapQuestIds");
+                else if (rule.StartsWith("when_on:"))
+                    Check(loader.HasSwitchable(rule.Substring(8)), $"{name}: luz '{lightId}' ({rule}) cita um objeto que não existe");
+                else
+                    Check(rule == "always", $"{name}: luz '{lightId}' com regra desconhecida '{rule}'");
+            }
+
+            foreach (var id in loader.SwitchableIds)
+            {
+                string rule = loader.SwitchRule(id) ?? "";
+
+                if (rule.StartsWith("quest:"))
+                    Check(map.MapQuestIds.ContainsKey(rule.Substring(6)), $"{name}: objeto '{id}' ({rule}) cita uma quest fora de MapQuestIds");
+                else
+                    Check(map.Switches.Any(sw => sw.Id == id), $"{name}: objeto '{id}' ({rule}) não está em Switches - ninguém consegue ligar");
+            }
+
+            var switchSides = new Dictionary<string, Vector2I>();
+
+            foreach (var sw in map.Switches)
+            {
+                Check(loader.HasSwitchable(sw.Id), $"{name}: Switches cita '{sw.Id}', que não existe no mapa");
+
+                if (!loader.HasSwitchable(sw.Id))
+                    continue;
+
+                // O objeto é sólido: vale o bloco do lado de onde o explorador liga.
+                var side = SideTile(loader, loader.SwitchTile(sw.Id));
+                Check(side.HasValue, $"{name}: objeto '{sw.Id}' sem nenhum bloco andável do lado");
+
+                if (side.HasValue)
+                {
+                    switchSides[sw.Id] = side.Value;
+                    points.Add(($"objeto '{sw.Id}' (ao lado de {loader.SwitchTile(sw.Id)})", side.Value, null, null));
+                }
             }
 
             if (spawn == null)
@@ -535,9 +603,9 @@ namespace ProjetoDC.Scripts.Systems.Exploration
                 GD.Print($"[INFO] {name}: {label} só depois de {string.Join(" + ", list)}");
 
             // Cada passagem só depois da quest dela.
-            foreach (var tr in map.Transitions.Where(t => t.RequiredQuestId.HasValue && t.ReturnTile?.Count == 2))
+            foreach (var tr in map.Transitions.Where(t => t.RequiredQuestId.HasValue && (t.ReturnTile?.Count == 2 || !string.IsNullOrEmpty(t.Spot))))
             {
-                string label = $"frente da passagem '{tr.Id}'";
+                string label = !string.IsNullOrEmpty(tr.Spot) ? $"passagem '{tr.Id}'" : $"frente da passagem '{tr.Id}'";
                 var needed = map.BlockerQuests.Where(b => b.Value == tr.RequiredQuestId.Value).Select(b => b.Key).ToList();
 
                 Check(needed.Count > 0 && requirements.TryGetValue(label, out var req) && needed.All(req.Contains),
@@ -580,6 +648,18 @@ namespace ProjetoDC.Scripts.Systems.Exploration
                         bool fromReward = completedQuests.Any(q => Db.GetQuest(q)?.RewardItemId == quest.ObjectiveTargetId);
 
                         if (!fromPickup && !fromReward)
+                            continue;
+                    }
+                    else if (quest.ObjectiveType == QuestObjectiveType.SwitchOn)
+                    {
+                        // Todos os objetos alcançáveis; os que pedem fogo, só com a lanterna (o
+                        // caminho que não depende do Digimon escolhido).
+                        bool hasLantern = completedQuests.Any(q => Db.GetQuest(q)?.GrantsLantern == true);
+                        bool allOn = quest.ObjectiveSwitchIds.All(id =>
+                            switchSides.TryGetValue(id, out var side) && reachable.Contains(side) &&
+                            (hasLantern || map.Switches.FirstOrDefault(sw => sw.Id == id)?.NeedsFire != true));
+
+                        if (!allOn)
                             continue;
                     }
 
