@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dx8iis07sa1hw"
+
+[deps]
+
+files=["res://revisao_evolucao/analise/rotas_reais.forma.translation", "res://revisao_evolucao/analise/rotas_reais.estagio.translation", "res://revisao_evolucao/analise/rotas_reais.nivel.translation", "res://revisao_evolucao/analise/rotas_reais.hp.translation", "res://revisao_evolucao/analise/rotas_reais.pa.translation", "res://revisao_evolucao/analise/rotas_reais.pd.translation", "res://revisao_evolucao/analise/rotas_reais.ea.translation", "res://revisao_evolucao/analise/rotas_reais.ed.translation", "res://revisao_evolucao/analise/rotas_reais.vel.translation", "res://revisao_evolucao/analise/rotas_reais.alcancavel.translation", "res://revisao_evolucao/analise/rotas_reais.obs.translation"]
+
+source_file="res://revisao_evolucao/analise/rotas_reais.csv"
+dest_files=["res://revisao_evolucao/analise/rotas_reais.forma.translation", "res://revisao_evolucao/analise/rotas_reais.estagio.translation", "res://revisao_evolucao/analise/rotas_reais.nivel.translation", "res://revisao_evolucao/analise/rotas_reais.hp.translation", "res://revisao_evolucao/analise/rotas_reais.pa.translation", "res://revisao_evolucao/analise/rotas_reais.pd.translation", "res://revisao_evolucao/analise/rotas_reais.ea.translation", "res://revisao_evolucao/analise/rotas_reais.ed.translation", "res://revisao_evolucao/analise/rotas_reais.vel.translation", "res://revisao_evolucao/analise/rotas_reais.alcancavel.translation", "res://revisao_evolucao/analise/rotas_reais.obs.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -1,0 +1,19 @@
+KIT DA CAVERNA — sprites em pixels nativos (use o mundo em 2x, filtro Nearest)
+
+manifest.json
+  tiles    : blocos. "sheet" (quadros lado a lado), "frames", "frame_size", "tile_center" (ponto que vai no pos do bloco),
+             "kind", "level", "surface_offset", "open_edges" (bordas sem contorno: use quando o vizinho de trás tem a mesma altura).
+             Nomes: <tipo>_<variação>[_open | _open_ul | _open_ur]; stairs_gx_N / stairs_gy_N (escada sobe para -gx / -gy);
+             chasm[_ul][_ur][_u] (abismo; o nome diz quais vizinhos de trás são chão firme).
+  props    : objetos. "anchor" (ponto que vai no pos), "layer" (sorted | decal), "collides", "glow" (se brilha), "note".
+             *_off = versão apagada/desligada; a versão sem _off é a acesa/ligada.
+             timber_frame2_*_a / _b = metades da escora de 2 blocos (uma por faixa).
+  overlays : sobreposições de bloco com âncora própria: trilhos (rail_<borda>_<borda>, rail_end_<borda>), espuma da água
+             (shore_foam_<borda>), ponte de dados (bridge_deck_gy_a/b) e restos da ponte velha (bridge_broken_gy_a/b).
+  lights   : texturas de luz em luz/ (elipses 2:1 em faixas pontilhadas). O número é o raio em blocos.
+
+glow/  : mesmo tamanho e quadros do sprite original, só os pixels que brilham. Ver GUIA_CLAUDE_CODE.md (o escuro).
+props/ : ícones provisórios dos spots (debug).
+
+Bordas: ul = lado de cima-esquerda (vizinho gx-1), ur = cima-direita (gy-1), dl = baixo-esquerda (gy+1), dr = baixo-direita (gx+1).
+gx / gy no nome de um objeto = direção em que o CAMINHO corre (o objeto fica atravessado nele).
