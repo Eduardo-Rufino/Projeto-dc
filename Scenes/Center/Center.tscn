@@ -743,20 +743,11 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
 tooltip_text = "Configurações"
 text = "⚙"
 
-[node name="ExitButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=482127801]
+[node name="PatchNotesButton" type="Button" parent="CanvasLayer/HUD/ControlBar"]
 layout_mode = 0
 offset_left = 826.0
 offset_top = 3.0
 offset_right = 890.0
-offset_bottom = 67.0
-theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
-text = "🚪"
-
-[node name="PatchNotesButton" type="Button" parent="CanvasLayer/HUD/ControlBar"]
-layout_mode = 0
-offset_left = 894.0
-offset_top = 3.0
-offset_right = 958.0
 offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
 tooltip_text = "Notas de Atualização"
@@ -764,13 +755,22 @@ text = "📋"
 
 [node name="JogressButton" type="Button" parent="CanvasLayer/HUD/ControlBar"]
 layout_mode = 0
+offset_left = 894.0
+offset_top = 3.0
+offset_right = 958.0
+offset_bottom = 67.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
+tooltip_text = "Jogress"
+text = "🧬"
+
+[node name="ExitButton" type="Button" parent="CanvasLayer/HUD/ControlBar" unique_id=482127801]
+layout_mode = 0
 offset_left = 962.0
 offset_top = 3.0
 offset_right = 1026.0
 offset_bottom = 67.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_q11ny")
-tooltip_text = "Jogress"
-text = "🧬"
+text = "🚪"
 
 [node name="FoodPickerPopup" type="PanelContainer" parent="CanvasLayer/HUD"]
 visible = false

@@ -25,7 +25,8 @@ namespace ProjetoDC.Scripts.UI
         // Mais recente primeiro - é a que abre selecionada por padrão.
         private static readonly (string Title, string Body)[] Versions =
         {
-            ("🆕 Versão 0.11", Version11Body),
+            ("🆕 Versão 0.12", Version12Body),
+            ("📦 Versão 0.11", Version11Body),
             ("📦 Versão 0.10", Version10Body),
             ("📦 Versão 0.9", Version09Body),
             ("📦 Versão 0.8", Version08Body),
@@ -121,8 +122,23 @@ namespace ProjetoDC.Scripts.UI
             BackPressed?.Invoke();
         }
 
-        private const string Version11Body =
+        private const string Version12Body =
             "Em desenvolvimento.";
+
+        private const string Version11Body =
+            "[b]Passivas herdadas[/b]\n" +
+            "Cada forma por onde o Digimon passa deixa uma passiva herdada, que ele carrega pelo resto da vida: um Greymon que foi Koromon e Agumon leva as passivas dos dois pra batalha. Todas as espécies de Baby a Ultimate têm a sua (bônus de ataque ou defesa, perfurar defesa, golpe extra, cura, esquiva, atordoamento...). Passar duas vezes pela mesma espécie conta uma vez só. Os Digimons que já existiam no save começam com o histórico vazio e passam a acumular a partir da próxima evolução.\n" +
+            "\n" +
+            "A ficha do Digimon mostra a lista \"🧬 Passivas herdadas\", com rolagem, e os dados curtos da ficha foram pra duas colunas pra abrir espaço.\n" +
+            "\n" +
+            "[b]Jogress: linha principal[/b]\n" +
+            "Na montagem da Jogress, o botão \"Linha principal\" escolhe de qual dos dois Digimons vem primeiro o histórico do fundido. O resultado herda a linha evolutiva dos dois.\n" +
+            "\n" +
+            "[b]Barra de botões[/b]\n" +
+            "O botão de sair (🚪) passou a ser o último da barra, depois de Notas de Atualização e Jogress.\n" +
+            "\n" +
+            "[b]Correções[/b]\n" +
+            "- Na exploração, os Digimons selvagens continuavam andando durante a conversa com um NPC e podiam começar uma batalha no meio do diálogo. Agora o mapa fica parado enquanto o diálogo está aberto.";
 
         private const string Version10Body =
             "[b]Calendário e temporadas[/b]\n" +

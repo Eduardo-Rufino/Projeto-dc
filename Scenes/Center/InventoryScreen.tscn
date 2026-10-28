@@ -105,7 +105,7 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 horizontal_alignment = 1
-text = "Nenhum item cadastrado ainda."
+text = "Você ainda não tem nenhum item."
 
 [node name="ItemsScroll" type="ScrollContainer" parent="Window/MarginContainer/VBoxContainer"]
 layout_mode = 2

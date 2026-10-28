@@ -1,10 +1,10 @@
 {
   "Id": 3,
-  "Name": "Prove seu Valor (Defesa)",
-  "Description": "Derrote 2 Digimon selvagens nessa área pra mostrar que sabe batalhar.",
+  "Name": "Couro Duro",
+  "Description": "Os Gabumon dessa floresta têm o couro mais duro da região - bater neles é o melhor teste de Defesa que existe. Derrote 2 Gabumon selvagens pra mostrar ao Togemon que você aguenta o tranco.",
   "GiverNpcId": 3,
   "ObjectiveType": "DefeatWild",
-  "ObjectiveTargetId": 0,
+  "ObjectiveTargetId": 2,
   "ObjectiveCount": 2,
   "RewardBits": 400,
   "RewardCapacity": 0,

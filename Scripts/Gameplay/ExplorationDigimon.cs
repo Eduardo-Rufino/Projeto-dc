@@ -1,5 +1,6 @@
 using Godot;
 using ProjetoDC.Scripts.UI;
+using System.Collections.Generic;
 
 namespace ProjetoDC.Scripts.Gameplay
 {
@@ -27,6 +28,14 @@ namespace ProjetoDC.Scripts.Gameplay
         private bool _isWalking;
         private bool _isKeyboardMoving;
 
+        // Mapa isométrico: o clique vira um caminho de blocos (ExplorationArea.FindWalkPath)
+        // em vez de uma linha reta - _targetPosition é sempre o próximo ponto dele.
+        private readonly Queue<Vector2> _path = new();
+
+        /// <summary>Direção "de teclado" forçada por teste (ver ExplorationArea.IsoDebug) -
+        /// Zero = usa o teclado de verdade.</summary>
+        public Vector2 DebugDirection { get; set; }
+
         public override void _Ready()
         {
             _sprite = GetNode<DigimonSprite>("DigimonSprite");
@@ -44,7 +53,32 @@ namespace ProjetoDC.Scripts.Gameplay
             if (_area != null && !_area.IsPointInsideBoundary(globalPosition))
                 return;
 
+            _path.Clear();
+
+            if (_area != null && _area.IsIsoMap)
+            {
+                FollowPath(_area.FindWalkPath(GlobalPosition, globalPosition));
+                return;
+            }
+
             _targetPosition = globalPosition;
+            _isWalking = true;
+            _sprite.SetWalking(true);
+        }
+
+        /// <summary>Anda pelos pontos (globais) em ordem - caminho de blocos do mapa isométrico.
+        /// Nada acontece se vier vazio.</summary>
+        public void FollowPath(List<Vector2> points)
+        {
+            _path.Clear();
+
+            if (points == null || points.Count == 0)
+                return;
+
+            foreach (var point in points)
+                _path.Enqueue(point);
+
+            _targetPosition = _path.Dequeue();
             _isWalking = true;
             _sprite.SetWalking(true);
         }
@@ -57,7 +91,10 @@ namespace ProjetoDC.Scripts.Gameplay
 
         public override void _PhysicsProcess(double delta)
         {
-            Vector2 keyboardDirection = GetKeyboardDirection();
+            if (_area != null)
+                _area.PlaceWalkerSprite(this, _sprite);
+
+            Vector2 keyboardDirection = DebugDirection != Vector2.Zero ? DebugDirection : GetKeyboardDirection();
 
             if (keyboardDirection != Vector2.Zero)
             {
@@ -65,6 +102,7 @@ namespace ProjetoDC.Scripts.Gameplay
                 // tecla cancela o clique-pra-andar em vez de competir com ele.
                 _isWalking = false;
                 _isKeyboardMoving = true;
+                _path.Clear();
 
                 ProcessKeyboardMovement(keyboardDirection);
                 return;
@@ -91,6 +129,12 @@ namespace ProjetoDC.Scripts.Gameplay
 
             if (GlobalPosition.DistanceTo(_targetPosition) < ArrivalThreshold)
             {
+                if (_path.Count > 0)
+                {
+                    _targetPosition = _path.Dequeue();
+                    return;
+                }
+
                 _isWalking = false;
                 Velocity = Vector2.Zero;
                 _sprite.SetWalking(false);

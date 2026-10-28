@@ -1,0 +1,11 @@
+{
+  "Id": 30,
+  "Name": "Terriermon",
+  "Code": "terriermon",
+  "DialogueLines": [
+    "Do outro lado do rio fica a margem do pântano, mas não tem ponte nenhuma.",
+    "Se eu tivesse umas tábuas, montava uma jangada rapidinho. Momentai!",
+    "Ah, e agora há pouco eu vi um Agumon fugindo rio abaixo, todo apressado, carregando uma coisa brilhante. Vai saber o que ele aprontou..."
+  ],
+  "QuestId": 28
+}

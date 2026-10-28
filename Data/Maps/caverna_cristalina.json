@@ -3,7 +3,7 @@
   "Name": "Caverna Cristalina",
   "Description": "Uma caverna de cristais logo além da Floresta Inicial. Escura, cheia de pedra e bem mais perigosa que a floresta - os selvagens daqui são mais fortes, então leve um Digimon preparado. Alguns moradores se escondem atrás das formações de pedra.",
   "Theme": "cave",
-  "RequiredQuestId": 1,
+  "RequiredQuestId": 29,
   "RecommendedLevel": 14,
   "WildPool": [
     109,

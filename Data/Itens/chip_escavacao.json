@@ -1,0 +1,6 @@
+{
+  "Id": 14,
+  "Name": "Chip de Escavação",
+  "Description": "Um chip antigo, achado num beco ao sul da Floresta Inicial. O escavador do noroeste precisa dele pra abrir o túnel do deslizamento.",
+  "IconPath": "res://Assets/Sprites/Itens/item_chip_escavacao.png"
+}

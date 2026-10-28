@@ -1,0 +1,10 @@
+{
+  "Id": 31,
+  "Name": "Elizamon",
+  "Code": "elizamon",
+  "DialogueLines": [
+    "Um deslizamento fechou a entrada da mina que leva à caverna.",
+    "Eu cavo isso num instante... mas perdi o meu Chip de Escavação. Acho que caiu num beco lá no sul da floresta."
+  ],
+  "QuestId": 29
+}

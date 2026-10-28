@@ -26,7 +26,7 @@ namespace ProjetoDC.Scripts.UI
         {
             ("primeiros_passos", "👋 Primeiros Passos", PrimeirosPassosBody),
             ("vantagens_tipo", "⚔️ Vantagens de Tipo", VantagensDeTipoBody),
-            ("areas_center", "🏝️ Áreas do Center", AreasDoCenterBody),
+            ("areas_center", "🏝️ Áreas do Centro de Treinamento", AreasDoCenterBody),
             ("editor_bases", "🏗️ Editor de Bases", EditorDeBasesBody),
             ("batalha", "🥊 Batalha", BatalhaBody),
             ("passivas", "✨ Passivas", PassivasBody),
@@ -151,287 +151,143 @@ namespace ProjetoDC.Scripts.UI
         }
 
         private const string PrimeirosPassosBody =
-            "Bem-vindo ao Center! Aqui você cria Digimons, cuida deles e os leva a campeonatos. O Center é a sua " +
-            "progressão de verdade: os Digimons vivem um tempo limitado, mas cada vitória deixa o Center maior e mais forte.\n\n" +
-            "[b]Começo[/b]: você recebe um ovo, que choca sozinho depois de um tempo. O Center já vem com uma área " +
-            "Neutra, um Hospital e uma área de Treino, além de um pouco de Bits, Carne e Remédio.\n\n" +
-            "[b]Cuidar[/b]: clique num Digimon pra selecionar e ver o estado dele na barra superior. Na barra de " +
-            "baixo, segure 🍖 e arraste a Carne até o Center pra alimentar, faça o mesmo com 💊 pra curar doença, e " +
-            "use 🧹 pra limpar o cocô.\n\n" +
-            "[b]Crescer[/b]: arraste o Digimon pra área de Treino pra ele ganhar experiência e stats; batalhas (🏆) " +
-            "também dão experiência e Bits. Ao atingir os requisitos, ele evolui sozinho - e precisa evoluir antes do " +
-            "limite de idade do estágio, senão morre de velhice.\n\n" +
-            "[b]Expandir[/b]: compre áreas e ovos na Loja (🏪) com os Bits das batalhas. Vencer campeonatos aumenta a " +
-            "Capacidade do Center, que limita quantos Digimons você pode ter.\n\n" +
-            "Na primeira vez que você abrir uma tela ou usar uma função nova, aparece o tutorial dela. Todos os " +
-            "tutoriais ficam no botão 📖 da barra de controle pra consultar quando quiser.";
+            "Bem-vindo ao centro de treinamento! Aqui você cria Digimons, cuida deles e os leva a campeonatos. " +
+            "Os Digimons vivem um tempo limitado, mas cada vitória deixa o centro de treinamento maior e mais forte.\n\n" +
+            "[b]Cuidar[/b]: clique num Digimon pra ver o estado dele. Arraste a Carne (🍖) pra alimentar, o Remédio (💊) " +
+            "pra curar doença e use 🧹 pra limpar o cocô.\n\n" +
+            "[b]Crescer[/b]: coloque o Digimon na área de Treino e leve-o pra batalhar (🏆). Ele evolui sozinho ao " +
+            "cumprir os requisitos - e precisa evoluir antes de ficar velho demais.\n\n" +
+            "[b]Expandir[/b]: compre áreas e ovos na Loja (🏪) com os Bits das batalhas.\n\n" +
+            "Todos os tutoriais ficam no botão 📖.";
 
         private const string VantagensDeTipoBody =
-            "[b]Atributo[/b] (triângulo de vantagem, como pedra-papel-tesoura):\n" +
-            "Vacina > Vírus > Data > Vacina.\n" +
-            "Unknown tem vantagem contra todos, exceto Free. Free perde para todos, exceto Unknown.\n\n" +
-            "[b]Elemento[/b] (teia de vantagens):\n" +
+            "[b]Atributo[/b]: Vacina > Vírus > Data > Vacina. Unknown vence todos, menos Free; Free perde pra todos, menos Unknown.\n\n" +
+            "[b]Elemento[/b]:\n" +
             "Fogo > Planta > Água > Fogo\n" +
             "Elétrico > Vento > Terra > Elétrico\n" +
-            "Luz ↔ Trevas (vantagem mútua)\n" +
-            "Neutro não tem vantagem nem desvantagem contra ninguém.\n\n" +
-            "[b]Multiplicador de dano[/b]: cada sistema (Atributo e Elemento) conta um ponto de vantagem ou desvantagem. " +
-            "1 vantagem = x1.3, 2 vantagens (Atributo e Elemento ao mesmo tempo) = x2.0. " +
-            "Do outro lado, 1 desvantagem = x0.7, 2 desvantagens = x0.5. " +
-            "Se tiver uma vantagem e uma desvantagem ao mesmo tempo, elas se cancelam (x1.0).\n\n" +
-            "O multiplicador aparece do lado do número de dano na batalha quando é diferente de x1.";
+            "Luz ↔ Trevas (um vence o outro)\n" +
+            "Neutro não tem vantagem nem desvantagem.\n\n" +
+            "Vantagem aumenta o dano e desvantagem diminui. Ter vantagem nos dois ao mesmo tempo dobra o dano. " +
+            "O multiplicador aparece ao lado do número de dano.";
 
         private const string AreasDoCenterBody =
-            "O Center é dividido em áreas hexagonais, cada uma com uma função. Compre novas áreas na Loja e posicione " +
-            "nos hexágonos livres.\n\n" +
-            "[b]Neutra[/b]: área padrão, sem bônus especial - os Digimons ficam ali quando não há necessidade de ir a outro lugar.\n\n" +
-            "[b]Treino[/b]: Digimons dentro dessa área ganham experiência treinando, num status " +
-            "aleatório a cada treino.\n\n" +
-            "[b]Treino Especializado[/b]: também existem seis áreas de treino específicas de um " +
-            "status só (HP, Ataque, Defesa, Ataque Especial, Defesa Especial ou Velocidade), " +
-            "vendidas na Loja por um preço mais alto que a área de treino comum. Um Digimon " +
-            "treinando numa delas sempre foca naquele status, com um ganho um pouco melhor que o " +
-            "treino genérico. Cada área especializada só aceita 1 Digimon treinando por vez - " +
-            "tentar colocar um segundo mostra um aviso na tela.\n\n" +
-            "[b]Dormitório[/b]: dormir aqui recupera stamina extra e aumenta a felicidade do Digimon a cada hora de sono. " +
-            "Dormir fora do Dormitório por mais de 1 hora começa a custar felicidade, cada vez mais (mas em escala menor a cada hora extra).\n\n" +
-            "[b]Refeitório[/b]: coloque carne aqui para os Digimons comerem. Carne dentro do Refeitório demora muito mais " +
-            "pra estragar (~1 dia) e ainda dá 10% a mais de recuperação de fome quando fresca. Carne fora do Refeitório estraga rápido " +
-            "e, se um Digimon comer carne estragada, perde felicidade, disciplina e corre mais risco de ficar doente.\n\n" +
-            "[b]Carne Assada[/b]: com o Meramon recrutado, o Inventário mostra uma linha de cozinha pra assar as Carnes cruas do estoque: cada Carne custa 100 Bits e a encomenda inteira leva 20 minutos do relógio do jogo (uma por vez; o Meramon avisa quando terminar). A assada sacia mais (30 de fome, contra 20) e demora o dobro pra estragar - 12h fora do Refeitório e 48h dentro dele (a crua dura 6h e 24h). Coloque no Center pela terceira opção do botão de comida.\n" +
-            "" +
-            "[b]Hospital[/b]: Digimons dentro dessa área recuperam HP muito mais rápido (regeneração passiva bem mais forte " +
-            "que em qualquer outro lugar do Center). Não tem relação com remédio - remédio cura doença e pode ser usado em " +
-            "qualquer lugar, não precisa estar no Hospital.";
+            "O centro de treinamento é dividido em áreas hexagonais. Compre novas na Loja e coloque nos hexágonos livres.\n\n" +
+            "[b]Neutra[/b]: onde os Digimons ficam quando não têm nada pra fazer.\n\n" +
+            "[b]Treino[/b]: o Digimon treina um status aleatório. As áreas de treino especializado (HP, Ataque, Defesa, " +
+            "Ataque Especial, Defesa Especial ou Velocidade) treinam sempre o mesmo status, rendem um pouco mais e aceitam " +
+            "1 Digimon por vez.\n\n" +
+            "[b]Dormitório[/b]: dormir aqui recupera mais stamina e deixa o Digimon mais feliz. Dormir fora dele deixa o Digimon infeliz.\n\n" +
+            "[b]Refeitório[/b]: a carne colocada aqui demora muito mais pra estragar e alimenta um pouco mais. Comer carne " +
+            "estragada deixa o Digimon infeliz e pode deixá-lo doente.\n\n" +
+            "[b]Carne Assada[/b]: com o Meramon recrutado, dá pra assar Carne pelo Inventário. Ela alimenta mais e demora o dobro pra estragar.\n\n" +
+            "[b]Hospital[/b]: recupera HP bem mais rápido. Doença se cura com remédio, em qualquer lugar.";
 
         private const string EditorDeBasesBody =
-            "Clique no botão 🏗️ na barra de controle pra abrir o Editor de Bases: mostra todas as " +
-            "áreas que você já construiu no Center, além de um inventário com as que foram " +
-            "removidas.\n\n" +
-            "[b]Remover[/b] uma base tira ela do hexágono, mas não perde ela - a base vai pro " +
-            "inventário e fica guardada. Não dá pra remover a área inicial do Center, nem uma área " +
-            "que tenha um Digimon nela no momento.\n\n" +
-            "[b]Colocar[/b] uma base do inventário funciona como comprar uma nova na Loja: escolha " +
-            "um hexágono livre - só que sem custar Bits, já que ela já foi paga antes.\n\n" +
-            "Pra mudar uma base de lugar, é só remover e colocar de novo em outro hexágono.";
+            "O botão 🏗️ mostra as áreas construídas no centro de treinamento.\n\n" +
+            "[b]Remover[/b] guarda a área no inventário, sem perdê-la. Não dá pra remover a área inicial nem uma área com Digimon dentro.\n\n" +
+            "[b]Colocar[/b] uma área guardada num hexágono livre não custa Bits.\n\n" +
+            "Pra mudar uma área de lugar, remova e coloque de novo.";
 
         private const string BatalhaBody =
-            "As batalhas são em tempo real, por turnos individuais: a Velocidade de cada Digimon decide a ordem de ação.\n\n" +
-            "[b]Dano[/b] = Ataque do atacante − Defesa do alvo (mínimo 1), com ±10% de variação aleatória. " +
-            "10% de chance de crítico, que dobra o dano. O multiplicador de vantagem de tipo (veja o tópico de Vantagens de Tipo) " +
-            "é aplicado em cima disso.\n\n" +
-            "Times podem ter até 3 Digimons (batalha 3x3) ou 1 (1x1), dependendo do tipo de combate escolhido.\n\n" +
-            "[b]Selecionar um Digimon[/b]: durante a luta, clique em qualquer Digimon (seu ou " +
-            "inimigo) pra ver o HP dele. Do seu time mostra o HP exato (atual/máximo); do time " +
-            "inimigo mostra só uma porcentagem aproximada de vida restante.\n\n" +
-            "[b]Cura e morte súbita[/b]: a cura, a regeneração e os escudos perdem eficácia com o tempo de luta (100% nos primeiros 30 segundos, depois caem aos poucos até 20%). Passados 2 minutos começa a morte súbita: todos perdem 3% da vida máxima por segundo, sem defesa nem cura que segure - quem estiver com a menor porcentagem de vida cai primeiro. O topo da tela avisa a contagem regressiva.\n" +
-            "" +
-            "Ao vencer, o time ganha experiência e Bits. Mesmo perdendo, cada Digimon ganha uma experiência de consolação " +
-            "(cerca de 1/5 do normal), pra não travar o progresso do jogador.\n\n" +
-            "Cada Digimon também pode ter uma passiva ativa que soma um efeito extra na batalha - veja o tópico ✨ Passivas.";
+            "As batalhas acontecem sozinhas, em tempo real. Quanto mais Velocidade, mais cedo o Digimon age; Ataque e Defesa " +
+            "decidem o dano, e às vezes sai um golpe crítico.\n\n" +
+            "Clique em qualquer Digimon durante a luta pra ver a vida dele.\n\n" +
+            "[b]Morte súbita[/b]: as curas enfraquecem com o tempo, e depois de 2 minutos todos começam a perder vida - " +
+            "quem estiver mais machucado cai primeiro.\n\n" +
+            "Vencer dá experiência e Bits. Perder ainda dá um pouco de experiência.";
 
         private const string PassivasBody =
-            "Cada espécie de Digimon tem uma pool fixa de 2 a 3 passivas possíveis, definida pelo Role dela " +
-            "(Tank, Warrior, Assassin, Ranged ou uma das três variações de Suporte: Curador, Buffer e Debuffer). " +
-            "Ao nascer de um ovo ou evoluir, o Digimon sorteia 1 dessas passivas pra ficar ativa - só uma por vez.\n\n" +
-            "A passiva sorteada fica fixa até a próxima evolução, que sorteia de novo (pode repetir ou trocar). " +
-            "Não tem como escolher a passiva nem re-sortear sem evoluir.\n\n" +
-            "Cada passiva dá um efeito de combate diferente (dano extra em certas condições, cura, escudo, redução de " +
-            "cooldown, chance de crítico, entre outros). Pra ver qual passiva um Digimon tem e o que ela faz, selecione " +
-            "ele e clique no botão ℹ na barra de status - a janela de Detalhes do Digimon mostra o nome e a descrição " +
-            "completa.\n\n" +
-            "Digimons selvagens e times inimigos de Batalha Livre também sorteiam passiva, com a mesma regra. Times de " +
-            "Campeonato usam uma passiva fixa, igual aos outros stats deles.\n\n" +
-            "Digimons que você já tinha antes desse sistema existir recebem a passiva automaticamente na primeira vez " +
-            "que o save é carregado depois da atualização.";
+            "Cada Digimon tem uma passiva ativa, um efeito extra na batalha (dano extra, cura, escudo, crítico...). " +
+            "Ela é sorteada ao nascer e sorteada de novo a cada evolução.\n\n" +
+            "[b]Passivas herdadas[/b]: cada forma por onde o Digimon passou deixa uma passiva a mais, que ele carrega pra sempre. " +
+            "Quanto mais formas na história dele, mais passivas.\n\n" +
+            "Pra ver as passivas de um Digimon, selecione ele e clique no botão ℹ.";
 
         private const string CampeonatosBody =
-            "Ao clicar no botão de troféu, você escolhe entre dois tipos de combate:\n\n" +
-            "[b]Batalha Livre[/b]: o jogo gera um time inimigo balanceado de acordo com o nível e poder do seu time atual.\n\n" +
-            "[b]Campeonato[/b]: uma lista de combates fixos e pré-determinados (1x1 ou 3x3), com oponentes e nível recomendado " +
-            "sempre iguais, independente do quão forte seu time está - e um pouco mais fortes do que o nível sugere, pra " +
-            "continuar sendo um desafio mesmo pra um time já bem treinado. Campeonatos não dão experiência (nem na vitória, " +
-            "nem a de consolação numa derrota) - só Bits e as recompensas de progressão abaixo. Vencer um campeonato dá uma " +
-            "recompensa única de aumento permanente na Capacidade do Center (a forma principal de progressão do jogo por " +
-            "enquanto), recebida apenas na primeira vez que aquele campeonato é vencido.\n\n" +
-            "[b]Quando dá pra entrar[/b]: cada campeonato só abre em certas datas do calendário (veja o tópico Calendário). " +
-            "O card mostra a situação: \"Aberto por mais N dias\", \"Abre em N dias\", \"Concluído nesta edição\" (você já " +
-            "venceu esta abertura - volta na próxima) ou \"Bloqueado: vença ...\" (alguns só abrem depois de vencer outro). " +
-            "Perder não gasta nada: dá pra tentar de novo enquanto estiver aberto.\n\n" +
-            "[b]Regras de inscrição[/b]: muitos campeonatos só aceitam certos estágios ou atributos (\"Só Rookie\", \"Só Vírus\"...), " +
-            "escrito no card. \"Só Mega\" também aceita Mega+. Na montagem do time, quem não cumpre a regra aparece bloqueado " +
-            "com o motivo - por isso vale ter Digimon variados no Center.";
+            "O botão 🏆 oferece dois tipos de combate:\n\n" +
+            "[b]Batalha Livre[/b]: um time inimigo do mesmo nível que o seu. Dá experiência e Bits.\n\n" +
+            "[b]Campeonato[/b]: lutas fixas e mais difíceis. Não dão experiência, mas a primeira vitória em cada um " +
+            "aumenta a Capacidade do centro de treinamento - é o principal jeito de crescer.\n\n" +
+            "Cada campeonato abre só em certas datas (veja 📅 Calendário), e alguns só aceitam certos estágios ou atributos " +
+            "(\"Só Rookie\", \"Só Vírus\"...). Perder não custa nada: dá pra tentar de novo enquanto estiver aberto.";
 
         private const string CalendarioBody =
-            "[b]Calendário[/b]: o ano do jogo (a temporada) tem 60 dias, em 4 estações de 15 dias - Primavera, Verão, Outono " +
-            "e Inverno. O minicalendário na barra superior mostra a estação, o ano e os dias da estação, com o dia de hoje destacado.\n\n" +
-            "[b]Agenda dos campeonatos[/b]: alguns campeonatos voltam de tempos em tempos (a Copa Novato e o Torneio Rookie " +
-            "abrem com frequência), outros abrem numa janela de dias ou num dia fixo do ano. Cada abertura é uma edição - " +
-            "vencer fecha o campeonato até a próxima. Na virada do dia aparece um aviso quando um campeonato vai abrir, quando " +
-            "abre e quando está no último dia, e diz se faltam Digimon elegíveis no Center pra montar o time. A barra " +
-            "superior também mostra o próximo campeonato (\"Aberto: ...\" ou \"Próx.: ... em Nd\").\n\n" +
-            "[b]Medalhas[/b]: vencer um campeonato dá uma medalha da temporada, de 1 a 3 pontos (20 no total por ano; a Copa " +
-            "Novato e o Torneio Rookie não dão). Cada campeonato conta uma vez por temporada, e as medalhas zeram na virada " +
-            "do ano. Veja as suas no botão 🏅 Medalhas, no menu do troféu.\n\n" +
-            "[b]Grande Evento[/b]: no último dia do ano (dia 60) abre o Grande Evento, um 3x3 sem restrição que exige 12 " +
-            "medalhas da temporada. Vencer dá Capacidade, Bits e o título de Campeão do Ano. Se já não der pra juntar 12 " +
-            "medalhas no ano, ele aparece como \"Inalcançável nesta temporada\" - aí o jeito é tentar na próxima.";
+            "O ano tem 60 dias, divididos em 4 estações. O minicalendário na barra superior mostra o dia de hoje e o próximo campeonato.\n\n" +
+            "[b]Campeonatos[/b]: cada um abre em datas próprias. Um aviso aparece quando um campeonato vai abrir e no último dia dele.\n\n" +
+            "[b]Medalhas[/b]: vencer campeonatos dá medalhas, que zeram na virada do ano. Veja as suas em 🏅 Medalhas, no menu do troféu.\n\n" +
+            "[b]Grande Evento[/b]: no último dia do ano, quem tiver 12 medalhas pode disputar o título de Campeão do Ano.";
 
         private const string ExploracaoBody =
-            "Clique no botão de globo 🌎 na barra de controle pra ver as áreas de exploração " +
-            "disponíveis. Escolha uma área e depois 1 Digimon do seu Center pra explorar (só 1 " +
-            "por vez, não o time inteiro).\n\n" +
-            "Dentro da área, ande com WASD/setas ou clicando no chão. A câmera segue o Digimon " +
-            "e só mostra o que já foi explorado - o mapa é bem maior que a tela.\n\n" +
-            "[b]Selvagens[/b]: aparecem espalhados pela área e passam a perseguir você se " +
-            "chegar perto o bastante. Encostar neles inicia uma batalha 1x1 sozinho, sem " +
-            "precisar clicar; vencer dá experiência (sem o bônus de área de treino específica) " +
-            "e pode derrubar itens. Clicar num selvagem de longe não inicia a luta à distância " +
-            "- só manda o Digimon andar até lá; a interação de verdade só acontece perto.\n\n" +
-            "[b]NPCs[/b]: clique de perto pra conversar (mesma regra de distância dos " +
-            "selvagens). Alguns só têm papo, outros oferecem uma quest (derrotar selvagens ou " +
-            "coletar itens) - aceite, cumpra o objetivo e volte pra entregar e receber a " +
-            "recompensa. Alguns NPCs ficam escondidos de propósito, cercados de árvores ou " +
-            "perto de um selvagem que guarda o caminho até eles - vale a pena explorar todo " +
-            "canto do mapa.\n\n" +
-            "[b]Itens no chão[/b]: clique de perto pra coletar - somam direto no Inventário do " +
-            "Center e não voltam a aparecer depois.\n\n" +
-            "[b]Áreas novas[/b]: algumas áreas só abrem depois de concluir uma quest - enquanto estiverem bloqueadas, o cartão na lista mostra 🔒 e qual quest falta, e o botão fica desativado. Por exemplo, a Caverna Cristalina (nível recomendado 14, bem mais difícil que a Floresta Inicial) abre ao concluir a quest Limpeza da Floresta.\n\n" +
-            "[b]Ordem das áreas[/b]: Caminho principal: Floresta Inicial (nível 6) -> Caverna Cristalina (14) -> Deserto Escaldante (26, abre com a quest Luz na Escuridão) -> Cânion Carmesim (32, abre com a quest Ventos do Deserto). Caminho alternativo: Floresta -> Pântano Sombrio (20, abre junto com a Caverna, mas os selvagens de lá são mais fortes - vale passar pela caverna antes) -> Praia Dourada (24, abre com a quest Trilhas do Pântano). Do Deserto sai um segundo desvio: o Vulcão Ardente (30, abre com a mesma quest Ventos do Deserto do Cânion).\n\n" +
-            "[b]Quests de coleta e de caçada[/b]: algumas quests pedem itens que só caem de certos selvagens (o texto da quest diz de quais) - ganhe combates na área pra juntar e depois entregue ao NPC. Outras pedem pra derrotar uma espécie específica; o progresso conta entre visitas, e os selvagens são sorteados de novo a cada entrada, então pode ser preciso voltar mais de uma vez.";
+            "No botão 🌎, escolha uma área e 1 Digimon pra explorar. Ande com WASD, setas ou clicando no chão.\n\n" +
+            "[b]Selvagens[/b]: perseguem você quando chega perto, e encostar neles começa uma batalha. Vencer dá experiência e pode render itens.\n\n" +
+            "[b]NPCs[/b]: chegue perto e clique pra conversar. Alguns oferecem quests - cumpra o objetivo e volte pra receber a recompensa. " +
+            "Alguns ficam escondidos, então explore todo canto.\n\n" +
+            "[b]Itens[/b]: clique de perto pra coletar.\n\n" +
+            "[b]Áreas novas[/b]: as áreas bloqueadas (🔒) abrem ao concluir certas quests, e o cartão mostra qual falta.";
 
         private const string NpcsRecrutadosBody =
-            "Alguns NPCs de áreas de exploração podem ser recrutados: entregue a quest deles " +
-            "e, se forem recrutáveis, passam a beneficiar o Center de longe, mesmo sem aparecer " +
-            "fisicamente nele - o efeito de cada um é descrito no próprio diálogo, antes de " +
-            "aceitar a quest.\n\n" +
-            "Alguns bonificam ainda mais uma área de treino específica (empilhando com o bônus " +
-            "que a área já dá sozinha) e fazem Digimons ociosos irem treinar lá por conta " +
-            "própria de vez em quando, sem precisar arrastar. Outros deixam recursos de graça " +
-            "no Center todo dia. O Wizardmon (escondido na Floresta Inicial) é diferente dos " +
-            "outros: não dá nenhum bônus automático, mas desbloqueia a opção de bloquear " +
-            "evoluções indesejadas no Guia de Evolução - veja o tópico ✨ Evolução.\n\n" +
-            "[b]Treino Autônomo[/b]: se um Digimon está indo treinar sozinho um stat que você " +
-            "não quer (e acabando puxando ele pra uma evolução indesejada), abra a tela de " +
-            "Detalhes dele (botão ℹ na barra de status) e desmarque esse stat na seção " +
-            "\"Treino Autônomo\" - ele só deixa de ir sozinho pra aquela área específica, o " +
-            "treino manual (arrastar na mão) continua funcionando normalmente.\n\n" +
-            "[b]Quais NPCs cobrem quais treinos[/b]: na Floresta Inicial, o Gaogamon (Ataque) e o Togemon (Defesa); na Caverna Cristalina, o Candlemon (Ataque Especial), o Stingmon (Velocidade), o Sunarizamon (HP) e o Phascomon (Defesa Especial) - juntos, cobrem as seis áreas de treino específico.";
+            "Alguns NPCs da exploração passam a ajudar o centro de treinamento depois que você conclui a quest deles. " +
+            "O diálogo diz o que cada um faz.\n\n" +
+            "Uns reforçam uma área de treino e levam os Digimons parados a treinar lá sozinhos. Outros deixam recursos todo dia, " +
+            "e o Wizardmon permite bloquear evoluções no Guia de Evolução.\n\n" +
+            "[b]Treino Autônomo[/b]: se um Digimon estiver treinando sozinho um status que você não quer, desmarque esse status " +
+            "na tela de detalhes dele (botão ℹ).";
 
         private const string EvolucaoBody =
-            "Cada Digimon pode evoluir quando atinge o nível mínimo, a idade mínima (em dias) e os stats mínimos exigidos " +
-            "pela próxima forma. Algumas evoluções também exigem número mínimo de batalhas e/ou taxa de vitória " +
-            "(evita evoluir só acumulando XP de consolação de derrotas propositais), e Disciplina ou Felicidade " +
-            "mínima/máxima (formas mais \"malignas\" só saem com Disciplina baixa; formas mais \"queridas\" pela " +
-            "fanbase exigem Felicidade alta, e algumas mais rejeitadas exigem o contrário). Quando a evolução " +
-            "acontece, uma animação centraliza o Digimon na tela e pausa o resto do jogo (evoluções simultâneas de " +
-            "vários Digimons entram numa fila, uma de cada vez).\n\n" +
-            "Evoluir também custa Capacidade do Center (Digimons de estágio maior ocupam mais espaço). Se não houver " +
-            "capacidade suficiente na hora, o jogo avisa e deixa você escolher entre liberar espaço (removendo outros Digimons) " +
-            "ou manter esse Digimon sem evoluir por enquanto - ele evolui automaticamente assim que houver espaço.\n\n" +
-            "[b]Guia de Evolução[/b]: botão ✨ na barra de controle - escolha um Digimon do roster pra ver todas as " +
-            "evoluções possíveis dele, com os requisitos de cada uma e se já foram atendidos. Depois de recrutar o " +
-            "Wizardmon (veja 🤝 NPCs Recrutados), também dá pra marcar \"Bloquear\" numa evolução específica ali " +
-            "mesmo: o Digimon nunca evolui por um caminho bloqueado, mesmo atendendo todos os requisitos - útil pra " +
-            "recusar a evolução mais fácil de propósito e esperar juntar os stats de uma alternativa mais forte. Dá " +
-            "pra marcar e desmarcar quando quiser, sem custo." +
-            "\n" +
-            "\n" +
-            "[b]Ramificações[/b]: um Digimon pode ter vários caminhos de evolução. Quando mais de um tem os requisitos atendidos ao mesmo tempo, o jogo escolhe o mais exigente (o que pede mais nível, idade, stats e condições); se empatarem, sorteia entre eles. Por isso, pra chegar num caminho específico, olhe os requisitos dele no Guia de Evolução e treine os stats certos - e lembre que Felicidade e Disciplina podem abrir ou fechar caminhos. Algumas formas só saem por Jogress (veja 🧬 Jogress) e outras são uma troca de modo dentro do mesmo estágio (Belphemon Sleep Mode → Rage Mode).";
+            "O Digimon evolui sozinho quando cumpre os requisitos da próxima forma: nível, idade, status e, em algumas formas, " +
+            "batalhas vencidas, Felicidade ou Disciplina. Evoluir também ocupa mais Capacidade do centro de treinamento.\n\n" +
+            "[b]Guia de Evolução[/b] (✨): mostra todos os caminhos de um Digimon e o que falta pra cada um. Treine os status " +
+            "certos pra chegar na forma que você quer.\n\n" +
+            "Quando vários caminhos estão liberados, o Digimon vai pro mais difícil. Com o Wizardmon recrutado, dá pra " +
+            "bloquear um caminho no Guia pra esperar uma forma melhor.";
 
         private const string JogressBody =
-            "O botão 🧬 na barra de controle abre a fusão Jogress (DNA Digivolution): você escolhe 2 Digimons do Center e, se a combinação for uma receita conhecida, eles se fundem num Digimon novo.\n" +
-            "\n" +
-            "[b]Sem requisitos de treino[/b]: diferente da evolução, o Jogress não exige nível, idade nem stats - só os dois Digimons certos (em qualquer ordem) e Capacidade livre no Center. A tela mostra uma prévia (\"A + B → Resultado\") antes de você confirmar, e avisa quando a combinação não existe ou quando falta Capacidade. Nada muda até o clique de confirmar.\n" +
-            "\n" +
-            "[b]O que acontece[/b]: os dois Digimons saem do Center e um Digimon novo nasce no lugar. Os stats dele vêm da média dos stats dos dois, com um bônus, puxada em direção à espécie resultante - então treinar os dois antes compensa. A Capacidade que o resultado ocupa é descontada da que os dois ocupavam.\n" +
-            "\n" +
+            "O botão 🧬 funde 2 Digimons num Digimon novo, se a dupla for uma receita conhecida. Não precisa de nível nem de status, só da dupla certa e de Capacidade livre.\n\n" +
+            "Os dois somem e o novo Digimon nasce mais forte quanto mais treinados eles estavam. O botão \"Linha principal\" escolhe de qual dos dois vem primeiro o histórico do novo Digimon.\n\n" +
             "[b]Receitas[/b]:\n" +
             "- Omegamon = WarGreymon + MetalGarurumon\n" +
             "- Examon = Slayerdramon + Breakdramon\n" +
-            "- Paildramon = ExVeemon + Stingmon\n" +
-            "\n" +
-            "Esses três só existem por Jogress - nenhuma evolução comum chega neles. O Guia de Evolução (✨) também mostra, pra cada Digimon, com qual parceiro ele pode fazer Jogress.";
+            "- Paildramon = ExVeemon + Stingmon\n\n" +
+            "O Guia de Evolução (✨) mostra com quem cada Digimon pode se fundir.";
 
         private const string MorteBody =
-            "Digimons não vivem para sempre - cuidar bem deles (e evoluir a tempo) é o que mantém eles vivos. Com um esforço moderado (uns 4 combates por dia, treinando os stats que a evolução pede) ele chega pelo menos a uma forma mais fraca de cada estágio; as formas mais fortes pedem mais esforço (Energético, mais combates) ou um Center mais evoluído.\n\n" +
-            "[b]Velhice[/b]: cada estágio evolutivo tem um teto de idade em dias - Baby: 3, In-Training: 5, " +
-            "Rookie: 15, Champion: 26, Ultimate: 52, Mega/Mega+/Special: 68. A idade nunca reseta ao evoluir, só o " +
-            "teto aumenta - evoluir antes do prazo é o que evita a morte por velhice, que é certa assim que a " +
-            "idade passa do teto do estágio atual.\n\n" +
-            "[b]Maus-tratos[/b]: negligência repetida também pode matar, com uma chance (não é certeza) a cada vez " +
-            "que o problema se repete:\n" +
-            "- Ficar doente por 5 dias seguidos ou mais, sem tratamento.\n" +
-            "- Perder 4 batalhas seguidas ou mais, sem vencer nenhuma no meio.\n" +
-            "- Ser nocauteado (HP zerado) em batalha 6 vezes ou mais ao longo da vida, mesmo que o time vença " +
-            "depois.\n" +
-            "- Ser escalado pra batalhar com HP abaixo de 25% do máximo, 4 vezes ou mais.\n" +
-            "- Ficar parado muito tempo seguido numa área cheia de cocô sem limpar.\n\n" +
+            "Digimons não vivem pra sempre.\n\n" +
+            "[b]Velhice[/b]: cada estágio tem uma idade máxima. Se o Digimon passar dela sem evoluir, ele morre. Evoluir a tempo é o que o mantém vivo.\n\n" +
+            "[b]Maus-tratos[/b]: descuido pode matar - doença sem tratamento por dias, muitas derrotas seguidas, batalhar " +
+            "muito machucado ou ficar no meio do cocô por muito tempo.\n\n" +
             "Quando um Digimon morre, um aviso explica o motivo.";
 
         private const string OvosBody =
-            "Ovos ocupam Capacidade do Center do mesmo jeito que o Baby que vai nascer deles, então não dá pra acumular " +
-            "ovos infinitamente sem espaço. Receba o ovo inicial no começo do jogo ou compre mais na Loja - só Digimon " +
-            "de estágio Baby nascem de ovo. Depois de um tempo de incubação, o ovo choca sozinho e o Baby aparece no " +
-            "Center. Dá pra arrastar o ovo pra qualquer área do Center, como um Digimon - a área não muda nada nele, " +
-            "é só pra organizar.\n\n" +
-            "[b]Tipo do ovo[/b]: ao comprar, escolha entre \"Aleatório\" (qualquer tipo, preço normal) ou um EggType " +
-            "específico (Dragão, Fera, Água, Floresta, Fogo, Trevas ou Luz - custa 3x mais). Escolher um tipo garante " +
-            "esse EggType, mas o Baby exato dentro dele continua sendo sorteado caso haja mais de um. O sprite do ovo " +
-            "reflete o tipo de verdade - sem mistério, é sempre visível o que vai chocar.";
+            "Ovos vêm da Loja e chocam sozinhos depois de um tempo. Cada ovo ocupa Capacidade do centro de treinamento.\n\n" +
+            "Dá pra comprar um ovo aleatório ou escolher o tipo (Dragão, Fera, Água, Floresta, Fogo, Trevas ou Luz), que custa mais. " +
+            "O desenho do ovo mostra o tipo.\n\n" +
+            "Dá pra arrastar os ovos pelo centro de treinamento pra organizar.";
 
         private const string NecessidadesBody =
-            "[b]Fome[/b]: cai com o tempo; alimente os Digimons colocando carne no Refeitório (ou em qualquer lugar, " +
-            "mas aí ela estraga mais rápido).\n\n" +
-            "[b]Stamina[/b]: gasta ao treinar e se recupera descansando/dormindo (mais rápido dentro do Dormitório).\n\n" +
-            "[b]Felicidade[/b] e [b]Disciplina[/b]: afetadas por como o Digimon é cuidado (onde dorme, o que come, etc).\n\n" +
-            "[b]Doença[/b]: Digimons podem ficar doentes aleatoriamente (chance maior comendo comida estragada); " +
-            "use remédio nele (em qualquer lugar do Center, não precisa ser no Hospital) pra curar. Já o Hospital em si " +
-            "serve pra recuperar HP mais rápido, não pra curar doença.\n\n" +
-            "[b]Colocar Carne, Energético e remédio[/b]: segure o botão do item e arraste até o Center; solte pra colocar. Pra desistir no meio do arrastar, aperte Esc - nada é gasto. O jogo também cancela sozinho se a janela perder o foco (Alt-Tab, por exemplo) antes de você soltar.\n\n" +
-            "Enquanto todos os Digimons do Center estão dormindo, o botão de pular sono (na área do relógio) avança o " +
-            "tempo direto até alguém acordar.";
+            "[b]Fome[/b]: coloque carne pra alimentar - no Refeitório ela dura mais.\n\n" +
+            "[b]Stamina[/b]: gasta treinando e volta descansando, mais rápido no Dormitório.\n\n" +
+            "[b]Felicidade e Disciplina[/b]: dependem de como o Digimon é cuidado e mudam as evoluções possíveis.\n\n" +
+            "[b]Doença[/b]: use Remédio em qualquer lugar pra curar.\n\n" +
+            "[b]Colocar itens[/b]: segure o botão do item, arraste até o lugar e solte. Esc cancela.";
 
         private const string InventarioBody =
-            "O botão de mochila abre o Inventário: mostra todo item conhecido pelo jogo (comida, remédio, e outros " +
-            "itens futuros) com ícone e quantidade atual. Passe o mouse sobre um item pra ver o nome completo e a descrição.";
+            "O botão 🎒 mostra seus itens e quantidades. Passe o mouse sobre um item pra ver o que ele faz.";
 
         private const string EnciclopediaBody =
-            "O botão 📘 na barra de controle mostra todas as espécies de Digimon do jogo, " +
-            "agrupadas por estágio evolutivo. Espécies que você já teve no Center pelo menos " +
-            "uma vez (chocando, comprando ou evoluindo pra elas) aparecem com sprite, nome e " +
-            "função normalmente; as que você nunca teve mostram só uma silhueta com \"???\". " +
-            "A busca por nome só funciona entre as espécies já descobertas.\n\n" +
-            "[b]Conjuntos[/b]: a aba \"Conjuntos\", no topo da tela, mostra grupos temáticos de " +
-            "Digimon (ex.: Lordes Demoníacos). Cada card mostra quantos membros do grupo você " +
-            "já descobriu, com o mesmo efeito de silhueta pros que faltam - e o checkbox ao " +
-            "lado do nome fica marcado (card fica verde) quando o conjunto está completo. " +
-            "Passe o mouse sobre o nome do conjunto pra ver o efeito dele. Completar um " +
-            "conjunto dá um bônus permanente pro Center - e continua valendo mesmo que os " +
-            "Digimon daquele grupo já tenham morrido ou não estejam mais no seu time, já que o " +
-            "que conta é ter descoberto, não ter agora.";
+            "O botão 📘 mostra todas as espécies do jogo. As que você já teve aparecem completas, e as outras ficam como silhueta.\n\n" +
+            "[b]Conjuntos[/b]: grupos temáticos de Digimon. Descobrir todos os membros de um conjunto dá um bônus permanente " +
+            "pro centro de treinamento, mesmo que esses Digimons não estejam mais com você. Passe o mouse sobre o nome pra ver o bônus.";
 
         private const string RelogioBody =
-            "O relógio na barra superior mostra a hora atual (analógica e digital), num ciclo de 24 horas; a data fica no " +
-            "minicalendário ao lado (veja o tópico Calendário). Embaixo do relógio ficam dois botões:\n" +
-            "- [b]⏩ x2[/b]: acelera a passagem do tempo (relógio, fome, incubação) em 2x. Clique de novo pra voltar ao normal.\n" +
-            "- [b]💤 Pular sono[/b]: enquanto todos os Digimons estão dormindo (entre 22h e 6h - não há nada pra fazer nesse " +
-            "período ainda, já que não existem Digimons diurnos/noturnos no jogo por enquanto), pula direto até eles " +
-            "acordarem, sem quebrar a passagem de dias nem nenhum sistema que dependa do relógio.";
+            "O relógio na barra superior mostra a hora do dia. Embaixo dele:\n" +
+            "- [b]⏩ x2[/b]: o tempo passa duas vezes mais rápido.\n" +
+            "- [b]💤 Pular sono[/b]: quando todos estão dormindo, avança até eles acordarem.";
 
         private const string MenuESaveBody =
-            "[b]Menu Principal[/b]: ao abrir o jogo você escolhe entre Novo Jogo, Carregar Jogo e Opções.\n" +
-            "- [b]Carregar Jogo[/b] continua do último save. Fica desativado quando não existe save.\n" +
-            "- [b]Novo Jogo[/b] começa do zero e APAGA o save atual (e o backup dele). Se já existe um save, o jogo pergunta antes, mostrando o que será perdido - não dá pra desfazer. Sem nenhum save, começa direto.\n" +
-            "- [b]Opções[/b] tem o volume da música (o mesmo da ⚙ Configurações dentro do jogo).\n" +
-            "\n" +
-            "O relógio do jogo fica parado enquanto o menu está aberto.\n" +
-            "\n" +
-            "[b]Salvamento automático[/b]: não existe botão de salvar. O jogo salva sozinho no fim de cada dia do jogo, quando um ovo choca, depois de uma fusão Jogress ou de uma decisão de capacidade na evolução, quando um Digimon morre e ao sair pelo botão 🚪 ou fechar a janela. O jogo guarda também um backup do save anterior e tenta usá-lo se o save principal não puder ser lido.";
+            "[b]Menu Principal[/b]: Carregar Jogo continua de onde você parou. Novo Jogo começa do zero e [b]apaga o save atual[/b] - o jogo pergunta antes.\n\n" +
+            "[b]Salvamento[/b]: o jogo salva sozinho no fim de cada dia, em momentos importantes e ao sair.";
 
         private const string RenomearBody =
-            "Clique no nome do Digimon selecionado, ao lado do sprite na barra superior, pra dar um apelido a ele. " +
-            "Isso só muda o nome mostrado nas telas - não afeta a espécie, evolução ou qualquer outra lógica interna do jogo. " +
-            "Deixar o campo vazio (ou digitar o nome original da espécie) remove o apelido.";
+            "Clique no nome do Digimon selecionado, na barra superior, pra dar um apelido. Deixe vazio pra voltar ao nome da espécie.";
     }
 }

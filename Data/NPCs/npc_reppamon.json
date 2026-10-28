@@ -1,0 +1,11 @@
+{
+  "Id": 29,
+  "Name": "Reppamon",
+  "Code": "reppamon",
+  "DialogueLines": [
+    "Essas toras caídas fecharam a trilha da clareira. Eu cortava tudo num instante...",
+    "...mas cochilei aqui na sombra e um Agumon brincalhão saiu correndo com o meu amolador de lâminas! Sem ele, minhas rajadas não cortam nem graveto.",
+    "Recupera o amolador pra mim? Aí as toras viram tábuas - e pode ficar com elas, alguém lá no cais estava precisando."
+  ],
+  "QuestId": 27
+}

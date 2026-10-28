@@ -1,0 +1,13 @@
+{
+  "Id": 28,
+  "Name": "A Jangada",
+  "Description": "Entregue as Tábuas ao Terriermon pra ele montar a jangada e você atravessar o rio até a margem do pântano.",
+  "GiverNpcId": 30,
+  "ObjectiveType": "DeliverItem",
+  "ObjectiveTargetId": 13,
+  "ObjectiveCount": 1,
+  "RewardBits": 300,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

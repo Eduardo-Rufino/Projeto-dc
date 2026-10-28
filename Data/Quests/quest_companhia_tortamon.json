@@ -1,0 +1,14 @@
+{
+  "Id": 31,
+  "Name": "Companhia",
+  "Description": "O Tortamon não quer nada além de alguém pra ficar um pouco nas pedras com ele. Sente aí e escute.",
+  "GiverNpcId": 6,
+  "ObjectiveType": "Talk",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 0,
+  "RewardBits": 50,
+  "RewardCapacity": 0,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0,
+  "CompletionText": "\"Antes do Center existir, essas pedras eram o ponto mais alto da floresta. Eu via os Digimon chegarem e partirem daqui de cima... hoje vejo você. Volte quando quiser - ou não. As pedras não vão a lugar nenhum.\""
+}

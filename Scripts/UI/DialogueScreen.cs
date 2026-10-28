@@ -34,8 +34,9 @@ namespace ProjetoDC.Scripts.UI
         public override void _Ready()
         {
             // A área de exploração pausa o resto do jogo enquanto uma batalha selvagem está
-            // rolando, mas o diálogo em si não pausa nada - ainda assim segue o mesmo padrão
-            // de ProcessMode.Always das outras telas modais, por segurança/consistência.
+            // rolando; enquanto este diálogo está aberto ela também congela o próprio mapa
+            // (ver ExplorationArea.OnDialogueVisibilityChanged). Segue o mesmo padrão de
+            // ProcessMode.Always das outras telas modais, por segurança/consistência.
             ProcessMode = ProcessModeEnum.Always;
 
             _portrait = GetNode<TextureRect>("Window/MarginContainer/VBoxContainer/HeaderRow/Portrait");
@@ -101,6 +102,10 @@ namespace ProjetoDC.Scripts.UI
                 _questLabel.Text = _npc.IsRecruitable
                     ? $"{quest.Name} - já completa. {_npc.Name} foi recrutado para o Center!"
                     : $"{quest.Name} - já completa.";
+
+                if (!string.IsNullOrEmpty(quest.CompletionText))
+                    _questLabel.Text += $"\n\n{quest.CompletionText}";
+
                 return;
             }
 

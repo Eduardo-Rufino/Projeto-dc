@@ -1,0 +1,13 @@
+{
+  "Id": 27,
+  "Name": "Toras no Caminho",
+  "Description": "Um Agumon brincalhão levou o amolador de lâminas do Reppamon enquanto ele cochilava. Derrote um Agumon selvagem pra recuperar o amolador - aí o Reppamon corta a pilha de toras que fecha o caminho ao sul da praça e te dá as tábuas.",
+  "GiverNpcId": 29,
+  "ObjectiveType": "DefeatWild",
+  "ObjectiveTargetId": 1,
+  "ObjectiveCount": 1,
+  "RewardBits": 200,
+  "RewardCapacity": 0,
+  "RewardItemId": 13,
+  "RewardItemQuantity": 1
+}

@@ -181,6 +181,11 @@ namespace ProjetoDC.Scripts.Models.World
         /// uma vez na primeira carga depois da atualização.</summary>
         public bool AgeCapMigrationApplied { get; set; }
 
+        /// <summary>True depois que GameManager.ApplyForestRevampMigration já rodou pra esse save
+        /// (Caverna/Pântano passaram a abrir pelas quests da floresta nova). Novo Jogo já nasce
+        /// true; save antigo entra false e migra uma vez.</summary>
+        public bool ForestRevampMigrationApplied { get; set; }
+
         /// <summary>DigimonData.Id de espécies que o jogador já teve no Center pelo menos uma
         /// vez (chocou, comprou, ou evoluiu pra essa forma) - usado pela EncyclopediaScreen
         /// pra decidir entre mostrar a espécie normalmente ou só como silhueta. Marcado em

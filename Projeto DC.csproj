@@ -10,8 +10,25 @@
          validar essa revisão, não fazem parte do jogo. Fora da compilação (não só do PCK via
          export_presets.cfg exclude_filter) pra não carregar código de teste morto no build. -->
     <Compile Remove="revisao_evolucao\**\*.cs" />
+    <!-- MapLoader de referência do pacote do mapa (escrito fora do Godot): a versão adaptada é
+         Scripts/Gameplay/MapLoader.cs. -->
+    <Compile Remove="Assets\Areas\**\*.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data\Itens\tabuas.json" />
+    <Content Include="Data\Itens\chip_escavacao.json" />
+    <Content Include="Data\Itens\fruta_silvestre.json" />
+    <Content Include="Data\Itens\fragmento_destino.json" />
+    <Content Include="Data\Quests\quest_rumores_praca.json" />
+    <Content Include="Data\Quests\quest_companhia_tortamon.json" />
+    <Content Include="Data\Quests\quest_lenhador.json" />
+    <Content Include="Data\Quests\quest_jangada.json" />
+    <Content Include="Data\Quests\quest_escavador.json" />
+    <Content Include="Data\NPCs\npc_patamon.json" />
+    <Content Include="Data\NPCs\npc_reppamon.json" />
+    <Content Include="Data\NPCs\npc_terriermon.json" />
+    <Content Include="Data\NPCs\npc_elizamon.json" />
+    <Content Include="Data\NPCs\npc_gomamon_barqueiro.json" />
     <Content Include="Data\Itens\meat.json" />
     <Content Include="Data\Itens\medicine.json" />
     <Content Include="Data\Itens\folha_floresta.json" />

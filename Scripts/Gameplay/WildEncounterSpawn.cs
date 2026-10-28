@@ -47,6 +47,7 @@ namespace ProjetoDC.Scripts.Gameplay
         private static readonly Random _random = new();
 
         private DigimonSprite _sprite;
+        private Area2D _clickArea;
         private int _digimonId;
         private int _level;
         private DigimonInstance _explorer;
@@ -57,12 +58,22 @@ namespace ProjetoDC.Scripts.Gameplay
         private Vector2 _wanderTarget;
         private double _wanderPauseRemaining;
 
+        // Mapa isométrico: tempo seguido andando sem sair do lugar (encostado numa parede de
+        // floresta/penhasco) - passa do limite, escolhe outro destino de vagueio.
+        private const double WanderStuckLimit = 0.75;
+        private const int WanderTargetAttempts = 10;
+        private double _wanderStuckTime;
+
+        /// <summary>Área que criou esse selvagem - só preenchida no mapa isométrico, onde ela
+        /// diz em que nível cada um está e quais destinos de vagueio são válidos.</summary>
+        public ExplorationArea Area { get; set; }
+
         public override void _Ready()
         {
             _sprite = GetNode<DigimonSprite>("DigimonSprite");
 
-            var clickArea = GetNode<Area2D>("ClickArea");
-            clickArea.InputEvent += OnClickAreaInputEvent;
+            _clickArea = GetNode<Area2D>("ClickArea");
+            _clickArea.InputEvent += OnClickAreaInputEvent;
 
             GameManager.Instance.TeamBattleFinished += OnTeamBattleFinished;
         }
@@ -93,6 +104,12 @@ namespace ProjetoDC.Scripts.Gameplay
 
         public override void _PhysicsProcess(double delta)
         {
+            if (Area != null)
+            {
+                Area.PlaceWalkerSprite(this, _sprite);
+                _clickArea.Position = new Vector2(0, Area.GetSpriteOffsetY(GlobalPosition));
+            }
+
             if (_pendingBattle || _explorerVisual == null)
             {
                 Velocity = Vector2.Zero;
@@ -101,14 +118,17 @@ namespace ProjetoDC.Scripts.Gameplay
 
             float distanceToExplorer = GlobalPosition.DistanceTo(_explorerVisual.GlobalPosition);
 
-            if (distanceToExplorer <= TouchDistance)
+            // Mapa isométrico: quem está do outro lado de um penhasco não é perseguido nem tocado.
+            bool sameLevel = Area == null || Area.AreOnSameLevel(GlobalPosition, _explorerVisual.GlobalPosition);
+
+            if (sameLevel && distanceToExplorer <= TouchDistance)
             {
                 Velocity = Vector2.Zero;
                 TriggerBattle();
                 return;
             }
 
-            if (distanceToExplorer <= DetectionRadius)
+            if (sameLevel && distanceToExplorer <= DetectionRadius)
             {
                 StepToward(_explorerVisual.GlobalPosition, MoveSpeed * ChaseSpeedMultiplier);
                 return;
@@ -136,15 +156,39 @@ namespace ProjetoDC.Scripts.Gameplay
                 return;
             }
 
+            Vector2 before = GlobalPosition;
+
             StepToward(_wanderTarget, MoveSpeed);
+
+            if (Area == null || !Area.IsIsoMap)
+                return;
+
+            _wanderStuckTime = GlobalPosition.DistanceTo(before) < MoveSpeed * (float)delta * 0.25f
+                ? _wanderStuckTime + delta
+                : 0;
+
+            if (_wanderStuckTime > WanderStuckLimit)
+            {
+                _wanderStuckTime = 0;
+                PickNewWanderTarget();
+            }
         }
 
         private void PickNewWanderTarget()
         {
-            float angle = (float)(_random.NextDouble() * Mathf.Tau);
-            float distance = WanderMinDistance + (float)_random.NextDouble() * (WanderRadius - WanderMinDistance);
+            for (int attempt = 0; attempt < WanderTargetAttempts; attempt++)
+            {
+                float angle = (float)(_random.NextDouble() * Mathf.Tau);
+                float distance = WanderMinDistance + (float)_random.NextDouble() * (WanderRadius - WanderMinDistance);
 
-            _wanderTarget = _spawnOrigin + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
+                _wanderTarget = _spawnOrigin + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
+
+                if (Area == null || Area.IsValidWanderTarget(_spawnOrigin, _wanderTarget))
+                    return;
+            }
+
+            // Nenhum destino bom por perto: fica onde nasceu.
+            _wanderTarget = _spawnOrigin;
         }
 
         private void StepToward(Vector2 target, float speed)

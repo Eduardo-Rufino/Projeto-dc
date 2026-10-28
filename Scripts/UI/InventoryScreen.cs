@@ -64,13 +64,16 @@ namespace ProjetoDC.Scripts.UI
 
             _cards.Clear();
 
-            var allItems = DatabaseManager.Instance.GetAllItems().ToList();
+            // Só o que o jogador tem de verdade: item zerado na lista só confundia.
+            var ownedItems = DatabaseManager.Instance.GetAllItems()
+                .Where(item => Game.Save.Center.GetItemQuantity(item.Id) > 0)
+                .ToList();
 
-            _emptyLabel.Visible = allItems.Count == 0;
+            _emptyLabel.Visible = ownedItems.Count == 0;
 
             RefreshKitchenRow();
 
-            foreach (var item in allItems)
+            foreach (var item in ownedItems)
             {
                 int quantity = Game.Save.Center.GetItemQuantity(item.Id);
 

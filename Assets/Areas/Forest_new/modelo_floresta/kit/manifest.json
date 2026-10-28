@@ -1,0 +1,3189 @@
+{
+  "style": "forest-blocks-v2",
+  "tile_diamond": [
+    64,
+    32
+  ],
+  "scale_recommendation": {
+    "world": 2,
+    "digimon": 3,
+    "note": "world sprites at 2x, digimon at 3x, nearest filter"
+  },
+  "animation": {
+    "frames": 4,
+    "fps": 5,
+    "note": "start each tile at frame (x+y) % 4 so the wind wave travels across the map"
+  },
+  "surface_offset_px": {
+    "grass": 0,
+    "sand": 4,
+    "dirt": 6,
+    "water": 8,
+    "note": "draw non-grass tiles this many native px lower than grass so grass forms a small wall"
+  },
+  "tiles": {
+    "grass_0": {
+      "sheet": "tile_sheets/grass_0.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": []
+    },
+    "grass_0_open": {
+      "sheet": "tile_sheets/grass_0_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "grass_0_open_ul": {
+      "sheet": "tile_sheets/grass_0_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "grass_0_open_ur": {
+      "sheet": "tile_sheets/grass_0_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "grass_1": {
+      "sheet": "tile_sheets/grass_1.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": []
+    },
+    "grass_1_open": {
+      "sheet": "tile_sheets/grass_1_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "grass_1_open_ul": {
+      "sheet": "tile_sheets/grass_1_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "grass_1_open_ur": {
+      "sheet": "tile_sheets/grass_1_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "grass_2": {
+      "sheet": "tile_sheets/grass_2.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": []
+    },
+    "grass_2_open": {
+      "sheet": "tile_sheets/grass_2_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "grass_2_open_ul": {
+      "sheet": "tile_sheets/grass_2_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "grass_2_open_ur": {
+      "sheet": "tile_sheets/grass_2_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "grass_3": {
+      "sheet": "tile_sheets/grass_3.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": []
+    },
+    "grass_3_open": {
+      "sheet": "tile_sheets/grass_3_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "grass_3_open_ul": {
+      "sheet": "tile_sheets/grass_3_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "grass_3_open_ur": {
+      "sheet": "tile_sheets/grass_3_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "grass_4": {
+      "sheet": "tile_sheets/grass_4.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": []
+    },
+    "grass_4_open": {
+      "sheet": "tile_sheets/grass_4_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "grass_4_open_ul": {
+      "sheet": "tile_sheets/grass_4_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "grass_4_open_ur": {
+      "sheet": "tile_sheets/grass_4_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "grass_5": {
+      "sheet": "tile_sheets/grass_5.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": []
+    },
+    "grass_5_open": {
+      "sheet": "tile_sheets/grass_5_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "grass_5_open_ul": {
+      "sheet": "tile_sheets/grass_5_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "grass_5_open_ur": {
+      "sheet": "tile_sheets/grass_5_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        52
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 12,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "dirt_0": {
+      "sheet": "tile_sheets/dirt_0.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "dirt_0_open": {
+      "sheet": "tile_sheets/dirt_0_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "dirt_0_open_ul": {
+      "sheet": "tile_sheets/dirt_0_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "dirt_0_open_ur": {
+      "sheet": "tile_sheets/dirt_0_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "dirt_1": {
+      "sheet": "tile_sheets/dirt_1.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "dirt_1_open": {
+      "sheet": "tile_sheets/dirt_1_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "dirt_1_open_ul": {
+      "sheet": "tile_sheets/dirt_1_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "dirt_1_open_ur": {
+      "sheet": "tile_sheets/dirt_1_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "dirt_2": {
+      "sheet": "tile_sheets/dirt_2.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "dirt_2_open": {
+      "sheet": "tile_sheets/dirt_2_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "dirt_2_open_ul": {
+      "sheet": "tile_sheets/dirt_2_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "dirt_2_open_ur": {
+      "sheet": "tile_sheets/dirt_2_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "dirt_3": {
+      "sheet": "tile_sheets/dirt_3.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "dirt_3_open": {
+      "sheet": "tile_sheets/dirt_3_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "dirt_3_open_ul": {
+      "sheet": "tile_sheets/dirt_3_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "dirt_3_open_ur": {
+      "sheet": "tile_sheets/dirt_3_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "dirt_4": {
+      "sheet": "tile_sheets/dirt_4.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "dirt_4_open": {
+      "sheet": "tile_sheets/dirt_4_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "dirt_4_open_ul": {
+      "sheet": "tile_sheets/dirt_4_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "dirt_4_open_ur": {
+      "sheet": "tile_sheets/dirt_4_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "dirt_5": {
+      "sheet": "tile_sheets/dirt_5.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "dirt_5_open": {
+      "sheet": "tile_sheets/dirt_5_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "dirt_5_open_ul": {
+      "sheet": "tile_sheets/dirt_5_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "dirt_5_open_ur": {
+      "sheet": "tile_sheets/dirt_5_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "sand_0": {
+      "sheet": "tile_sheets/sand_0.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "sand_0_open": {
+      "sheet": "tile_sheets/sand_0_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "sand_0_open_ul": {
+      "sheet": "tile_sheets/sand_0_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "sand_0_open_ur": {
+      "sheet": "tile_sheets/sand_0_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "sand_1": {
+      "sheet": "tile_sheets/sand_1.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "sand_1_open": {
+      "sheet": "tile_sheets/sand_1_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "sand_1_open_ul": {
+      "sheet": "tile_sheets/sand_1_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "sand_1_open_ur": {
+      "sheet": "tile_sheets/sand_1_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "sand_2": {
+      "sheet": "tile_sheets/sand_2.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "sand_2_open": {
+      "sheet": "tile_sheets/sand_2_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "sand_2_open_ul": {
+      "sheet": "tile_sheets/sand_2_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "sand_2_open_ur": {
+      "sheet": "tile_sheets/sand_2_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "sand_3": {
+      "sheet": "tile_sheets/sand_3.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "sand_3_open": {
+      "sheet": "tile_sheets/sand_3_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "sand_3_open_ul": {
+      "sheet": "tile_sheets/sand_3_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "sand_3_open_ur": {
+      "sheet": "tile_sheets/sand_3_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "sand_4": {
+      "sheet": "tile_sheets/sand_4.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "sand_4_open": {
+      "sheet": "tile_sheets/sand_4_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "sand_4_open_ul": {
+      "sheet": "tile_sheets/sand_4_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "sand_4_open_ur": {
+      "sheet": "tile_sheets/sand_4_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "sand_5": {
+      "sheet": "tile_sheets/sand_5.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "sand_5_open": {
+      "sheet": "tile_sheets/sand_5_open.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "sand_5_open_ul": {
+      "sheet": "tile_sheets/sand_5_open_ul.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "sand_5_open_ur": {
+      "sheet": "tile_sheets/sand_5_open_ur.png",
+      "frames": 1,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "water_0": {
+      "sheet": "tile_sheets/water_0.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "water_0_open": {
+      "sheet": "tile_sheets/water_0_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "water_0_open_ul": {
+      "sheet": "tile_sheets/water_0_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "water_0_open_ur": {
+      "sheet": "tile_sheets/water_0_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "water_1": {
+      "sheet": "tile_sheets/water_1.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "water_1_open": {
+      "sheet": "tile_sheets/water_1_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "water_1_open_ul": {
+      "sheet": "tile_sheets/water_1_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "water_1_open_ur": {
+      "sheet": "tile_sheets/water_1_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "water_2": {
+      "sheet": "tile_sheets/water_2.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "water_2_open": {
+      "sheet": "tile_sheets/water_2_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "water_2_open_ul": {
+      "sheet": "tile_sheets/water_2_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "water_2_open_ur": {
+      "sheet": "tile_sheets/water_2_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "water_3": {
+      "sheet": "tile_sheets/water_3.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "water_3_open": {
+      "sheet": "tile_sheets/water_3_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "water_3_open_ul": {
+      "sheet": "tile_sheets/water_3_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "water_3_open_ur": {
+      "sheet": "tile_sheets/water_3_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "water_4": {
+      "sheet": "tile_sheets/water_4.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "water_4_open": {
+      "sheet": "tile_sheets/water_4_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "water_4_open_ul": {
+      "sheet": "tile_sheets/water_4_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "water_4_open_ur": {
+      "sheet": "tile_sheets/water_4_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "water_5": {
+      "sheet": "tile_sheets/water_5.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": []
+    },
+    "water_5_open": {
+      "sheet": "tile_sheets/water_5_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "water_5_open_ul": {
+      "sheet": "tile_sheets/water_5_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "water_5_open_ur": {
+      "sheet": "tile_sheets/water_5_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "water_0_deep": {
+      "sheet": "tile_sheets/water_0_deep.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_0_shallow": {
+      "sheet": "tile_sheets/water_0_shallow.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_0_deep_open": {
+      "sheet": "tile_sheets/water_0_deep_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_0_shallow_open": {
+      "sheet": "tile_sheets/water_0_shallow_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_0_deep_open_ul": {
+      "sheet": "tile_sheets/water_0_deep_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_0_shallow_open_ul": {
+      "sheet": "tile_sheets/water_0_shallow_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_0_deep_open_ur": {
+      "sheet": "tile_sheets/water_0_deep_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_0_shallow_open_ur": {
+      "sheet": "tile_sheets/water_0_shallow_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_1_deep": {
+      "sheet": "tile_sheets/water_1_deep.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_1_shallow": {
+      "sheet": "tile_sheets/water_1_shallow.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_1_deep_open": {
+      "sheet": "tile_sheets/water_1_deep_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_1_shallow_open": {
+      "sheet": "tile_sheets/water_1_shallow_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_1_deep_open_ul": {
+      "sheet": "tile_sheets/water_1_deep_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_1_shallow_open_ul": {
+      "sheet": "tile_sheets/water_1_shallow_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_1_deep_open_ur": {
+      "sheet": "tile_sheets/water_1_deep_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_1_shallow_open_ur": {
+      "sheet": "tile_sheets/water_1_shallow_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_2_deep": {
+      "sheet": "tile_sheets/water_2_deep.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_2_shallow": {
+      "sheet": "tile_sheets/water_2_shallow.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_2_deep_open": {
+      "sheet": "tile_sheets/water_2_deep_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_2_shallow_open": {
+      "sheet": "tile_sheets/water_2_shallow_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_2_deep_open_ul": {
+      "sheet": "tile_sheets/water_2_deep_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_2_shallow_open_ul": {
+      "sheet": "tile_sheets/water_2_shallow_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_2_deep_open_ur": {
+      "sheet": "tile_sheets/water_2_deep_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_2_shallow_open_ur": {
+      "sheet": "tile_sheets/water_2_shallow_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_3_deep": {
+      "sheet": "tile_sheets/water_3_deep.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_3_shallow": {
+      "sheet": "tile_sheets/water_3_shallow.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_3_deep_open": {
+      "sheet": "tile_sheets/water_3_deep_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_3_shallow_open": {
+      "sheet": "tile_sheets/water_3_shallow_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_3_deep_open_ul": {
+      "sheet": "tile_sheets/water_3_deep_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_3_shallow_open_ul": {
+      "sheet": "tile_sheets/water_3_shallow_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_3_deep_open_ur": {
+      "sheet": "tile_sheets/water_3_deep_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_3_shallow_open_ur": {
+      "sheet": "tile_sheets/water_3_shallow_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_4_deep": {
+      "sheet": "tile_sheets/water_4_deep.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_4_shallow": {
+      "sheet": "tile_sheets/water_4_shallow.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_4_deep_open": {
+      "sheet": "tile_sheets/water_4_deep_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_4_shallow_open": {
+      "sheet": "tile_sheets/water_4_shallow_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_4_deep_open_ul": {
+      "sheet": "tile_sheets/water_4_deep_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_4_shallow_open_ul": {
+      "sheet": "tile_sheets/water_4_shallow_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_4_deep_open_ur": {
+      "sheet": "tile_sheets/water_4_deep_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_4_shallow_open_ur": {
+      "sheet": "tile_sheets/water_4_shallow_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_5_deep": {
+      "sheet": "tile_sheets/water_5_deep.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_5_shallow": {
+      "sheet": "tile_sheets/water_5_shallow.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_5_deep_open": {
+      "sheet": "tile_sheets/water_5_deep_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_5_shallow_open": {
+      "sheet": "tile_sheets/water_5_shallow_open.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_5_deep_open_ul": {
+      "sheet": "tile_sheets/water_5_deep_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_5_shallow_open_ul": {
+      "sheet": "tile_sheets/water_5_shallow_open_ul.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_5_deep_open_ur": {
+      "sheet": "tile_sheets/water_5_deep_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    },
+    "water_5_shallow_open_ur": {
+      "sheet": "tile_sheets/water_5_shallow_open_ur.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        49
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "thickness": 9,
+      "note": "deep = 2+ tiles from shore (calmer); shallow = next to shore"
+    }
+  },
+  "props": {
+    "chest_open": {
+      "file": "props/chest_open.png",
+      "size": [
+        64,
+        55
+      ],
+      "anchor": [
+        29,
+        38
+      ],
+      "note": "bau aberto (fica no lugar do bau depois de coletado; base alinhada com o chest)"
+    },
+    "tuft_0": {
+      "file": "props/tuft_0.png",
+      "size": [
+        11,
+        9
+      ],
+      "anchor": [
+        5,
+        7
+      ]
+    },
+    "tuft_1": {
+      "file": "props/tuft_1.png",
+      "size": [
+        11,
+        9
+      ],
+      "anchor": [
+        5,
+        7
+      ]
+    },
+    "tuft_2": {
+      "file": "props/tuft_2.png",
+      "size": [
+        11,
+        9
+      ],
+      "anchor": [
+        5,
+        7
+      ]
+    },
+    "tuft_3": {
+      "file": "props/tuft_3.png",
+      "size": [
+        11,
+        9
+      ],
+      "anchor": [
+        5,
+        7
+      ]
+    },
+    "tuft_4": {
+      "file": "props/tuft_4.png",
+      "size": [
+        11,
+        9
+      ],
+      "anchor": [
+        5,
+        7
+      ]
+    },
+    "bush_0": {
+      "sheet": "prop_sheets/bush_0.png",
+      "frames": 4,
+      "frame_size": [
+        44,
+        33
+      ],
+      "anchor": [
+        22,
+        29
+      ]
+    },
+    "bush_1": {
+      "sheet": "prop_sheets/bush_1.png",
+      "frames": 4,
+      "frame_size": [
+        41,
+        31
+      ],
+      "anchor": [
+        21,
+        28
+      ]
+    },
+    "stones_0": {
+      "sheet": "prop_sheets/stones_0.png",
+      "frames": 1,
+      "frame_size": [
+        44,
+        23
+      ],
+      "anchor": [
+        23,
+        19
+      ]
+    },
+    "stones_1": {
+      "sheet": "prop_sheets/stones_1.png",
+      "frames": 1,
+      "frame_size": [
+        39,
+        25
+      ],
+      "anchor": [
+        17,
+        21
+      ]
+    },
+    "flowers_white": {
+      "sheet": "prop_sheets/flowers_white.png",
+      "frames": 4,
+      "frame_size": [
+        20,
+        22
+      ],
+      "anchor": [
+        10,
+        20
+      ]
+    },
+    "flowers_orange": {
+      "sheet": "prop_sheets/flowers_orange.png",
+      "frames": 4,
+      "frame_size": [
+        20,
+        22
+      ],
+      "anchor": [
+        10,
+        20
+      ]
+    },
+    "flowers_pink": {
+      "sheet": "prop_sheets/flowers_pink.png",
+      "frames": 4,
+      "frame_size": [
+        20,
+        22
+      ],
+      "anchor": [
+        10,
+        20
+      ]
+    },
+    "tall_grass_0": {
+      "sheet": "prop_sheets/tall_grass_0.png",
+      "frames": 4,
+      "frame_size": [
+        24,
+        26
+      ],
+      "anchor": [
+        11,
+        23
+      ]
+    },
+    "tall_grass_1": {
+      "sheet": "prop_sheets/tall_grass_1.png",
+      "frames": 4,
+      "frame_size": [
+        26,
+        26
+      ],
+      "anchor": [
+        13,
+        23
+      ]
+    },
+    "lily_0": {
+      "sheet": "prop_sheets/lily_0.png",
+      "frames": 4,
+      "frame_size": [
+        28,
+        16
+      ],
+      "anchor": [
+        13,
+        11
+      ]
+    },
+    "lily_1": {
+      "sheet": "prop_sheets/lily_1.png",
+      "frames": 4,
+      "frame_size": [
+        28,
+        16
+      ],
+      "anchor": [
+        13,
+        11
+      ]
+    },
+    "reeds": {
+      "sheet": "prop_sheets/reeds.png",
+      "frames": 4,
+      "frame_size": [
+        30,
+        40
+      ],
+      "anchor": [
+        15,
+        37
+      ]
+    },
+    "water_rock": {
+      "sheet": "prop_sheets/water_rock.png",
+      "frames": 4,
+      "frame_size": [
+        34,
+        24
+      ],
+      "anchor": [
+        17,
+        16
+      ]
+    },
+    "blocker_log_pile_gx": {
+      "sheet": "prop_sheets/blocker_log_pile_gx.png",
+      "frames": 1,
+      "frame_size": [
+        135,
+        90
+      ],
+      "anchor": [
+        54,
+        58
+      ],
+      "note": "path runs along gx (screen \\): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "blocker_landslide_gx": {
+      "sheet": "prop_sheets/blocker_landslide_gx.png",
+      "frames": 1,
+      "frame_size": [
+        126,
+        84
+      ],
+      "anchor": [
+        60,
+        48
+      ],
+      "note": "path runs along gx (screen \\): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "cleared_tunnel_gx": {
+      "sheet": "prop_sheets/cleared_tunnel_gx.png",
+      "frames": 4,
+      "frame_size": [
+        146,
+        96
+      ],
+      "anchor": [
+        71,
+        52
+      ],
+      "note": "lantern flickers (4 frames). Place it BESIDE the open path, entrance facing it (never on the path): path along gy -> use _gx on the upper-left side (anchor = path centre + (-48,-24) px); path along gx -> use _gy on the upper-right side (anchor = path centre + (32,-16) px); path runs along gx (screen \\): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "cleared_stumps_gx": {
+      "sheet": "prop_sheets/cleared_stumps_gx.png",
+      "frames": 1,
+      "frame_size": [
+        131,
+        76
+      ],
+      "anchor": [
+        66,
+        45
+      ],
+      "note": "path runs along gx (screen \\): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "river_raft_gx": {
+      "sheet": "prop_sheets/river_raft_gx.png",
+      "frames": 4,
+      "frame_size": [
+        132,
+        68
+      ],
+      "anchor": [
+        66,
+        34
+      ],
+      "note": "raft bobs and ripples on the water (4 frames); centre it on the water the path crosses; path runs along gx (screen \\): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "blocker_log_pile_gy": {
+      "sheet": "prop_sheets/blocker_log_pile_gy.png",
+      "frames": 1,
+      "frame_size": [
+        143,
+        93
+      ],
+      "anchor": [
+        81,
+        58
+      ],
+      "note": "path runs along gy (screen /): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "blocker_landslide_gy": {
+      "sheet": "prop_sheets/blocker_landslide_gy.png",
+      "frames": 1,
+      "frame_size": [
+        144,
+        90
+      ],
+      "anchor": [
+        71,
+        50
+      ],
+      "note": "path runs along gy (screen /): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "cleared_tunnel_gy": {
+      "sheet": "prop_sheets/cleared_tunnel_gy.png",
+      "frames": 4,
+      "frame_size": [
+        160,
+        97
+      ],
+      "anchor": [
+        78,
+        53
+      ],
+      "note": "lantern flickers (4 frames). Place it BESIDE the open path, entrance facing it (never on the path): path along gy -> use _gx on the upper-left side (anchor = path centre + (-48,-24) px); path along gx -> use _gy on the upper-right side (anchor = path centre + (32,-16) px); path runs along gy (screen /): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "cleared_stumps_gy": {
+      "sheet": "prop_sheets/cleared_stumps_gy.png",
+      "frames": 1,
+      "frame_size": [
+        159,
+        90
+      ],
+      "anchor": [
+        79,
+        52
+      ],
+      "note": "path runs along gy (screen /): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "river_raft_gy": {
+      "sheet": "prop_sheets/river_raft_gy.png",
+      "frames": 4,
+      "frame_size": [
+        132,
+        68
+      ],
+      "anchor": [
+        66,
+        34
+      ],
+      "note": "raft bobs and ripples on the water (4 frames); centre it on the water the path crosses; path runs along gy (screen /): obstacle lies across it; anchor = ground centre, put it in the middle of the path"
+    },
+    "tram_ruin": {
+      "sheet": "prop_sheets/tram_ruin.png",
+      "frames": 1,
+      "frame_size": [
+        116,
+        86
+      ],
+      "anchor": [
+        58.0,
+        58.0
+      ],
+      "note": "vagao de bondinho abandonado (generico), estatico"
+    },
+    "tv_ruin": {
+      "sheet": "prop_sheets/tv_ruin.png",
+      "frames": 4,
+      "frame_size": [
+        48,
+        39
+      ],
+      "anchor": [
+        26.0,
+        27.5
+      ],
+      "note": "TV com estatica ciano animada"
+    },
+    "chest": {
+      "sheet": "prop_sheets/chest.png",
+      "frames": 4,
+      "frame_size": [
+        59,
+        46
+      ],
+      "anchor": [
+        29.0,
+        29.0
+      ],
+      "note": "bau de item (ponto de item)"
+    },
+    "data_pillar": {
+      "sheet": "prop_sheets/data_pillar.png",
+      "frames": 4,
+      "frame_size": [
+        66,
+        91
+      ],
+      "anchor": [
+        30.0,
+        73.0
+      ],
+      "note": "pilar de dados flutuante com brilho"
+    },
+    "power_pole": {
+      "sheet": "prop_sheets/power_pole.png",
+      "frames": 4,
+      "frame_size": [
+        53,
+        125
+      ],
+      "anchor": [
+        25,
+        106
+      ],
+      "note": "poste de luz com fios cortados e luz ciano piscando"
+    },
+    "radio_antenna": {
+      "sheet": "prop_sheets/radio_antenna.png",
+      "frames": 4,
+      "frame_size": [
+        77,
+        141
+      ],
+      "anchor": [
+        38,
+        123
+      ],
+      "note": "torre de radio com luzes piscando"
+    },
+    "fallen_log_0": {
+      "sheet": "prop_sheets/fallen_log_0.png",
+      "frames": 1,
+      "frame_size": [
+        105,
+        68
+      ],
+      "anchor": [
+        50,
+        38
+      ]
+    },
+    "fallen_log_1": {
+      "sheet": "prop_sheets/fallen_log_1.png",
+      "frames": 1,
+      "frame_size": [
+        94,
+        59
+      ],
+      "anchor": [
+        47,
+        33
+      ]
+    },
+    "mushrooms_red": {
+      "sheet": "prop_sheets/mushrooms_red.png",
+      "frames": 1,
+      "frame_size": [
+        54,
+        32
+      ],
+      "anchor": [
+        26,
+        25
+      ]
+    },
+    "mushrooms_glow": {
+      "sheet": "prop_sheets/mushrooms_glow.png",
+      "frames": 4,
+      "frame_size": [
+        62,
+        48
+      ],
+      "anchor": [
+        32,
+        39
+      ],
+      "note": "cogumelos brilhantes (ciano)"
+    },
+    "fern_0": {
+      "sheet": "prop_sheets/fern_0.png",
+      "frames": 4,
+      "frame_size": [
+        47,
+        41
+      ],
+      "anchor": [
+        24,
+        34
+      ]
+    },
+    "fern_1": {
+      "sheet": "prop_sheets/fern_1.png",
+      "frames": 4,
+      "frame_size": [
+        42,
+        36
+      ],
+      "anchor": [
+        23,
+        29
+      ]
+    },
+    "signpost": {
+      "sheet": "prop_sheets/signpost.png",
+      "frames": 1,
+      "frame_size": [
+        65,
+        77
+      ],
+      "anchor": [
+        31,
+        69
+      ],
+      "note": "placa de direcao"
+    },
+    "item_orb": {
+      "sheet": "prop_sheets/item_orb.png",
+      "frames": 4,
+      "frame_size": [
+        38,
+        46
+      ],
+      "anchor": [
+        20,
+        42
+      ],
+      "note": "orbe de item brilhante (ponto de item)"
+    },
+    "tree_0": {
+      "sheet": "prop_sheets/tree_0.png",
+      "frames": 4,
+      "frame_size": [
+        80,
+        88
+      ],
+      "anchor": [
+        40,
+        78
+      ],
+      "note": "use frame (t+(x+y)//4)%4: neighbours share the same phase so groups of trees move together; 3-4 fps"
+    },
+    "tree_1": {
+      "sheet": "prop_sheets/tree_1.png",
+      "frames": 4,
+      "frame_size": [
+        80,
+        88
+      ],
+      "anchor": [
+        40,
+        78
+      ],
+      "note": "use frame (t+(x+y)//4)%4: neighbours share the same phase so groups of trees move together; 3-4 fps"
+    },
+    "tree_2": {
+      "sheet": "prop_sheets/tree_2.png",
+      "frames": 4,
+      "frame_size": [
+        80,
+        88
+      ],
+      "anchor": [
+        40,
+        78
+      ],
+      "note": "use frame (t+(x+y)//4)%4: neighbours share the same phase so groups of trees move together; 3-4 fps"
+    },
+    "tree_3": {
+      "sheet": "prop_sheets/tree_3.png",
+      "frames": 4,
+      "frame_size": [
+        80,
+        88
+      ],
+      "anchor": [
+        40,
+        78
+      ],
+      "note": "use frame (t+(x+y)//4)%4: neighbours share the same phase so groups of trees move together; 3-4 fps"
+    },
+    "marker_enemy_spawn": {
+      "file": "props/marker_enemy_spawn.png",
+      "size": [
+        28,
+        28
+      ],
+      "anchor": [
+        14,
+        22
+      ],
+      "note": "placeholder icon for a spot (debug); replace with the real NPC/enemy"
+    },
+    "marker_npc": {
+      "file": "props/marker_npc.png",
+      "size": [
+        32,
+        52
+      ],
+      "anchor": [
+        16,
+        42
+      ],
+      "note": "placeholder icon for a spot (debug); replace with the real NPC/enemy"
+    },
+    "marker_quest_npc": {
+      "file": "props/marker_quest_npc.png",
+      "size": [
+        32,
+        52
+      ],
+      "anchor": [
+        16,
+        42
+      ],
+      "note": "placeholder icon for a spot (debug); replace with the real NPC/enemy"
+    },
+    "marker_item": {
+      "file": "props/marker_item.png",
+      "size": [
+        24,
+        28
+      ],
+      "anchor": [
+        12,
+        16
+      ],
+      "note": "placeholder icon for a spot (debug); replace with the real NPC/enemy"
+    },
+    "marker_player_start": {
+      "file": "props/marker_player_start.png",
+      "size": [
+        40,
+        24
+      ],
+      "anchor": [
+        20,
+        12
+      ],
+      "note": "placeholder icon for a spot (debug); replace with the real NPC/enemy"
+    }
+  },
+  "overlays": {
+    "shadow_ul": "overlays/shadow_ul.png",
+    "shadow_ur": "overlays/shadow_ur.png",
+    "shadow_ul_ur": "overlays/shadow_ul_ur.png",
+    "tree_shadow": "overlays/tree_shadow.png",
+    "medium_shadow": "overlays/medium_shadow.png",
+    "small_shadow": "overlays/small_shadow.png",
+    "foam_ul": {
+      "sheet": "overlays/foam_ul.png",
+      "frames": 4,
+      "note": "draw over a water tile when the neighbour on that edge is land"
+    },
+    "wet_sand_ul": "overlays/wet_sand_ul.png",
+    "foam_ur": {
+      "sheet": "overlays/foam_ur.png",
+      "frames": 4,
+      "note": "draw over a water tile when the neighbour on that edge is land"
+    },
+    "wet_sand_ur": "overlays/wet_sand_ur.png",
+    "foam_dl": {
+      "sheet": "overlays/foam_dl.png",
+      "frames": 4,
+      "note": "draw over a water tile when the neighbour on that edge is land"
+    },
+    "wet_sand_dl": "overlays/wet_sand_dl.png",
+    "foam_dr": {
+      "sheet": "overlays/foam_dr.png",
+      "frames": 4,
+      "note": "draw over a water tile when the neighbour on that edge is land"
+    },
+    "wet_sand_dr": "overlays/wet_sand_dr.png",
+    "glints_0": {
+      "sheet": "overlays/glints_0.png",
+      "frames": 4
+    },
+    "glints_1": {
+      "sheet": "overlays/glints_1.png",
+      "frames": 4
+    },
+    "glints_2": {
+      "sheet": "overlays/glints_2.png",
+      "frames": 4
+    },
+    "glints_3": {
+      "sheet": "overlays/glints_3.png",
+      "frames": 4
+    },
+    "lip_ul": {
+      "file": "overlays/lip_ul.png",
+      "note": "draw on a LOWER tile (path/sand) when the back neighbour on that edge is higher: grass droops over it"
+    },
+    "fringe_ul": {
+      "file": "overlays/fringe_ul.png",
+      "offset_y": -6,
+      "note": "draw on a grass tile (shifted up by 6 px) when the back neighbour on that edge is lower"
+    },
+    "lip_ur": {
+      "file": "overlays/lip_ur.png",
+      "note": "draw on a LOWER tile (path/sand) when the back neighbour on that edge is higher: grass droops over it"
+    },
+    "fringe_ur": {
+      "file": "overlays/fringe_ur.png",
+      "offset_y": -6,
+      "note": "draw on a grass tile (shifted up by 6 px) when the back neighbour on that edge is lower"
+    }
+  },
+  "terrain": {
+    "hill_height_px": 18,
+    "note": "hill_* is a grass block on a rock cliff, HILL_T px tall: place its top diamond HILL_T px above the ground diamond. ramp_* : image has HILL_T px of headroom, the ground diamond starts at y = HILL_T + 1 (tile_center = [33, HILL_T + 17]); flanks are rock (match hill_*); 'rises_toward' is the direction the surface RISES toward (-gx = screen up-left, -gy = up-right, +gx = down-right, +gy = down-left)",
+    "hill_0": {
+      "file": "terrain/hill_0.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ]
+    },
+    "hill_0_open": {
+      "file": "terrain/hill_0_open.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "hill_0_open_ul": {
+      "file": "terrain/hill_0_open_ul.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "hill_0_open_ur": {
+      "file": "terrain/hill_0_open_ur.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "hill_1": {
+      "file": "terrain/hill_1.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ]
+    },
+    "hill_1_open": {
+      "file": "terrain/hill_1_open.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "hill_1_open_ul": {
+      "file": "terrain/hill_1_open_ul.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "hill_1_open_ur": {
+      "file": "terrain/hill_1_open_ur.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "hill_2": {
+      "file": "terrain/hill_2.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ]
+    },
+    "hill_2_open": {
+      "file": "terrain/hill_2_open.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "open_edges": [
+        "ul",
+        "ur"
+      ]
+    },
+    "hill_2_open_ul": {
+      "file": "terrain/hill_2_open_ul.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "open_edges": [
+        "ul"
+      ]
+    },
+    "hill_2_open_ur": {
+      "file": "terrain/hill_2_open_ur.png",
+      "size": [
+        66,
+        58
+      ],
+      "tile_center": [
+        33,
+        17
+      ],
+      "open_edges": [
+        "ur"
+      ]
+    },
+    "ramp_grass_mgx": {
+      "file": "terrain/ramp_grass_mgx.png",
+      "size": [
+        66,
+        68
+      ],
+      "tile_center": [
+        33,
+        35
+      ],
+      "rises_toward": "-gx"
+    },
+    "ramp_stairs_mgx": {
+      "file": "terrain/ramp_stairs_mgx.png",
+      "size": [
+        66,
+        68
+      ],
+      "tile_center": [
+        33,
+        35
+      ],
+      "rises_toward": "-gx"
+    },
+    "ramp_grass_mgy": {
+      "file": "terrain/ramp_grass_mgy.png",
+      "size": [
+        66,
+        68
+      ],
+      "tile_center": [
+        33,
+        35
+      ],
+      "rises_toward": "-gy"
+    },
+    "ramp_stairs_mgy": {
+      "file": "terrain/ramp_stairs_mgy.png",
+      "size": [
+        66,
+        68
+      ],
+      "tile_center": [
+        33,
+        35
+      ],
+      "rises_toward": "-gy"
+    },
+    "ramp_grass_pgx": {
+      "file": "terrain/ramp_grass_pgx.png",
+      "size": [
+        66,
+        68
+      ],
+      "tile_center": [
+        33,
+        35
+      ],
+      "rises_toward": "+gx"
+    },
+    "ramp_stairs_pgx": {
+      "file": "terrain/ramp_stairs_pgx.png",
+      "size": [
+        66,
+        68
+      ],
+      "tile_center": [
+        33,
+        35
+      ],
+      "rises_toward": "+gx"
+    },
+    "ramp_grass_pgy": {
+      "file": "terrain/ramp_grass_pgy.png",
+      "size": [
+        66,
+        68
+      ],
+      "tile_center": [
+        33,
+        35
+      ],
+      "rises_toward": "+gy"
+    },
+    "ramp_stairs_pgy": {
+      "file": "terrain/ramp_stairs_pgy.png",
+      "size": [
+        66,
+        68
+      ],
+      "tile_center": [
+        33,
+        35
+      ],
+      "rises_toward": "+gy"
+    }
+  },
+  "godot_scripts": {
+    "godot/tree_fade.gd": "arvore fica translucida quando um digimon passa atras (usar)",
+    "opcional/atmosphere.gd": "iluminacao/nevoa/vinheta - nao usar por padrao"
+  },
+  "optional_atmosphere": {
+    "status": "NAO usado por padrao (decisao: mapa sem iluminacao). Arquivos em opcional/atmosphere/."
+  }
+}

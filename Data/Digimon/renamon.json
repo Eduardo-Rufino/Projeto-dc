@@ -18,7 +18,8 @@
     "speed": 47
   },
   "Drops": [
-    { "ItemId": 3, "Quantity": 1, "ChancePercent": 40 }
+    { "ItemId": 3, "Quantity": 1, "ChancePercent": 40 },
+    { "ItemId": 16, "Quantity": 1, "ChancePercent": 15 }
   ],
   "Passives": [
     "PrecisaoLetal",

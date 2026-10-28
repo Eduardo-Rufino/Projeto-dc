@@ -978,22 +978,44 @@ namespace ProjetoDC.Scripts.Systems.Audit
                 Check(!Gm.TryTurnInQuest(q.Id).Success, $"{n}: entregou sem aceitar");
                 Check(Gm.TryAcceptQuest(q.Id).Success && c.ActiveQuestIds.Contains(q.Id), $"{n}: não aceitou");
                 Check(!Gm.TryAcceptQuest(q.Id).Success, $"{n}: aceitou duas vezes");
-                Check(!Gm.IsQuestReadyToTurnIn(q.Id), $"{n}: pronta sem progresso");
-                Check(!Gm.TryTurnInQuest(q.Id).Success, $"{n}: entregou sem cumprir");
 
-                if (q.ObjectiveCount > 1)
+                if (q.ObjectiveType == QuestObjectiveType.Talk)
                 {
-                    SetProgressViaGame(q, q.ObjectiveCount - 1);
-                    Check(Gm.GetQuestProgress(q.Id) == q.ObjectiveCount - 1 && !Gm.IsQuestReadyToTurnIn(q.Id), $"{n}: progresso parcial");
+                    // Só conversar: pronta assim que aceita.
+                    Check(Gm.IsQuestReadyToTurnIn(q.Id), $"{n}: Talk não ficou pronta ao aceitar");
+                }
+                else if (q.ObjectiveType == QuestObjectiveType.DeliverItem)
+                {
+                    // Conta o que está no inventário agora (não importa quando entrou).
+                    Check(!Gm.IsQuestReadyToTurnIn(q.Id), $"{n}: pronta sem o item");
+                    Check(!Gm.TryTurnInQuest(q.Id).Success, $"{n}: entregou sem o item");
+                    c.AddItemQuantity(q.ObjectiveTargetId, q.ObjectiveCount + 1);
+                    Check(Gm.GetQuestProgress(q.Id) == q.ObjectiveCount, $"{n}: progresso não trava no objetivo ({Gm.GetQuestProgress(q.Id)}/{q.ObjectiveCount})");
+                    Check(Gm.IsQuestReadyToTurnIn(q.Id), $"{n}: não ficou pronta com o item");
+                }
+                else
+                {
+                    Check(!Gm.IsQuestReadyToTurnIn(q.Id), $"{n}: pronta sem progresso");
+                    Check(!Gm.TryTurnInQuest(q.Id).Success, $"{n}: entregou sem cumprir");
+
+                    if (q.ObjectiveCount > 1)
+                    {
+                        SetProgressViaGame(q, q.ObjectiveCount - 1);
+                        Check(Gm.GetQuestProgress(q.Id) == q.ObjectiveCount - 1 && !Gm.IsQuestReadyToTurnIn(q.Id), $"{n}: progresso parcial");
+                    }
+
+                    SetProgressViaGame(q, 3);
+                    Check(Gm.GetQuestProgress(q.Id) == q.ObjectiveCount, $"{n}: progresso não trava no objetivo ({Gm.GetQuestProgress(q.Id)}/{q.ObjectiveCount})");
+                    Check(Gm.IsQuestReadyToTurnIn(q.Id), $"{n}: não ficou pronta");
                 }
 
-                SetProgressViaGame(q, 3);
-                Check(Gm.GetQuestProgress(q.Id) == q.ObjectiveCount, $"{n}: progresso não trava no objetivo ({Gm.GetQuestProgress(q.Id)}/{q.ObjectiveCount})");
-                Check(Gm.IsQuestReadyToTurnIn(q.Id), $"{n}: não ficou pronta");
-
+                int deliverBefore = q.ObjectiveType == QuestObjectiveType.DeliverItem ? c.GetItemQuantity(q.ObjectiveTargetId) : 0;
                 int bits = c.Bits, cap = c.CapacityLimit;
                 int itemBefore = q.RewardItemId > 0 ? c.GetItemQuantity(q.RewardItemId) : 0;
                 var turn = Gm.TryTurnInQuest(q.Id);
+
+                if (q.ObjectiveType == QuestObjectiveType.DeliverItem)
+                    Check(c.GetItemQuantity(q.ObjectiveTargetId) == deliverBefore - q.ObjectiveCount, $"{n}: a entrega não consumiu o item");
                 Check(turn.Success, $"{n}: entrega falhou");
                 Check(c.CompletedQuestIds.Contains(q.Id) && !c.ActiveQuestIds.Contains(q.Id), $"{n}: estado ativo/completa errado");
                 Check(c.Bits == bits + q.RewardBits, $"{n}: Bits da recompensa ({c.Bits - bits} != {q.RewardBits})");

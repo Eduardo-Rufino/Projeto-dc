@@ -8,6 +8,13 @@ namespace ProjetoDC.Scripts.Data
     {
         public float X { get; set; }
         public float Y { get; set; }
+
+        /// <summary>Mapa isométrico (ExplorationMapData.IsoMapScene): id do spot do mapa onde o
+        /// selvagem aparece - no lugar de X/Y. Ver ExplorationArea.ResolveIsoPosition.</summary>
+        public string Spot { get; set; }
+
+        /// <summary>Mapa isométrico: bloco [gx, gy] - alternativa ao Spot.</summary>
+        public List<int> Tile { get; set; }
     }
 
     public class NpcSpawnData
@@ -22,6 +29,11 @@ namespace ProjetoDC.Scripts.Data
         /// WildSpawnPoint mais próximo (o "guarda" bloqueando o único jeito de entrar), ou pro
         /// spawn do explorador se não houver nenhum perto.</summary>
         public bool Hidden { get; set; }
+
+        /// <summary>Mapa isométrico: spot ou bloco [gx, gy] do NPC (ver WildSpawnPointData.Spot).
+        /// Hidden não vale lá - o próprio mapa já esconde os cantos.</summary>
+        public string Spot { get; set; }
+        public List<int> Tile { get; set; }
     }
 
     public class ItemPickupData
@@ -34,6 +46,55 @@ namespace ProjetoDC.Scripts.Data
         public int Quantity { get; set; } = 1;
         public float X { get; set; }
         public float Y { get; set; }
+
+        /// <summary>Mapa isométrico: spot ou bloco [gx, gy] (ver WildSpawnPointData.Spot).</summary>
+        public string Spot { get; set; }
+        public List<int> Tile { get; set; }
+
+        /// <summary>Mapa isométrico: sprite do kit do mapa no lugar do ícone do item (ex.:
+        /// "chest" pra baú, "item_orb" pra item solto). Vazio = ícone do item, como nos
+        /// mapas antigos.</summary>
+        public string KitSprite { get; set; }
+    }
+
+    /// <summary>
+    /// Passagem de um mapa isométrico pra outra área de exploração (a mina leva à caverna, o
+    /// barqueiro ao pântano). Interagir com a origem abre a área de destino com o mesmo
+    /// Digimon; de lá, o botão de voltar traz o jogador de novo pra ReturnTile, na frente da
+    /// passagem. Ver ExplorationArea / GameManager.TravelExploration.
+    /// </summary>
+    public class ExplorationTransitionData
+    {
+        public string Id { get; set; }
+
+        /// <summary>Origem: a mina do mapa (MapLoader.MineNode, aparece com o bloqueio dela).</summary>
+        public bool Mine { get; set; }
+
+        /// <summary>Origem: um NPC do mapa - interagir com ele pergunta se quer ir, em vez do diálogo.</summary>
+        public int? NpcId { get; set; }
+
+        /// <summary>Área de destino (Data/Maps).</summary>
+        public int TargetMapId { get; set; }
+
+        /// <summary>Onde o jogador chega no destino, se o destino for isométrico (spot ou
+        /// bloco [gx, gy]); vazio = o spawn normal do destino.</summary>
+        public string ArrivalSpot { get; set; }
+        public List<int> ArrivalTile { get; set; }
+
+        /// <summary>Quest que libera a passagem (a mesma que libera a área de destino na lista).</summary>
+        public int? RequiredQuestId { get; set; }
+
+        /// <summary>Bloco [gx, gy] deste mapa onde o jogador reaparece ao voltar do destino.</summary>
+        public List<int> ReturnTile { get; set; }
+
+        /// <summary>Blocos [gx, gy] que ficam sólidos enquanto a passagem está aberta (o morro
+        /// da mina: o desenho dela cobre blocos que o mapa deixa andar).</summary>
+        public List<List<int>> SolidTiles { get; set; } = new();
+
+        /// <summary>Plaquinha de nome sobre a origem (a mina), igual à dos NPCs.</summary>
+        public string Name { get; set; } = "";
+
+        public string ConfirmText { get; set; } = "";
     }
 
     /// <summary>
@@ -61,6 +122,20 @@ namespace ProjetoDC.Scripts.Data
         public List<int> WildPool { get; set; } = new();
         public int WildLevelMin { get; set; } = 1;
         public int WildLevelMax { get; set; } = 1;
+
+        /// <summary>Cena de mapa isométrico (MapLoader, ver Assets/Areas/Forest_new/Floresta.tscn).
+        /// Preenchido, a área usa esse mapa no lugar do chão/decoração do tema, e os pontos de
+        /// selvagem/NPC/item passam a ser spots ou blocos do mapa (campos Spot/Tile).</summary>
+        public string IsoMapScene { get; set; }
+
+        /// <summary>Mapa isométrico: spot onde o explorador começa.</summary>
+        public string ExplorerSpawnSpot { get; set; } = "spawn";
+
+        /// <summary>Mapa isométrico: id do bloqueio do mapa -> quest (Data/Quests) que o libera.
+        /// O estado vem de CenterState.CompletedQuestIds, então já fica salvo junto com a quest.</summary>
+        public Dictionary<string, int> BlockerQuests { get; set; } = new();
+
+        public List<ExplorationTransitionData> Transitions { get; set; } = new();
 
         public List<WildSpawnPointData> WildSpawnPoints { get; set; } = new();
         public List<NpcSpawnData> Npcs { get; set; } = new();

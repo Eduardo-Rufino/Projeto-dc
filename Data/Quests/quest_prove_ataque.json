@@ -1,10 +1,10 @@
 {
   "Id": 2,
-  "Name": "Prove seu Valor (Ataque)",
-  "Description": "Derrote 2 Digimon selvagens nessa área pra mostrar que sabe batalhar.",
+  "Name": "O Renamon Veloz",
+  "Description": "Tem um Renamon tão rápido nessa floresta que ninguém conseguiu vencer ainda - e o Gaogamon garante que só não ganhou porque \"não teve tempo\". Derrote 2 Renamon selvagens pra provar que você consegue.",
   "GiverNpcId": 2,
   "ObjectiveType": "DefeatWild",
-  "ObjectiveTargetId": 0,
+  "ObjectiveTargetId": 9,
   "ObjectiveCount": 2,
   "RewardBits": 400,
   "RewardCapacity": 0,

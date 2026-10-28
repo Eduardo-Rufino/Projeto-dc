@@ -3,7 +3,7 @@
   "Name": "Pântano Sombrio",
   "Description": "Um pântano de águas paradas e árvores retorcidas, um caminho alternativo que sai da Floresta Inicial. Fica além da Caverna Cristalina em dificuldade: chegar até aqui é fácil, mas os selvagens daqui são fortes demais pra quem ainda não treinou na caverna. Alguns moradores se escondem atrás das árvores e troncos.",
   "Theme": "swamp",
-  "RequiredQuestId": 1,
+  "RequiredQuestId": 28,
   "RecommendedLevel": 20,
   "WildPool": [
     91,

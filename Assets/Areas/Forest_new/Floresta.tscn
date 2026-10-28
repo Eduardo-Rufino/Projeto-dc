@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gameplay/MapLoader.cs" id="1_loader"]
+
+[node name="Floresta" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_loader")
+MapJson = "res://Assets/Areas/Forest_new/modelo_floresta/mapa/mapa_floresta.json"
+KitDir = "res://Assets/Areas/Forest_new/modelo_floresta/kit"

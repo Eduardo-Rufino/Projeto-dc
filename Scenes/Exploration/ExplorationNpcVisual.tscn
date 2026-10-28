@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://Scripts/Gameplay/ExplorationNpcVisual.cs" id="1_npc"]
+[ext_resource type="PackedScene" uid="uid://bbgnma0dks5kn" path="res://Scenes/UI/DigimonSprite.tscn" id="2_sprite"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_click"]
 size = Vector2(48, 48)
@@ -30,15 +31,9 @@ horizontal_alignment = 1
 mouse_filter = 2
 text = "💬"
 
-[node name="Portrait" type="TextureRect" parent="."]
-offset_left = -24.0
-offset_top = -58.0
-offset_right = 24.0
-offset_bottom = -10.0
+[node name="DigimonSprite" parent="." instance=ExtResource("2_sprite")]
 texture_filter = 1
-expand_mode = 1
-stretch_mode = 5
-mouse_filter = 2
+position = Vector2(0, -34)
 
 [node name="NamePanel" type="Panel" parent="."]
 offset_left = -55.0

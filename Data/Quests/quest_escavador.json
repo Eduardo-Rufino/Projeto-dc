@@ -1,0 +1,13 @@
+{
+  "Id": 29,
+  "Name": "O Túnel Soterrado",
+  "Description": "Encontre o Chip de Escavação (perdido num beco ao sul) e entregue ao Elizamon pra ele abrir o túnel até a caverna.",
+  "GiverNpcId": 31,
+  "ObjectiveType": "DeliverItem",
+  "ObjectiveTargetId": 14,
+  "ObjectiveCount": 1,
+  "RewardBits": 300,
+  "RewardCapacity": 1,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

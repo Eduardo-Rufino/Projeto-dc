@@ -183,6 +183,13 @@ namespace ProjetoDC.Scripts.Managers
 
                         Save.Center.AgeCapMigrationApplied = true;
                     }
+
+                    if (!Save.Center.ForestRevampMigrationApplied)
+                    {
+                        ApplyForestRevampMigration();
+
+                        Save.Center.ForestRevampMigrationApplied = true;
+                    }
                 }
             }
             else
@@ -250,6 +257,7 @@ namespace ProjetoDC.Scripts.Managers
 
             Save = new SaveData();
             Save.Center.AutoTutorialsEnabled = true;
+            Save.Center.ForestRevampMigrationApplied = true;
             CenterService = new CenterService(Save.Center);
 
             if (ClockSystem != null)
@@ -1583,8 +1591,17 @@ namespace ProjetoDC.Scripts.Managers
                 return;
             }
 
+            ExplorationReturn = null;
+
             ExplorationStarted?.Invoke();
 
+            RequestPause("exploration");
+
+            OpenExplorationArea(explorer, map, null);
+        }
+
+        private void OpenExplorationArea(DigimonInstance explorer, ExplorationMapData map, ExplorationArrival arrival)
+        {
             var areaScene = GD.Load<PackedScene>("res://Scenes/Exploration/ExplorationArea.tscn");
             var area = areaScene.Instantiate<ExplorationArea>();
 
@@ -1592,11 +1609,55 @@ namespace ProjetoDC.Scripts.Managers
 
             GetTree().Root.AddChild(area);
 
-            RequestPause("exploration");
-
-            area.Init(explorer, map);
+            area.Init(explorer, map, arrival);
 
             ActiveExplorationArea = area;
+        }
+
+        /// <summary>Onde o jogador chega numa área isométrica: um spot ou um bloco do mapa
+        /// (vazio = o spawn normal da área).</summary>
+        public class ExplorationArrival
+        {
+            public string Spot { get; set; }
+            public List<int> Tile { get; set; }
+        }
+
+        /// <summary>Pra onde o botão de voltar da área atual leva (a área de onde o jogador
+        /// veio por uma passagem, na frente dela) - null quando a área foi aberta pela lista.</summary>
+        public class ExplorationReturnPoint
+        {
+            public int MapId { get; set; }
+            public List<int> Tile { get; set; }
+        }
+
+        public ExplorationReturnPoint ExplorationReturn { get; private set; }
+
+        /// <summary>
+        /// Troca de área de exploração sem voltar pro Center (passagem de um mapa isométrico,
+        /// ver ExplorationTransitionData): fecha a área atual e abre a de destino com o mesmo
+        /// Digimon, mantendo a pausa e sem disparar ExplorationStarted/Finished. returnPoint
+        /// diz pra onde o botão de voltar do destino leva (null = área sem volta, como as
+        /// abertas pela lista).
+        /// </summary>
+        public void TravelExploration(ExplorationMapData target, ExplorationArrival arrival, ExplorationReturnPoint returnPoint)
+        {
+            if (!IsExploring || target == null || IsBattleActive)
+                return;
+
+            if (!IsExplorationMapUnlocked(target))
+            {
+                GD.PrintErr($"TravelExploration: a área '{target.Name}' ainda está bloqueada.");
+                return;
+            }
+
+            var explorer = ActiveExplorationArea.Explorer;
+
+            ActiveExplorationArea.QueueFree();
+            ActiveExplorationArea = null;
+
+            ExplorationReturn = returnPoint;
+
+            OpenExplorationArea(explorer, target, arrival);
         }
 
         /// <summary>Sai da área de exploração de volta pro Center - chamado pelo botão de
@@ -1608,6 +1669,8 @@ namespace ProjetoDC.Scripts.Managers
                 ActiveExplorationArea.QueueFree();
                 ActiveExplorationArea = null;
             }
+
+            ExplorationReturn = null;
 
             ReleasePause("exploration");
 
@@ -1658,6 +1721,12 @@ namespace ProjetoDC.Scripts.Managers
         /// aceita ainda).</summary>
         public int GetQuestProgress(int questId)
         {
+            // DeliverItem não acumula progresso: conta o que já está no inventário agora.
+            var quest = DatabaseManager.Instance.GetQuest(questId);
+
+            if (quest?.ObjectiveType == QuestObjectiveType.DeliverItem)
+                return Math.Min(Save.Center.GetItemQuantity(quest.ObjectiveTargetId), quest.ObjectiveCount);
+
             return Save.Center.QuestProgress.GetValueOrDefault(questId);
         }
 
@@ -1671,6 +1740,10 @@ namespace ProjetoDC.Scripts.Managers
             return GetQuestProgress(questId) >= quest.ObjectiveCount;
         }
 
+        /// <summary>Disparado depois que uma quest é entregue (TryTurnInQuest) - a área de
+        /// exploração usa pra liberar na hora o bloqueio que a quest abre.</summary>
+        public event Action<int> QuestTurnedIn;
+
         /// <summary>Entrega uma quest pronta (ver IsQuestReadyToTurnIn) - aplica a recompensa
         /// (Bits/Capacidade/item) e marca como completa.</summary>
         public SystemResult TryTurnInQuest(int questId)
@@ -1682,6 +1755,9 @@ namespace ProjetoDC.Scripts.Managers
 
             if (!IsQuestReadyToTurnIn(questId))
                 return SystemResult.Fail("O objetivo dessa quest ainda não foi cumprido.");
+
+            if (quest.ObjectiveType == QuestObjectiveType.DeliverItem)
+                Save.Center.AddItemQuantity(quest.ObjectiveTargetId, -quest.ObjectiveCount);
 
             Save.Center.ActiveQuestIds.Remove(questId);
             Save.Center.QuestProgress.Remove(questId);
@@ -1705,6 +1781,8 @@ namespace ProjetoDC.Scripts.Managers
 
             if (giverNpc != null && giverNpc.IsRecruitable && !Save.Center.RecruitedNpcIds.Contains(giverNpc.Id))
                 Save.Center.RecruitedNpcIds.Add(giverNpc.Id);
+
+            QuestTurnedIn?.Invoke(questId);
 
             return SystemResult.Ok();
         }
@@ -1979,6 +2057,38 @@ namespace ProjetoDC.Scripts.Managers
         /// instantaneamente, sem aviso nenhum, na primeira virada de dia - em vez disso, dá
         /// uma folga de 1 dia (idade ajustada pro teto menos 1) pra evoluir a tempo.
         /// </summary>
+        // Quest "Limpeza da Floresta" (Gabumon): antes da floresta nova, era ela que liberava a
+        // Caverna e o Pântano na lista de áreas.
+        private const int LegacyForestUnlockQuestId = 1;
+
+        // Quests da floresta nova (Data/Quests): lenhador, jangada e escavador. Jangada e
+        // escavador liberam o Pântano e a Caverna.
+        private static readonly int[] ForestRevampQuestIds = { 27, 28, 29 };
+
+        /// <summary>
+        /// Migração de compatibilidade (ver CenterState.ForestRevampMigrationApplied): a Caverna e
+        /// o Pântano passaram a abrir pelas quests da floresta nova em vez da do Gabumon. Um save
+        /// que já tinha liberado as duas pelo Gabumon continua com elas liberadas - as quests
+        /// novas entram como concluídas (o que também deixa os bloqueios da floresta abertos,
+        /// coerente com o caminho que esse jogador já tinha).
+        /// </summary>
+        private void ApplyForestRevampMigration()
+        {
+            if (!Save.Center.CompletedQuestIds.Contains(LegacyForestUnlockQuestId))
+                return;
+
+            foreach (int questId in ForestRevampQuestIds)
+            {
+                Save.Center.ActiveQuestIds.Remove(questId);
+                Save.Center.QuestProgress.Remove(questId);
+
+                if (!Save.Center.CompletedQuestIds.Contains(questId))
+                    Save.Center.CompletedQuestIds.Add(questId);
+            }
+
+            GD.Print("Migração da floresta nova: Caverna e Pântano continuam liberados (quest do Gabumon já concluída).");
+        }
+
         private void ApplyAgeCapMigration()
         {
             foreach (var digimon in Save.Center.Digimons)

@@ -1,0 +1,13 @@
+{
+  "Id": 28,
+  "Name": "Patamon",
+  "Code": "patamon",
+  "DialogueLines": [
+    "Bem-vindo à praça da Floresta Inicial!",
+    "Ao sul, o Reppamon devia estar cortando as toras que fecham a clareira dos lenhadores... mas dizem que um Agumon sumiu com alguma coisa dele.",
+    "Ao nordeste fica o cais do rio - o Terriermon quer montar uma jangada pra atravessar até o pântano.",
+    "E lá no noroeste, depois do planalto, o Elizamon tenta abrir um túnel pra caverna. Dizem que ele perdeu um chip num beco ao sul...",
+    "Bom, foi isso que eu ouvi por aí. Você me confirma que é isso mesmo?"
+  ],
+  "QuestId": 30
+}

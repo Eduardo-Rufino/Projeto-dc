@@ -24,6 +24,12 @@ namespace ProjetoDC.Scripts.Gameplay
         // exatamente na posição do Digimon a cada frame.
         private const float CameraSmoothingSpeed = 6f;
 
+        // Mapas antigos: quão perto (px da tela) o explorador precisa estar pra pegar um item.
+        // No isométrico é o bloco vizinho (ver IsIsoExplorerNextTo).
+        private const float ItemPickupRange = 90f;
+
+        private ConfirmWindow _itemFoundWindow;
+
         private Node2D _spawnsContainer;
         private Polygon2D _boundary;
         private ColorRect _background;
@@ -46,6 +52,10 @@ namespace ProjetoDC.Scripts.Gameplay
         private float? _walkLimitY;
         private DigimonInstance _explorer;
         private ExplorationDigimon _explorerVisual;
+
+        /// <summary>Digimon que está explorando (ver GameManager.TravelExploration, que leva o
+        /// mesmo Digimon pra outra área).</summary>
+        public DigimonInstance Explorer => _explorer;
 
         public override void _Ready()
         {
@@ -78,14 +88,32 @@ namespace ProjetoDC.Scripts.Gameplay
 
             GameManager.Instance.TeamBattleStarted -= OnTeamBattleStarted;
             GameManager.Instance.TeamBattleFinished -= OnTeamBattleFinished;
+            GameManager.Instance.QuestTurnedIn -= OnQuestTurnedIn;
         }
 
-        public void Init(DigimonInstance explorer, ExplorationMapData map)
+        public override void _Process(double delta)
+        {
+            UpdateMapFreeze();
+            UpdateIsoRaft();
+        }
+
+        public void Init(DigimonInstance explorer, ExplorationMapData map, GameManager.ExplorationArrival arrival = null)
         {
             _explorer = explorer;
             _map = map;
 
             _mapNameLabel.Text = map.Name;
+
+            AddReturnButton();
+            AddQuestTracker();
+
+            CallDeferred(MethodName.RunFlowTestStep);
+
+            if (!string.IsNullOrEmpty(map.IsoMapScene))
+            {
+                InitIso(arrival);
+                return;
+            }
 
             _theme = DatabaseManager.Instance.GetAreaTheme(map.Theme);
             ApplyThemeGround();
@@ -106,6 +134,9 @@ namespace ProjetoDC.Scripts.Gameplay
 
         public bool IsPointInsideBoundary(Vector2 globalPosition)
         {
+            if (_isoMap != null)
+                return IsIsoPointWalkable(globalPosition);
+
             if (_boundary == null)
                 return true;
 
@@ -121,9 +152,18 @@ namespace ProjetoDC.Scripts.Gameplay
         {
             _explorerVisual = _explorerScene.Instantiate<ExplorationDigimon>();
 
-            _spawnsContainer.AddChild(_explorerVisual);
+            if (_isoMap != null)
+            {
+                PlaceIsoEntity(_explorerVisual, _isoExplorerSpawn);
+                _explorerVisual.Speed = IsoExplorerSpeed;
+                _isoMap.Player = _explorerVisual;
+            }
+            else
+            {
+                _spawnsContainer.AddChild(_explorerVisual);
+                _explorerVisual.GlobalPosition = _explorerSpawnPoint.GlobalPosition;
+            }
 
-            _explorerVisual.GlobalPosition = _explorerSpawnPoint.GlobalPosition;
             _explorerVisual.Initialize(_explorer, this);
 
             AttachCameraToExplorer(_explorerVisual);
@@ -153,7 +193,7 @@ namespace ProjetoDC.Scripts.Gameplay
 
         private void ConfigureCameraLimits()
         {
-            Rect2? bounds = GetBoundaryBounds();
+            Rect2? bounds = _isoMap != null ? GetIsoCameraBounds() : GetBoundaryBounds();
 
             if (bounds == null)
                 return;
@@ -511,9 +551,23 @@ namespace ProjetoDC.Scripts.Gameplay
 
                 var wild = _wildScene.Instantiate<WildEncounterSpawn>();
 
-                _spawnsContainer.AddChild(wild);
+                if (_isoMap != null)
+                {
+                    if (!TryResolveIsoPosition(point.Spot, point.Tile, out var ground))
+                    {
+                        wild.QueueFree();
+                        continue;
+                    }
 
-                wild.GlobalPosition = new Vector2(point.X, point.Y);
+                    PlaceIsoEntity(wild, ground);
+                    wild.Area = this;
+                }
+                else
+                {
+                    _spawnsContainer.AddChild(wild);
+                    wild.GlobalPosition = new Vector2(point.X, point.Y);
+                }
+
                 wild.Initialize(digimonId, level, data, _explorer, _explorerVisual);
             }
         }
@@ -529,9 +583,23 @@ namespace ProjetoDC.Scripts.Gameplay
 
                 var npc = _npcScene.Instantiate<ExplorationNpcVisual>();
 
-                _spawnsContainer.AddChild(npc);
+                if (_isoMap != null)
+                {
+                    if (!TryResolveIsoPosition(spawn.Spot, spawn.Tile, out var ground))
+                    {
+                        npc.QueueFree();
+                        continue;
+                    }
 
-                npc.GlobalPosition = new Vector2(spawn.X, spawn.Y);
+                    PlaceIsoEntity(npc, ground);
+                    LiftIsoChildren(npc, ground);
+                }
+                else
+                {
+                    _spawnsContainer.AddChild(npc);
+                    npc.GlobalPosition = new Vector2(spawn.X, spawn.Y);
+                }
+
                 npc.Initialize(data, _explorerVisual);
                 npc.Clicked += OnNpcClicked;
             }
@@ -541,7 +609,10 @@ namespace ProjetoDC.Scripts.Gameplay
         {
             foreach (var pickup in _map.ItemPickups)
             {
-                if (GameManager.Instance.Save.Center.CollectedItemPickupIds.Contains(pickup.UniqueId))
+                // Baú do mapa isométrico fica aberto no lugar depois de coletado; o resto some.
+                bool collected = GameManager.Instance.Save.Center.CollectedItemPickupIds.Contains(pickup.UniqueId);
+
+                if (collected && !IsIsoChest(pickup.KitSprite))
                     continue;
 
                 var itemData = DatabaseManager.Instance.GetItem(pickup.ItemId);
@@ -553,16 +624,126 @@ namespace ProjetoDC.Scripts.Gameplay
 
                 var visual = _itemScene.Instantiate<ExplorationItemVisual>();
 
-                _spawnsContainer.AddChild(visual);
+                if (_isoMap != null)
+                {
+                    if (!TryResolveIsoPosition(pickup.Spot, pickup.Tile, out var ground))
+                    {
+                        visual.QueueFree();
+                        continue;
+                    }
 
-                visual.GlobalPosition = new Vector2(pickup.X, pickup.Y);
+                    PlaceIsoEntity(visual, ground, IsoItemScale);
+                }
+                else
+                {
+                    _spawnsContainer.AddChild(visual);
+                    visual.GlobalPosition = new Vector2(pickup.X, pickup.Y);
+                }
+
                 visual.Initialize(pickup, icon);
+
+                if (_isoMap != null)
+                    DressIsoItem(visual, pickup.KitSprite, collected);
+
+                if (collected)
+                    visual.SetClickable(false);
+                else
+                    visual.Clicked += OnItemClicked;
             }
+        }
+
+        /// <summary>Clique num item: longe, o explorador só vai até ele (no mapa isométrico, até
+        /// o bloco do lado); perto, coleta e mostra o que veio.</summary>
+        private void OnItemClicked(ExplorationItemVisual visual)
+        {
+            if (_explorerVisual == null)
+                return;
+
+            if (!IsExplorerNextTo(visual))
+            {
+                if (_isoMap != null)
+                    WalkExplorerNextTo(visual);
+                else
+                    _explorerVisual.MoveTo(visual.GlobalPosition);
+
+                return;
+            }
+
+            var pickup = visual.Pickup;
+
+            if (!GameManager.Instance.CollectExplorationItem(pickup).Success)
+                return;
+
+            if (_isoMap != null && IsIsoChest(pickup.KitSprite))
+                OpenIsoChest(visual);
+            else
+                visual.QueueFree();
+
+            ShowItemFound(pickup);
+        }
+
+        private bool IsExplorerNextTo(ExplorationItemVisual visual)
+        {
+            if (_isoMap != null)
+                return IsIsoExplorerNextTo(visual);
+
+            return _explorerVisual.GlobalPosition.DistanceTo(visual.GlobalPosition) <= ItemPickupRange;
+        }
+
+        private void ShowItemFound(ItemPickupData pickup)
+        {
+            var item = DatabaseManager.Instance.GetItem(pickup.ItemId);
+            string name = item?.Name ?? "Item";
+            Texture2D icon = item != null && !string.IsNullOrEmpty(item.IconPath) && ResourceLoader.Exists(item.IconPath)
+                ? GD.Load<Texture2D>(item.IconPath)
+                : null;
+
+            if (_itemFoundWindow == null)
+            {
+                _itemFoundWindow = new ConfirmWindow(hasCancel: false);
+                AddChild(_itemFoundWindow);
+            }
+
+            string message = $"Você encontrou {pickup.Quantity}x {name}.";
+
+            if (!string.IsNullOrEmpty(item?.Description))
+                message += "\n\n" + item.Description;
+
+            _itemFoundWindow.Open("🎁 Item encontrado!", message, "OK", icon: icon);
         }
 
         private void OnNpcClicked(NpcData npc)
         {
+            if (TryOpenNpcTransition(npc))
+                return;
+
             _dialogueScreen.Open(npc);
+        }
+
+        // Congela o mapa (explorador, selvagens, NPCs, itens - e o mapa isométrico, que mora
+        // dentro do SpawnsContainer) enquanto o diálogo ou uma confirmação de passagem está
+        // aberta - senão os selvagens continuavam vagando/perseguindo e encostavam no
+        // explorador, disparando batalha no meio da conversa. Só o SpawnsContainer: a própria
+        // área (e as janelas, filhas dela) segue processando normalmente.
+        /// <summary>Botão/lista das quests ativas, por baixo do diálogo (que fica por cima).</summary>
+        private void AddQuestTracker()
+        {
+            var layer = GetNode("CanvasLayer");
+            var tracker = new ExplorationQuestTracker { Name = "QuestTracker" };
+
+            layer.AddChild(tracker);
+            layer.MoveChild(tracker, _dialogueScreen.GetIndex());
+        }
+
+        private void UpdateMapFreeze()
+        {
+            bool frozen = _dialogueScreen.Visible ||
+                          (_transitionConfirm != null && _transitionConfirm.IsOpen) ||
+                          (_itemFoundWindow != null && _itemFoundWindow.IsOpen);
+            var mode = frozen ? ProcessModeEnum.Disabled : ProcessModeEnum.Inherit;
+
+            if (_spawnsContainer.ProcessMode != mode)
+                _spawnsContainer.ProcessMode = mode;
         }
 
         // Um selvagem só é enfrentado com o Digimon que está explorando (BattleFromExploration

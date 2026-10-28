@@ -1,0 +1,13 @@
+{
+  "Id": 30,
+  "Name": "Rumores da Praça",
+  "Description": "O Patamon já ouviu tudo o que anda acontecendo na floresta - as toras do Reppamon, a jangada do Terriermon, o túnel do Elizamon - e só quer que você confirme que ele ouviu direitinho. A conversa já basta.",
+  "GiverNpcId": 28,
+  "ObjectiveType": "Talk",
+  "ObjectiveTargetId": 0,
+  "ObjectiveCount": 0,
+  "RewardBits": 50,
+  "RewardCapacity": 0,
+  "RewardItemId": 0,
+  "RewardItemQuantity": 0
+}

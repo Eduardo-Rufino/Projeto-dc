@@ -1,0 +1,15 @@
+Kit da floresta (estilo blocos) - v2
+
+Escala: tiles de losango 64x32 px nativos. Exiba o cenario em 2x e os digimons em 3x (filtro Nearest).
+tile_center = ponto do centro do losango dentro de cada sprite de tile (ja inclui 1 px de margem).
+anchor = ponto de contato com o chao de cada prop (alinhe ao centro do tile).
+Animacao: 4 quadros horizontais nos spritesheets, ~5 fps. Comece cada tile no quadro (x+y)%4 para a onda de vento.
+Tiles: grass_*, dirt_*, sand_*, water_* (6 variacoes cada; grama e agua animadas em 4 quadros). water_*_deep (calma, 2+ tiles da margem) e water_*_shallow (junto a margem).
+Terreno: terrain/hill_* (blocos de morro com penhasco de pedra, 18 px de altura), terrain/ramp_grass_* e ramp_stairs_* (rampas e escadas; o sufixo m/p + gx/gy diz para qual lado a rampa SOBE), overlays lip_* (grama pendendo sobre o caminho rebaixado) e fringe_* (franja de folhas na borda da grama).
+Overlays de agua: foam_ul/ur/dl/dr (espuma animada na borda, quando o vizinho daquele lado e terra), wet_sand_* (areia molhada), glints_* (brilhos).
+Props: tree_0..2 (carvalhos) e tree_3 (pinheiro) com 4 quadros de vento; bush_0/1 (1 com frutas), stones_0/1, flowers_white/orange/pink, tall_grass_0/1 (4 quadros); tuft_* (tufos de grama pequenos); lily_0/1 (vitoria-regia), reeds (taboa), water_rock (com ondas); cenario: tram_ruin, tv_ruin, data_pillar, power_pole, radio_antenna, signpost, fallen_log_0/1, mushrooms_red/glow, fern_0/1; pontos de item: chest e item_orb; obstaculos: (blocker_* = bloqueado, cleared_* = liberado, river_raft = balsa sobre a agua). Cada obstaculo tem 2 versoes: _gx (caminho correndo na diagonal \ da tela) e _gy (caminho na diagonal /); use a que corresponde a direcao do caminho bloqueado. A ancora e o centro do obstaculo no chao: coloque no meio do caminho. Excecao: a mina (cleared_tunnel) fica AO LADO do caminho liberado, com a entrada virada para ele, para nao bloquear a passagem (caminho na diagonal / -> use cleared_tunnel_gx deslocada (-48,-24) px; caminho na diagonal \ -> use cleared_tunnel_gy deslocada (32,-16) px).
+
+Decisao: o mapa fica SEM iluminacao. Sombras de folhas, nevoa, raios, vinheta e brilhos ficaram em opcional/ caso queira testar no futuro.
+godot/tree_fade.gd: a arvore fica translucida quando um digimon passa atras dela (Godot 4, ainda nao testado no seu projeto).
+v4 (refino): copas novas (folhas em tufos com luz do alto-esquerdo), pinheiro em camadas, arbustos novos, grama/terra sem 'quadriculado', areia com ondulacoes de vento, morro com rocha irregular. Mesmos nomes, tamanhos e ancoras da v3.
+v5: obstaculos (pilha de toras, deslizamento, tunel, tocos, balsa) e troncos caidos redesenhados no mesmo angulo isometrico do mapa, em 2 orientacoes (_gx/_gy). Os nomes antigos sem sufixo foram substituidos.

@@ -1,0 +1,6 @@
+{
+  "Id": 13,
+  "Name": "Tábuas",
+  "Description": "Tábuas cortadas pelo lenhador da Floresta Inicial. O construtor do cais precisa delas pra montar uma jangada.",
+  "IconPath": "res://Assets/Sprites/Itens/item_tabuas.png"
+}

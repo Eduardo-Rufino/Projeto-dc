@@ -1,9 +1,9 @@
 {
   "Id": 4,
   "Name": "Folhas pro Impmon",
-  "Description": "Colete 2 Folhas da Floresta (dropadas pelos Digimon selvagens da floresta derrotados) e entregue ao Impmon.",
+  "Description": "Junte 2 Folhas da Floresta (caem dos Digimon selvagens da floresta derrotados - ou de algum baú por aí) e entregue ao Impmon. Ele fica com as folhas.",
   "GiverNpcId": 4,
-  "ObjectiveType": "CollectItem",
+  "ObjectiveType": "DeliverItem",
   "ObjectiveTargetId": 3,
   "ObjectiveCount": 2,
   "RewardBits": 300,

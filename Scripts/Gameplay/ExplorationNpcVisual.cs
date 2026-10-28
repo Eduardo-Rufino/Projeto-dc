@@ -1,5 +1,6 @@
 using Godot;
 using ProjetoDC.Scripts.Data;
+using ProjetoDC.Scripts.UI;
 using System;
 
 namespace ProjetoDC.Scripts.Gameplay
@@ -16,7 +17,7 @@ namespace ProjetoDC.Scripts.Gameplay
         // chegar perto o bastante (ver OnClickAreaInputEvent).
         private const float InteractionRange = 140f;
 
-        private TextureRect _portrait;
+        private DigimonSprite _sprite;
         private Label _nameLabel;
         private NpcData _npc;
         private ExplorationDigimon _explorerVisual;
@@ -25,7 +26,7 @@ namespace ProjetoDC.Scripts.Gameplay
 
         public override void _Ready()
         {
-            _portrait = GetNodeOrNull<TextureRect>("Portrait");
+            _sprite = GetNodeOrNull<DigimonSprite>("DigimonSprite");
             _nameLabel = GetNodeOrNull<Label>("NamePanel/NameLabel");
 
             var clickArea = GetNode<Area2D>("ClickArea");
@@ -40,10 +41,8 @@ namespace ProjetoDC.Scripts.Gameplay
             if (_nameLabel != null)
                 _nameLabel.Text = npc.Name;
 
-            string portraitPath = $"res://Assets/Sprites/Digimon/{npc.Code}.png";
-
-            if (_portrait != null && ResourceLoader.Exists(portraitPath))
-                _portrait.Texture = GD.Load<Texture2D>(portraitPath);
+            // Animação idle de verdade (a mesma do explorador/selvagens), não um retrato parado.
+            _sprite?.SetDigimon(npc.Code);
         }
 
         private void OnClickAreaInputEvent(Node viewport, InputEvent @event, long shapeIdx)

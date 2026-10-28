@@ -27,5 +27,9 @@ namespace ProjetoDC.Scripts.Data
         public int RewardCapacity { get; set; }
         public int RewardItemId { get; set; }
         public int RewardItemQuantity { get; set; }
+
+        /// <summary>Fala opcional do NPC depois da entrega (ex.: o lore do Tortamon) - aparece
+        /// no diálogo quando a quest já está completa. Vazio = só o "já completa".</summary>
+        public string CompletionText { get; set; } = "";
     }
 }

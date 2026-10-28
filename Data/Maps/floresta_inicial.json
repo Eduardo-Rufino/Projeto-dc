@@ -1,32 +1,258 @@
 {
   "Id": 1,
   "Name": "Floresta Inicial",
-  "Description": "Uma floresta tranquila logo nos arredores do Center - boa pra treinar contra Digimon selvagens e ganhar experiência. Bem grande, então vale a pena explorar todo canto - alguns moradores não ficam à vista de qualquer um.",
+  "Description": "Uma floresta tranquila logo nos arredores do centro de treinamento - boa pra treinar contra Digimon selvagens. Da praça saem trilhas pro planalto, pro lago, pro rio e pros cantos escondidos onde moram vários Digimon.",
   "RecommendedLevel": 6,
-  "WildPool": [1, 2, 9],
+  "IsoMapScene": "res://Assets/Areas/Forest_new/Floresta.tscn",
+  "ExplorerSpawnSpot": "spawn",
+  "BlockerQuests": {
+    "bloqueio_arvores": 27,
+    "bloqueio_rio": 28,
+    "bloqueio_deslizamento": 29
+  },
+  "Transitions": [
+    {
+      "Id": "mina",
+      "Mine": true,
+      "TargetMapId": 2,
+      "RequiredQuestId": 29,
+      "ReturnTile": [
+        7,
+        5
+      ],
+      "Name": "Mina",
+      "SolidTiles": [
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      "ConfirmText": "Entrar na mina e seguir até a Caverna Cristalina?"
+    },
+    {
+      "Id": "barco_pantano",
+      "NpcId": 32,
+      "TargetMapId": 3,
+      "RequiredQuestId": 28,
+      "ReturnTile": [
+        88,
+        7
+      ],
+      "ConfirmText": "\"Daqui pra frente é só lama e trilha de tábua. Quer que eu te leve até o Pântano Sombrio?\""
+    }
+  ],
+  "WildPool": [
+    1,
+    2,
+    9
+  ],
   "WildLevelMin": 5,
   "WildLevelMax": 8,
   "WildSpawnPoints": [
-    { "X": 750, "Y": 550 },
-    { "X": 1550, "Y": 1050 },
-    { "X": 2550, "Y": 1700 },
-    { "X": 1870, "Y": 460 },
-    { "X": 1790, "Y": 1740 },
-    { "X": 1330, "Y": 1650 },
-    { "X": 2870, "Y": 1050 },
-    { "X": 2650, "Y": 1150 }
+    {
+      "Spot": "inimigo_0"
+    },
+    {
+      "Spot": "inimigo_1"
+    },
+    {
+      "Spot": "inimigo_2"
+    },
+    {
+      "Spot": "inimigo_3"
+    },
+    {
+      "Spot": "inimigo_4"
+    },
+    {
+      "Spot": "inimigo_5"
+    },
+    {
+      "Spot": "inimigo_6"
+    },
+    {
+      "Spot": "inimigo_7"
+    },
+    {
+      "Spot": "inimigo_8"
+    },
+    {
+      "Spot": "inimigo_9"
+    }
   ],
   "Npcs": [
-    { "NpcId": 1, "X": 650, "Y": 950, "Hidden": false },
-    { "NpcId": 2, "X": 2040, "Y": 300, "Hidden": true },
-    { "NpcId": 3, "X": 1970, "Y": 1920, "Hidden": true },
-    { "NpcId": 4, "X": 3080, "Y": 1150, "Hidden": true },
-    { "NpcId": 5, "X": 1150, "Y": 1800, "Hidden": true },
-    { "NpcId": 6, "X": 1200, "Y": 650, "Hidden": true },
-    { "NpcId": 7, "X": 2400, "Y": 1850, "Hidden": true }
+    {
+      "NpcId": 28,
+      "Spot": "npc_guia"
+    },
+    {
+      "NpcId": 29,
+      "Spot": "npc_lenhador"
+    },
+    {
+      "NpcId": 30,
+      "Spot": "npc_construtor"
+    },
+    {
+      "NpcId": 31,
+      "Spot": "npc_escavador"
+    },
+    {
+      "NpcId": 32,
+      "Spot": "npc_pantano"
+    },
+    {
+      "NpcId": 1,
+      "Tile": [
+        60,
+        33
+      ]
+    },
+    {
+      "NpcId": 2,
+      "Tile": [
+        12,
+        17
+      ]
+    },
+    {
+      "NpcId": 3,
+      "Tile": [
+        42,
+        42
+      ]
+    },
+    {
+      "NpcId": 4,
+      "Tile": [
+        48,
+        22
+      ]
+    },
+    {
+      "NpcId": 5,
+      "Tile": [
+        70,
+        33
+      ]
+    },
+    {
+      "NpcId": 6,
+      "Tile": [
+        64,
+        12
+      ]
+    },
+    {
+      "NpcId": 7,
+      "Tile": [
+        16,
+        44
+      ]
+    }
   ],
   "ItemPickups": [
-    { "UniqueId": 1, "ItemId": 1, "Quantity": 3, "X": 1450, "Y": 1150 },
-    { "UniqueId": 2, "ItemId": 2, "Quantity": 1, "X": 2950, "Y": 1050 }
+    {
+      "UniqueId": 1,
+      "ItemId": 1,
+      "Quantity": 3,
+      "Spot": "bau_0",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 2,
+      "ItemId": 2,
+      "Quantity": 1,
+      "Spot": "bau_1",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 3,
+      "ItemId": 3,
+      "Quantity": 2,
+      "Spot": "bau_2",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 4,
+      "ItemId": 1,
+      "Quantity": 2,
+      "Spot": "bau_3",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 5,
+      "ItemId": 4,
+      "Quantity": 1,
+      "Spot": "bau_4",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 6,
+      "ItemId": 2,
+      "Quantity": 1,
+      "Spot": "bau_5",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 7,
+      "ItemId": 1,
+      "Quantity": 3,
+      "Spot": "bau_6",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 8,
+      "ItemId": 4,
+      "Quantity": 2,
+      "Spot": "bau_lenhadores",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 9,
+      "ItemId": 2,
+      "Quantity": 2,
+      "Spot": "bau_pantano",
+      "KitSprite": "chest"
+    },
+    {
+      "UniqueId": 10,
+      "ItemId": 14,
+      "Quantity": 1,
+      "Spot": "item_chip",
+      "KitSprite": "item_orb"
+    },
+    {
+      "UniqueId": 605,
+      "ItemId": 15,
+      "Quantity": 1,
+      "Tile": [
+        12,
+        28
+      ],
+      "KitSprite": "item_orb"
+    },
+    {
+      "UniqueId": 606,
+      "ItemId": 15,
+      "Quantity": 1,
+      "Tile": [
+        47,
+        51
+      ],
+      "KitSprite": "item_orb"
+    }
   ]
 }

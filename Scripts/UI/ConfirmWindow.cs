@@ -21,6 +21,7 @@ namespace ProjetoDC.Scripts.UI
         private Control _root;
         private Label _titleLabel;
         private Label _messageLabel;
+        private TextureRect _icon;
         private Button _confirmButton;
         private Button _cancelButton;
 
@@ -77,6 +78,17 @@ namespace ProjetoDC.Scripts.UI
 
             box.AddChild(new HSeparator());
 
+            _icon = new TextureRect
+            {
+                Visible = false,
+                CustomMinimumSize = new Vector2(64, 64),
+                ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+                StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+                TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+                SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter,
+            };
+            box.AddChild(_icon);
+
             _messageLabel = new Label
             {
                 CustomMinimumSize = new Vector2(WindowWidth - 50f, 0),
@@ -103,10 +115,12 @@ namespace ProjetoDC.Scripts.UI
 
         public bool IsOpen => _root != null && _root.Visible;
 
-        public void Open(string title, string message, string confirmText = null, string cancelText = null)
+        public void Open(string title, string message, string confirmText = null, string cancelText = null, Texture2D icon = null)
         {
             _titleLabel.Text = title;
             _messageLabel.Text = message;
+            _icon.Texture = icon;
+            _icon.Visible = icon != null;
 
             _confirmButton.Text = confirmText ?? (_hasCancel ? "Confirmar" : "Entendido");
 

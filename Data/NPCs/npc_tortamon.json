@@ -7,7 +7,7 @@
     "Fica quieto aí um instante. Já faz tempo que ninguém sobe até essas pedras.",
     "Não tenho nada pra pedir de você, treinador. Só queria companhia de vez em quando - e talvez um pouco de sossego no resto do tempo."
   ],
-  "QuestId": null,
+  "QuestId": 31,
   "IsRecruitable": false,
   "RecruitmentPerkDescription": "",
   "RecruitmentTrainingAreaType": null

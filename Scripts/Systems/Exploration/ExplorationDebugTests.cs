@@ -45,6 +45,7 @@ namespace ProjetoDC.Scripts.Systems.Exploration
             TestMaps();
             TestNpcsAndQuests();
             TestProgression();
+            TestIsoMaps();
 
             GD.Print(_failures == 0
                 ? "===== ExplorationDebugTests: TODOS OS TESTES PASSARAM ====="
@@ -170,20 +171,23 @@ namespace ProjetoDC.Scripts.Systems.Exploration
 
                 var points = new List<(string Label, Vector2 Position)>();
 
-                foreach (var p in map.WildSpawnPoints)
+                // Mapa isométrico: as posições são spots/blocos do mapa, conferidas em TestIsoMaps.
+                bool iso = !string.IsNullOrEmpty(map.IsoMapScene);
+
+                foreach (var p in iso ? new List<WildSpawnPointData>() : map.WildSpawnPoints)
                     points.Add(("selvagem", new Vector2(p.X, p.Y)));
 
-                foreach (var n in map.Npcs)
+                foreach (var n in iso ? new List<NpcSpawnData>() : map.Npcs)
                     points.Add(($"NPC {n.NpcId}", new Vector2(n.X, n.Y)));
 
-                foreach (var p in map.ItemPickups)
+                foreach (var p in iso ? new List<ItemPickupData>() : map.ItemPickups)
                     points.Add(($"item {p.UniqueId}", new Vector2(p.X, p.Y)));
 
                 // Tema com mar: nada de ponto de interesse na água. Selvagens vagueiam até
                 // WildWanderRadius do spawn sem checar o limite, então precisam de folga.
                 float? walkLimit = Db.GetAreaTheme(map.Theme ?? "forest")?.GetWalkLimitY(0, MapHeight);
 
-                if (walkLimit.HasValue)
+                if (walkLimit.HasValue && !iso)
                 {
                     foreach (var p in map.WildSpawnPoints)
                         Check(p.Y + WildWanderRadius <= walkLimit.Value,
@@ -299,9 +303,28 @@ namespace ProjetoDC.Scripts.Systems.Exploration
                         continue;
 
                     Check(quest.GiverNpcId == npc.Id, $"quest {quest.Id} '{quest.Name}': GiverNpcId {quest.GiverNpcId} != NPC dono {npc.Id}");
-                    Check(quest.ObjectiveCount > 0, $"quest {quest.Id}: ObjectiveCount deveria ser > 0");
 
-                    if (quest.ObjectiveType == QuestObjectiveType.CollectItem)
+                    if (quest.ObjectiveType == QuestObjectiveType.Talk)
+                    {
+                        Check(quest.ObjectiveCount == 0, $"quest {quest.Id}: Talk deveria ter ObjectiveCount 0");
+                    }
+                    else
+                    {
+                        Check(quest.ObjectiveCount > 0, $"quest {quest.Id}: ObjectiveCount deveria ser > 0");
+                    }
+
+                    if (quest.ObjectiveType == QuestObjectiveType.DeliverItem)
+                    {
+                        // O item a entregar tem que vir de algum lugar: um pickup, a recompensa de outra
+                        // quest ou o drop de um selvagem (ex.: o Fragmento do Destino do Renamon).
+                        bool obtainable = Db.GetAllExplorationMaps().Any(m => m.ItemPickups.Any(pk => pk.ItemId == quest.ObjectiveTargetId)) ||
+                                          Db.GetAllQuests().Any(q => q.Id != quest.Id && q.RewardItemId == quest.ObjectiveTargetId && q.RewardItemQuantity > 0) ||
+                                          dropItemsInPools.Contains(quest.ObjectiveTargetId);
+
+                        Check(Db.GetItem(quest.ObjectiveTargetId) != null, $"quest {quest.Id}: item {quest.ObjectiveTargetId} não existe");
+                        Check(obtainable, $"quest {quest.Id} '{quest.Name}': o item {quest.ObjectiveTargetId} não vem de nenhum pickup nem recompensa");
+                    }
+                    else if (quest.ObjectiveType == QuestObjectiveType.CollectItem)
                     {
                         Check(Db.GetItem(quest.ObjectiveTargetId) != null, $"quest {quest.Id}: item {quest.ObjectiveTargetId} não existe");
 
@@ -314,7 +337,7 @@ namespace ProjetoDC.Scripts.Systems.Exploration
                         Check(map.WildPool.Any(id => Db.GetDigimon(id)?.Drops.Any(d => d.ItemId == quest.ObjectiveTargetId) == true),
                             $"quest {quest.Id} '{quest.Name}': ninguém do pool de '{map.Name}' solta o item {quest.ObjectiveTargetId}");
                     }
-                    else if (quest.ObjectiveTargetId != 0)
+                    else if (quest.ObjectiveType == QuestObjectiveType.DefeatWild && quest.ObjectiveTargetId != 0)
                     {
                         // Caçada por espécie: o alvo precisa aparecer no mapa onde a quest é dada.
                         Check(map.WildPool.Contains(quest.ObjectiveTargetId),
@@ -349,6 +372,7 @@ namespace ProjetoDC.Scripts.Systems.Exploration
 
                 // A quest que libera a área precisa ser oferecida numa área que o jogador
                 // consegue alcançar ANTES - senão a área nunca abriria (ciclo/impossível).
+                // (Dentro de um mapa isométrico, TestIsoMaps confere que o NPC é alcançável.)
                 var giverMap = Db.GetAllExplorationMaps()
                     .FirstOrDefault(m => m.Npcs.Any(n => n.NpcId == quest.GiverNpcId));
 
@@ -365,6 +389,255 @@ namespace ProjetoDC.Scripts.Systems.Exploration
 
                 Ok($"{name}: liberada por '{quest.Name}' (dada em '{giverMap.Name}')");
             }
+        }
+
+        // ---------------------------------------------------------------- mapas isométricos
+
+        /// <summary>
+        /// Mapas isométricos (ExplorationMapData.IsoMapScene): todo spot/bloco usado existe e é
+        /// andável, cada bloqueio tem a sua quest, e a ordem das quests fecha sem travar - simula
+        /// o jogador: começa sem nenhum bloqueio aberto, conclui toda quest de bloqueio cujo NPC
+        /// já alcança (e cujo item já consegue pegar) e repete até abrir tudo. Também confere
+        /// que cada passagem (mina, barqueiro) só é alcançável depois da quest dela.
+        /// </summary>
+        private static void TestIsoMaps()
+        {
+            foreach (var map in Db.GetAllExplorationMaps().Where(m => !string.IsNullOrEmpty(m.IsoMapScene)))
+            {
+                string name = $"mapa isométrico {map.Id} '{map.Name}'";
+
+                var scene = GD.Load<PackedScene>(map.IsoMapScene);
+                Check(scene != null, $"{name}: cena {map.IsoMapScene} não existe");
+
+                if (scene == null)
+                    continue;
+
+                var loader = scene.Instantiate<MapLoader>();
+                loader.Build();
+
+                TestIsoMap(map, loader, name);
+
+                loader.Free();
+            }
+        }
+
+        private static void TestIsoMap(ExplorationMapData map, MapLoader loader, string name)
+        {
+            Vector2I? Resolve(string spot, List<int> tile, string label)
+            {
+                if (!string.IsNullOrEmpty(spot))
+                {
+                    bool found = loader.TryGetSpot(spot, out var info);
+                    Check(found, $"{name}: {label}: spot '{spot}' não existe no mapa");
+                    return found ? info.Tile : null;
+                }
+
+                Check(tile != null && tile.Count == 2, $"{name}: {label}: sem Spot nem Tile");
+                return tile != null && tile.Count == 2 ? new Vector2I(tile[0], tile[1]) : null;
+            }
+
+            foreach (var id in loader.BlockerIds)
+                Check(map.BlockerQuests.ContainsKey(id), $"{name}: o bloqueio '{id}' do mapa não tem quest em BlockerQuests");
+
+            foreach (var (id, questId) in map.BlockerQuests)
+            {
+                Check(loader.HasBlocker(id), $"{name}: BlockerQuests cita '{id}', que não existe no mapa");
+                Check(Db.GetQuest(questId) != null, $"{name}: bloqueio '{id}': quest {questId} não existe");
+            }
+
+            // Tudo que precisa ser alcançado, com o rótulo pro log.
+            var points = new List<(string Label, Vector2I Tile, int? NpcId, ItemPickupData Pickup)>();
+            var spawn = Resolve(map.ExplorerSpawnSpot, null, "spawn do explorador");
+
+            foreach (var w in map.WildSpawnPoints)
+                if (Resolve(w.Spot, w.Tile, "selvagem") is Vector2I t) points.Add(($"selvagem {w.Spot}", t, null, null));
+
+            foreach (var n in map.Npcs)
+            {
+                if (Resolve(n.Spot, n.Tile, $"NPC {n.NpcId}") is not Vector2I t)
+                    continue;
+
+                // NPC escondido dentro de um arbusto/pedra (ex.: o Impmon): vale o bloco do lado
+                // de onde o explorador conversa com ele.
+                string label = $"NPC {n.NpcId} ({Db.GetNpc(n.NpcId)?.Name})";
+
+                if (loader.IsSolidProp(t))
+                {
+                    var side = SideTile(loader, t);
+                    Check(side.HasValue, $"{name}: {label} está num objeto sólido em {t} sem nenhum bloco andável do lado");
+
+                    if (!side.HasValue)
+                        continue;
+
+                    label += $" (ao lado de {t})";
+                    t = side.Value;
+                }
+
+                points.Add((label, t, n.NpcId, null));
+            }
+
+            foreach (var p in map.ItemPickups)
+                if (Resolve(p.Spot, p.Tile, $"item {p.UniqueId}") is Vector2I t) points.Add(($"item {p.UniqueId} ({p.Spot})", t, null, p));
+
+            foreach (var tr in map.Transitions)
+            {
+                Check(Db.GetExplorationMap(tr.TargetMapId) != null, $"{name}: passagem '{tr.Id}': área {tr.TargetMapId} não existe");
+                Check(tr.Mine || tr.NpcId.HasValue, $"{name}: passagem '{tr.Id}' sem origem (Mine/NpcId)");
+
+                if (tr.NpcId.HasValue)
+                    Check(map.Npcs.Any(n => n.NpcId == tr.NpcId), $"{name}: passagem '{tr.Id}': NPC {tr.NpcId} não está no mapa");
+
+                if (tr.Mine)
+                    Check(loader.MineNode != null, $"{name}: passagem '{tr.Id}' é a mina, mas o mapa não tem mina");
+
+                if (Resolve(null, tr.ReturnTile, $"passagem '{tr.Id}' (ReturnTile)") is Vector2I t)
+                    points.Add(($"frente da passagem '{tr.Id}'", t, null, null));
+            }
+
+            if (spawn == null)
+                return;
+
+            // Tudo liberado: todo ponto precisa ser andável e alcançável.
+            foreach (var id in loader.BlockerIds)
+                loader.SetBlockerCleared(id, true);
+
+            var reachableAll = Reachable(loader, spawn.Value);
+
+            foreach (var (label, tile, _, _) in points)
+            {
+                Check(loader.IsWalkable(tile), $"{name}: {label} no bloco {tile} não é andável");
+                Check(reachableAll.Contains(tile), $"{name}: {label} no bloco {tile} não é alcançável nem com tudo liberado");
+            }
+
+            // De que bloqueios cada ponto depende (log, pra conferir com o desenho do mapa).
+            var requirements = new Dictionary<string, List<string>>();
+
+            foreach (var blocker in loader.BlockerIds.ToList())
+            {
+                foreach (var id in loader.BlockerIds)
+                    loader.SetBlockerCleared(id, id != blocker);
+
+                var reachable = Reachable(loader, spawn.Value);
+
+                foreach (var (label, tile, _, _) in points)
+                {
+                    if (reachable.Contains(tile))
+                        continue;
+
+                    if (!requirements.TryGetValue(label, out var list))
+                        requirements[label] = list = new List<string>();
+
+                    list.Add(blocker);
+                }
+            }
+
+            foreach (var (label, list) in requirements)
+                GD.Print($"[INFO] {name}: {label} só depois de {string.Join(" + ", list)}");
+
+            // Cada passagem só depois da quest dela.
+            foreach (var tr in map.Transitions.Where(t => t.RequiredQuestId.HasValue && t.ReturnTile?.Count == 2))
+            {
+                string label = $"frente da passagem '{tr.Id}'";
+                var needed = map.BlockerQuests.Where(b => b.Value == tr.RequiredQuestId.Value).Select(b => b.Key).ToList();
+
+                Check(needed.Count > 0 && requirements.TryGetValue(label, out var req) && needed.All(req.Contains),
+                    $"{name}: passagem '{tr.Id}' é alcançável sem a quest {tr.RequiredQuestId}");
+            }
+
+            // Simula a progressão: nada liberado, conclui o que der, repete.
+            var cleared = new HashSet<string>();
+            var completedQuests = new HashSet<int>();
+            var order = new List<string>();
+            bool progressed = true;
+
+            while (progressed)
+            {
+                progressed = false;
+
+                foreach (var id in loader.BlockerIds)
+                    loader.SetBlockerCleared(id, cleared.Contains(id));
+
+                var reachable = Reachable(loader, spawn.Value);
+
+                foreach (var (blocker, questId) in map.BlockerQuests)
+                {
+                    if (cleared.Contains(blocker))
+                        continue;
+
+                    var quest = Db.GetQuest(questId);
+
+                    if (quest == null)
+                        continue;
+
+                    var giver = points.FirstOrDefault(p => p.NpcId == quest.GiverNpcId);
+
+                    if (giver.Label == null || !reachable.Contains(giver.Tile))
+                        continue;
+
+                    if (quest.ObjectiveType == QuestObjectiveType.DeliverItem)
+                    {
+                        bool fromPickup = points.Any(p => p.Pickup != null && p.Pickup.ItemId == quest.ObjectiveTargetId && reachable.Contains(p.Tile));
+                        bool fromReward = completedQuests.Any(q => Db.GetQuest(q)?.RewardItemId == quest.ObjectiveTargetId);
+
+                        if (!fromPickup && !fromReward)
+                            continue;
+                    }
+
+                    cleared.Add(blocker);
+                    completedQuests.Add(questId);
+                    order.Add($"{quest.Name} -> {blocker}");
+                    progressed = true;
+                }
+            }
+
+            foreach (var id in loader.BlockerIds)
+                Check(cleared.Contains(id), $"{name}: o bloqueio '{id}' nunca abre (quest inalcançável ou item que não dá pra pegar antes)");
+
+            Ok($"{name}: {points.Count} pontos alcançáveis; ordem das quests: {string.Join(", ", order)}");
+        }
+
+        /// <summary>Um bloco andável vizinho (8 direções, mesmo nível) de um objeto sólido.</summary>
+        private static Vector2I? SideTile(MapLoader loader, Vector2I solid)
+        {
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    var side = solid + new Vector2I(dx, dy);
+
+                    if (side != solid && loader.IsWalkable(side) && loader.Elevation(side) == loader.Elevation(solid))
+                        return side;
+                }
+            }
+
+            return null;
+        }
+
+        private static HashSet<Vector2I> Reachable(MapLoader loader, Vector2I start)
+        {
+            var seen = new HashSet<Vector2I> { start };
+            var queue = new Queue<Vector2I>();
+            queue.Enqueue(start);
+
+            var dirs = new[] { new Vector2I(1, 0), new Vector2I(-1, 0), new Vector2I(0, 1), new Vector2I(0, -1) };
+
+            while (queue.Count > 0)
+            {
+                var a = queue.Dequeue();
+
+                foreach (var d in dirs)
+                {
+                    var b = a + d;
+
+                    if (!seen.Contains(b) && loader.CanStep(a, b))
+                    {
+                        seen.Add(b);
+                        queue.Enqueue(b);
+                    }
+                }
+            }
+
+            return seen;
         }
     }
 }
