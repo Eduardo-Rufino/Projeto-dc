@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://passivas/ferramentas/InheritedRaioXTool.cs" id="1_tool"]
+
+[node name="InheritedRaioXTool" type="Node"]
+script = ExtResource("1_tool")
